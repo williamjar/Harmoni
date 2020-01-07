@@ -1,0 +1,20 @@
+.Nav-Menu{
+    height: 100vh;
+    text-align: center;
+    padding-top: 50px;
+}
+
+.Nav-Menu .nav-links{
+    padding-top: 75px;
+    border: none !important;
+}
+
+.Nav-Menu .ListGroup{
+    background: red;
+}
+
+.Nav-Menu .user-nav{
+    position: absolute;
+    bottom: 10px;
+    text-align: center;
+}
