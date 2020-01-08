@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {NavBar} from "./components/menu/navigation";
 import {Content} from "./components/content/content";
 import { HashRouter, Route} from 'react-router-dom';
-import {Dashboard} from "./components/dashboard";
+import {Dashboard} from "./components/content/dashboard/dashboard";
 
 
 

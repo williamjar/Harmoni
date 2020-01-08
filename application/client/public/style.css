@@ -51,3 +51,9 @@ body{
     margin: 0 auto;
 }
 
+/* Dashboard */
+.filterMenu {
+    margin: 20px;
+    align-items: center;
+}
+
