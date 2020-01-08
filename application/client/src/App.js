@@ -3,7 +3,7 @@ import React from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {NavBar} from "./components/menu/navigation";
-
+import {LoginForm} from "./components/login/loginForm";
 
 
 function App() {
@@ -16,10 +16,8 @@ function App() {
 
 
           <div className="col-lg-9">
-              content
+              <LoginForm />
           </div>
-
-
 
 
 
