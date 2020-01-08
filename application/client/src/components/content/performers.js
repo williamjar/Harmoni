@@ -11,7 +11,16 @@ export class Performers extends Component{
     render(){
         return(
             <div>
-                Performers
+                <div className="row">
+
+                    <div className="col-6 border-right">
+                        <AddPerformer/>
+                    </div>
+
+                    <div className="col-6">
+                        <RegisteredPerformers/>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -20,14 +29,14 @@ export class Performers extends Component{
 export class AddPerformer extends Component{
     render(){
         return(
-            <div>
+            <div className="card card-body">
                 <div className="row align-items-center">
 
-                    <div className="col-1">
+                    <div className="col-2">
                         <img src="https://s3.us-east-2.amazonaws.com/upload-icon/uploads/icons/png/19339625881548233621-512.png" width={50}/>
                     </div>
 
-                    <div className="col-8">
+                    <div className="col-7">
                         Lorde<br/>
                         artist@hotmail.com
                     </div>
@@ -58,19 +67,23 @@ export class AddPerformer extends Component{
                         </InputGroup>
 
                         <Riders/>
+                        <Riders/>
+
+                        <Riders/>
+
                     </div>
                 </div>
 
-                <div className="row">
-                    <div className="col-2">
+                <div className="row padding-top-20">
+                    <div className="col-4">
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" value="" id="signedContract"/>
                             <label className="form-check-label" for="signedContract">
-                                Utført
+                                Signert kontrakt
                             </label>
                         </div>
                     </div>
-                    <div className="col-2">
+                    <div className="col-4">
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" value="" id="performerPayed"/>
                             <label className="form-check-label" for="riderCompleted">
@@ -80,9 +93,12 @@ export class AddPerformer extends Component{
                     </div>
                 </div>
 
-               <div className="row">
+               <div className="row padding-top-20">
                    <div className="col-4">
-
+                       <button className="btn-primary rounded">Legg til vedlegg</button>
+                   </div>
+                   <div className="col-4 offset-4 text-right">
+                       <button className="btn-success rounded">Lagre</button>
                    </div>
                </div>
 
@@ -97,11 +113,11 @@ export class Riders extends Component{
             <div className="card card-body">
                 <div className="row align-items-center">
 
-                    <div className="col-6">
+                    <div className="col-5">
                         Knekkebrød med ost
                     </div>
 
-                    <div className="col-2">
+                    <div className="col-3">
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" value="" id="riderCompleted" />
                                 <label className="form-check-label" for="riderCompleted">
@@ -114,6 +130,27 @@ export class Riders extends Component{
                         <input type="text" className="form-control" placeholder="Status" />
                     </div>
 
+                </div>
+            </div>
+        )
+    }
+}
+
+export class RegisteredPerformers extends Component{
+    render(){
+        return(
+            <div>
+                <b>Artister som er lagt til</b>
+                <div className="card card-body">
+                    <div className="row">
+                        <div className="col-10">
+                    Lorde
+                        </div>
+
+                        <div className="col-2">
+                            <button className="btn-danger rounded">Slett</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         )

@@ -1,10 +1,14 @@
 /* Global settings */
 *{
-    font-family: Roboto;
+    font-family: Roboto !important;
 }
 
 body{
     background: lightslategrey !important;
+}
+
+.padding-top-20{
+    padding-top: 20px;
 }
 
 /* Navigation */
@@ -27,6 +31,7 @@ body{
     bottom: 10px;
     left: 10px ;
     text-align: left;
+
 }
 
 .nav-link{
