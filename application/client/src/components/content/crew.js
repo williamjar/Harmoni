@@ -62,8 +62,8 @@ export class AddCrew extends Component{
                                 aria-describedby="basic-addon2"
                             />
                             <InputGroup.Append>
-                                <Button variant="outline-secondary">Legg til fra arkiv</Button>
-                                <Button variant="outline-secondary">Registrer ny</Button>
+                                <Button variant="outline-secondary rounded">Legg til fra arkiv</Button>
+                                <Button variant="outline-secondary rounded">Registrer ny</Button>
                             </InputGroup.Append>
                         </InputGroup>
                     </div>
