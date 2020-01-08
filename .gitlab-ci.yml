@@ -17,8 +17,8 @@ before_script:
 run_tests:
   stage: test
   script:
-    #- cd server && npm install && npm test
-    #- cd ../klient && npm install && npm test
+    - cd server && npm install && npm test
+    - cd ../klient && npm install && npm test
   artifacts:
     paths:
       - server/coverage
