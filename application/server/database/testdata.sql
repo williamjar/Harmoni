@@ -1,4 +1,4 @@
----- Prepared
+-- Prepared
 --INSERT INTO genre (genreID,genreName) VALUES (?,?);
 --INSERT INTO picture (pictureLink) VALUES (?);
 --INSERT INTO eventType (eventTypeID,eventTypeName) VALUES (?,?);
