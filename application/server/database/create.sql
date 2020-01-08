@@ -62,6 +62,7 @@ CREATE TABLE organizer(
 CREATE TABLE ticketType(
     ticketTypeID INT AUTO_INCREMENT,
     eventID INT NOT NULL,
+    ticketTypeName VARCHAR(100),
     price INT,
     amount INT,
     releaseDate DATE,
@@ -110,8 +111,10 @@ CREATE TABLE event_crewCategory_crew(
 CREATE TABLE document(
     documentID INT AUTO_INCREMENT,
     eventID INT,
+    documentName VARCHAR(100),
     documentLink TEXT,
     artistID INT,
+    crewID INT,
     documentCategoryID INT NOT NULL,
     PRIMARY KEY(documentID, eventID)
 );
