@@ -38,10 +38,8 @@ var pool = mysql.createPool({
 
 
 //----------------- DOCUMENTATION ---------------------
-const resource_path = path.join(__dirname, '/../../client/public/resources');
+/*const resource_path = path.join(__dirname, '/../../client/public/resources');
 
-
-/*
 function createFoldersForUser(eventID, documentCategoryIDs) {
     fs.mkdirSync( resource_path + '/' + eventID);
     for(let i = 0; i < documentCategoryIDs.length; i++){
@@ -75,13 +73,24 @@ app.post('/single', upload.single('profile'), (req, res) => {
 
 const Documentationdao = require("./dao/documentationdao.js");
 let documentationDao = new Documentationdao(pool);
-
 app.get("/documents", (req, res) => {
     console.log("/news: fikk request fra klient");
-    documentationDao.getAllDocumentCategories((status, data) => {
+    newsDao.getAllDocuments((status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
+
+
+const Newsdao = require("./dao/newsdao.js");
+let newsDao = new Newsdao(pool);
+
+app.get("/news", (req, res) => {
+    console.log("/news: fikk request fra klient");
+    newsDao.getAll((status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
 
