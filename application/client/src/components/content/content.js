@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {LoginForm} from "../login/loginForm";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {RegisterForm} from "../login/registerForm";
 
 
 export class Content extends Component{
