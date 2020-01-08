@@ -35,7 +35,7 @@ export class LoginForm extends React.Component {
     render(): React.Node {
         let infoText;
         if(this.state.flag === -1){
-            infoText = <Form.Text className="text-danger"> Feil brukernavn eller passord, vennligst prøv igjen</Form.Text>;
+            infoText = <Form.Text className="text-danger"> Passordene må være like, sjekk igjen</Form.Text>;
         } else if(this.state.flag === -2) {
             infoText =  <Form.Text className="text-danger">Ingen felt kan være tomme!</Form.Text>;
         } else {
@@ -44,7 +44,7 @@ export class LoginForm extends React.Component {
         return (
 
             <Card>
-                <div className="card-header"><h2 className="card-title" textCenter={true}>Logg inn</h2></div>
+                <div className="card-header"><h2 className="card-title text-center">Logg inn</h2></div>
 
 
                     <div className="justify-content-md-center m-5">

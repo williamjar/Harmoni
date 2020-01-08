@@ -13,6 +13,7 @@ export class Content extends Component{
                 {this.props.page}
                 </div>
                 <LoginForm/>
+                <RegisterForm/>
             </div>
         )
     }
