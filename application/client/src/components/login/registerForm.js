@@ -104,7 +104,7 @@ export class RegisterForm extends React.Component {
         //this.displayLoginDecline(); for declined login from database.
 
         /*
-        *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.email" and "this.state.password";
+        *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.firstEmail" and "this.state.firstPassword";
         * */
     }
 
