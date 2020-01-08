@@ -8,6 +8,8 @@ import {EventView} from "./eventView";
 // Component displaying all of the users events
 export class Dashboard extends React.Component {
 
+    status = "alle";
+
     render() {
 
         return(
