@@ -6,6 +6,8 @@ var app = express();
 var path = require('path');
 var multer = require('multer');
 var fs = require('fs');
+var EventEmitter = require("events").EventEmitter;
+var body = new EventEmitter();
 
 var resourcePath = __dirname + "/../../client/public";
 
@@ -38,14 +40,15 @@ var pool = mysql.createPool({
 
 
 //----------------- DOCUMENTATION ---------------------
-/*const resource_path = path.join(__dirname, '/../../client/public/resources');
+const resource_path = path.join(__dirname, '/../../client/public/resources');
 
 function createFoldersForUser(eventID, documentCategoryIDs) {
     fs.mkdirSync( resource_path + '/' + eventID);
     for(let i = 0; i < documentCategoryIDs.length; i++){
-        fs.mkdirSync( resource_path + '/' + eventID + "/" + documentCategoryIDs[i]);
+        fs.mkdirSync( resource_path + '/' + eventID + "/" + documentCategoryIDs[i].documentCategoryName);
     }
 }
+/*
 const testID = 1;
 const test = [1,2,3];
 createFoldersForUser(testID, test);
@@ -73,24 +76,24 @@ app.post('/single', upload.single('profile'), (req, res) => {
 
 const Documentationdao = require("./dao/documentationdao.js");
 let documentationDao = new Documentationdao(pool);
-app.get("/documents", (req, res) => {
+
+app.get("/test", (req, res) => {
     console.log("/news: fikk request fra klient");
-    newsDao.getAllDocuments((status, data) => {
+    documentationDao.getAllDocumentCategories((status, data) => {
         res.status(status);
         res.json(data);
+        body.data = data;
+        body.emit('update');
     });
+});
+
+body.on('update', function () {
+    console.log(body.data); // HOORAY! THIS WORKS!
 });
 
 
 
-const Newsdao = require("./dao/newsdao.js");
-let newsDao = new Newsdao(pool);
 
-app.get("/news", (req, res) => {
-    console.log("/news: fikk request fra klient");
-    newsDao.getAll((status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
+
+
 

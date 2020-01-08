@@ -3,15 +3,18 @@ const Dao = require("./dao.js");
 
 //Sql queries for associated with Documentation
 module.exports = class test extends Dao {
-    getAllDocumentCategories(json, callback){
+    getAllDocumentCategories(callback){
         super.query(
-            "select documentCategoryID from documentCategory",
+            "select documentCategoryName from documentCategory",
             [],
             callback
         );
     }
 
-    getAllDocuments(json, callback){
+
+
+
+    getAllDocuments(callback){
         super.query(
             "select * from document",
             [],
@@ -28,11 +31,4 @@ module.exports = class test extends Dao {
         );
     }
 
-    insertDocumentLink(json, callback) {
-        var val = [json.documentLink, json.documentID];
-        super.query("UPDATE document SET documentLink = ? WHERE documentID = ?",
-            val,
-            callback
-        );
-    }
 };
