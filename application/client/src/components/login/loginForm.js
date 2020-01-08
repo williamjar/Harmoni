@@ -29,7 +29,7 @@ export class LoginForm extends React.Component {
 
     handleSubmit(event: Object) {
         event.preventDefault();
-        this.submitTicket();
+        this.submitForm();
     }
 
     render(): React.Node {
@@ -58,16 +58,15 @@ export class LoginForm extends React.Component {
                                 <Form.Control type="password" maxLength="30" name="password" placeholder="Passord" value={this.state.password} onChange={this.handleInputChange}/>
                             </Form.Group>
 
-                            <Button variant="btn btn-primary btn-lg" type="submit"> Logg inn </Button>
+                            <Button variant="btn btn-primary" type="submit"> Logg inn </Button>
 
-                            <Form.Text> Ny bruker? Klikk her for registrere deg</Form.Text>
+                            <Form.Text> Ny bruker? Klikk <span className="NavLink">her for registrere deg</span></Form.Text>
 
                             {infoText}
                         </Form>
                     </div>
 
             </Card>
-
         )
     }
 
@@ -76,7 +75,7 @@ export class LoginForm extends React.Component {
     displayLoginEmpty(){ this.setState({ flag: -2 }); }
 
 
-    submitTicket(){
+    submitForm(){
         if(this.state.email === "" || this.state.password === ""){ this.displayLoginEmpty(); }
 
 

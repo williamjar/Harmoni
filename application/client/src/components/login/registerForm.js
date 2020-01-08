@@ -9,14 +9,16 @@ export class RegisterForm extends React.Component {
         super(props);
         this.state = {
             email : '',
-            password : '',
+            firstPassword : '',
+            secondPassword: '',
+            firstEmail: '',
+            secondEmail: '',
             flag : 1
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-
 
     handleInputChange(event) : void {
         const target = event.target;
@@ -29,16 +31,25 @@ export class RegisterForm extends React.Component {
 
     handleSubmit(event: Object) {
         event.preventDefault();
-        this.submitTicket();
+        this.submitForm();
     }
 
     render(): React.Node {
         let infoText;
         if(this.state.flag === -1){
             infoText = <Form.Text className="text-danger"> Feil brukernavn eller passord, vennligst prøv igjen</Form.Text>;
-        } else if(this.state.flag === -2) {
+        }
+        else if(this.state.flag === -2) {
             infoText =  <Form.Text className="text-danger">Ingen felt kan være tomme!</Form.Text>;
-        } else {
+        }
+        else if(this.state.flag === -3) {
+            infoText =  <Form.Text className="text-danger">Passordene må være like</Form.Text>;
+        }
+        else if(this.state.flag === -4) {
+            infoText =  <Form.Text className="text-danger">Epostadressene må være like</Form.Text>;
+        }
+
+        else {
             infoText =  <Form.Text className="text-danger"></Form.Text>;
         }
         return (
@@ -50,18 +61,22 @@ export class RegisterForm extends React.Component {
                     <Form onSubmit={this.handleSubmit}>
 
                         <Form.Group>
-                            <Form.Control type="email" name="email" placeholder="E-postadresse" value={this.state.email} onChange={this.handleInputChange}/>
+                            <Form.Control type="email" name="firstEmail" placeholder="E-postadresse" value={this.state.firstEmail} onChange={this.handleInputChange}/>
                         </Form.Group>
 
                         <Form.Group>
-                            <Form.Control type="password" maxLength="30" name="password" placeholder="Passord" value={this.state.password} onChange={this.handleInputChange}/>
+                            <Form.Control type="email" name="secondEmail" placeholder="Gjenta e-postadresse" value={this.state.secondEmail} onChange={this.handleInputChange}/>
                         </Form.Group>
 
                         <Form.Group>
-                            <Form.Control type="password" maxLength="30" name="password" placeholder="Passord" value={this.state.password} onChange={this.handleInputChange}/>
+                            <Form.Control type="password" maxLength="30" name="firstPassword" placeholder="Passord" value={this.state.password} onChange={this.handleInputChange}/>
                         </Form.Group>
 
-                        <Button variant="btn btn-primary btn-lg" type="submit"> Registrer deg </Button>
+                        <Form.Group>
+                            <Form.Control type="password" maxLength="30" name="secondPassword" placeholder="Gjenta passord" value={this.state.password} onChange={this.handleInputChange}/>
+                        </Form.Group>
+
+                        <Button variant="btn btn-primary" type="submit"> Registrer deg </Button>
 
                         {infoText}
                     </Form>
@@ -75,15 +90,18 @@ export class RegisterForm extends React.Component {
 
     displayLoginDecline(){ this.setState({ flag: -1 }); }
     displayLoginEmpty(){ this.setState({ flag: -2 }); }
+    displayPasswordNotSame(){ this.setState({ flag: -3}); }
+    displayEmailsNotSame() {this.setState({flag: -4});}
 
 
-    submitTicket(){
-        if(this.state.email === "" || this.state.password === ""){ this.displayLoginEmpty(); }
+    submitForm(){
+        if(this.state.email === '' || this.state.password === ''){ this.displayLoginEmpty(); }
+        if(!(this.state.firstPassword === this.state.secondPassword)){ this.displayPasswordNotSame(); }
+        if(!(this.state.firstEmail === this.state.secondEmail)){ this.displayEmailsNotSame(); }
 
 
 
-        //this.displayLoginDecline();
-        //alert("Form submitted." + "\n" + "Username: " + "\n" + this.state.email + "\n" + "Password:"+  "\n" + this.state.password);
+        //this.displayLoginDecline(); for declined login from database.
 
         /*
         *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.email" and "this.state.password";
