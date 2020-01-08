@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {NavBar} from "./components/menu/navigation";
 import {Content} from "./components/content/content";
 import { HashRouter, Route} from 'react-router-dom';
+import {Dashboard} from "./components/dashboard";
 
 
 
@@ -18,7 +19,7 @@ function App() {
                 </div>
 
                 <div className="col-lg-10">
-                    <Route exact path="/" component={() => <Content page="test" />} />
+                    <Route exact path="/" component={() => <Content page={<Dashboard />} />} />
                     <Route exact path="/opprett" component={Content}/>
                     <Route exact path="/artister" component={Content}/>
                     <Route exact path="/personell" component={Content}/>

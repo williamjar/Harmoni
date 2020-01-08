@@ -12,6 +12,7 @@ export class Dashboard extends React.Component {
 
         return(
             <div>
+                <h3>Arrangementer</h3>
                 <Accordion defaultActiveKey="0">
                     <div className="row">
                         <p>Planlagte arrangement</p>

@@ -13,7 +13,7 @@ export class EventCard extends React.Component {
     render() {
 
         return(
-            <tr align>
+            <tr align='center'>
                 <td>{event.date}</td>
                 <td>{event.location}</td>
                 <td><Button>Vis arrangement</Button></td>
