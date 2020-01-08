@@ -35,7 +35,7 @@ var pool = mysql.createPool({
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, '/../resources/');
+        cb(null, public_path + "/resources");
     },
     filename: function (req, file, cb) {
         cb(null , file.originalname);
