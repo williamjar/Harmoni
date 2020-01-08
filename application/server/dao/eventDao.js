@@ -49,4 +49,4 @@ module.exports = class eventDao extends Dao {
 
 
 
-}
+};
