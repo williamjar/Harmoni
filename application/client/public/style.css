@@ -1,20 +1,53 @@
+/* Global settings */
+*{
+    font-family: Roboto;
+}
+
+body{
+    background: lightslategrey !important;
+}
+
+/* Navigation */
 .Nav-Menu{
     height: 100vh;
     text-align: center;
     padding-top: 50px;
+    border-radius: 0px !important;
+    border-right: 1px solid black;
 }
 
 .Nav-Menu .nav-links{
     padding-top: 75px;
     border: none !important;
-}
-
-.Nav-Menu .ListGroup{
-    background: red;
+    text-align: left;
 }
 
 .Nav-Menu .user-nav{
     position: absolute;
     bottom: 10px;
-    text-align: center;
+    left: 10px ;
+    text-align: left;
 }
+
+.nav-link{
+    border-radius: 0px !important;
+}
+
+.nav-link:hover{
+    background: darkslateblue !important;
+    color: white;
+}
+
+
+/* Content */
+.content{
+    overflow-y: scroll;
+    height: 100vh;
+    padding: 50px 150px 20px 150px;
+    margin:0 auto;
+}
+
+.center{
+    margin: 0 auto;
+}
+
