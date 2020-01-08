@@ -59,7 +59,7 @@ module.exports = class eventDao extends Dao {
         super.query('UPDATE artist set', callback);
     } //update artist-event
 
-
-
-
+    addDocument(callback, eventID, documentID) {
+        super.query('INSERT INTO', [eventID, documentID], callback);
+    }
 };
