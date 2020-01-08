@@ -5,29 +5,27 @@ module.exports = class artistDao extends Dao {
     //TODO: Write SQL statements
 
     getAll(callback) {
-        super.query('SELECT * FROM artist AND contact WHERE artist.contactID = contact.contactID', [], callback);
+        super.query('SELECT * FROM artist, contact WHERE artist.contactID = contact.contactID', [], callback);
     }
 
     getOne(callback, artistID) {
         super.query('SELECT * FROM artist WHERE artistID = ? ', [artistID], callback);
     }
 
-    createOne(callback) {
-        super.query('INSERT INTO artist ', callback);
+    createOne(callback, list) {
+        super.query('INSERT INTO artist (genreID, organizerID, contactID) values(?, ?, ?)', list, callback);
     }
 
-    updateOne(json, callback){
-        var val = [json.artistID, json.artistName];
-        super.query('UPDATE artist set , where artistID = ?', callback);
+    updateOne(callback, genreID, artistID){
+        super.query('UPDATE artist set genreID = ? WHERE artistID = ?', [genreID, artistID], callback);
     }
 
     deleteOne(callback, artistID) {
-        super.query('DELETE FROM ', [artistID], callback);
+        super.query('DELETE FROM artist where artistID = ?', [artistID], callback);
     }
 
     addDocument(callback, artistID, documentID) {
-        super.query('INSERT INTO event', [artistID, documentID], callback);
+        super.query('INSERT INTO artist (artistID, documentID) values(?,?)', [artistID, documentID], callback);
     }
-
 
 }
