@@ -81,6 +81,7 @@ export class RegisterForm extends React.Component {
         if(this.state.email === "" || this.state.password === ""){ this.displayLoginEmpty(); }
 
 
+
         //this.displayLoginDecline();
         //alert("Form submitted." + "\n" + "Username: " + "\n" + this.state.email + "\n" + "Password:"+  "\n" + this.state.password);
 
