@@ -30,8 +30,8 @@ pages:
   dependencies:
     - run_tests
   script:
-   # - mkdir .public
-   # - cp -r server/coverage/* .public
+    - mkdir .public
+    - cp -r server/coverage/* .public
 
     - mv .public public
   artifacts:
