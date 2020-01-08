@@ -1,4 +1,4 @@
-class Document{
+export class Document{
     constructor(documentID, documentLink, documentCategory){
         this.documentID = documentID;
         this.documentLink = documentLink;

@@ -1,20 +1,22 @@
-class CrewMember extends Contact{
+import {Contact} from "./contact";
 
-    crewCategories;
+export class CrewMember extends Contact{
+
 
     constructor(crewID, name, phone, email, description){
         super(name, phone, email);
         this.crewID = crewID;
         this.description = description;
+        this.crewCategories = [];
     }
 
     addCrewCategory(category){
-        this.crewCategories.add(category);
+        this.crewCategories.push(category);
     }
 
     static getTestCrewMember(){
         let crewMemberOne = new CrewMember(0,
-            super.getTestContact()[3].contactName, super.getTestContact()[3].phone, super.getTestContact()[3].email,
+            super.getTestContacts()[3].contactName, super.getTestContacts()[3].phone, super.getTestContacts()[3].email,
             'This lazy dude can only work every third sunday when theres a full moon');
         crewMemberOne.addCrewCategory('Lazy work');
 

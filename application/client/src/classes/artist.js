@@ -1,33 +1,39 @@
-class Artist extends Contact{
+import {Contact} from "./contact";
+import {Organizer} from "./organizer";
+import {Event} from "./event";
+import {Document} from "./document";
 
-    events;
-    documents;
+export class Artist extends Contact{
 
     constructor(artistID, name, phone, email, genre, organizer){
         super(name, phone, email);
+        this.artistID = artistID;
         this.genre = genre;
         this.organizer = organizer;
+        this.events = [];
+        this.documents = [];
     }
 
     addEvent(event){
-        this.events.add(event);
+        this.events.push(event);
     }
 
     addDocument(document){
-        this.documents.add(document);
+        this.documents.push(document);
     }
 
     static getTestArtists(){
-        let contactOne = new Contact('Organizer One', '00 00 12 34', 'mail@organisasjon.no');
-        let contactTwo = new Contact('Artist One', '12345678', 'nummeren@artist.no');
-        let contactThree = new Contact('Artist Two', '98752465');
-        let organizer = new Organizer(0, contactOne.contactName, contactOne.phone, contactOne.email, 'Organizer', 'img.png');
-        let artistOne = new Artist(0, contactTwo.contactName, contactTwo.phone, contactTwo.email, 'Folk', organizer);
-        let artistTwo = new Artist(1, contactThree.name, contactThree.phone, contactThree.email, 'Pop', organizer);
-        artistOne.addDocument(Document.getTestDocuments()[0]);
+        let artistOne = new Artist(0,
+            super.getTestContacts()[1].contactName,
+            super.getTestContacts()[1].phone,
+            super.getTestContacts()[1].email, 'Folk', Organizer.getTestOrganizer()[0]);
 
-        artistOne.addEvent(Event.getTestEvents()[0]);
-        artistTwo.addEvent(Event.getTestEvents()[0]);
+        let artistTwo = new Artist(1,
+            super.getTestContacts()[2].contactName,
+            super.getTestContacts()[2].phone,
+            super.getTestContacts()[2].email, 'Pop', Organizer.getTestOrganizer()[0]);
+
+        artistOne.addDocument(Document.getTestDocuments()[0]);
 
         return [artistOne, artistTwo];
     }

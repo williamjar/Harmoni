@@ -1,11 +1,8 @@
-class Event{
+import {Organizer} from "./organizer";
+import {Artist} from "./artist";
+import {RiderElement} from "./riderElement";
 
-    tickets;
-    documents;
-    crewMembers;
-    crewCategories;
-    artists;
-    riderElements;
+export class Event{
 
     constructor(eventID, eventName, startDate, endDate, startTime, endTime, address, town, zipCode, status, description,
                 publishDate, publishTime, organizer, picture){
@@ -24,32 +21,37 @@ class Event{
         this.publishTime = publishTime;
         this.organizer = organizer;
         this.picture = picture;
+
+        this.tickets = [];
+        this.documents = [];
+        this.crewMembers = [];
+        this.crewCategories = [];
+        this.artists = [];
+        this.riderElements = [];
     }
 
     addTicketType(ticketType){
-        this.tickets.add(ticketType);
+        this.tickets.push(ticketType);
     }
 
     addDocument(document){
-        this.documents.add(document);
+        this.documents.push(document);
     }
 
     addCrewMember(crewMember){
-        this.crewMembers.add(crewMember);
+        this.crewMembers.push(crewMember);
     }
 
     addCrewCategory(crewCategory){
-        this.crewCategories.add(crewCategory);
+        this.crewCategories.push(crewCategory);
     }
 
     addArtist(artist){
-        this.artists.add(artist);
+        this.artists.push(artist);
     }
 
     addRiderElement(artist, riderElement){
-        if (this.artists.contains(artist)){
-            this.riderElements.add(riderElement);
-        }
+        this.riderElements.push([artist, riderElement]);
     }
 
     static getTestEvents(){
@@ -63,12 +65,23 @@ class Event{
 
         eventOne.addCrewCategory('Lazy Work');
         eventOne.addCrewCategory('Important Work (empty)');
+
         eventOne.addArtist(Artist.getTestArtists()[0]);
         eventOne.addArtist(Artist.getTestArtists()[1]);
 
         eventOne.addRiderElement(eventOne.artists[0], RiderElement.getTestRiderElement()[0]);
         eventOne.addRiderElement(eventOne.artists[1], RiderElement.getTestRiderElement()[1]);
+        return [eventOne];
+    }
 
+    getRiderFromArtist(artist){
+        let retArr = [];
+        for (let i = 0; i < this.riderElements.length; i++){
+            if (this.riderElements[i][0].artistID === artist.artistID){
+                retArr.push(this.riderElements[i][1]);
+            }
+        }
+        return retArr;
     }
 
 }
