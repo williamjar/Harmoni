@@ -1,5 +1,5 @@
 const Dao = require('./dao.js');
 
-module.exports = class eventDao extends Dao {
-
+module.exports = class riderDao extends Dao {
+    
 };
