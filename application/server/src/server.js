@@ -5,15 +5,18 @@ var cors = require('cors');
 var app = express();
 var path = require('path');
 var multer = require('multer');
+var fs = require('fs');
 
+var resourcePath = __dirname + "/../../client/public";
 
 
 
 var server = app.listen(8080);
 
-const Newsdao = require("./dao/newsdao.js");
 
 const public_path = path.join(__dirname, '/../../client/public');
+
+
 app.use(cors());
 
 app.get('/products/:id', function (req, res, next) {
@@ -27,15 +30,32 @@ app.use(express.static(public_path));
 var pool = mysql.createPool({
     connectionLimit: 2,
     host: "mysql.stud.iie.ntnu.no",
-    user: "jorho",
-    password: "4FVDuZZM",
-    database: "jorho",
+    user: "evengu",
+    password: "O7KhlwWQ",
+    database: "evengu",
     debug: false
 });
 
+
+//----------------- DOCUMENTATION ---------------------
+const resource_path = path.join(__dirname, '/../../client/public/resources');
+
+
+/*
+function createFoldersForUser(eventID, documentCategoryIDs) {
+    fs.mkdirSync( resource_path + '/' + eventID);
+    for(let i = 0; i < documentCategoryIDs.length; i++){
+        fs.mkdirSync( resource_path + '/' + eventID + "/" + documentCategoryIDs[i]);
+    }
+}
+const testID = 1;
+const test = [1,2,3];
+createFoldersForUser(testID, test);
+*/
+
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, public_path + "/resources");
+        cb(null, public_path + "/resources/");
     },
     filename: function (req, file, cb) {
         cb(null , file.originalname);
@@ -53,14 +73,15 @@ app.post('/single', upload.single('profile'), (req, res) => {
 });
 
 
+const Documentationdao = require("./dao/documentationdao.js");
+let documentationDao = new Documentationdao(pool);
 
-let newsDao = new Newsdao(pool);
-
-app.get("/news", (req, res) => {
+app.get("/documents", (req, res) => {
     console.log("/news: fikk request fra klient");
-    newsDao.getAll((status, data) => {
+    documentationDao.getAllDocumentCategories((status, data) => {
         res.status(status);
         res.json(data);
     });
 });
+
 
