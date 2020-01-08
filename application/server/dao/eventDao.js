@@ -2,6 +2,8 @@ const Dao = require('./dao.js');
 
 module.exports = class eventDao extends Dao {
 
+    //TODO: Write SQL statements
+
     getAll(callback) {
         super.query('SELECT ', [], callback);
     }

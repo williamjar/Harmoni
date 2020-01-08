@@ -2,6 +2,8 @@ const Dao = require('./dao.js');
 
 module.exports = class riderDao extends Dao {
 
+    //TODO: Write SQL statements
+
     createOne(callback, artistID, eventID) {
         super.query('INSERT INTO riderElement ', [artistID, eventID] , callback);
     }

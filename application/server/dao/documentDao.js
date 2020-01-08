@@ -2,6 +2,8 @@ const Dao = require('./dao.js');
 
 module.exports = class documentDao extends Dao {
 
+    //TODO: Write SQL statements
+
     createOne(callback) {
         super.query('INSERT INTO document ', [], callback);
     }

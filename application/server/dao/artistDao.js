@@ -2,6 +2,8 @@ const Dao = require('./dao.js');
 
 module.exports = class artistDao extends Dao {
 
+    //TODO: Write SQL statements
+
     getAll(callback) {
         super.query('SELECT * FROM artist AND contact WHERE artist.contactID = contact.contactID', [], callback);
     }
