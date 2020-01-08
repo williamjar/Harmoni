@@ -3,28 +3,29 @@ import React from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {NavBar} from "./components/menu/navigation";
+import {Content} from "./components/content/content";
+import { HashRouter, Route} from 'react-router-dom';
 
 
 
 function App() {
   return (
     <div className="App">
-      <div className="row">
-          <div className="col-lg-2">
-          <NavBar />
-          </div>
+        <HashRouter>
+            <div className="row no-gutters">
+                <div className="col-lg-2">
+                    <NavBar />
+                </div>
 
-
-          <div className="col-lg-9">
-              content
-          </div>
-
-
-
-
-
-      </div>
-
+                <div className="col-lg-10">
+                    <Route exact path="/" component={() => <Content page="test" />} />
+                    <Route exact path="/opprett" component={Content}/>
+                    <Route exact path="/artister" component={Content}/>
+                    <Route exact path="/personell" component={Content}/>
+                    <Route exact path="/kontrakter" component={Content}/>
+                </div>
+            </div>
+        </HashRouter>
     </div>
   );
 }
