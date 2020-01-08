@@ -1,34 +1,17 @@
 // @flow
 
 import React from 'react';
-import {Form, Button, Col, Card} from 'react-bootstrap'
+import {Form, Button, Card} from 'react-bootstrap'
 
 
 
 export class LoginForm extends React.Component {
-    state: {
-        headline: string,
-        content: string,
-        priority: number,
-        picture: string,
-        post_date: string,
-        email: string,
-        group_id: number,
-        author: string
-    };
-
 
     constructor(props: Object) {
         super(props);
         this.state = {
-            headline: '',
-            content: '',
-            priority: 2,
-            picture: '',
-            post_date: '2000-01-01 00:00:00',
-            email: '',
-            group_id: 1,
-            author: '',
+            email : '',
+            password : ''
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -77,8 +60,12 @@ export class LoginForm extends React.Component {
     )
     }
 
-    submitTicket(): void {
+    submitTicket(){
 
+
+    }
+
+    incorrectPasswordFeedback() {
 
     }
 
