@@ -1,14 +1,33 @@
 import React from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Accordion, Button, Col, Dropdown, DropdownButton, ListGroup, Row, Tab} from "react-bootstrap";
+import {Accordion, Button, ButtonGroup, Col, Dropdown, DropdownButton, ListGroup, Row, Tab} from "react-bootstrap";
 import {FaAngleDown} from "react-icons/fa";
 import {EventView} from "./eventView";
 
 // Component displaying all of the users events
 export class Dashboard extends React.Component {
 
-    status = "alle";
+    state = {
+        active: "all"
+    };
+
+    filterEvents = (e) => {
+        this.setState({active: e.target.name});
+
+        if(this.state.active === "all") {
+
+        }
+        else if(this.state.active === "planned") {
+
+        }
+        else if(this.state.active === "planning") {
+
+        }
+        else if(this.state.active === "archived") {
+
+        }
+    };
 
     render() {
 
@@ -17,12 +36,12 @@ export class Dashboard extends React.Component {
                 <h3>Arrangementer</h3>
                     <Row className="filterMenu">
                         <Col>
-                            <ListGroup horizontal="md" >
-                                <ListGroup.Item action href="#alle" active>Alle</ListGroup.Item>
-                                <ListGroup.Item action href="#alle">Planlagte</ListGroup.Item>
-                                <ListGroup.Item action href="#alle">planlegges</ListGroup.Item>
-                                <ListGroup.Item action href="#alle">Arkiverte</ListGroup.Item>
-                            </ListGroup>
+                            <ButtonGroup size="md">
+                                <Button name="all" variant="secondary" active={this.state.active === "all"} onClick={this.filterEvents}>Alle</Button>
+                                <Button name="planned" variant="secondary" active={this.state.active === "planned"} onClick={this.filterEvents}>Planlagte</Button>
+                                <Button name="planning" variant="secondary" active={this.state.active === "planning"} onClick={this.filterEvents}>Under planlegging</Button>
+                                <Button name="archived" variant="secondary" active={this.state.active === "archived"} onClick={this.filterEvents}>Arkiverte</Button>
+                            </ButtonGroup>
                         </Col>
                         <Col>
                             <DropdownButton title="Sorter etter..">
@@ -31,7 +50,7 @@ export class Dashboard extends React.Component {
                             </DropdownButton>
                         </Col>
                     </Row>
-                <Accordion defaultActiveKey="0">
+                <Accordion id="plannedEvents" defaultActiveKey="0">
                     <Row className="no-gutters">
                         <p>Planlagte arrangement</p>
                         <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
@@ -67,9 +86,6 @@ export class Dashboard extends React.Component {
                     </Accordion.Collapse>
                 </Accordion>
             </div>
-
-
-
         )
     }
 }
