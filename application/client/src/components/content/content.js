@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import {LoginForm} from "../login/loginForm";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -11,6 +11,7 @@ export class Content extends Component{
                 <div className="card">
                 {this.props.page}
                 </div>
+                <LoginForm/>
             </div>
         )
     }
