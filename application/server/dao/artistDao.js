@@ -24,7 +24,7 @@ module.exports = class artistDao extends Dao {
     }
 
     addDocument(callback, artistID, documentID) {
-        super.query('INSERT INTO event', [artistID], [documentID], callback);
+        super.query('INSERT INTO event', [artistID, documentID], callback);
     }
 
 
