@@ -54,9 +54,8 @@ module.exports = class eventDao extends Dao {
         super.query('SELECT ', [eventID], callback);
     } //get all artists for event
 
-    updateArtist(json, callback){
-        var val = [];
-        super.query('UPDATE artist set', callback);
+    updateArtist(callback, list){
+        super.query('UPDATE artist set', list, callback);
     } //update artist-event
 
     addDocument(callback, eventID, documentID) {
