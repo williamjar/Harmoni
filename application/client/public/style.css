@@ -33,12 +33,21 @@ body{
     border-radius: 0px !important;
 }
 
+.nav-link:hover{
+    background: darkslateblue !important;
+    color: white;
+}
+
 
 /* Content */
 .content{
     overflow-y: scroll;
     height: 100vh;
-    padding:25px;
+    padding: 50px 150px 20px 150px;
     margin:0 auto;
+}
+
+.center{
+    margin: 0 auto;
 }
 
