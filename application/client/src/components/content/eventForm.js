@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
-import {AddPerformer} from "./performers";
+import {AddPerformer, Performers} from "./performers";
+import {Crew} from "./crew";
 
 
 
@@ -26,12 +27,12 @@ export class EventForm extends Component{
                 </Tab>
                 <Tab eventKey="1" title="Artister">
                     <TabContent onClick={this.nextClicked}>
-                        <AddPerformer/>
+                        <Performers/>
                     </TabContent>
                 </Tab>
                 <Tab eventKey="2" title="Personell">
                     <TabContent onClick={this.nextClicked}>
-
+                        <Crew />
                     </TabContent>
                 </Tab>
                 <Tab eventKey="3" title="Dokumentasjon">
