@@ -4,6 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Accordion, Button, ButtonGroup, Col, Dropdown, DropdownButton, ListGroup, Row, Tab} from "react-bootstrap";
 import {FaAngleDown} from "react-icons/fa";
 import {EventView} from "./eventView";
+import {Event} from "../../../classes/event";
+
+// Test events
 
 // Component displaying all of the users events
 export class Dashboard extends React.Component {
@@ -31,6 +34,8 @@ export class Dashboard extends React.Component {
 
     render() {
 
+        const testEvent = Event.getTestEvents()[0];
+
         return(
             <div>
                 <h3>Arrangementer</h3>
@@ -57,7 +62,7 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            <EventView/>
+                            <EventView event1={testEvent}/>
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
@@ -69,7 +74,7 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            <EventView/>
+                            <EventView event1={testEvent}/>
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
@@ -81,7 +86,7 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            <EventView/>
+                            <EventView event1={testEvent}/>
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
