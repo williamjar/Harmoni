@@ -55,22 +55,22 @@ app.post("/API/contact", (request, response) => {
     }, val);
 });
 
-app.put("/API/contact", (request, response) => {
-    console.log("request to add contact");
+app.put("/API/contact/:contactID", (request, response) => {
+    console.log("request to update contact");
     let val = [
         request.body.contactName,
         request.body.phone,
-        request.body.email
+        request.body.email,
+        request.params.contactID
     ];
 
-    contactDao.createOne((status, data) => {
+    contactDao.updateOne((status, data) => {
         response.status(status);
         response.json(data);
     }, val);
 });
 
 // ARTIST
-
 app.get("/API/artist/:artistID", (request, response) => {
     console.log("request for artist");
     artistDao.getOne((status, data) => {
@@ -78,6 +78,43 @@ app.get("/API/artist/:artistID", (request, response) => {
         response.json(data);
     }, request.params.artistID);
 });
+
+app.post("/API/artist", (request, response) => {
+    console.log("request to add artist");
+    let val = [
+        request.body.genreID,
+        request.body.organizerID,
+        request.body.contactID
+    ];
+    artistDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+// CREW
+app.get("/API/crew/:crewID", (request, response) => {
+    console.log("request for crew");
+    crewDao.getOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.crewID);
+});
+
+app.post("/API/crew", (request, response) => {
+    console.log("request to add crew");
+    let val = [
+        request.body.crewID,
+        request.body.description,
+        request.body.contactID
+    ];
+    crewDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+// EVENT
 
 //Get all events
 app.get("/events", (request, response) => {

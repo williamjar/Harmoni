@@ -4,6 +4,10 @@ module.exports = class crewDao extends Dao {
 
     //TODO: Write SQL statements
 
+    getOne(callback, list) {
+        super.query('SELECT contactName,phone,email,organizerID,description FROM crew JOIN contact ON crew.contactID = contact.contactID WHERE crewID = ?', list, callback);
+    }
+
     createOne(callback, list) {
         super.query('INSERT INTO crew (crewID, description, contactID) values(?, ?, ?) ', list, callback);
     }
