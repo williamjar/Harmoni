@@ -1,4 +1,17 @@
 const Dao = require("./dao.js");
+var multer = require('multer');
+var fs = require('fs');
+
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, public_path + "/resources/");
+    },
+    filename: function (req, file, cb) {
+        cb(null , file.originalname);
+    }
+});
+
+var upload = multer({ storage: storage });
 
 
 //Sql queries for associated with Documentation
@@ -11,9 +24,6 @@ module.exports = class test extends Dao {
         );
     }
 
-
-
-
     getAllDocuments(callback){
         super.query(
             "select * from document",
@@ -22,13 +32,15 @@ module.exports = class test extends Dao {
         );
     }
 
-    insertDocument(json,callback) {
-        var val = [json.documentID, json.eventID, json.documentLink, json.artistID, json.documentCategoryID];
+    insertDocument(id, json,callback) {
+        var val = [id, json.documentName, json.documentLink, json.artistID, json.crewID, json.documentCategoryID];
         super.query(
-            "insert into news (documentID, eventID, documentLink, artistID, documentCategoryID) values (?,?,?,?,?)",
+            "INSERT INTO document (eventID,documentName,documentLink,artistID, crewID,documentCategoryID) VALUES (?, ?, ?, ?, ?, ?)",
             val,
             callback
         );
     }
+
+
 
 };

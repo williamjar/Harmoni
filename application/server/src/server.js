@@ -9,9 +9,6 @@ var fs = require('fs');
 var EventEmitter = require("events").EventEmitter;
 var body = new EventEmitter();
 
-var resourcePath = __dirname + "/../../client/public";
-
-
 
 var server = app.listen(8080);
 
@@ -40,7 +37,6 @@ var pool = mysql.createPool({
 
 
 //----------------- DOCUMENTATION ---------------------
-const resource_path = path.join(__dirname, '/../../client/public/resources');
 
 function createFoldersForUser(eventID, documentCategoryIDs) {
     fs.mkdirSync( resource_path + '/' + eventID);
@@ -54,6 +50,7 @@ const test = [1,2,3];
 createFoldersForUser(testID, test);
 */
 
+/*
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, public_path + "/resources/");
@@ -62,12 +59,56 @@ var storage = multer.diskStorage({
         cb(null , file.originalname);
     }
 });
+ */
+
+const resource_path = path.join(__dirname, '/../../client/public/resources/');
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        try{
+            if (fs.existsSync(resource_path + req.params.id)) {
+                console.log('The folder exists.');
+            } else {
+                fs.mkdirSync( resource_path + req.params.id );
+            }
+        } catch (e) {
+            console.log("An error occurred");
+        }
+        cb(null, resource_path + req.params.id );
+
+    },
+    filename: function (req, file, cb) {
+        try{
+            if (fs.existsSync(resource_path + req.params.id + '/' + file.originalname)) {
+                 cb(null, Date.now() + "--" + file.originalname)
+            } else {
+                cb(null, file.originalname)
+            }
+        } catch (e) {
+            console.log("An error occurred")
+        }
+
+
+    }
+});
+
 
 var upload = multer({ storage: storage });
 
+/*
+//Single file
 app.post('/single', upload.single('profile'), (req, res) => {
     try {
         res.send(req.file);
+    }catch(err) {
+        res.send(400);
+    }
+});
+ */
+
+//multiple files
+app.post('/upload/:id', upload.array('file', 4), (req, res) => {
+    try {
+        res.send(req.files);
     }catch(err) {
         res.send(400);
     }
@@ -77,8 +118,25 @@ app.post('/single', upload.single('profile'), (req, res) => {
 const Documentationdao = require("./dao/documentationdao.js");
 let documentationDao = new Documentationdao(pool);
 
+app.post("/upload/:eventID", (req, res) => {
+    console.log("Fikk POST-request fra klienten");
+    documentationDao.insertDocument(req.params.eventID, req.body,(status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.get("/test/allDoc", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getAllDocuments((status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+
 app.get("/test", (req, res) => {
-    console.log("/news: fikk request fra klient");
+    console.log("/doc: fikk request fra klient");
     documentationDao.getAllDocumentCategories((status, data) => {
         res.status(status);
         res.json(data);
