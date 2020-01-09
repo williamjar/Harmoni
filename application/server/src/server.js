@@ -124,7 +124,7 @@ app.delete("/API/artist/:artistID", (request, response) => {
 });
 
 // CREW
-app.get("/API/specificcrew/:crewID", (request, response) => {
+app.get("/API/crew/:crewID", (request, response) => {
     console.log("request for crew");
     crewDao.getOne((status, data) => {
         response.status(status);
@@ -132,7 +132,7 @@ app.get("/API/specificcrew/:crewID", (request, response) => {
     }, request.params.crewID);
 });
 
-app.get("/API/crew/:organizerID", (request, response) => {
+app.get("/API/crew/organizer/:organizerID", (request, response) => {
     console.log("request for all crew belonging to one organizer");
     crewDao.getAllForOrganizer((status, data) => {
         response.status(status);
@@ -169,6 +169,32 @@ app.post("/API/crew", (request, response) => {
     }, val);
 });
 
+app.post("/API/crew-category", (request, response) => {
+    console.log("request to add crew");
+    let val = [
+        request.body.crewCategoryName,
+        request.body.organizerID,
+    ];
+    crewDao.createOneCategory((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+app.post("/API/crew/assign", (request, response) => {
+    console.log("request to add crew");
+    let val = [
+        request.body.eventID,
+        request.body.crewCategoryID,
+        request.body.crewID,
+        request.body.isResponsible
+    ];
+    crewDao.assignOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
 app.put("/API/crew/:crewID", (request, response) => {
     console.log("request to update crew");
 
@@ -189,6 +215,22 @@ app.delete("/API/crew/:crewID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.crewID)
+});
+
+app.delete("/API/crew-category/:crewCategoryID", (request, response) => {
+    console.log("request to delete crew-category");
+    crewDao.deleteOneCategory((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.crewCategoryID)
+});
+
+app.delete("/API/crew/assign/", (request, response) => {
+    console.log("request to delete crew-category");
+    crewDao.deleteOneCategory((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.crewCategoryID)
 });
 
 // EVENT

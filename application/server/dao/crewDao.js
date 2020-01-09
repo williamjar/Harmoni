@@ -40,8 +40,16 @@ module.exports = class crewDao extends Dao {
         super.query('SELECT * FROM crewCategory WHERE organizerID = ?', organizerID, callback);
     }
 
-    createOneCategory(callback, crewCategoryName, organizerID) {
-        super.query('INSERT INTO crewCategory VALUES (DEFAULT, ?, ?)', [crewCategoryName, organizerID], callback);
+    createOneCategory(callback, list) {
+        super.query('INSERT INTO crewCategory VALUES (DEFAULT, ?, ?)', list, callback);
+    }
+
+    deleteOneCategory(callback, crewCategoryID) {
+        super.query('DELETE FROM crewCategory where crewCategoryID = ?', crewCategoryID, callback);
+    }
+
+    assignOne(callback, list) {
+        super.query('INSERT INTO event_crewCategory_crew VALUES (?,?,?,?)', list, callback);
     }
 
 };
