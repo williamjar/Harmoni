@@ -25,7 +25,7 @@ module.exports = class artistDao extends Dao {
     }
 
     addDocument(callback, artistID, documentID) {
-        super.query('INSERT INTO document VALUES (DEFAULT, ?, ?, ?, ?, NULL, ?, documentCategoryID)', [artistID, documentID], callback);
+        super.query('INSERT INTO document VALUES (DEFAULT, ?, ?, ?, NULL, ?, ?, documentCategoryID)', [artistID, documentID], callback);
     }
 
 };

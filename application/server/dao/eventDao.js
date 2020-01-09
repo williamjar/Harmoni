@@ -55,6 +55,6 @@ module.exports = class eventDao extends Dao {
     }
 
     addDocument(callback, eventID, documentID) {
-        super.query('INSERT INTO document VALUES (DEFAULT, ?, ?, ?, ?, NULL, ?, documentCategoryID)', [eventID, documentID], callback);
+        super.query('INSERT INTO document VALUES (DEFAULT, ?, ?, ?, NULL, NULL, ?, documentCategoryID)', [eventID, documentID], callback);
     }
 };
