@@ -355,6 +355,8 @@ app.get("/API/organizer/:organizerID", (require, response) => {
     }, require.params.organizerID);
 });
 
+//ORGANIZER
+
 // get all events for organizer
 app.get("/API/organizer/:organizerID/events", (require, response) => {
     console.log("Request to get all events for a organizer");
@@ -379,7 +381,6 @@ app.post("/API/organizer", (request, response) => {
     let val = [
         request.body.username,
         request.body.password,
-        request.body.pictureID,
         request.body.contactID
     ];
     organizerDao.createOne((status, data) => {
@@ -403,7 +404,9 @@ app.put("/API/organizer/:organizerID", (request, response) => {
 });
 
 
-//rider
+//RIDER
+
+//get a rider element
 app.get("/API/rider/:riderElementID", (require, response) => {
     console.log("Request to get a rider element");
     riderDao.getOne((status, data) => {
@@ -412,6 +415,7 @@ app.get("/API/rider/:riderElementID", (require, response) => {
     }, require.params.riderElementID);
 });
 
+//get all rider elements for a artist
 app.get("/API/rider/artist/:artistID", (require, response) => {
     console.log("Request to get a rider element");
     riderDao.getAllRidersForArtist((status, data) => {
@@ -420,6 +424,7 @@ app.get("/API/rider/artist/:artistID", (require, response) => {
     }, require.params.artistID);
 });
 
+//get all rider elements for a artist for an event
 app.get("/API/rider/:artistID/event/:eventID", (require, response) => {
     console.log("Request to get a rider element");
     riderDao.getAllRidersForArtistForEvent((status, data) => {
@@ -428,6 +433,7 @@ app.get("/API/rider/:artistID/event/:eventID", (require, response) => {
     }, require.params.artistID, require.params.eventID);
 });
 
+//get all riders for a event
 app.get("/API/rider/event/:eventID", (require, response) => {
     console.log("Request to get a rider element");
     riderDao.getAllRidersForEvent((status, data) => {
@@ -436,6 +442,8 @@ app.get("/API/rider/event/:eventID", (require, response) => {
     }, require.params.eventID);
 });
 
+//create a new rider element.
+// To add status and check "is done", the rider element must be updated
 app.post("/API/rider", (request, response) => {
     console.log("Request to add a rider element");
     let val = [
@@ -450,6 +458,7 @@ app.post("/API/rider", (request, response) => {
     }, val);
 });
 
+//update a rider element
 app.put("/API/rider/:riderElementID", (request, response) => {
     console.log("Request to update a rider element");
     let val = [
