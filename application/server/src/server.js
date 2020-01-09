@@ -20,7 +20,7 @@ const contactDaoObj = require('../dao/contactDao.js');
 const crewDaoObj = require('../dao/crewDao.js');
 const documentDaoObj = require('../dao/documentDao.js');
 const eventDaoObj = require('../dao/eventDao.js');
-const organizerDaoObj= require('../dao/organizerDao.js');
+const organizerDaoObj = require('../dao/organizerDao.js');
 const riderDaoObj = require('../dao/riderDao.js');
 
 let artistDao = new artistDaoObj(pool);
@@ -34,25 +34,45 @@ let riderDao = new riderDaoObj(pool);
 // CONTACT
 
 app.get("/API/contact/:contactID", (request, response) => {
-    console.log("Request for contact");
+    console.log("request to get a contact");
     contactDao.getOne((status, data) => {
         response.status(status);
         response.json(data);
     }, request.params.contactID);
 });
 
-app.get("/API/contact/:contactID", (request, response) => {
-    console.log("Request for contact");
-    contactDao.getOne((status, data) => {
+app.post("/API/contact", (request, response) => {
+    console.log("request to add contact");
+    let val = [
+        request.body.contactName,
+        request.body.phone,
+        request.body.email
+    ];
+
+    contactDao.createOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.contactID);
+    }, val);
+});
+
+app.put("/API/contact", (request, response) => {
+    console.log("request to add contact");
+    let val = [
+        request.body.contactName,
+        request.body.phone,
+        request.body.email
+    ];
+
+    contactDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
 });
 
 // ARTIST
 
 app.get("/API/artist/:artistID", (request, response) => {
-    console.log("Request for artist");
+    console.log("request for artist");
     artistDao.getOne((status, data) => {
         response.status(status);
         response.json(data);
