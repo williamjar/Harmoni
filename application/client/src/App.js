@@ -5,8 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {NavBar} from "./components/menu/navigation";
 import {Content} from "./components/content/content";
 import { HashRouter, Route} from 'react-router-dom';
-import {AddPerformer, Performers} from "./components/content/performers";
-import {Crew} from "./components/content/crew";
+import {Performers} from "./components/content/performers";
 
 
 
@@ -22,7 +21,7 @@ function App() {
                 <div className="col-lg-10">
                     <Route exact path="/" component={() => <Content page="test" />} />
                     <Route exact path="/opprett"/>
-                    <Route exact path="/artister" component={() => <Content page={<Crew />} />} />
+                    <Route exact path="/artister" component={() => <Content page={<Performers />} />} />
                     <Route exact path="/personell" component={Content}/>
                     <Route exact path="/kontrakter" component={Content}/>
                 </div>

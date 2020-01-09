@@ -115,7 +115,7 @@ export class AddCrew extends Component{
 
 
         let attachment = document.querySelector("#uploadAttachment").files.length;
-        if(attachment != undefined){
+        if(attachment !== undefined){
             this.setState({numberOfFilesAdded: attachment,}); // Get the number of files selected for upload, to be used for user GUI
         }
 
@@ -129,6 +129,14 @@ export class AddCrew extends Component{
         let mainResponsible = document.querySelector("#mainResponsible").checked;
         let description = document.querySelector("#descriptionCrew").value;
         let attachment = document.querySelector("#uploadAttachment").files;
+
+        let json = {
+            crewCategory : crewSelect,
+            responsible : mainResponsible,
+            description : description,
+            attachments : attachment,
+        }
+
     }
 }
 

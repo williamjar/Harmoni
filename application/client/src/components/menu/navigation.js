@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ListGroup from "react-bootstrap/ListGroup";
 import { NavLink } from 'react-router-dom';
 
 
@@ -42,7 +41,7 @@ export class NavBar extends Component{
                 <div className="user-nav">
                     <div className="row">
                         <div className="col-3">
-                            <img src="https://s3.us-east-2.amazonaws.com/upload-icon/uploads/icons/png/19339625881548233621-512.png" width={50}/>
+                            <img src="https://s3.us-east-2.amazonaws.com/upload-icon/uploads/icons/png/19339625881548233621-512.png" width={50} alt=""/>
                         </div>
                         <div className="col-9">
                             <b>Navn Navnesen</b><br/>
