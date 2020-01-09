@@ -88,7 +88,6 @@ export class UserInfo extends React.Component {
                                     </td></tr>
 
 
-
                                     <tr><td>E-postaddresse</td><td>
                                         <Form.Group>
                                             <Form.Control type="email" name="email" placeholder={this.state.email} value={this.state.email} onChange={this.handleInputChange}/>
