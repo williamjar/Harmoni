@@ -10,6 +10,11 @@ import Accordion from "react-bootstrap/Accordion";
 /* Component to add tickets to concert*/
 export class AddTicket extends Component{
 
+    handleChanges = {
+        console
+    }
+
+
     saveTicket = event =>{
         //this.ticket = event.target.value
         console.log('Ticket Saved')
