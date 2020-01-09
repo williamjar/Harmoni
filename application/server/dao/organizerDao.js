@@ -5,11 +5,11 @@ module.exports = class documentDao extends Dao {
     //TODO: Write SQL statements
 
     getOne(callback, organizerID) {
-        super.query('SELECT contactName,phone,email,username, password, pictureID,organizer.organizerID FROM organizer JOIN contact ON organizer.contactID = contact.contactID WHERE organizerID = ?', [organizerID], callback);
+        super.query('SELECT contactName,phone,email,username, password, pictureID, organizer.organizerID FROM organizer JOIN contact ON organizer.contactID = contact.contactID WHERE organizerID = ?', [organizerID], callback);
     }
 
     createOne(callback, list) {
-        super.query('INSERT INTO organizer (username, password, pictureID, contactID) VALUES (?,?,?,?);', list, callback);
+        super.query('INSERT INTO organizer VALUES (default, ?, ?, default, ?)', list, callback);
     }
 
     changePassword(callback, organizerID, password) {
