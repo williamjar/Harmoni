@@ -90,16 +90,19 @@ export class AddCrew extends Component{
                 </div>
 
                 <div className="row padding-top-20">
-                    {this.state.numberOfFilesAdded != 0? this.state.numberOfFilesAdded: null}
 
-                    <div className="col-4">
+
+                    <div className="col-6">
                         <span className="btn btn-primary btn-file">
                             Legg til vedlegg <input type="file" multiple="multiple" id="uploadAttachment" onChange={() => this.addFile()}/>
                         </span>
+                        {this.state.numberOfFilesAdded > 0 && this.state.numberOfFilesAdded<2? <div className="padding-left-5">{this.state.numberOfFilesAdded + " file added"}</div>: null}
+                        {this.state.numberOfFilesAdded > 1 ? <div className="padding-left-5">{this.state.numberOfFilesAdded + " files added"}</div>: null}
+
                     </div>
 
-                    <div className="col-4 offset-4 text-right">
-                            <button className="btn btn-success rounded" onClick={this.addNew}>Legg til</button>
+                    <div className="col-4 offset-2 text-right">
+                            <button className="btn btn-success rounded" onClick={this.addNew}>Lagre personell</button>
                     </div>
                 </div>
 
@@ -108,20 +111,24 @@ export class AddCrew extends Component{
     }
 
     addFile(){
+        /*For adding attachments to crew */
+
+
         let attachment = document.querySelector("#uploadAttachment").files.length;
         if(attachment != undefined){
-            this.setState({numberOfFilesAdded: attachment,});
+            this.setState({numberOfFilesAdded: attachment,}); // Get the number of files selected for upload, to be used for user GUI
         }
 
-        alert(this.state.numberOfFilesAdded);
     }
 
     addNew(){
+        /* Fetches the information from the forms to be used with database */
+
+        //TODO: Search bar is not functiong yet.
         let crewSelect = document.querySelector("#crewCategory").value;
         let mainResponsible = document.querySelector("#mainResponsible").checked;
         let description = document.querySelector("#descriptionCrew").value;
         let attachment = document.querySelector("#uploadAttachment").files;
-        console.log(attachment);
     }
 }
 
