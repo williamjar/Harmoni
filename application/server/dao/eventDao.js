@@ -46,10 +46,6 @@ module.exports = class eventDao extends Dao {
         super.query('SELECT * FROM event WHERE publishDate < ? LIMIT ?', [date, x], callback);
     }
 
-    addArtist(callback, eventID, artistID) {
-        super.query('INSERT INTO event', [eventID], [artistID], callback);
-    }
-
     getAllArtists(callback, eventID) {
         super.query('SELECT * FROM event_artist, artist, contact WHERE eventID = ? AND event_artist = artist.artistID AND artist.contactID = contact.contactID', [eventID], callback);
     }
