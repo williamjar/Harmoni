@@ -26,8 +26,8 @@ let privatePool = mysql.createPool({
 
 beforeAll(done => {
     console.log("Hello world!");
-    runSQLFile("application/create.sql", privatePool, () => {
-        runSQLFile("application/create.sql", pool, privatePool, done);
+    runSQLFile("../create.sql", privatePool, () => {
+        runSQLFile("../testData.sql", privatePool, done);
     });
 });
 
