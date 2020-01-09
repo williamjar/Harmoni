@@ -87,6 +87,15 @@ app.get("/API/artist/:artistID", (request, response) => {
     }, request.params.artistID);
 });
 
+//Get all artists
+app.get("/API/artist/", (request, response) => {
+    console.log("request for artist");
+    artistDao.getAll((status, data) => {
+        response.status(status);
+        response.json(data);
+    });
+});
+
 app.post("/API/artist", (request, response) => {
     console.log("request to add artist");
     let val = [
@@ -121,6 +130,14 @@ app.delete("/API/artist/:artistID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.artistID)
+});
+
+app.put("/API/artist/:artistID/document/:documentID", (request, response) => {
+    console.log("Request to change a document");
+    artistDao.updateOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.artistID, request.params.documentID);
 });
 
 // CREW
@@ -482,8 +499,9 @@ app.delete("/API/rider/:riderElementID", (request, response) => {
 });
 
 
-//document
-app.post("/API/document/:documentID", (request, response) => {
+//DOCUMENT
+
+app.post("/API/document/:documentID", (require, response) => {
     console.log("Request to add a document");
     let val = [
         request.body.eventID,
