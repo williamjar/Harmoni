@@ -1,16 +1,17 @@
 // @flow
 
 import React from 'react';
-import {Form, Button, Card, Row, Col, Table} from 'react-bootstrap'
+import {Button, Card, Col, Form, Row, Table, Image} from 'react-bootstrap'
 
 
 export class UserInfo extends React.Component {
-
     constructor(props: Object) {
         super(props);
         this.state = {
             username: 'William',
-            email: 'william@mekanisk.co',
+            firstEmail: 'william@mekanisk.co',
+            secondEmail: '',
+            profilePicture: 'https://www.jodilogik.com/wordpress/wp-content/uploads/2016/05/people-1.png',
             phonenumber : 95521965,
             mode: 1
         };
@@ -47,83 +48,94 @@ export class UserInfo extends React.Component {
                             <Table  borderless>
                                 <tbody>
                                 <tr><td>Brukernavn</td><td>{this.state.username}</td></tr>
-                                <tr><td>E-postaddresse</td><td>{this.state.email}</td></tr>
+                                <tr><td>E-postaddresse</td><td>{this.state.firstEmail}</td></tr>
                                 <tr><td>Telefonnummer</td><td>{this.state.phonenumber}</td></tr>
                                 </tbody>
                             </Table>
                         </Col>
 
                         <Col>
-                            <Button onClick={() => this.editMode()}>Rediger</Button>
-
+                            <Image roundedCircle fluid thumbnail src={this.state.profilePicture} rounded />
                         </Col>
 
                         <Col>
-                            Profilbilde
+                            <Button onClick={() => this.editMode()}>Rediger</Button>
                         </Col>
 
-                    </Row>
 
+
+                    </Row>
                 </div>
             </Card>
         )}
 
         else{
-        return(
-            <Card>
-                <div className="justify-content-md-center m-5">
-                    <h2>Brukerprofil</h2>
-                    <br></br>
-                    <Form>
-                    <Row>
-                        <Col>
+            return(
+                <Card>
+                    <div className="justify-content-md-center m-5">
+                        <h2>Brukerprofil</h2>
+                        <br></br>
+                        <Form onSubmit={this.handleSubmit}>
+                            <Row >
+                                <Col>
+                                    <Table  borderless>
+                                        <tbody>
 
-                                <Table  borderless>
-                                    <tbody>
-
-                                    <tr><td>Brukernavn</td><td>
-                                        <Form.Group>
-                                            <Form.Control type="text" name="username" placeholder={this.state.username} value={this.state.username} onChange={this.handleInputChange}/>
-                                        </Form.Group>
-                                    </td></tr>
-
-
-                                    <tr><td>E-postaddresse</td><td>
-                                        <Form.Group>
-                                            <Form.Control type="email" name="email" placeholder={this.state.email} value={this.state.email} onChange={this.handleInputChange}/>
-                                        </Form.Group>
-
-                                        <Form.Group>
-                                            <Form.Control type="email" name="email" placeholder="Gjenta e-postaddressen" onChange={this.handleInputChange}/>
-                                        </Form.Group>
-                                    </td></tr>
+                                        <tr><td>Brukernavn</td><td>
+                                            <Form.Group>
+                                                <Form.Control type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
+                                            </Form.Group>
+                                        </td></tr>
 
 
-                                    <tr><td>Telefonnummer</td><td>
-                                        <Form.Group>
-                                            <Form.Control type="number" name="phonenumber" placeholder={this.state.phonenumber} value={this.state.phonenumber} onChange={this.handleInputChange}/>
-                                        </Form.Group>
-                                    </td></tr>
+                                        <tr><td>E-postaddresse</td><td>
+                                            <Form.Group>
+                                                <Form.Control type="email" name="firstEmail" value={this.state.firstEmail} onChange={this.handleInputChange}/>
+                                            </Form.Group>
+
+                                            <Form.Group>
+                                                <Form.Control type="email" name="secondEmail" placeholder="Gjenta e-postaddressen" onChange={this.handleInputChange}/>
+                                            </Form.Group>
+                                        </td></tr>
 
 
-                                    </tbody>
-                                </Table>
-                            </Col>
-                        <Col>
-                            <Button variant="success" onClick={() => this.editMode()}>Lagre</Button>
+                                        <tr><td>Telefonnummer</td><td>
+                                            <Form.Group>
+                                                <Form.Control type="number" name="phonenumber" placeholder={this.state.phonenumber} value={this.state.phonenumber} onChange={this.handleInputChange}/>
+                                            </Form.Group>
+                                        </td></tr>
 
-                        </Col>
+                                        <tr><td>Passord</td><td>
+                                            <Form.Group>
+                                                <Form.Control type="password" name="firstPassword" placeholder="Nytt passord" onChange={this.handleInputChange}/>
+                                            </Form.Group>
 
-                        <Col>
-                            Profilbilde
-                        </Col>
+                                            <Form.Group>
+                                                <Form.Control type="password" name="secondPassword" placeholder="Gjenta nytt passord" onChange={this.handleInputChange}/>
+                                            </Form.Group>
+                                        </td></tr>
 
-                    </Row>
-                </Form >
+                                        </tbody>
+                                    </Table>
+                                </Col>
 
-                </div>
-            </Card>
-        )}
+                                <Col xs={6} md={4}>
+                                    <Image roundedCircle fluid thumbnail src={this.state.profilePicture} rounded />
+                                    <Button variant="secondary">Last opp profilbilde</Button>
+                                </Col>
+
+                                <Col>
+                                    <Button variant="success" type="submit">Lagre</Button>
+                                </Col>
+
+
+
+                            </Row>
+                        </Form >
+
+                    </div>
+                </Card>
+            )}
     }
 
 
@@ -135,11 +147,9 @@ export class UserInfo extends React.Component {
 
 
     submitForm(){
+        this.editMode();
 
-        alert("Form is submitted\n")
-        /*
-        *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.firstEmail" and "this.state.firstPassword";
-        * */
+
     }
 
     // Database control functions to display the proper error message to the user.
