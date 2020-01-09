@@ -49,6 +49,11 @@ body{
 
 
 /* Content */
+.Login-Container{
+    margin: 0 auto;
+    width: 50%;
+}
+
 .content{
     overflow-y: scroll;
     height: 100vh;
@@ -58,6 +63,12 @@ body{
 
 .center{
     margin: 0 auto;
+}
+
+/* Dashboard */
+.filterMenu {
+    margin: 20px;
+    align-items: center;
 }
 
 
