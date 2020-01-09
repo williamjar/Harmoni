@@ -5,21 +5,80 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Accordion from "react-bootstrap/Accordion";
+import {TicketType} from "../classes/ticketType";
+import { FaCalendar } from 'react-icons/fa';
+
 
 
 /* Component to add tickets to concert*/
+
+export class GetTicket extends Component{
+    tickets = TicketType.getTestTicketTypes();
+
+    render() {
+        return(
+            <Card>
+                <Card.Body>
+                    {this.tickets.map(ticket => (
+                    <Form key={ticket.ticketTypeID}>
+                        <Form.Row className="ticketStyle" >
+                            <Col sm={2}>
+                                <Form.Control value={ticket.ticketTypeID}/>
+                            </Col>
+                            <Col sm={2}>
+                                <Form.Control value={ticket.price}/>
+                            </Col>
+                            <Col sm={2}>
+                                <Form.Control value={ticket.amount}/>
+                            </Col>
+                            <Col sm={2}>
+                                <Form.Control value={ticket.releaseDate}/>
+                            </Col>
+                            <Col>
+                                <h5><FaCalendar/></h5>
+                            </Col>
+                            <Col sm={2}>
+                                <Form.Control value={ticket.releaseTime}/>
+                            </Col>
+
+                        </Form.Row>
+                        <Form.Row className="ticketStyle">
+                            <Col sm={6}>
+                                <Form.Control value={ticket.description}/>
+                            </Col>
+                        </Form.Row>
+                        <Form.Row className="ticketStyle">
+                            <Col>
+                                <Form.Check
+                                    type="switch"
+                                    id="custom-switch"
+                                    label="Legg til denne billetten"
+                                    key={ticket.ticketTypeID}
+                                />
+                            </Col>
+
+                        </Form.Row>
+
+                    </Form>
+                    ))}
+                </Card.Body>
+            </Card>
+        );
+    }
+}
+
 export class AddTicket extends Component{
 
+
     handleChanges = {
-        console
-    }
+
+    };
 
 
     saveTicket = event =>{
         //this.ticket = event.target.value
         console.log('Ticket Saved')
     };
-
 
     render() {
         return (
@@ -37,24 +96,19 @@ export class AddTicket extends Component{
                             <Form>
                                 <Form.Row className="ticketStyle">
                                     <Col sm={2}>
-                                        <label>Navn billett</label>
                                         <Form.Control placeholder="Navn"/>
                                     </Col>
                                     <Col sm={1}>
-                                        <label>Pris</label>
-                                        <Form.Control placeholder="kr,-"/>
+                                        <Form.Control placeholder="Pris,-"/>
                                     </Col>
                                     <Col sm={1}>
-                                        <label>Antall billetter</label>
                                         <Form.Control placeholder="Antall"/>
                                     </Col>
                                     <Col sm={1}>
-                                        <label>Slipp dato</label>
-                                        <Form.Control placeholder="10/10/20"
+                                        <Form.Control placeholder="Dato"
                                         onChange={this.saveTicket}/>
                                     </Col>
                                     <Col sm={1}>
-                                        <label>Klokkeslett</label>
                                         <Form.Control placeholder="14:00"/>
                                     </Col>
                                     <Col>
@@ -66,10 +120,10 @@ export class AddTicket extends Component{
                                     </Col>
                                 </Form.Row>
                                 <Form.Row className="ticketStyle">
-                                <Col sm={6}>
-                                    <Form.Control placeholder="Beskrivelse"/>
-                                </Col>
-                            </Form.Row>
+                                    <Col sm={6}>
+                                        <Form.Control placeholder="Beskrivelse"/>
+                                    </Col>
+                               </Form.Row>
                                 <Button variant="primary" size="sm" onClick={this.saveTicket}>
                                     Lagre billett
                                 </Button>
