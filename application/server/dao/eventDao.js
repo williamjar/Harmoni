@@ -22,16 +22,16 @@ module.exports = class eventDao extends Dao {
         super.query('UPDATE event SET status = 1 WHERE eventID = ?', [eventID], callback);
     }
 
-    ArchiveOne(callback, eventID) {
+    archiveOne(callback, eventID) {
         super.query('UPDATE event SET status = 0 WHERE eventID = ?', [eventID], callback);
     }
 
-    getNumberArchived(callback) {
-        super.query('SELECT COUNT(*) FROM event WHERE status = 2', [], callback);
+    getNumberOfStatusForOrganizer(callback, status, organizerID) {
+        super.query('SELECT COUNT(*) FROM event WHERE status = ? AND organizerID = ?', [status, organizerID], callback);
     }
 
-    getXArchivedAfterDate(callback, x, date){
-        super.query('SELECT * FROM event WHERE publishDate < ? LIMIT ?', [date, x], callback);
+    getXOfStatusAfterDateForOrganizer(callback, status, x, date, organizerID){
+        super.query('SELECT * FROM event WHERE status = ? AND publishDate < ? AND organizerID = ? LIMIT ?', [status, date, organizerID, x], callback);
     }
 
     getAllArtists(callback, eventID) {
@@ -39,6 +39,6 @@ module.exports = class eventDao extends Dao {
     }
 
     addDocument(callback, eventID, documentID) {
-        super.query('INSERT INTO document VALUES (DEFAULT, ?, ?, ?, NULL, NULL, ?, documentCategoryID)', [eventID, documentID], callback);
+        super.query('UPDATE document SET eventID = ? WHERE documentID = ?', [eventID, documentID], callback);
     }
 };

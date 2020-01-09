@@ -229,5 +229,60 @@ app.delete("/API/events/:eventID", (request, response) => {
         response.json(data);
     }, request.params.eventID);
 });
-const server = app.listen(8080);
 
+//Publish an event
+app.put("/API/events/:eventID", (request, response) => {
+    console.log("Express: request to publish event " + request.params.eventID);
+    eventDao.publishOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID);
+});
+
+//Archive an event
+app.put("/API/events/:eventID", (request, response) => {
+    console.log("Express: request to archive event " + request.params.eventID);
+    eventDao.archiveOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID);
+});
+
+//Get number of events with status
+app.get("/API/events/status/:status/amount", (request, response) => {
+   console.log("Express: request to get number of elements with status " + request.params.status + " for organizer " + localStorage.get("organizerID"));
+   eventDao.getNumberOfStatusForOrganizer((status, data) => {
+       response.status(status);
+       response.json(data);
+   }, request.params.status, localStorage.get("organizerID"));
+});
+
+//TODO: Check if this is necessary
+//Get X events with status after date
+app.get("/API/events/status/:status/:amount/:date", (request, response) => {
+    console.log("Express: request to get " + request.params.amount + " elements with status " + request.params.status + " after date " + request.params.date + " for organizer " + localStorage.get("organizerID"));
+    eventDao.getXOfStatusAfterDateForOrganizer((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.status, request.params.amount, request.params.date, localStorage.get("organizerID"));
+});
+
+//Get all artists for event
+app.get("/API/events/:eventID/artists", (request, response) => {
+    console.log("Express: request to get all artists for event " + request.params.eventID);
+    eventDao.getAllArtists((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID);
+});
+
+//Add a document to event
+app.put("/API/events/:eventID/documents/:documentID", (request, response) => {
+    console.log("Express: request to add a document " + request.params.documentID + "to event " + request.params.eventID);
+    eventDao.addDocument((status, data) => {
+       response.status(status);
+       response.json(data);
+    }, request.params.eventID, request.params.documentID);
+});
+
+const server = app.listen(8080);
