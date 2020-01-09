@@ -2,6 +2,8 @@ const Dao = require('./dao.js');
 
 module.exports = class artistDao extends Dao {
 
+    //TODO: Write SQL statements
+
     getAll(callback) {
         super.query('SELECT * FROM artist, contact WHERE artist.contactID = contact.contactID', [], callback);
     }
@@ -22,8 +24,8 @@ module.exports = class artistDao extends Dao {
         super.query('DELETE FROM artist where artistID = ?', [artistID], callback);
     }
 
-    addDocument(callback, artistID, documentID) {
-        super.query('UPDATE artist set documentID = ? WHERE artistID = ?', [artistID, documentID], callback);
+    addDocument(callback, documentLink, artistID, documentCategoryID) {
+        super.query('INSERT INTO document (documentLink, artistID, documentCategoryID) ', [documentLink, artistID, documentCategoryID], callback);
     }
 
 };
