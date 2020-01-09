@@ -40,6 +40,8 @@ body{
 
 .nav-link{
     border-radius: 0px !important;
+    color:black;
+    font-family: Roboto;
 }
 
 .nav-link:hover{

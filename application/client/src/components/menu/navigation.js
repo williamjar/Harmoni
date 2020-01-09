@@ -3,7 +3,11 @@ import React, {Component} from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { NavLink } from 'react-router-dom';
-
+import {FaCalendarAlt} from "react-icons/all";
+import {FaCalendarPlus} from "react-icons/all";
+import {FaMusic} from "react-icons/all";
+import {FaUsers} from "react-icons/all";
+import {FaFileSignature} from "react-icons/all";
 
 
 export class NavBar extends Component{
@@ -16,23 +20,23 @@ export class NavBar extends Component{
                          aria-orientation="vertical">
 
                         <NavLink className="nav-link" to="/" exact={true}>
-                            Dine arrangement
+                            <FaCalendarAlt/> Dine arrangement
                         </NavLink>
 
                         <NavLink className="nav-link" to="/opprett">
-                            Opprett arrangement
+                            <FaCalendarPlus/> Opprett arrangement
                         </NavLink>
 
                         <NavLink className="nav-link" to="/artister">
-                            Artister
+                            <FaMusic/> Artister
                         </NavLink>
 
                         <NavLink className="nav-link" to="/personell">
-                            Personell
+                            <FaUsers/> Personell
                         </NavLink>
 
                         <NavLink className="nav-link" to="/kontrakter">
-                            Kontrakter
+                            <FaFileSignature/> Kontrakter
                         </NavLink>
                     </div>
 
