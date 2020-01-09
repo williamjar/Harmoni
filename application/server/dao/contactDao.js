@@ -14,7 +14,7 @@ module.exports = class contactDao extends Dao {
         super.query('UPDATE contact SET contactName = ?,phone = ?,email = ? WHERE contactID = ?', list, callback);
     }
 
-    deleteOne(callback, artistID) {
-        super.query('DELETE FROM artist where artistID = ?', [artistID], callback);
+    deleteOne(callback, contactID) {
+        super.query('DELETE FROM contact where contactID = ?', [contactID], callback);
     }
 };
