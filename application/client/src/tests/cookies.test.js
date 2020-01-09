@@ -25,9 +25,10 @@ let privatePool = mysql.createPool({
 });
 
 beforeAll(done => {
+    console.log("Hello world!");
     runSQLFile("./server/database/create.sql", pool, () => {
         runSQLFile("./server/database/testData.sql", pool, done);
-    })
+    });
 });
 
 test('Check that a user is registered with a valid token', () => {
