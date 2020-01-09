@@ -6,6 +6,7 @@ import {NavBar} from "./components/menu/navigation";
 import {Content} from "./components/content/content";
 import { HashRouter, Route} from 'react-router-dom';
 import {AddPerformer, Performers} from "./components/content/performers";
+import {Dashboard} from "./components/content/dashboard/dashboard";
 import {LoginForm} from "./components/login/loginForm";
 import {RegisterForm} from "./components/login/registerForm";
 
@@ -41,7 +42,7 @@ export class App extends Component{
                             </div>
 
                             <div className="col-lg-10">
-                                <Route exact path="/" component={() => <Content page="test" />} />
+                                <Route exact path="/" component={() => <Content page={<Dashboard />} />} />
                                 <Route exact path="/opprett"/>
                                 <Route exact path="/artister" component={() => <Content page={<AddPerformer/>} />} />
                                 <Route exact path="/personell" component={Content}/>
