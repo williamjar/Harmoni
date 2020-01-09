@@ -53,7 +53,6 @@ app.post('/single', upload.single('profile'), (req, res) => {
 });
 
 
-
 let newsDao = new Newsdao(pool);
 
 app.get("/news", (req, res) => {
