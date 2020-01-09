@@ -100,12 +100,20 @@ app.get("/events/:eventID", (request, response) => {
 //TODO: Check if this endpoint works with localStorage
 //Get all events by status
 app.get("/API/events/status/:status", (request, response) => {
-    console.log("Express: Request for all events");
-    eventDao.getByStatus((status, data) =>{
+    console.log("Express: Request to get all events for organizer " + localStorage.get("organizerID") + " with status " + request.params.status);
+    eventDao.getByStatusForOrganizer((status, data) =>{
         response.status(status);
         response.json(data);
-    }, [request.params.status, localStorage.get("organizerID")]);
+    }, request.params.status, localStorage.get("organizerID"));
 });
 
+//Delete an event
+app.delete("/API/events/:eventID", (request, response) => {
+    console.log("Express: Request to delete event " + request.params.eventID);
+    eventDao.deleteOne((status, data) =>{
+       response.status(status);
+       response.json(data);
+    }, request.params.eventID);
+});
 const server = app.listen(8080);
 
