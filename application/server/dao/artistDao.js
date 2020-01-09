@@ -28,4 +28,4 @@ module.exports = class artistDao extends Dao {
         super.query('INSERT INTO artist (artistID, documentID) values(?,?)', [artistID, documentID], callback);
     }
 
-}
+};
