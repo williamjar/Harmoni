@@ -62,3 +62,11 @@ body{
     align-items: center;
 }
 
+/* Event registration */
+.tabContent {
+    overflow-y: scroll;
+    padding: 50px 150px 20px 150px;
+    height: 75vh;
+    margin:0 auto;
+}
+
