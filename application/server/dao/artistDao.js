@@ -5,7 +5,7 @@ module.exports = class artistDao extends Dao {
     //TODO: Write SQL statements
 
     getAll(callback) {
-        super.query('SELECT * FROM artist, contact WHERE artist.contactID = contact.contactID', [], callback);
+        super.query('SELECT * FROM artist, contact WHERE artist.contactID = contact.contactID',  callback);
     }
 
     getOne(callback, artistID) {
@@ -17,15 +17,15 @@ module.exports = class artistDao extends Dao {
     }
 
     updateOne(callback, genreID, artistID){
-        super.query('UPDATE artist set genreID = ? WHERE artistID = ?', [genreID, artistID], callback);
+        super.query('UPDATE artist SET genreID = ? WHERE artistID = ?', [genreID, artistID], callback);
     }
 
     deleteOne(callback, artistID) {
-        super.query('DELETE FROM artist where artistID = ?', [artistID], callback);
+        super.query('DELETE FROM artist WHERE artistID = ?', [artistID], callback);
     }
 
-    addDocument(callback, documentLink, artistID, documentCategoryID) {
-        super.query('INSERT INTO document (documentLink, artistID, documentCategoryID) ', [documentLink, artistID, documentCategoryID], callback);
+    addDocument(callback, documentLink, artistID, documentCategoryID, eventID) {
+        super.query('INSERT INTO document (documentLink, artistID, documentCategoryID, eventID) ', [documentLink, artistID, documentCategoryID, eventID], callback);
     }
 
 };
