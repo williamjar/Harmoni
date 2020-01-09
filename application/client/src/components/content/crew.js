@@ -19,6 +19,17 @@ export class Crew extends Component{
 }
 
 export class AddCrew extends Component{
+    constructor(props){
+        super(props);
+
+        this.state = {
+            numberOfFilesAdded: 0,
+        };
+
+    }
+
+
+
     render() {
         return(
             <div className="card card-body">
@@ -40,8 +51,8 @@ export class AddCrew extends Component{
                     </div>
 
                     <div className="col-4">
-                        <input className="form-check-input" type="checkbox" value="" id="signedContract"/>
-                        <label className="form-check-label" htmlFor="signedContract">
+                        <input className="form-check-input" type="checkbox" value="" id="mainResponsible"/>
+                        <label className="form-check-label" htmlFor="mainResponsible">
                             Hovedansvarlig
                         </label>
                     </div>
@@ -72,23 +83,45 @@ export class AddCrew extends Component{
                 <div className="row padding-top-20">
 
                     <div className="col-12">
-                    <label for="descriptionCrew">Beskrivelse</label>
+                    <label htmlFor="descriptionCrew">Beskrivelse</label>
                     <textarea className="form-control" id="descriptionCrew" rows="4"></textarea>
                     </div>
 
                 </div>
 
                 <div className="row padding-top-20">
+                    {this.state.numberOfFilesAdded != 0? this.state.numberOfFilesAdded: null}
+
                     <div className="col-4">
-                        <button className="btn-primary rounded">Legg til vedlegg</button>
+                        <span className="btn btn-primary btn-file">
+                            Legg til vedlegg <input type="file" multiple="multiple" id="uploadAttachment" onChange={() => this.addFile()}/>
+                        </span>
                     </div>
+
                     <div className="col-4 offset-4 text-right">
-                        <button className="btn-success rounded">Legg til</button>
+                            <button className="btn btn-success rounded" onClick={this.addNew}>Legg til</button>
                     </div>
                 </div>
 
             </div>
         )
+    }
+
+    addFile(){
+        let attachment = document.querySelector("#uploadAttachment").files.length;
+        if(attachment != undefined){
+            this.setState({numberOfFilesAdded: attachment,});
+        }
+
+        alert(this.state.numberOfFilesAdded);
+    }
+
+    addNew(){
+        let crewSelect = document.querySelector("#crewCategory").value;
+        let mainResponsible = document.querySelector("#mainResponsible").checked;
+        let description = document.querySelector("#descriptionCrew").value;
+        let attachment = document.querySelector("#uploadAttachment").files;
+        console.log(attachment);
     }
 }
 
