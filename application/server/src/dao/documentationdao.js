@@ -10,23 +10,74 @@ module.exports = class test extends Dao {
         );
     }
 
-    getAllDocuments(callback){
+    getAllDocuments(eventID, callback){
         super.query(
-            "select * from document",
-            [],
+            "select * from document where eventID = ?",
+            [eventID],
             callback
         );
     }
 
-    insertDocument(id, json,callback) {
-        var val = [id, json.documentName, json.documentLink, json.artistID, json.crewID, json.documentCategoryID];
+    insertDocument(eventID, json, callback) {
+        var val = [eventID, json.documentName, json.documentLink, json.documentCategoryID];
         super.query(
-            "INSERT INTO document (eventID,documentName,documentLink,artistID, crewID,documentCategoryID) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO document (eventID,documentName,documentLink,documentCategoryID) VALUES (?,?,?,?)",
             val,
             callback
         );
     }
 
+    insertDocumentArtist(eventID, json,callback) {
+        var val = [eventID, json.documentName, json.documentLink, json.artistID, json.documentCategoryID];
+        super.query(
+            "INSERT INTO document (eventID,documentName,documentLink,artistID,documentCategoryID) VALUES (?,?,?,?,?)",
+            val,
+            callback
+        );
+    }
 
+    insertDocumentCrew(eventID, json,callback) {
+        var val = [eventID, json.documentName, json.documentLink, json.crewID, json.documentCategoryID];
+        super.query(
+            "INSERT INTO document (eventID,documentName,documentLink,crewID,documentCategoryID) VALUES (?,?,?,?,?)",
+            val,
+            callback
+        );
+    }
 
+    getOneDocument(eventID, documentID, callback){
+        var val = [eventID, documentID];
+        super.query(
+            "select * from document where eventID = ? and documentID = ?",
+            val,
+            callback
+        );
+    }
+
+    getDocumentsByCategory(eventID, documentCategoryID, callback){
+        var val = [eventID, documentCategoryID];
+        super.query(
+            "select * from document where eventID = ? and documentCategoryID = ?",
+            val,
+            callback
+        );
+    }
+
+    changeDocumentCategory(eventID, documentCategoryID, json, callback){
+        var val = [eventID, documentCategoryID, json.documentID];
+        super.query(
+            "UPDATE document SET documentCategoryID = ? WHERE documentID = ? and eventID = ?",
+            val,
+            callback
+        );
+    }
+
+    deleteDocument(eventID, documentID, callback){
+        var val = [eventID, documentID];
+        super.query(
+            "delete from document where eventID = ? and documentID = ?;",
+            val,
+            callback
+        );
+    }
 };

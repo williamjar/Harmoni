@@ -50,14 +50,24 @@ function checkIfFolderExist(name, path) {
     return false;
 }
 
-
+function deleteFile(path) {
+    try{
+        fs.unlink(path, function (err) {
+            if (err) throw err;
+            // if no error, file has been deleted successfully
+            console.log('File deleted!');
+        });
+    } catch (e) {
+        console.log("test");
+    }
+}
 
 const resource_path = path.join(__dirname, '/../../client/public/resources/');
 var storage = multer.diskStorage({
     //Declaring destination for file
     destination: function(req, file, cb) {
         try{
-            //If user folder exist but not document category folder then create and set destination path
+            //If user folder exist but not document category folder, create and set destination path
             if(checkIfFolderExist(req.params.id, resource_path)){
                if(!checkIfFolderExist(req.params.folderName, resource_path + req.params.id + "/" + req.params.folderName)) {
                    try {
@@ -106,6 +116,8 @@ var storage = multer.diskStorage({
     }
 });
 
+
+//Create one directory for user with id as name
 /*
 const resource_path = path.join(__dirname, '/../../client/public/resources/');
 var storage = multer.diskStorage({
@@ -152,37 +164,80 @@ app.post('/upload/:id/:folderName', upload.array('file', 10), (req, res) => {
 const Documentationdao = require("./dao/documentationdao.js");
 let documentationDao = new Documentationdao(pool);
 
-/*
-app.post("/upload/:eventID", (req, res) => {
-    console.log("Fikk POST-request fra klienten");
-    documentationDao.insertDocument(req.params.eventID, req.params.folderName, req.body,(status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});*/
-
-app.get("/test/allDoc", (req, res) => {
-    console.log("/doc: fikk request fra klient");
-    documentationDao.getAllDocuments((status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
-
-
-app.get("/test", (req, res) => {
+app.get("/api/:eventID/documents/category", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getAllDocumentCategories((status, data) => {
         res.status(status);
         res.json(data);
-        body.data = data;
-        body.emit('update');
     });
 });
 
-body.on('update', function () {
-    console.log(body.data); // HOORAY! THIS WORKS!
+
+app.get("/api/:eventID/documents", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getAllDocuments(req.params.eventID, (status, data) => {
+        res.status(status);
+        res.json(data);
+    });
 });
+
+app.get("/api/:eventID/documents/:documentID", (req, res) => {
+    documentationDao.getOneDocument(req.params.eventID, req.params.documentID,(status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.delete("/api/:eventID/documents/:documentCategory/:fileName", (req, res) => {
+    documentationDao.deleteDocument(req.params.eventID, req.params.documentID,(status, data) => {
+        res.status(status);
+        res.json(data);
+        deleteFile(resource_path + req.params.eventID + "/" + req.params.documentCategory + "/" + req.params.fileName)
+    });
+});
+
+app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
+    documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID,(status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
+    documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID,(status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.put("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
+    documentationDao.changeDocumentCategory(req.params.eventID, req.params.documentCategoryID, req.body,(status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.post("/api/:eventID/documents/create", (req, res) => {
+    documentationDao.insertDocument(req.params.eventID, req.body,(status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.post("/api/:eventID/documents/create/artist", (req, res) => {
+    documentationDao.insertDocumentArtist(req.params.eventID, req.body,(status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.post("/api/:eventID/documents/create/crew", (req, res) => {
+    documentationDao.insertDocumentCrew(req.params.eventID, req.body,(status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
 
 
 
