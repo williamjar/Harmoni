@@ -1,20 +1,96 @@
+/* Global settings */
+*{
+    font-family: Roboto !important;
+}
+
+body{
+    background: lightslategrey !important;
+}
+
+.padding-top-20{
+    padding-top: 20px;
+}
+
+.padding-left-5{
+    padding-left: 5px;
+}
+
+/* Navigation */
 .Nav-Menu{
     height: 100vh;
     text-align: center;
     padding-top: 50px;
+    border-radius: 0px !important;
+    border-right: 1px solid black;
 }
 
 .Nav-Menu .nav-links{
     padding-top: 75px;
     border: none !important;
-}
-
-.Nav-Menu .ListGroup{
-    background: red;
+    text-align: left;
 }
 
 .Nav-Menu .user-nav{
     position: absolute;
     bottom: 10px;
-    text-align: center;
+    left: 10px ;
+    text-align: left;
+
+}
+
+.nav-link{
+    border-radius: 0px !important;
+    color:black;
+    font-family: Roboto;
+}
+
+.nav-link:hover{
+    background: darkslateblue !important;
+    color: white;
+}
+
+
+/* Content */
+.Login-Container{
+    margin: 0 auto;
+    width: 50%;
+}
+
+.content{
+    overflow-y: scroll;
+    height: 100vh;
+    padding: 50px 150px 20px 150px;
+    margin:0 auto;
+}
+
+.center{
+    margin: 0 auto;
+}
+
+/* Dashboard */
+.filterMenu {
+    margin: 20px;
+    align-items: center;
+}
+
+
+/* Forms */
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    cursor: inherit;
+    display: block;
 }
