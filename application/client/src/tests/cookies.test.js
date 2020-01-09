@@ -1,6 +1,34 @@
 import {Login} from "../cookies_client/loginAxios";
 import {CookieSystem} from "../cookies_client/cookies";
+import runSQLFile from '../../../runsqlfile';
 
+let mysql = require("mysql");
+
+let pool = mysql.createPool({
+    connectionLimit: 1,
+    host: "mysql",
+    user: "root",
+    password: "secret",
+    database: "supertestdb",
+    debug: false,
+    multipleStatements: true
+});
+
+let privatePool = mysql.createPool({
+    connectionLimit: 1,
+    host: "mysql-ait.stud.idi.ntnu.no",
+    user: "evengu",
+    password: "O7KhlwWQ",
+    database: "evengu",
+    debug: false,
+    multipleStatements: true
+});
+
+beforeAll(done => {
+    runSQLFile("./server/database/create.sql", pool, () => {
+        runSQLFile("./server/database/testData.sql", pool, done);
+    })
+});
 
 test('Check that a user is registered with a valid token', () => {
     Login.loginOrganizer('LilleLondon', 'salted/hashed passord').then(() => {
