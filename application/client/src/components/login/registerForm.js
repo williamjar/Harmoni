@@ -34,24 +34,20 @@ export class RegisterForm extends React.Component {
         this.submitForm();
     }
 
-    render(): React.Node {
-        let infoText;
-        if(this.state.flag === -1){
-            infoText = <Form.Text className="text-danger"> Feil brukernavn eller passord, vennligst prøv igjen</Form.Text>;
-        }
-        else if(this.state.flag === -2) {
-            infoText =  <Form.Text className="text-danger">Ingen felt kan være tomme!</Form.Text>;
-        }
-        else if(this.state.flag === -3) {
-            infoText =  <Form.Text className="text-danger">Passordene må være like</Form.Text>;
-        }
-        else if(this.state.flag === -4) {
-            infoText =  <Form.Text className="text-danger">Epostadressene må være like</Form.Text>;
-        }
+    validatePassword(){
+        return this.state.firstPassword === this.state.secondPassword;
+    }
 
-        else {
-            infoText =  <Form.Text className="text-danger"></Form.Text>;
-        }
+    validateEmail(){
+        return this.state.firstEmail === this.state.secondEmail;
+    }
+
+    validateForm() {
+        return (this.validateEmail() && (this.validatePassword()));
+    }
+
+    render(): React.Node {
+
         return (
 
             <Card>
@@ -76,9 +72,13 @@ export class RegisterForm extends React.Component {
                             <Form.Control type="password" maxLength="30" name="secondPassword" placeholder="Gjenta passord" value={this.state.password} onChange={this.handleInputChange}/>
                         </Form.Group>
 
-                        <Button variant="btn btn-primary" type="submit"> Registrer deg </Button>
+                        <Button variant="btn btn-primary" type="submit" disabled={!this.validateForm()}> Registrer deg </Button>
 
-                        {infoText}
+                        <Form.Text className="text-danger" hidden={this.validateEmail()}>Epostadressene må være like</Form.Text>
+
+                        <Form.Text className="text-danger" hidden={this.validatePassword()}>Passordene må være like</Form.Text>
+
+
                     </Form>
                 </div>
 
