@@ -145,21 +145,43 @@ app.post("/API/crew", (request, response) => {
     }, val);
 });
 
+app.put("/API/crew/:crewID", (request, response) => {
+    console.log("request to update crew");
+
+    let val = [
+        request.body.description,
+        request.params.crewID
+    ];
+
+    crewDao.updateOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+app.delete("/API/crew/:crewID", (request, response) => {
+    console.log("request to delete crew");
+    crewDao.deleteOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.crewID)
+});
+
 // EVENT
 
 //Get all events
 app.get("/events", (request, response) => {
     console.log("Express: Request for all events");
-    eventDao.getAll((status, data) =>{
-       response.status(status);
-       response.json(data);
+    eventDao.getAll((status, data) => {
+        response.status(status);
+        response.json(data);
     });
 });
 
 //Get one event
 app.get("/events/:eventID", (request, response) => {
     console.log("Express: Request for all events");
-    eventDao.getOne((status, data) =>{
+    eventDao.getOne((status, data) => {
         response.status(status);
         response.json(data);
     }, request.params.eventID);
@@ -169,7 +191,7 @@ app.get("/events/:eventID", (request, response) => {
 //Get all events by status
 app.get("/API/events/status/:status", (request, response) => {
     console.log("Express: Request to get all events for organizer " + localStorage.get("organizerID") + " with status " + request.params.status);
-    eventDao.getByStatusForOrganizer((status, data) =>{
+    eventDao.getByStatusForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
     }, request.params.status, localStorage.get("organizerID"));
@@ -178,9 +200,9 @@ app.get("/API/events/status/:status", (request, response) => {
 //Delete an event
 app.delete("/API/events/:eventID", (request, response) => {
     console.log("Express: Request to delete event " + request.params.eventID);
-    eventDao.deleteOne((status, data) =>{
-       response.status(status);
-       response.json(data);
+    eventDao.deleteOne((status, data) => {
+        response.status(status);
+        response.json(data);
     }, request.params.eventID);
 });
 const server = app.listen(8080);

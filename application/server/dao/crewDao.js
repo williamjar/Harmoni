@@ -12,8 +12,12 @@ module.exports = class crewDao extends Dao {
         super.query('INSERT INTO crew (crewID, description, contactID) values(?, ?, ?) ', list, callback);
     }
 
-    updateOne(callback, crewID, description) {
-        super.query('UPDATE crew set description = ? WHERE crewID = ? ', [crewID, description], callback);
+    updateOne(callback, list) {
+        super.query('UPDATE crew set description = ? WHERE crewID = ? ', list, callback);
+    }
+
+    deleteOne(callback, contactID) {
+        super.query('DELETE FROM crew where crewID = ?', [contactID], callback);
     }
 
     getAllForOrganizer(callback, organizerID){
