@@ -10,8 +10,8 @@ module.exports = class eventDao extends Dao {
         super.query('SELECT * FROM event WHERE eventID = ?', [eventID], callback);
     }
 
-    getByStatus(callback, status) {
-        super.query('SELECT * FROM event WHERE status = ?', [status], callback);
+    getByStatusForOrganizer(callback, status, organizerID) {
+        super.query('SELECT * FROM event WHERE status = ? AND organizerID = ?', [status, organizerID], callback);
     }
 
     deleteOne(callback, eventID) {
@@ -24,18 +24,6 @@ module.exports = class eventDao extends Dao {
 
     ArchiveOne(callback, eventID) {
         super.query('UPDATE event SET status = 0 WHERE eventID = ?', [eventID], callback);
-    }
-
-    getAllPublished(callback) {
-        super.query('SELECT * FROM event WHERE status = 1', [], callback);
-    }
-
-    getAllPlanned(callback) {
-        super.query('SELECT * FROM event WHERE status = 0', [], callback);
-    }
-
-    getAllArchived(callback){
-        super.query('SELECT * FROM event WHERE status = 2', [], callback);
     }
 
     getNumberArchived(callback) {

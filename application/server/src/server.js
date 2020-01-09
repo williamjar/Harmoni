@@ -97,5 +97,15 @@ app.get("/events/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
+//TODO: Check if this endpoint works with localStorage
+//Get all events by status
+app.get("/API/events/status/:status", (request, response) => {
+    console.log("Express: Request for all events");
+    eventDao.getByStatus((status, data) =>{
+        response.status(status);
+        response.json(data);
+    }, [request.params.status, localStorage.get("organizerID")]);
+});
+
 const server = app.listen(8080);
 
