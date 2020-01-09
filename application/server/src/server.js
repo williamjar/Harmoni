@@ -70,6 +70,14 @@ app.put("/API/contact/:contactID", (request, response) => {
     }, val);
 });
 
+app.delete("/API/contact/:contactID", (request, response) => {
+    console.log("request to delete contact");
+    contactDao.deleteOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.contactID)
+});
+
 // ARTIST
 app.get("/API/artist/:artistID", (request, response) => {
     console.log("request for artist");
@@ -90,6 +98,29 @@ app.post("/API/artist", (request, response) => {
         response.status(status);
         response.json(data);
     }, val);
+});
+
+app.put("/API/artist/:artistID", (request, response) => {
+    console.log("request to update artist");
+    let val = [
+        request.body.genreID,
+        request.body.organizerID,
+        request.body.contactID,
+        request.params.artistID
+    ];
+
+    artistDao.updateOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+app.delete("/API/artist/:artistID", (request, response) => {
+    console.log("request to delete artist");
+    artistDao.deleteOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.artistID)
 });
 
 // CREW
