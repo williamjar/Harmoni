@@ -2,54 +2,52 @@ const Dao = require('./dao.js');
 
 module.exports = class eventDao extends Dao {
 
-    //TODO: Write SQL statements
-
     getAll(callback) {
-        super.query('SELECT ', [], callback);
+        super.query('SELECT * FROM event', [], callback);
     }
 
     getOne(callback, eventID) {
-        super.query('SELECT ', [eventID], callback);
+        super.query('SELECT * FROM event WHERE eventID = ?', [eventID], callback);
     }
 
-    getByStatus(callback, eventID) {
-        super.query('SELECT ', [eventID], callback);
+    getByStatus(callback, status) {
+        super.query('SELECT * FROM event WHERE status = ?', [status], callback);
     }
 
     deleteOne(callback, eventID) {
-        super.query('DELETE FROM ', [eventID], callback);
+        super.query('DELETE FROM event WHERE eventID = ?', [eventID], callback);
     }
 
     publishOne(callback, eventID) {
-        super.query('UPDATE  ', [eventID], callback);
+        super.query('UPDATE event SET status = 1 WHERE eventID = ?', [eventID], callback);
     }
 
     ArchiveOne(callback, eventID) {
-        super.query('UPDATE ', [eventID], callback);
+        super.query('UPDATE event SET status = 0 WHERE eventID = ?', [eventID], callback);
     }
 
     getAllPublished(callback) {
-        super.query('SELECT ', [], callback);
+        super.query('SELECT * FROM event WHERE status = 1', [], callback);
     }
 
     getAllPlanned(callback) {
-        super.query('DELETE FROM ', [], callback);
+        super.query('SELECT * FROM event WHERE status = 0', [], callback);
     }
 
     getAllArchived(callback){
-        super.query('SELECT', [], callback);
+        super.query('SELECT * FROM event WHERE status = 2', [], callback);
     }
 
     getNumberArchived(callback) {
-        super.query('SELECT COUNT(*) FROM', [], callback);
+        super.query('SELECT COUNT(*) FROM event WHERE status = 2', [], callback);
     }
 
-    getXArchived(callback, x){
-        super.query('SELECT ', [x], callback);
+    getXArchivedAfterDate(callback, x, date){
+        super.query('SELECT * FROM event WHERE publishDate < ? LIMIT ?', [date, x], callback);
     }
 
     addArtist(callback, eventID, artistID) {
-        super.query('INSERT INTO event', [eventID], [artistID], callback);
+        super.query('INSERT INTO event_artist VALUES (?,?)', [eventID, artistID], [artistID], callback);
     } //add artist for event
 
     getAllArtists(callback, eventID) {
