@@ -50,6 +50,7 @@ function checkIfFolderExist(name, path) {
     return false;
 }
 
+
 function deleteFile(path) {
     try{
         fs.unlink(path, function (err) {
@@ -188,10 +189,12 @@ app.get("/api/:eventID/documents/:documentID", (req, res) => {
     });
 });
 
+
 app.delete("/api/:eventID/documents/:documentCategory/:fileName", (req, res) => {
     documentationDao.deleteDocument(req.params.eventID, req.params.documentID,(status, data) => {
         res.status(status);
         res.json(data);
+        //Server stops if file dont exists
         deleteFile(resource_path + req.params.eventID + "/" + req.params.documentCategory + "/" + req.params.fileName)
     });
 });
