@@ -10,7 +10,7 @@ module.exports = class riderDao extends Dao {
         super.query('SELECT * FROM riderElement WHERE artistID = ?', [artistID], callback);
     }
 
-    getAllRidersForArtistEvent(callback, artistID, eventID){
+    getAllRidersForArtistForEvent(callback, artistID, eventID){
         super.query('SELECT * FROM riderElement WHERE artistID = ? AND eventID = ?', [artistID, eventID], callback);
     }
 
