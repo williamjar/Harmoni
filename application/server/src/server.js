@@ -484,10 +484,11 @@ app.delete("/API/rider/:riderElementID", (request, response) => {
 
 //DOCUMENT
 
-app.post("/API/document/:documentID", (request, response) => {
-    console.log("Request to add a document");
+app.post("/API/document/", (request, response) => {
+    console.log("Express: Request to add a document");
     let val = [
         request.body.eventID,
+        request.body.documentName,
         request.body.documentLink,
         request.body.artistID,
         request.body.crewID,
