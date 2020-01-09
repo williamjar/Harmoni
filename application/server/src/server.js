@@ -87,15 +87,6 @@ app.get("/API/artist/:artistID", (request, response) => {
     }, request.params.artistID);
 });
 
-//Get all artists
-app.get("/API/artist/", (request, response) => {
-    console.log("request for artist");
-    artistDao.getAll((status, data) => {
-        response.status(status);
-        response.json(data);
-    });
-});
-
 app.post("/API/artist", (request, response) => {
     console.log("request to add artist");
     let val = [
@@ -130,14 +121,6 @@ app.delete("/API/artist/:artistID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.artistID)
-});
-
-app.put("/API/artist/:artistID/document/:documentID", (request, response) => {
-    console.log("Request to change a document");
-    artistDao.updateOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.artistID, request.params.documentID);
 });
 
 // CREW
@@ -432,7 +415,7 @@ app.get("/API/rider/:riderElementID", (require, response) => {
     }, require.params.riderElementID);
 });
 
-//get all rider elements for a artist
+//get all rider elements for an artist
 app.get("/API/rider/artist/:artistID", (require, response) => {
     console.log("Request to get a rider element");
     riderDao.getAllRidersForArtist((status, data) => {
@@ -441,7 +424,7 @@ app.get("/API/rider/artist/:artistID", (require, response) => {
     }, require.params.artistID);
 });
 
-//get all rider elements for a artist for an event
+//get all rider elements for an artist for an event
 app.get("/API/rider/:artistID/event/:eventID", (require, response) => {
     console.log("Request to get a rider element");
     riderDao.getAllRidersForArtistForEvent((status, data) => {
@@ -450,7 +433,7 @@ app.get("/API/rider/:artistID/event/:eventID", (require, response) => {
     }, require.params.artistID, require.params.eventID);
 });
 
-//get all riders for a event
+//get all riders for an event
 app.get("/API/rider/event/:eventID", (require, response) => {
     console.log("Request to get a rider element");
     riderDao.getAllRidersForEvent((status, data) => {
@@ -490,6 +473,7 @@ app.put("/API/rider/:riderElementID", (request, response) => {
     }, val);
 });
 
+//delete a rider element
 app.delete("/API/rider/:riderElementID", (request, response) => {
     console.log("Request to delete a rider element");
     riderDao.deleteOne((status, data) => {
@@ -498,10 +482,9 @@ app.delete("/API/rider/:riderElementID", (request, response) => {
     }, require.params.riderElementID);
 });
 
-
 //DOCUMENT
 
-app.post("/API/document/:documentID", (require, response) => {
+app.post("/API/document/:documentID", (request, response) => {
     console.log("Request to add a document");
     let val = [
         request.body.eventID,
