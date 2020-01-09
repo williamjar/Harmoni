@@ -32,8 +32,8 @@ module.exports = class crewDao extends Dao {
         super.query('INSERT INTO document VALUES (DEFAULT, ?, ?, ?, ?, NULL, ?, documentCategoryID)', [crewID, documentID], callback);
     }
 
-    setResponsible(callback, eventID, crewID, crewCategoryID, responsible) {
-        super.query('UPDATE event_crewCategory_crew SET isResponsible = ? WHERE eventID = ? AND crewCategoryID = ? AND crewID = ?', [responsible, eventID, crewCategoryID, crewID], callback);
+    setResponsible(callback, list) {
+        super.query('UPDATE event_crewCategory_crew SET isResponsible = ? WHERE eventID = ? AND crewCategoryID = ? AND crewID = ?', list, callback);
     }
 
     getAllCategories(callback, organizerID) {
@@ -50,6 +50,10 @@ module.exports = class crewDao extends Dao {
 
     assignOne(callback, list) {
         super.query('INSERT INTO event_crewCategory_crew VALUES (?,?,?,?)', list, callback);
+    }
+
+    unAssignOne(callback, eventID, crewCategoryID, crewID) {
+        super.query('DELETE FROM event_crewCategory_crew where eventID = ? AND crewCategoryID = ? AND crewID = ?', [eventID, crewCategoryID, crewID], callback);
     }
 
 };

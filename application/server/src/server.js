@@ -182,7 +182,7 @@ app.post("/API/crew-category", (request, response) => {
 });
 
 app.post("/API/crew/assign", (request, response) => {
-    console.log("request to add crew");
+    console.log("request to assign crew to event");
     let val = [
         request.body.eventID,
         request.body.crewCategoryID,
@@ -209,6 +209,22 @@ app.put("/API/crew/:crewID", (request, response) => {
     }, val);
 });
 
+app.put("/API/crew/responsible/:crewID", (request, response) => {
+    console.log("request set a crew member to be responsible");
+
+    let val = [
+        request.body.responsible,
+        request.body.eventID,
+        request.body.crewCategoryID,
+        request.body.crewID
+    ];
+
+    crewDao.setResponsible((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val)
+});
+
 app.delete("/API/crew/:crewID", (request, response) => {
     console.log("request to delete crew");
     crewDao.deleteOne((status, data) => {
@@ -225,12 +241,14 @@ app.delete("/API/crew-category/:crewCategoryID", (request, response) => {
     }, request.params.crewCategoryID)
 });
 
-app.delete("/API/crew/assign/", (request, response) => {
-    console.log("request to delete crew-category");
-    crewDao.deleteOneCategory((status, data) => {
+// Should be able do this with body instead, but dosnt work for some reason.
+app.delete("/API/crew/assign/:eventID/:crewCategoryID/:crewID", (request, response) => {
+    console.log("request to unassign crew");
+
+    crewDao.unAssignOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.crewCategoryID)
+    }, request.params.eventID,request.params.crewCategoryID,request.params.crewID)
 });
 
 // EVENT
@@ -292,11 +310,11 @@ app.put("/API/events/:eventID", (request, response) => {
 
 //Get number of events with status
 app.get("/API/events/status/:status/amount", (request, response) => {
-   console.log("Express: request to get number of elements with status " + request.params.status + " for organizer " + localStorage.get("organizerID"));
-   eventDao.getNumberOfStatusForOrganizer((status, data) => {
-       response.status(status);
-       response.json(data);
-   }, request.params.status, localStorage.get("organizerID"));
+    console.log("Express: request to get number of elements with status " + request.params.status + " for organizer " + localStorage.get("organizerID"));
+    eventDao.getNumberOfStatusForOrganizer((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.status, localStorage.get("organizerID"));
 });
 
 //TODO: Check if this is necessary
@@ -322,8 +340,8 @@ app.get("/API/events/:eventID/artists", (request, response) => {
 app.put("/API/events/:eventID/documents/:documentID", (request, response) => {
     console.log("Express: request to add a document " + request.params.documentID + "to event " + request.params.eventID);
     eventDao.addDocument((status, data) => {
-       response.status(status);
-       response.json(data);
+        response.status(status);
+        response.json(data);
     }, request.params.eventID, request.params.documentID);
 });
 
