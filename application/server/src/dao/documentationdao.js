@@ -1,18 +1,4 @@
 const Dao = require("./dao.js");
-var multer = require('multer');
-var fs = require('fs');
-
-var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, public_path + "/resources/");
-    },
-    filename: function (req, file, cb) {
-        cb(null , file.originalname);
-    }
-});
-
-var upload = multer({ storage: storage });
-
 
 //Sql queries for associated with Documentation
 module.exports = class test extends Dao {

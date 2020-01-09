@@ -37,30 +37,76 @@ var pool = mysql.createPool({
 
 
 //----------------- DOCUMENTATION ---------------------
-
-function createFoldersForUser(eventID, documentCategoryIDs) {
-    fs.mkdirSync( resource_path + '/' + eventID);
-    for(let i = 0; i < documentCategoryIDs.length; i++){
-        fs.mkdirSync( resource_path + '/' + eventID + "/" + documentCategoryIDs[i].documentCategoryName);
+//Check if a folder exists for user
+function checkIfFolderExist(name, path) {
+    if(name != null){
+        //Check folder existence
+        if(fs.existsSync(path + name)){
+            return true;
+        } else {
+            return false;
+        }
     }
+    return false;
 }
-/*
-const testID = 1;
-const test = [1,2,3];
-createFoldersForUser(testID, test);
-*/
 
-/*
+
+
+const resource_path = path.join(__dirname, '/../../client/public/resources/');
 var storage = multer.diskStorage({
+    //Declaring destination for file
     destination: function(req, file, cb) {
-        cb(null, public_path + "/resources/");
+        try{
+            //If user folder exist but not document category folder then create and set destination path
+            if(checkIfFolderExist(req.params.id, resource_path)){
+               if(!checkIfFolderExist(req.params.folderName, resource_path + req.params.id + "/" + req.params.folderName)) {
+                   try {
+                       fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
+                   } catch (e) {
+                       console.log("Error creating document category folder");
+                   }
+                   cb(null, resource_path + req.params.id + "/" + req.params.folderName);
+               }
+               //User and document category folder exist. Set destination
+               else {
+                   cb(null, resource_path + req.params.id + "/" + req.params.folderName);
+               }
+            }
+            //If neither user folder or document category folder exist. Create both
+            else {
+                try {
+                    fs.mkdirSync(resource_path + req.params.id);
+                    try {
+                        fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName );
+                        cb(null, resource_path + req.params.id + "/" + req.params.folderName);
+                    } catch (e) {
+                        console.log("Error creating document category folder");
+                    }
+                } catch (e) {
+                    console.log("Error creating user folder");
+                }
+            }
+        } catch (e) {
+            console.log("An error occurred");
+        }
+
     },
+    //Adding file to destination
     filename: function (req, file, cb) {
-        cb(null , file.originalname);
+        //Create file in server. If user upload same file append time for unique name
+        try{
+            if (fs.existsSync(resource_path + req.params.id + '/' + req.params.folderName + "/" + file.originalname)) {
+                cb(null, Date.now() + "--" + file.originalname)
+            } else {
+                cb(null, file.originalname)
+            }
+        } catch (e) {
+            console.log("An error occurred")
+        }
     }
 });
- */
 
+/*
 const resource_path = path.join(__dirname, '/../../client/public/resources/');
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -86,27 +132,15 @@ var storage = multer.diskStorage({
         } catch (e) {
             console.log("An error occurred")
         }
-
-
     }
-});
+});*/
 
 
 var upload = multer({ storage: storage });
 
-/*
-//Single file
-app.post('/single', upload.single('profile'), (req, res) => {
-    try {
-        res.send(req.file);
-    }catch(err) {
-        res.send(400);
-    }
-});
- */
 
-//multiple files
-app.post('/upload/:id', upload.array('file', 4), (req, res) => {
+//Post request for uploading multiple files
+app.post('/upload/:id/:folderName', upload.array('file', 10), (req, res) => {
     try {
         res.send(req.files);
     }catch(err) {
@@ -118,13 +152,14 @@ app.post('/upload/:id', upload.array('file', 4), (req, res) => {
 const Documentationdao = require("./dao/documentationdao.js");
 let documentationDao = new Documentationdao(pool);
 
+/*
 app.post("/upload/:eventID", (req, res) => {
     console.log("Fikk POST-request fra klienten");
-    documentationDao.insertDocument(req.params.eventID, req.body,(status, data) => {
+    documentationDao.insertDocument(req.params.eventID, req.params.folderName, req.body,(status, data) => {
         res.status(status);
         res.json(data);
     });
-});
+});*/
 
 app.get("/test/allDoc", (req, res) => {
     console.log("/doc: fikk request fra klient");
