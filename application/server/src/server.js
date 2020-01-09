@@ -31,20 +31,32 @@ let eventDao = new eventDaoObj(pool);
 let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
 
-app.get("/API/contact/:contactID", (req, res) => {
+// CONTACT
+
+app.get("/API/contact/:contactID", (request, response) => {
     console.log("Request for contact");
     contactDao.getOne((status, data) => {
-        res.status(status);
-        res.json(data);
-    }, req.params.contactID);
+        response.status(status);
+        response.json(data);
+    }, request.params.contactID);
 });
 
-app.get("/API/artist/:artistID", (req, res) => {
+app.get("/API/contact/:contactID", (request, response) => {
+    console.log("Request for contact");
+    contactDao.getOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.contactID);
+});
+
+// ARTIST
+
+app.get("/API/artist/:artistID", (request, response) => {
     console.log("Request for artist");
     artistDao.getOne((status, data) => {
-        res.status(status);
-        res.json(data);
-    }, req.params.artistID);
+        response.status(status);
+        response.json(data);
+    }, request.params.artistID);
 });
 
 const server = app.listen(8080);
