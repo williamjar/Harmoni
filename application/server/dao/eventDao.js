@@ -47,7 +47,7 @@ module.exports = class eventDao extends Dao {
     }
 
     getAllArtists(callback, eventID) {
-        super.query('SELECT * FROM event_artist, artist, contact WHERE eventID = ? AND event_artist = artist.artistID AND artist.contactID = contact.contactID', [eventID], callback);
+        super.query('SELECT * FROM event_artist, artist, contact WHERE eventID = ? AND event_artist.artistID = artist.artistID AND artist.contactID = contact.contactID', [eventID], callback);
     }
 
     addDocument(callback, eventID, documentID) {
