@@ -5,7 +5,7 @@ module.exports = class documentDao extends Dao {
     //TODO: Write SQL statements
 
     getOne(callback, organizerID) {
-        super.query('SELECT * FROM organizer WHERE organizerID = ?', [organizerID], callback);
+        super.query('SELECT contactName,phone,email,username, password, pictureID,organizer.organizerID FROM organizer JOIN contact ON organizer.contactID = contact.contactID WHERE organizerID = ?', [organizerID], callback);
     }
 
     createOne(callback, list) {
@@ -14,6 +14,15 @@ module.exports = class documentDao extends Dao {
 
     changePassword(callback, organizerID, password) {
         super.query('UPDATE organizer SET password = ? WHERE organizerID = ?', [organizerID, password], callback);
+    }
+
+    getAllDocuments(callback, organizerID) {
+        super.query('SELECT * FROM organizer JOIN event ON organizer.organizerID = event.organizerID JOIN document ON organizer.organizerID = document.documentID WHERE organizer.organizerID = ?', [organizerID], callback);
+    }
+
+    getAllEvents(callback, organizerID) {
+        super.query('SELECT * FROM organizer JOIN event ON organizer.organizerID = event.organizerID WHERE organizer.organizerID = ?', [organizerID], callback);
+
     }
 
 };
