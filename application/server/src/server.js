@@ -47,5 +47,23 @@ app.get("/API/artist/:artistID", (req, res) => {
     }, req.params.artistID);
 });
 
+//Get all events
+app.get("/events", (request, response) => {
+    console.log("Express: Request for all events");
+    eventDao.getAll((status, data) =>{
+       response.status(status);
+       response.json(data);
+    });
+});
+
+//Get one event
+app.get("/events/:eventID", (request, response) => {
+    console.log("Express: Request for all events");
+    eventDao.getOne((status, data) =>{
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID);
+});
+
 const server = app.listen(8080);
 
