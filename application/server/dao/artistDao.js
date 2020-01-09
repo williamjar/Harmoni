@@ -9,7 +9,7 @@ module.exports = class artistDao extends Dao {
     }
 
     getOne(callback, artistID) {
-        super.query('SELECT * FROM artist WHERE artistID = ? ', [artistID], callback);
+        super.query('SELECT contactName,phone,email,genreName,organizer.organizerID FROM artist JOIN organizer ON artist.organizerID = organizer.organizerID JOIN contact ON artist.contactID = contact.contactID JOIN genre ON artist.genreID = genre.genreID WHERE artistID = ?', [artistID], callback);
     }
 
     createOne(callback, list) {

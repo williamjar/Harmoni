@@ -20,7 +20,7 @@ const contactDaoObj = require('../dao/contactDao.js');
 const crewDaoObj = require('../dao/crewDao.js');
 const documentDaoObj = require('../dao/documentDao.js');
 const eventDaoObj = require('../dao/eventDao.js');
-const organizerDaoObj= require('../dao/organizerDao.js');
+const organizerDaoObj = require('../dao/organizerDao.js');
 const riderDaoObj = require('../dao/riderDao.js');
 
 let artistDao = new artistDaoObj(pool);
@@ -31,20 +31,52 @@ let eventDao = new eventDaoObj(pool);
 let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
 
-app.get("/API/contact/:contactID", (req, res) => {
-    console.log("Request for contact");
+// CONTACT
+
+app.get("/API/contact/:contactID", (request, response) => {
+    console.log("request to get a contact");
     contactDao.getOne((status, data) => {
-        res.status(status);
-        res.json(data);
-    }, req.params.contactID);
+        response.status(status);
+        response.json(data);
+    }, request.params.contactID);
 });
 
-app.get("/API/artist/:artistID", (req, res) => {
-    console.log("Request for artist");
+app.post("/API/contact", (request, response) => {
+    console.log("request to add contact");
+    let val = [
+        request.body.contactName,
+        request.body.phone,
+        request.body.email
+    ];
+
+    contactDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+app.put("/API/contact", (request, response) => {
+    console.log("request to add contact");
+    let val = [
+        request.body.contactName,
+        request.body.phone,
+        request.body.email
+    ];
+
+    contactDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+// ARTIST
+
+app.get("/API/artist/:artistID", (request, response) => {
+    console.log("request for artist");
     artistDao.getOne((status, data) => {
-        res.status(status);
-        res.json(data);
-    }, req.params.artistID);
+        response.status(status);
+        response.json(data);
+    }, request.params.artistID);
 });
 
 //Get all events
