@@ -1,25 +1,25 @@
 -- Prepared
---INSERT INTO genre (genreID,genreName) VALUES (?,?);
---INSERT INTO picture (pictureLink) VALUES (?);
---INSERT INTO eventType (eventTypeID,eventTypeName) VALUES (?,?);
---INSERT INTO contact (contactName, phone, email) VALUES (?,?,?);
---INSERT INTO documentCategory (documentCategoryID,documentCategoryName) VALUES (?,?);
+-- INSERT INTO genre (genreID,genreName) VALUES (?,?);
+-- INSERT INTO picture (pictureLink) VALUES (?);
+-- INSERT INTO eventType (eventTypeID,eventTypeName) VALUES (?,?);
+-- INSERT INTO contact (contactName, phone, email) VALUES (?,?,?);
+-- INSERT INTO documentCategory (documentCategoryID,documentCategoryName) VALUES (?,?);
 --
---INSERT INTO event (eventName,organizerID) VALUES (?,?);
---INSERT INTO event (eventName,startDate,endDate,startTime,endTime,address,town,zipCode,description,publishDate,publishTime,organizerID,eventTypeID,pictureID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
+-- INSERT INTO event (eventName,organizerID) VALUES (?,?);
+-- INSERT INTO event (eventName,startDate,endDate,startTime,endTime,address,town,zipCode,description,publishDate,publishTime,organizerID,eventTypeID,pictureID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
 --
---INSERT INTO organizer (username, password, pictureID, contactID) VALUES (?,?,?,?);
---INSERT INTO ticketType (eventID,ticketTypeName,price,amount,releaseDate,releaseTime,hasEndDate,endDate,endTime,description) VALUES (?,?,?,?,?,?,?,?,?,?);
---INSERT INTO artist (genreID,organizerID,contactID) VALUES (?,?,?);
---INSERT INTO event_artist (eventID,artistID) VALUES (?,?);
---INSERT INTO crew (description,organizerID,contactID) VALUES (?,?,?);
---INSERT INTO crewCategory (crewCategoryName,organizerID) VALUES (?,?);
---INSERT INTO event_crewCategory_crew (eventID,crewCategoryID,crewID,isResponsible) VALUES (?,?,?,?);
---INSERT INTO riderElement (riderElementID,artistID,eventID,status,isDone,description) VALUES (?,?,?,?,?,?);
+-- INSERT INTO organizer (username, password, pictureID, contactID) VALUES (?,?,?,?);
+-- INSERT INTO ticketType (eventID,ticketTypeName,price,amount,releaseDate,releaseTime,hasEndDate,endDate,endTime,description) VALUES (?,?,?,?,?,?,?,?,?,?);
+-- INSERT INTO artist (genreID,organizerID,contactID) VALUES (?,?,?);
+-- INSERT INTO event_artist (eventID,artistID) VALUES (?,?);
+-- INSERT INTO crew (description,organizerID,contactID) VALUES (?,?,?);
+-- INSERT INTO crewCategory (crewCategoryName,organizerID) VALUES (?,?);
+-- INSERT INTO event_crewCategory_crew (eventID,crewCategoryID,crewID,isResponsible) VALUES (?,?,?,?);
+-- INSERT INTO riderElement (riderElementID,artistID,eventID,status,isDone,description) VALUES (?,?,?,?,?,?);
 --
---INSERT INTO document (eventID,documentName,documentLink,documentCategoryID) VALUES (?,?,?,?);
---INSERT INTO document (eventID,documentName,documentLink,artistID,documentCategoryID) VALUES (?,?,?,?,?);
---INSERT INTO document (eventID,documentName,documentLink,crewID,documentCategoryID) VALUES (?,?,?,?,?);
+-- INSERT INTO document (eventID,documentName,documentLink,documentCategoryID) VALUES (?,?,?,?);
+-- INSERT INTO document (eventID,documentName,documentLink,artistID,documentCategoryID) VALUES (?,?,?,?,?);
+-- INSERT INTO document (eventID,documentName,documentLink,crewID,documentCategoryID) VALUES (?,?,?,?,?);
 
 -- Test Data
 INSERT INTO genre (genreID,genreName) VALUES (1,'Pop');
