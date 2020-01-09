@@ -9,6 +9,7 @@ import {AddPerformer, Performers} from "./components/content/performers";
 import {Dashboard} from "./components/content/dashboard/dashboard";
 import {LoginForm} from "./components/login/loginForm";
 import {RegisterForm} from "./components/login/registerForm";
+import {CreateEventSplash} from "./components/content/CreateEventSplash";
 
 
 
@@ -43,8 +44,8 @@ export class App extends Component{
 
                             <div className="col-lg-10">
                                 <Route exact path="/" component={() => <Content page={<Dashboard />} />} />
-                                <Route exact path="/opprett"/>
-                                <Route exact path="/artister" component={() => <Content page={<AddPerformer/>} />} />
+                                <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash/>} />} />
+                                <Route exact path="/artister" />
                                 <Route exact path="/personell" component={Content}/>
                                 <Route exact path="/kontrakter" component={Content}/>
                             </div>
