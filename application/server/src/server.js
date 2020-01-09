@@ -374,7 +374,7 @@ app.get("/API/organizer/:organizerID/documents", (require, response) => {
 });
 
 // post new organizer
-app.post("/API/organizer", (require, response) => {
+app.post("/API/organizer", (request, response) => {
     console.log("Request to add a organizer");
     let val = [
         request.body.username,
@@ -390,7 +390,7 @@ app.post("/API/organizer", (require, response) => {
 
 
 // change password for organizer
-app.put("/API/organizer/:organizerID", (require, response) => {
+app.put("/API/organizer/:organizerID", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.password,
@@ -404,21 +404,54 @@ app.put("/API/organizer/:organizerID", (require, response) => {
 
 
 //rider
-app.post("/API/rider", (require, response) => {
+app.get("/API/rider/:riderElementID", (require, response) => {
+    console.log("Request to get a rider element");
+    riderDao.getOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.riderElementID);
+});
+
+app.get("/API/rider/artist/:artistID", (require, response) => {
+    console.log("Request to get a rider element");
+    riderDao.getAllRidersForArtist((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.artistID);
+});
+
+app.get("/API/rider/:artistID/event/:eventID", (require, response) => {
+    console.log("Request to get a rider element");
+    riderDao.getAllRidersForArtistForEvent((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.artistID, require.params.eventID);
+});
+
+app.get("/API/rider/event/:eventID", (require, response) => {
+    console.log("Request to get a rider element");
+    riderDao.getAllRidersForEvent((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.eventID);
+});
+
+app.post("/API/rider", (request, response) => {
     console.log("Request to add a rider element");
     let val = [
-        request.body.status,
-        request.body.isDone,
-        request.body.description
+        request.body.artistID,
+        request.body.eventID,
+        request.body.description,
     ];
+
     riderDao.createOne((status, data) => {
         response.status(status);
         response.json(data);
     }, val);
 });
 
-app.put("/API/rider/:riderElementID", (require, response) => {
-    console.log("Request to change a rider element");
+app.put("/API/rider/:riderElementID", (request, response) => {
+    console.log("Request to update a rider element");
     let val = [
         request.body.status,
         request.body.isDone,
@@ -431,7 +464,7 @@ app.put("/API/rider/:riderElementID", (require, response) => {
     }, val);
 });
 
-app.delete("/API/rider/:riderElementID", (require, response) => {
+app.delete("/API/rider/:riderElementID", (request, response) => {
     console.log("Request to delete a rider element");
     riderDao.deleteOne((status, data) => {
         response.status(status);
@@ -441,7 +474,7 @@ app.delete("/API/rider/:riderElementID", (require, response) => {
 
 
 //document
-app.post("/API/document/:documentID", (require, response) => {
+app.post("/API/document/:documentID", (request, response) => {
     console.log("Request to add a document");
     let val = [
         request.body.eventID,
@@ -450,23 +483,23 @@ app.post("/API/document/:documentID", (require, response) => {
         request.body.crewID,
         request.body.documentCategoryID
     ];
-    riderDao.createOne((status, data) => {
+    documentDao.createOne((status, data) => {
         response.status(status);
         response.json(data);
     }, val);
 });
 
-app.put("/API/document/:documentID", (require, response) => {
+app.put("/API/document/:documentID", (request, response) => {
     console.log("Request to change a document");
-    riderDao.updateOne((status, data) => {
+    documentDao.updateOne((status, data) => {
         response.status(status);
         response.json(data);
     }, require.params.documentID);
 });
 
-app.delete("/API/document/:documentID", (require, response) => {
+app.delete("/API/document/:documentID", (request, response) => {
     console.log("Request to delete a document");
-    riderDao.deleteOne((status, data) => {
+    documentDao.deleteOne((status, data) => {
         response.status(status);
         response.json(data);
     }, require.params.documentID);
