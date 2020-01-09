@@ -124,12 +124,36 @@ app.delete("/API/artist/:artistID", (request, response) => {
 });
 
 // CREW
-app.get("/API/crew/:crewID", (request, response) => {
+app.get("/API/specificcrew/:crewID", (request, response) => {
     console.log("request for crew");
     crewDao.getOne((status, data) => {
         response.status(status);
         response.json(data);
     }, request.params.crewID);
+});
+
+app.get("/API/crew/:organizerID", (request, response) => {
+    console.log("request for all crew belonging to one organizer");
+    crewDao.getAllForOrganizer((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.organizerID);
+});
+
+app.get("/API/event/crew/:eventID", (request, response) => {
+    console.log("request for all crew attached to en event");
+    crewDao.getAllForEvent((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID);
+});
+
+app.get("/API/crew/categories/organizerID", (request, response) => {
+    console.log("request for all crew attached to en event");
+    crewDao.getAllCategories((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID);
 });
 
 app.post("/API/crew", (request, response) => {

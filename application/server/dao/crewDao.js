@@ -20,11 +20,11 @@ module.exports = class crewDao extends Dao {
         super.query('DELETE FROM crew where crewID = ?', [contactID], callback);
     }
 
-    getAllForOrganizer(callback, organizerID){
+    getAllForOrganizer(callback, organizerID) {
         super.query('SELECT * FROM crew, contact WHERE organizerID = ? AND crew.contactID = contact.contactID', [organizerID], callback);
     }
 
-    getAllForEvent(callback, eventID){
+    getAllForEvent(callback, eventID) {
         super.query('SELECT * FROM crew, contact, event_crewCategory_crew WHERE eventID = ? AND crew.crewID = event_crewCategory_crew.crewID AND crew.contactID = contact.contactID', [eventID], callback);
     }
 
@@ -32,15 +32,15 @@ module.exports = class crewDao extends Dao {
         super.query('INSERT INTO document VALUES (DEFAULT, ?, ?, ?, ?, NULL, ?, documentCategoryID)', [crewID, documentID], callback);
     }
 
-    setResponsible(callback, eventID, crewID, crewCategoryID, responsible){
+    setResponsible(callback, eventID, crewID, crewCategoryID, responsible) {
         super.query('UPDATE event_crewCategory_crew SET isResponsible = ? WHERE eventID = ? AND crewCategoryID = ? AND crewID = ?', [responsible, eventID, crewCategoryID, crewID], callback);
     }
 
-    getAllCategories(callback){
-        super.query('SELECT * FROM crewCategory', [], callback);
+    getAllCategories(callback, organizerID) {
+        super.query('SELECT * FROM crewCategory WHERE organizerID = ?', organizerID, callback);
     }
 
-    createOneCategory(callback, crewCategoryName, organizerID){
+    createOneCategory(callback, crewCategoryName, organizerID) {
         super.query('INSERT INTO crewCategory VALUES (DEFAULT, ?, ?)', [crewCategoryName, organizerID], callback);
     }
 
