@@ -2,30 +2,40 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
-import {AddPerformer, Performers} from "./performers";
+import {AddPerformer} from "./performers";
 
 
 
 export class EventForm extends Component{
+
+    state = {
+      activeTab: "0",
+    };
+
+    // Handles when the user clicks "neste"
+    nextClicked = () => {
+
+    };
+
     render(){
         return(
-            <Tabs defaultActiveKey="General">
-                <Tab eventKey="General" title="Generelt">
-                    <TabContent>
+            <Tabs defaultActiveKey="0" id="tabs">
+                <Tab eventKey="0" title="Generelt" >
+                    <TabContent onClick={this.nextClicked}>
                     </TabContent>
                 </Tab>
-                <Tab eventKey="profile" title="Artister">
-                    <TabContent>
+                <Tab eventKey="1" title="Artister">
+                    <TabContent onClick={this.nextClicked}>
                         <AddPerformer/>
                     </TabContent>
                 </Tab>
-                <Tab eventKey="personel" title="Personell">
-                    <TabContent>
+                <Tab eventKey="2" title="Personell">
+                    <TabContent onClick={this.nextClicked}>
 
                     </TabContent>
                 </Tab>
-                <Tab eventKey="documentation" title="Dokumentasjon">
-                    <TabContent>
+                <Tab eventKey="3" title="Dokumentasjon">
+                    <TabContent onClick={this.nextClicked}>
 
                     </TabContent>
                 </Tab>
