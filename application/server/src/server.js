@@ -40,8 +40,8 @@ app.get("/API/contact/:contactID", (req, res) => {
 });
 
 app.get("/API/artist/:artistID", (req, res) => {
-    console.log("Request for contact");
-    contactDao.getOne((status, data) => {
+    console.log("Request for artist");
+    artistDao.getOne((status, data) => {
         res.status(status);
         res.json(data);
     }, req.params.artistID);
