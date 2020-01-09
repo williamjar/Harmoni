@@ -1,7 +1,5 @@
-// @flow
-
 import React from 'react';
-import {Form, Button, Card,Col, Row} from 'react-bootstrap'
+import {Form, Button, Card} from 'react-bootstrap'
 
 export class LoginForm extends React.Component {
 
@@ -9,8 +7,7 @@ export class LoginForm extends React.Component {
         super(props);
         this.state = {
             email : '',
-            password : '',
-            flag : 1
+            password : ''
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -27,26 +24,22 @@ export class LoginForm extends React.Component {
         this.setState({[name]: value,});
     }
 
-    handleSubmit(event: Object) {
+    handleSubmit(event) {
         event.preventDefault();
         this.submitForm();
     }
 
-    render(): React.Node {
-        let infoText;
-        if(this.state.flag === -1){
-            infoText = <Form.Text className="text-danger"> Passordene må være like, sjekk igjen</Form.Text>;
-        } else if(this.state.flag === -2) {
-            infoText =  <Form.Text className="text-danger">Ingen felt kan være tomme!</Form.Text>;
-        } else {
-            infoText =  <Form.Text className="text-danger"></Form.Text>;
-        }
+    // Form validation functions
+
+    validateForm() {
+        return ((this.state.email.length > 0) && (this.state.password.length > 0));
+    }
+
+    render(){
         return (
 
             <Card>
                 <div className="card-header"><h2 className="card-title text-center">Logg inn</h2></div>
-
-
                     <div className="justify-content-md-center m-5">
                         <Form onSubmit={this.handleSubmit}>
 
@@ -58,35 +51,46 @@ export class LoginForm extends React.Component {
                                 <Form.Control type="password" maxLength="30" name="password" placeholder="Passord" value={this.state.password} onChange={this.handleInputChange}/>
                             </Form.Group>
 
-                            <Button variant="btn btn-primary" type="submit"> Logg inn </Button>
+                            <Button variant="btn btn-primary" type="submit" disabled={!this.validateForm()}> Logg inn </Button>
 
                             <Form.Text> Ny bruker? Klikk <span className="NavLink">her for registrere deg</span></Form.Text>
 
-                            {infoText}
+                            <Form.Text className="text-danger" hidden={!this.databaseUserIncorrectLogin()}>Feil brukernavn eller passord, prøv igjen.</Form.Text>
+
+                            <Form.Text className="text-danger" hidden={!this.databaseConnectionError()}>Beklager, det har skjedde en oppkoblingsfeil.</Form.Text>
+
                         </Form>
                     </div>
-
             </Card>
         )
     }
 
 
-    displayLoginDecline(){ this.setState({ flag: -1 }); }
-    displayLoginEmpty(){ this.setState({ flag: -2 }); }
 
 
     submitForm(){
-        if(this.state.email === "" || this.state.password === ""){ this.displayLoginEmpty(); }
-
-
-        //this.displayLoginDecline();
-        //alert("Form submitted." + "\n" + "Username: " + "\n" + this.state.email + "\n" + "Password:"+  "\n" + this.state.password);
+        alert("Form submitted." + "\n" + "Username: " + "\n" + this.state.email + "\n" + "Password:"+  "\n" + this.state.password);
 
         /*
         *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.email" and "this.state.password";
         * */
     }
 
+    // Database control functions to display the proper error message to the user.
+
+    databaseUserIncorrectLogin(){
+        return false;
+        /*
+         * return true if the user is already registered.
+         */
+    }
+
+    databaseConnectionError() {
+        return false;
+        /*
+         * return true if there is a database connection error
+         */
+    }
 
 
 }

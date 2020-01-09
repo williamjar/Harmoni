@@ -1,19 +1,17 @@
 // @flow
 
 import React from 'react';
-import {Form, Button, Card,Col, Row} from 'react-bootstrap'
+import {Form, Button, Card} from 'react-bootstrap'
 
 export class RegisterForm extends React.Component {
 
     constructor(props: Object) {
         super(props);
         this.state = {
-            email : '',
-            firstPassword : '',
-            secondPassword: '',
             firstEmail: '',
             secondEmail: '',
-            flag : 1
+            firstPassword : '',
+            secondPassword: ''
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -29,10 +27,12 @@ export class RegisterForm extends React.Component {
         this.setState({[name]: value,});
     }
 
-    handleSubmit(event: Object) {
+    handleSubmit(event) {
         event.preventDefault();
         this.submitForm();
     }
+
+    // Functions to verify the contents in the form.
 
     validatePassword(){
         return this.state.firstPassword === this.state.secondPassword;
@@ -43,13 +43,12 @@ export class RegisterForm extends React.Component {
     }
 
     validateForm() {
-        return (this.validateEmail() && (this.validatePassword()));
+        return (this.validateEmail() && (this.validatePassword())) && (this.state.firstEmail.length > 0 && this.state.firstPassword.length >= 8);
     }
 
-    render(): React.Node {
+    render() {
 
         return (
-
             <Card>
                 <div className="card-header"><h2 className="card-title text-center">Registrer ny bruker</h2></div>
 
@@ -78,35 +77,43 @@ export class RegisterForm extends React.Component {
 
                         <Form.Text className="text-danger" hidden={this.validatePassword()}>Passordene må være like</Form.Text>
 
+                        <Form.Text className="text-danger" hidden={this.validateForm()}>Passordet ditt må være på minst 8 tegn</Form.Text>
+
+                        <Form.Text className="text-danger" hidden={!this.databaseAlreadyRegistered()}>Det er allerede registrert en bruker med denne e-postaddressen</Form.Text>
+
+                        <Form.Text className="text-danger" hidden={!this.databaseConnectionError()}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
 
                     </Form>
                 </div>
-
             </Card>
-
         )
     }
 
 
-    displayLoginDecline(){ this.setState({ flag: -1 }); }
-    displayLoginEmpty(){ this.setState({ flag: -2 }); }
-    displayPasswordNotSame(){ this.setState({ flag: -3}); }
-    displayEmailsNotSame() {this.setState({flag: -4});}
-
-
     submitForm(){
-        if(this.state.email === '' || this.state.password === ''){ this.displayLoginEmpty(); }
-        if(!(this.state.firstPassword === this.state.secondPassword)){ this.displayPasswordNotSame(); }
-        if(!(this.state.firstEmail === this.state.secondEmail)){ this.displayEmailsNotSame(); }
 
-
-
-        //this.displayLoginDecline(); for declined login from database.
-
+        alert("Form is submitted\n")
         /*
         *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.firstEmail" and "this.state.firstPassword";
         * */
     }
+
+    // Database control functions to display the proper error message to the user.
+
+    databaseAlreadyRegistered(){
+        return false;
+        /*
+         * return true if the user is already registered.
+         */
+    }
+
+    databaseConnectionError() {
+        return false;
+        /*
+         * return true if there is a database connection error
+         */
+    }
+
 
 
 
