@@ -50,17 +50,13 @@ module.exports = class eventDao extends Dao {
 
     addArtist(callback, eventID, artistID) {
         super.query('INSERT INTO event', [eventID], [artistID], callback);
-    } //add artist for event
+    }
 
     getAllArtists(callback, eventID) {
-        super.query('SELECT ', [eventID], callback);
-    } //get all artists for event
-
-    updateArtist(callback, list){
-        super.query('UPDATE artist set', list, callback);
-    } //update artist-event
+        super.query('SELECT * FROM event_artist, artist, contact WHERE eventID = ? AND event_artist = artist.artistID AND artist.contactID = contact.contactID', [eventID], callback);
+    }
 
     addDocument(callback, eventID, documentID) {
-        super.query('INSERT INTO', [eventID, documentID], callback);
+        super.query('INSERT INTO document VALUES (DEFAULT, ?, ?, ?, ?, NULL, ?, documentCategoryID)', [eventID, documentID], callback);
     }
 };
