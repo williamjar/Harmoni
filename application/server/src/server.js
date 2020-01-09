@@ -209,11 +209,12 @@ app.put("/API/crew/:crewID", (request, response) => {
     }, val);
 });
 
-app.put("/API/crew/responsible/:crewID", (request, response) => {
-    console.log("request set a crew member to be responsible");
+//TODO Not currently working
+app.put("/API/responsible/:isResponsible", (request, response) => {
+    console.log("set a crew member to be responsible");
 
     let val = [
-        request.body.responsible,
+        request.params.isResponsible,
         request.body.eventID,
         request.body.crewCategoryID,
         request.body.crewID
@@ -344,7 +345,6 @@ app.put("/API/events/:eventID/documents/:documentID", (request, response) => {
         response.json(data);
     }, request.params.eventID, request.params.documentID);
 });
-
 
 //get one organizer
 app.get("/API/organizer/:organizerID", (require, response) => {
