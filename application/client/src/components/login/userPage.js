@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import {Button, Card, Col, Form, Row, Table, Image} from 'react-bootstrap'
 
@@ -24,7 +22,6 @@ export class UserInfo extends React.Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        console.log(name + " verdi: " + value);
 
         this.setState({[name]: value,});
     }
@@ -35,7 +32,6 @@ export class UserInfo extends React.Component {
     }
 
     // Functions to verify the contents in the form.
-
     render() {
         if(this.state.mode===1){
         return (
@@ -50,16 +46,17 @@ export class UserInfo extends React.Component {
                                 <tr><td>Brukernavn</td><td>{this.state.username}</td></tr>
                                 <tr><td>E-postaddresse</td><td>{this.state.firstEmail}</td></tr>
                                 <tr><td>Telefonnummer</td><td>{this.state.phonenumber}</td></tr>
+                                <tr>
+                                    <td>
+                                        <Button onClick={() => this.editMode()}>Rediger</Button>
+                                    </td>
+                                </tr>
                                 </tbody>
                             </Table>
                         </Col>
 
                         <Col>
                             <Image roundedCircle fluid thumbnail src={this.state.profilePicture} rounded />
-                        </Col>
-
-                        <Col>
-                            <Button onClick={() => this.editMode()}>Rediger</Button>
                         </Col>
 
 
@@ -76,19 +73,26 @@ export class UserInfo extends React.Component {
                         <h2>Brukerprofil</h2>
                         <br></br>
                         <Form onSubmit={this.handleSubmit}>
-                            <Row >
-                                <Col>
+                        <Row>
+                            <Col>
+
+
                                     <Table  borderless>
                                         <tbody>
 
-                                        <tr><td>Brukernavn</td><td>
-                                            <Form.Group>
+                                        <tr>
+                                        <td>Brukernavn</td>
+
+                                        <td>
                                                 <Form.Control type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
-                                            </Form.Group>
-                                        </td></tr>
+                                        </td>
 
 
-                                        <tr><td>E-postaddresse</td><td>
+                                        </tr>
+
+
+
+                                        <td>E-postaddresse</td><td>
                                             <Form.Group>
                                                 <Form.Control type="email" name="firstEmail" value={this.state.firstEmail} onChange={this.handleInputChange}/>
                                             </Form.Group>
@@ -96,7 +100,7 @@ export class UserInfo extends React.Component {
                                             <Form.Group>
                                                 <Form.Control type="email" name="secondEmail" placeholder="Gjenta e-postaddressen" onChange={this.handleInputChange}/>
                                             </Form.Group>
-                                        </td></tr>
+                                        </td>
 
 
                                         <tr><td>Telefonnummer</td><td>
@@ -113,26 +117,29 @@ export class UserInfo extends React.Component {
                                             <Form.Group>
                                                 <Form.Control type="password" name="secondPassword" placeholder="Gjenta nytt passord" onChange={this.handleInputChange}/>
                                             </Form.Group>
-                                        </td></tr>
+                                        </td>
+                                        </tr>
+
+                                        <tr>
+                                        <td>
+                                            <Button variant="success" type="submit">Lagre</Button>
+                                            <Button variant="secondary">Last opp profilbilde</Button>
+                                        </td>
+                                        </tr>
 
                                         </tbody>
                                     </Table>
+
+
                                 </Col>
 
-                                <Col xs={6} md={4}>
-                                    <Image roundedCircle fluid thumbnail src={this.state.profilePicture} rounded />
-                                    <Button variant="secondary">Last opp profilbilde</Button>
-                                </Col>
+                            <Col>
+                                    <Image roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} rounded />
 
-                                <Col>
-                                    <Button variant="success" type="submit">Lagre</Button>
-                                </Col>
+                            </Col>
 
-
-
-                            </Row>
-                        </Form >
-
+                        </Row>
+                    </Form >
                     </div>
                 </Card>
             )}
