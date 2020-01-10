@@ -523,12 +523,12 @@ app.get("/api/event/crew/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
-app.get("/api/crew/categories/organizerID", (request, response) => {
-    console.log("request for all crew attached to en event");
+app.get("/api/crew/categories/:organizerID", (request, response) => {
+    console.log("request for all crew categories attached to organizer");
     crewDao.getAllCategories((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.eventID);
+    }, request.params.organizerID);
 });
 
 app.post("/api/crew", (request, response) => {
