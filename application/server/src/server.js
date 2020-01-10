@@ -16,12 +16,22 @@ const body = new EventEmitter();
 app.use(bodyParser.json());
 app.use(cors());
 
-const pool = mysql.createPool({
+/*const pool = mysql.createPool({
     connectionLimit: 2,
     host: "mysql.stud.iie.ntnu.no",
     user: "evengu",
     password: "O7KhlwWQ",
     database: "evengu",
+    debug: false,
+    multipleStatements: true
+});*/
+
+const pool = mysql.createPool({
+    connectionLimit: 2,
+    host: "mysql.stud.iie.ntnu.no",
+    user: "joakimad",
+    password: "LQliMP1A",
+    database: "joakimad",
     debug: false,
     multipleStatements: true
 });
@@ -396,6 +406,22 @@ app.get("/api/artist/:artistID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.artistID);
+});
+
+app.get("/api/artist/organizer/:organizerID", (request, response) => {
+    console.log("request for artist per organizer");
+    artistDao.getAllForOrganizer((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.organizerID);
+});
+
+app.get("/api/artist/event/:eventID", (request, response) => {
+    console.log("request for artist per event");
+    artistDao.getAllForEvent((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID);
 });
 
 app.post("/api/artist", (request, response) => {
