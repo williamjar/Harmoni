@@ -10,6 +10,7 @@ export class Content extends Component{
     render(){
         return(
             <div className="content">
+                <UserPage/>
                 <div className="card">
                     <div className="card-body">
                 {this.props.page}
