@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 export class LoginForm extends React.Component {
 
-    constructor(props: Object) {
+    constructor(props) {
         super(props);
         this.state = {
             email : '',
@@ -16,12 +16,10 @@ export class LoginForm extends React.Component {
     }
 
 
-    handleInputChange(event) : void {
+    handleInputChange(event){
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        console.log(name + " verdi: " + value);
-
         this.setState({[name]: value,});
     }
 
@@ -94,6 +92,4 @@ export class LoginForm extends React.Component {
          * return true if there is a database connection error
          */
     }
-
-
 }
