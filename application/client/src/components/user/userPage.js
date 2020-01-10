@@ -112,22 +112,23 @@ export class UserPage extends React.Component {
                                             </Form.Group>
                                         </td>
                                         </tr>
-                                        <tr>
-                                            <td>
-                                                <Row>
-                                                <Form.Group><Button className={"ml-1"} variant="secondary">Last opp profilbilde</Button></Form.Group>
-                                                <Form.Group><Button className={"ml-1"} variant="danger" onClick={() => this.changeMode()}>Avbryt</Button></Form.Group>
-                                                <Form.Group><Button className={"ml-1"} variant="success" type="submit" disabled={!this.validateForm()}>Lagre</Button></Form.Group>
-                                                </Row>
-                                            </td>
-                                        </tr>
                                         </tbody>
                                     </Table>
+                                    <Form.Group><Button variant="danger" onClick={() => this.changeMode()}>Avbryt</Button></Form.Group>
                                 </Col>
+
                                 <Col>
                                     <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} rounded />
+                                    <Form.Group><Button variant="secondary">Last opp profilbilde</Button></Form.Group>
                                 </Col>
                             </Row>
+                            <Form.Text className="text-danger" hidden={this.validateForm()}>Ingen endringer kan blir utført. Sjekk informasjonen og prøv igjen.</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.validatePhoneNumber()}>Endre telefonnummer til {this.state.newPhonenumber}</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.validateUsername()}>Endre brukernavn til {this.state.newUsername}</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.validateEmail()}>Endre e-postaddresse fra {this.state.email} to {this.state.newEmail}</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.validatePassword()}>Utfør en passordendring</Form.Text>
+                            <br></br>
+                            <Form.Group><Button variant="success" type="submit" disabled={!this.validateForm()}>Utfør endringer</Button></Form.Group>
                         </Form >
                     </div>
                 </Card>
