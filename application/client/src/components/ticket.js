@@ -30,11 +30,12 @@ export class GetTicket extends Component{
             description : ''
         };
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleSubmit(event){
         event.preventDefault();
-        console.log('Ticket Saved' + ' ' + 'this: ' + this);
+        console.log('Ticket Saved' + ' ' + 'this: ' + this.state.price);
 
     };
 
@@ -164,8 +165,9 @@ export class GetTicket extends Component{
                                         <Form.Control
                                             type = "date"
                                             name = "releaseDate"
-                                            onChange={this.handleInputChange}/>
+                                            onChange={this.handleInputChange}
                                             value = {this.state.releaseDate}
+                                        />
 
                                     </Col>
                                     <Col>
@@ -202,8 +204,9 @@ export class GetTicket extends Component{
                                         <Form.Control
                                             name = "description"
                                             placeholder="Beskrivelse"
-                                            onChange={this.handleInputChange}/>
+                                            onChange={this.handleInputChange}
                                             value = {this.state.description}
+                                        />
                                     </Col>
                                 </Form.Row>
                                 <Button variant="primary" size="sm" type="submit" onClick={this.handleSubmit}>
