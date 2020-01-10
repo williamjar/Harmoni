@@ -176,20 +176,20 @@ ALTER TABLE ticketType ADD FOREIGN KEY (eventID) REFERENCES event(eventID);
 ALTER TABLE artist
 ADD FOREIGN KEY (genreID) REFERENCES genre(genreID),
 ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID),
-ADD FOREIGN KEY (contactID) REFERENCES contact(contactID);
+ADD FOREIGN KEY (contactID) REFERENCES contact(contactID) ON DELETE CASCADE;
 
 ALTER TABLE event_artist
 ADD FOREIGN KEY (eventID) REFERENCES event(eventID),
-ADD FOREIGN KEY (artistID) REFERENCES artist(artistID);
+ADD FOREIGN KEY (artistID) REFERENCES artist(artistID) ON DELETE CASCADE;
 
-ALTER TABLE crew ADD FOREIGN KEY (contactID) REFERENCES contact(contactID);
+ALTER TABLE crew ADD FOREIGN KEY (contactID) REFERENCES contact(contactID) ON DELETE CASCADE;
 
 ALTER TABLE crewCategory ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID);
 
 ALTER TABLE event_crewCategory_crew
 ADD FOREIGN KEY (eventID) REFERENCES event(eventID),
 ADD FOREIGN KEY (crewCategoryID) REFERENCES crewCategory(crewCategoryID),
-ADD FOREIGN KEY (crewID) REFERENCES crew(crewID);
+ADD FOREIGN KEY (crewID) REFERENCES crew(crewID) ON DELETE CASCADE;
 
 ALTER TABLE document
 ADD FOREIGN KEY (eventID) REFERENCES event(eventID),
