@@ -47,7 +47,7 @@ app.get("/API/bug/:bugID", (request, response) => {
     bugDao.getOne((status, data) => {
         response.status(status);
         response.json(data);
-    },request.params.bugID);
+    }, request.params.bugID);
 });
 
 // CONTACT
@@ -307,7 +307,7 @@ app.delete("/API/crew/assign/:eventID/:crewCategoryID/:crewID", (request, respon
 // EVENT
 
 //Get all events
-app.get("/events", (request, response) => {
+app.get("/API/events", (request, response) => {
     console.log("Express: Request for all events");
     eventDao.getAll((status, data) => {
         response.status(status);
@@ -316,7 +316,7 @@ app.get("/events", (request, response) => {
 });
 
 //Get one event
-app.get("/events/:eventID", (request, response) => {
+app.get("/API/events/:eventID", (request, response) => {
     console.log("Express: Request for all events");
     eventDao.getOne((status, data) => {
         response.status(status);
