@@ -501,19 +501,27 @@ app.post("/API/document/", (request, response) => {
 });
 
 app.put("/API/document/:documentID", (request, response) => {
-    console.log("Request to change a document");
+    console.log("Express: Request to change document " + request.params.documentID);
+    let val = [
+        request.body.eventID,
+        request.body.documentName,
+        request.body.documentLink,
+        request.body.artistID,
+        request.body.crewID,
+        request.body.documentCategoryID
+    ];
     documentDao.updateOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, require.params.documentID);
+    }, val, request.params.documentID);
 });
 
 app.delete("/API/document/:documentID", (request, response) => {
-    console.log("Request to delete a document");
+    console.log("Express: Request to delete document " + request.params.documentID);
     documentDao.deleteOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, require.params.documentID);
+    }, request.params.documentID);
 });
 
 const server = app.listen(8080);
