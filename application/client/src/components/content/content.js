@@ -16,7 +16,6 @@ export class Content extends Component{
                 {this.props.page}
                     </div>
                 </div>
-
             </div>
         )
     }
