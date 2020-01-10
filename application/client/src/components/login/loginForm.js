@@ -92,6 +92,4 @@ export class LoginForm extends React.Component {
          * return true if there is a database connection error
          */
     }
-
-
 }

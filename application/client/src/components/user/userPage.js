@@ -9,6 +9,8 @@ export class UserPage extends React.Component {
             username: 'William',
             firstEmail: 'william@mekanisk.co',
             secondEmail: '',
+            firstPassword: '',
+            secondPassword: '',
             profilePicture: 'https://www.jodilogik.com/wordpress/wp-content/uploads/2016/05/people-1.png',
             phonenumber : 95521965,
             mode: 1
@@ -34,37 +36,34 @@ export class UserPage extends React.Component {
     // Functions to verify the contents in the form.
     render() {
         if(this.state.mode===1){
-        return (
-            <Card>
-                <div className="justify-content-md-center m-5">
-                    <h2>Brukerprofil</h2>
-                    <br></br>
-                    <Row>
-                        <Col>
-                            <Table  borderless>
-                                <tbody>
-                                <tr><td>Brukernavn</td><td>{this.state.username}</td></tr>
-                                <tr><td>E-postaddresse</td><td>{this.state.firstEmail}</td></tr>
-                                <tr><td>Telefonnummer</td><td>{this.state.phonenumber}</td></tr>
-                                <tr>
-                                    <td>
-                                        <Button onClick={() => this.editMode()}>Rediger</Button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </Table>
-                        </Col>
+            return (
+                <Card>
+                    <div className="justify-content-md-center m-5">
+                        <h2>Brukerprofil</h2>
+                        <br></br>
+                        <Row>
+                            <Col>
+                                <Table  borderless>
+                                    <tbody>
+                                    <tr><td>Brukernavn</td><td>{this.state.username}</td></tr>
+                                    <tr><td>E-postaddresse</td><td>{this.state.firstEmail}</td></tr>
+                                    <tr><td>Telefonnummer</td><td>{this.state.phonenumber}</td></tr>
+                                    <tr>
+                                        <td>
+                                            <Button onClick={() => this.editMode()}>Oppdater brukerprofil</Button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </Table>
+                            </Col>
 
-                        <Col>
-                            <Image roundedCircle fluid thumbnail src={this.state.profilePicture} rounded />
-                        </Col>
-
-
-
-                    </Row>
-                </div>
-            </Card>
-        )}
+                            <Col>
+                                <Image roundedCircle fluid thumbnail src={this.state.profilePicture} rounded />
+                            </Col>
+                        </Row>
+                    </div>
+                </Card>
+            )}
 
         else{
             return(
@@ -73,24 +72,17 @@ export class UserPage extends React.Component {
                         <h2>Brukerprofil</h2>
                         <br></br>
                         <Form onSubmit={this.handleSubmit}>
-                        <Row>
-                            <Col>
-
-
+                            <Row>
+                                <Col>
                                     <Table  borderless>
                                         <tbody>
 
                                         <tr>
-                                        <td>Brukernavn</td>
-
-                                        <td>
+                                            <td>Brukernavn</td>
+                                            <td>
                                                 <Form.Control type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
-                                        </td>
-
-
+                                            </td>
                                         </tr>
-
-
 
                                         <td>E-postaddresse</td><td>
                                             <Form.Group>
@@ -111,40 +103,47 @@ export class UserPage extends React.Component {
 
                                         <tr><td>Passord</td><td>
                                             <Form.Group>
-                                                <Form.Control type="password" name="firstPassword" placeholder="Nytt passord" onChange={this.handleInputChange}/>
+                                                <Form.Control type="password" name="firstPassword" placeholder="Nytt passord" value={this.state.firstPassword} onChange={this.handleInputChange}/>
                                             </Form.Group>
 
                                             <Form.Group>
-                                                <Form.Control type="password" name="secondPassword" placeholder="Gjenta nytt passord" onChange={this.handleInputChange}/>
+                                                <Form.Control type="password" name="secondPassword" placeholder="Gjenta nytt passord" value={this.state.secondPassword} onChange={this.handleInputChange}/>
                                             </Form.Group>
                                         </td>
                                         </tr>
-
                                         <tr>
-                                        <td>
-                                            <Form.Group><Button variant="success" type="submit">Lagre</Button></Form.Group>
-                                            <Form.Group><Button variant="secondary">Last opp profilbilde</Button></Form.Group>
-                                        </td>
+                                            <td>
+                                                <Row>
+                                                <Form.Group><Button className={"ml-1"} variant="secondary">Last opp profilbilde</Button></Form.Group>
+                                                <Form.Group><Button className={"ml-1"} variant="danger" onClick={() => this.editMode()}>Avbryt</Button></Form.Group>
+                                                <Form.Group><Button className={"ml-1"} variant="success" type="submit" disabled={!this.validateForm()}>Lagre</Button></Form.Group>
+                                                </Row>
+                                            </td>
                                         </tr>
-
                                         </tbody>
                                     </Table>
-
-
                                 </Col>
-
-                            <Col>
+                                <Col>
                                     <Image roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} rounded />
-
-                            </Col>
-
-                        </Row>
-                    </Form >
+                                </Col>
+                            </Row>
+                        </Form >
                     </div>
                 </Card>
             )}
     }
 
+    validateEmail(){
+        return (this.state.firstEmail === this.state.secondEmail) && (this.state.firstEmail.length > 0);
+    }
+
+    validatePassword(){
+        return (this.state.firstPassword === this.state.secondPassword) && (this.state.firstPassword > 0);
+    }
+
+    validateForm(){
+        return this.validateEmail() || this.validatePassword();
+    }
 
     editMode() {
         if(this.state.mode===1)this.setState({mode: 2,});
@@ -152,21 +151,13 @@ export class UserPage extends React.Component {
     }
 
 
-
     submitForm(){
+
+        this.setState({firstPassword: '', secondPassword: '', secondEmail: ''});
         this.editMode();
-
-
     }
 
     // Database control functions to display the proper error message to the user.
-
-    databaseAlreadyRegistered(){
-        return false;
-        /*
-         * return true if the user is already registered.
-         */
-    }
 
     databaseConnectionError() {
         return false;
