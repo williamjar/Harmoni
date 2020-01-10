@@ -4,6 +4,8 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Card, Col, Form, Image, Row} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
+import lorde from './lorde.jpg';
+import map from './map.jpg';
 
 
 export class GeneralInfo extends Component{
@@ -15,9 +17,9 @@ export class GeneralInfo extends Component{
                     <div className="col-7 border-right">
                         <InfoForm/>
                     </div>
-                    <div className="col-6">
+                    <div className="col-5">
                         <Card.Body>
-                            <Image></Image>
+                            <Image src={lorde} alt="event image" fluid />
                         </Card.Body>
                     </div>
                 </div>
