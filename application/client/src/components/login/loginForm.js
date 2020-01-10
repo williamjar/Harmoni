@@ -3,8 +3,8 @@
 import React from 'react';
 import {Form, Button, Card} from 'react-bootstrap'
 import { NavLink } from 'react-router-dom';
-import {LoginService} from "../../cookies_client/loginService";
-import {CookieStore} from "../../cookies_client/cookieStore";
+import {LoginService} from "../../store/loginService";
+import {CookieStore} from "../../store/cookieStore";
 
 export class LoginForm extends React.Component {
 
