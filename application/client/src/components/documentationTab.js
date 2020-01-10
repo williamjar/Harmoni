@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Card from "react-bootstrap/Card";
 import Dropzone from 'react-dropzone';
 import { FaArrowAltCircleDown } from 'react-icons/fa';
-import Form from "react-bootstrap/Form";
 
 export class DocumentationTab extends Component{
 
@@ -12,7 +11,7 @@ export class DocumentationTab extends Component{
         console.log(acceptedFiles);
     };
 
-    //Renders a dropzone to drop files.
+    //Renders a dropzone to drop pdf files.
     render() {
         return (
             <Card.Body>
