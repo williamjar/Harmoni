@@ -12,6 +12,7 @@ import {RegisterForm} from "./components/login/registerForm";
 import {CreateEventSplash} from "./components/content/CreateEventSplash";
 import {UserPage} from "./components/user/userPage";
 
+import {GetTicket} from "./components/ticket";
 
 
 export class App extends Component{

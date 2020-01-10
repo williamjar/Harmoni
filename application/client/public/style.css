@@ -101,7 +101,14 @@ body{
 .tabChildren {
 }
 
+/*Ticket*/
+.ticketStyle{
+    padding: 10px;
+}
 
+.staTicket {
+    background: aqua;
+}
 /* Forms */
 .btn-file {
     position: relative;
