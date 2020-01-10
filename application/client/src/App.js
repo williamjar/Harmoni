@@ -10,6 +10,7 @@ import {Dashboard} from "./components/content/dashboard/dashboard";
 import {LoginForm} from "./components/login/loginForm";
 import {RegisterForm} from "./components/login/registerForm";
 import {CreateEventSplash} from "./components/content/CreateEventSplash";
+import {UserPage} from "./components/user/userPage";
 
 
 
@@ -48,6 +49,9 @@ export class App extends Component{
                                 <Route exact path="/artister" />
                                 <Route exact path="/personell" component={Content}/>
                                 <Route exact path="/kontrakter" component={Content}/>
+                                <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash/>} />} />
+                                <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage/>} />} />
+
                             </div>
                         </div>
                     </HashRouter>
