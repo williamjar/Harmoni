@@ -41,4 +41,8 @@ module.exports = class eventDao extends Dao {
     addDocument(callback, eventID, documentID) {
         super.query('UPDATE document SET eventID = ? WHERE documentID = ?', [eventID, documentID], callback);
     }
+
+    getAllDocuments(callback, eventID){
+        super.query('SELECT * FROM document WHERE eventID = ?', [eventID], callback);
+    }
 };
