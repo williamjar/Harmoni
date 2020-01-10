@@ -100,6 +100,23 @@ app.post("/API/artist", (request, response) => {
     }, val);
 });
 
+app.post("/API/document/artist", (request, response) => {
+    console.log("Assign to a artistmember");
+
+    let val = [
+        request.body.eventID,
+        request.body.documentName,
+        request.body.documentLink,
+        request.body.artistID,
+        request.body.documentCategory
+    ];
+
+    artistDao.addDocument((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val)
+});
+
 app.put("/API/artist/:artistID", (request, response) => {
     console.log("request to update artist");
     let val = [
@@ -173,7 +190,7 @@ app.post("/API/crew-category", (request, response) => {
     console.log("request to add crew");
     let val = [
         request.body.crewCategoryName,
-        request.body.organizerID,
+        request.body.organizerID
     ];
     crewDao.createOneCategory((status, data) => {
         response.status(status);
@@ -195,6 +212,23 @@ app.post("/API/crew/assign", (request, response) => {
     }, val);
 });
 
+app.post("/API/document/crew", (request, response) => {
+    console.log("Assign to a crewmember");
+
+    let val = [
+        request.body.eventID,
+        request.body.documentName,
+        request.body.documentLink,
+        request.body.crewID,
+        request.body.documentCategory
+    ];
+
+    crewDao.addDocument((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val)
+});
+
 app.put("/API/crew/:crewID", (request, response) => {
     console.log("request to update crew");
 
@@ -209,7 +243,7 @@ app.put("/API/crew/:crewID", (request, response) => {
     }, val);
 });
 
-//TODO Not currently working
+
 app.put("/API/responsible/:isResponsible", (request, response) => {
     console.log("set a crew member to be responsible");
 
@@ -242,14 +276,13 @@ app.delete("/API/crew-category/:crewCategoryID", (request, response) => {
     }, request.params.crewCategoryID)
 });
 
-// Should be able do this with body instead, but dosnt work for some reason.
 app.delete("/API/crew/assign/:eventID/:crewCategoryID/:crewID", (request, response) => {
     console.log("request to unassign crew");
 
     crewDao.unAssignOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.eventID,request.params.crewCategoryID,request.params.crewID)
+    }, request.params.eventID, request.params.crewCategoryID, request.params.crewID)
 });
 
 // EVENT
