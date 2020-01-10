@@ -10,6 +10,7 @@ import {Dashboard} from "./components/content/dashboard/dashboard";
 import {LoginForm} from "./components/login/loginForm";
 import {RegisterForm} from "./components/login/registerForm";
 import {CreateEventSplash} from "./components/content/CreateEventSplash";
+import {DocumentationTab} from "./components/documentationTab";
 
 
 
@@ -43,7 +44,7 @@ export class App extends Component{
                             </div>
 
                             <div className="col-lg-10">
-                                <Route exact path="/" component={() => <Content page={<Dashboard />} />} />
+                                <Route exact path="/" component={() => <Content page={<DocumentationTab />} />} />
                                 <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash/>} />} />
                                 <Route exact path="/artister" />
                                 <Route exact path="/personell" component={Content}/>
