@@ -705,14 +705,14 @@ app.get("/api/events/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
-//TODO: Check if this endpoint works with localStorage
+//TODO: Check if this endpoint works with CookieStore.currentUserID
 //Get all events by status
 app.get("/api/events/status/:status", (request, response) => {
-    console.log("Express: Request to get all events for organizer " + localStorage.get("organizerID") + " with status " + request.params.status);
+    console.log("Express: Request to get all events for organizer " + CookieStore.currentUserID + " with status " + request.params.status);
     eventDao.getByStatusForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.status, localStorage.get("organizerID"));
+    }, request.params.status, CookieStore.currentUserID);
 });
 
 //Delete an event
@@ -744,21 +744,21 @@ app.put("/api/events/:eventID", (request, response) => {
 
 //Get number of events with status
 app.get("/api/events/status/:status/amount", (request, response) => {
-    console.log("Express: request to get number of elements with status " + request.params.status + " for organizer " + localStorage.get("organizerID"));
+    console.log("Express: request to get number of elements with status " + request.params.status + " for organizer " + CookieStore.currentUserID);
     eventDao.getNumberOfStatusForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.status, localStorage.get("organizerID"));
+    }, request.params.status, CookieStore.currentUserID);
 });
 
 //TODO: Check if this is necessary
 //Get X events with status after date
 app.get("/api/events/status/:status/:amount/:date", (request, response) => {
-    console.log("Express: request to get " + request.params.amount + " elements with status " + request.params.status + " after date " + request.params.date + " for organizer " + localStorage.get("organizerID"));
+    console.log("Express: request to get " + request.params.amount + " elements with status " + request.params.status + " after date " + request.params.date + " for organizer " + CookieStore.currentUserID);
     eventDao.getXOfStatusAfterDateForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.status, request.params.amount, request.params.date, localStorage.get("organizerID"));
+    }, request.params.status, request.params.amount, request.params.date, CookieStore.currentUserID);
 });
 
 //Get all artists for event
