@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
+import {FaSearch} from "react-icons/all";
+
 
 export class SearchPeople extends Component{
 
@@ -12,7 +14,7 @@ export class SearchPeople extends Component{
 
         this.state = {
             searchInput : "",
-            results : [{input : "Lorde"}],
+            results : [{input : "Lorde"}, {input : "lor"}],
         };
 
 
@@ -26,21 +28,38 @@ export class SearchPeople extends Component{
                     <div className="col-8">
                         <InputGroup>
                             <FormControl
-                                placeholder="Search"
-                                aria-label="Search"
+                                placeholder="Søk"
+                                aria-label="Søk"
                                 aria-describedby="basic-addon2"
                                 onChange={this.handleSearchInput}
+                                className="rounded-pill"
                             />
                             <InputGroup.Append>
-                                <Button variant="outline-secondary rounded">Legg til fra arkiv</Button>
+                                <div className="searchButtons">
+                                <FaSearch/>
                                 <Button variant="outline-secondary rounded">Registrer ny</Button>
+                                </div>
                             </InputGroup.Append>
                         </InputGroup>
 
-                        <div className="card">
+                        <div className="card-text margin-top-5">
                             {this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf(e.input.toLowerCase()) >= 0).map(show =>
-                                <div className="card-title card-header"> {show.input}</div>
+                                <div className="card-title card-header search"> {show.input}</div>
                             )}
+
+
+                            {<div className="card card-body">
+                                Registrer ny artist
+
+                                <div className="row padding-top-20">
+                                    <div className="col-5">
+                                        la
+                                    </div>
+                                </div>
+
+
+
+                            </div>}
                         </div>
 
 

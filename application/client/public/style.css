@@ -11,8 +11,28 @@ body{
     padding-top: 20px;
 }
 
+.padding-top-5{
+    padding-top: 5px;
+}
+
 .padding-left-5{
     padding-left: 5px;
+}
+
+.padding-left-10{
+    padding-left: 10px;
+}
+
+.margin-left-5{
+    margin-left:5px;
+}
+
+.margin-left-10{
+    margin-left:10px;
+}
+
+.margin-top-5{
+    margin-top:5px;
 }
 
 .text-red {
@@ -115,3 +135,18 @@ body{
     cursor: inherit;
     display: block;
 }
+
+.search:hover{
+    background:lightcyan;
+    cursor:pointer;
+}
+
+.searchButtons{
+    margin-left: -25px;
+    z-index: 0;
+}
+
+.searchButtons button{
+    margin-left:20px;
+}
+
