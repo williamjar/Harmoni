@@ -2,8 +2,6 @@ const Dao = require('./dao.js');
 
 module.exports = class documentDao extends Dao {
 
-    //TODO: Write SQL statements
-
     getOne(callback, organizerID) {
         super.query('SELECT * FROM organizer JOIN contact ON organizer.contactID = contact.contactID WHERE organizerID = ?', [organizerID], callback);
     }
