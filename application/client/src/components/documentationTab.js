@@ -15,7 +15,7 @@ export class DocumentationTab extends Component{
     render() {
         return (
             <Card.Body>
-                <h3>Legg til dokumnter</h3>
+                <h3>Legg til dokumenter</h3>
                 <div className="dropzone">
                         <Dropzone
                             onDrop={this.onDrop}

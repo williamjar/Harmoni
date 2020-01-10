@@ -5,6 +5,7 @@ import {TabContent} from "./tabContent";
 import {AddPerformer, Performers} from "./performers";
 import {Crew} from "./crew";
 import {GeneralInfo} from "./generalInfo";
+import {DocumentationTab} from "../documentationTab";
 
 
 
@@ -39,7 +40,7 @@ export class EventForm extends Component{
                 </Tab>
                 <Tab eventKey="3" title="Dokumentasjon">
                     <TabContent onClick={this.nextClicked}>
-
+                        <DocumentationTab/>
                     </TabContent>
                 </Tab>
             </Tabs>
