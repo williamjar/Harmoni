@@ -449,7 +449,7 @@ app.get("/API/rider/:riderElementID", (require, response) => {
 });
 
 //get all rider elements for an artist
-app.get("/API/rider/artist/:artistID", (require, response) => {
+app.get("/API/artist/:artistID/rider", (require, response) => {
     console.log("Request to get a rider element");
     riderDao.getAllRidersForArtist((status, data) => {
         response.status(status);
@@ -458,7 +458,7 @@ app.get("/API/rider/artist/:artistID", (require, response) => {
 });
 
 //get all rider elements for an artist for an event
-app.get("/API/rider/:artistID/event/:eventID", (require, response) => {
+app.get("/API/event/:eventID/artist/:artistID/rider", (require, response) => {
     console.log("Request to get a rider element");
     riderDao.getAllRidersForArtistForEvent((status, data) => {
         response.status(status);
@@ -467,7 +467,7 @@ app.get("/API/rider/:artistID/event/:eventID", (require, response) => {
 });
 
 //get all riders for an event
-app.get("/API/rider/event/:eventID", (require, response) => {
+app.get("/API/event/:eventID/rider", (require, response) => {
     console.log("Request to get a rider element");
     riderDao.getAllRidersForEvent((status, data) => {
         response.status(status);
@@ -492,7 +492,7 @@ app.post("/API/rider", (request, response) => {
 });
 
 //update a rider element
-app.put("/API/rider/:riderElementID/:artistID/:eventID", (request, response) => {
+app.put("/API/event/:eventID/artist/:artistID/rider/:riderElementID", (request, response) => {
     console.log("Request to update a rider element");
     let val = [
         request.body.status,
@@ -509,7 +509,7 @@ app.put("/API/rider/:riderElementID/:artistID/:eventID", (request, response) => 
 });
 
 //delete a rider element
-app.delete("/API/rider/:riderElementID/:artistID/:eventID", (request, response) => {
+app.delete("/API/event/:eventID/artist/:artistID/rider/:riderElementID", (request, response) => {
     console.log("Request to delete a rider element");
     riderDao.deleteOne((status, data) => {
         response.status(status);
