@@ -50,7 +50,6 @@ export class App extends Component{
                                 <Route exact path="/personell" component={Content}/>
                                 <Route exact path="/kontrakter" component={Content}/>
                                 <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
-
                             </div>
                         </div>
                     </HashRouter>
