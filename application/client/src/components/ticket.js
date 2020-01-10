@@ -20,14 +20,14 @@ export class GetTicket extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            ticketTypeName : '',
-            price : '',
+            ticketTypeName: '',
+            /*price : '',
             amount : '',
             releaseDate : '',
             endDate : '',
             releaseTime : '',
             endTime : '',
-            description : ''
+            description : '' */
         };
         this.handleInputChange = this.handleInputChange.bind(this);
     }
@@ -39,12 +39,14 @@ export class GetTicket extends Component{
     };
 
     handleInputChange(event) {
+        console.log(this.state.ticketTypeName);
         let target = event.target;
         let value = target.type === 'checkbox' ? target.checked : target.value;
         let name = target.value;
         console.log(name + " verdi: " + value);
         this.setState({[name]: value,});
     }
+
 
     render() {
         return(
@@ -135,8 +137,8 @@ export class GetTicket extends Component{
                                         <Form.Control
                                             name = "ticketTypeName"
                                             placeholder = "Navn"
-                                            onChange = {this.handleInputChange}
                                             value = {this.state.ticketTypeName}
+                                            onChange = {this.handleInputChange}
 
                                         />
                                     </Col>
