@@ -8,14 +8,13 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.1",
     "bootstrap": "^4.4.1",
-    "crypto-js": "^3.1.9-1",
-    "mysql": "^2.17.1",
     "react": "^16.12.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-dom": "^16.12.0",
+    "react-dropzone": "^10.2.1",
     "react-icons": "^3.8.0",
-    "react-scripts": "3.3.0",
-    "react-simplified": "^1.6.1"
+    "mysql": "^2.17.1",
+    "react-scripts": "3.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

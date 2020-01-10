@@ -14,7 +14,10 @@ export class NavBar extends Component{
     render(){
         return(
             <div className="Nav-Menu card">
+                <div className="logoImg">
                 <img width={"300px"} src={logo} alt="logo image"/>
+                </div>
+
                 <div className="nav-links">
 
                     <div className="nav flex-column nav-pills" id="" role="tablist"
@@ -43,6 +46,7 @@ export class NavBar extends Component{
 
                 </div>
 
+                <NavLink to="/brukerprofil">
                 <div className="user-nav">
                     <div className="row">
                         <div className="col-3">
@@ -54,6 +58,7 @@ export class NavBar extends Component{
                         </div>
                     </div>
                 </div>
+                </NavLink>
 
 
 

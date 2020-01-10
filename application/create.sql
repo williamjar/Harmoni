@@ -136,7 +136,7 @@ CREATE TABLE event_crewCategory_crew(
     eventID INT,
     crewCategoryID INT,
     crewID INT,
-    isResponsible TINYINT(1),
+    isResponsible TINYINT(1) DEFAULT 0,
     PRIMARY KEY(eventID, crewCategoryID, crewID)
 );
 
@@ -194,6 +194,7 @@ ADD FOREIGN KEY (crewID) REFERENCES crew(crewID);
 ALTER TABLE document
 ADD FOREIGN KEY (eventID) REFERENCES event(eventID),
 ADD FOREIGN KEY (artistID) REFERENCES artist(artistID),
+ADD FOREIGN KEY (crew) REFERENCES crew(crewID),
 ADD FOREIGN KEY (documentCategoryID) REFERENCES documentCategory(documentCategoryID);
 
 ALTER TABLE riderElement
