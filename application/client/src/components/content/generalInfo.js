@@ -9,6 +9,7 @@ import map from './map.jpg';
 
 
 export class GeneralInfo extends Component{
+
     render(){
         return(
             <div>
@@ -30,14 +31,42 @@ export class GeneralInfo extends Component{
 }
 
 export class InfoForm extends Component {
+
+    state = {
+        edit: false,
+        name: "Lorde, intimkonsert",
+    };
+
+    editClicked = () => {
+        this.setState({edit: true})
+    };
+
+    saveClicked = (e) => {
+        this.setState({edit: false})
+    };
+
+    handleChange = (e) => {
+        const target = e.target;
+        const value = target.value;
+        this.setState({edit: true, name: [value]})
+    };
+
     render() {
         return(
             <div>
                 <Card>
                     <Card.Header>
-                        <Card.Title>
-                            Lorde, intimkonsert {<FaPencilAlt className="ml-1"/>}
-                        </Card.Title>
+                        <Row>
+                            <Col xs="4">
+                                {this.state.edit === false ? <Card.Title>
+                                    {this.state.name}
+                                </Card.Title> : <Form.Control type="text" placeholder={this.state.name} onChange={this.handleChange}/>}
+                            </Col>
+                            <Col>
+                                {this.state.edit === false ? <FaPencilAlt className="ml-1" onClick={this.editClicked}/>:
+                                    <Button type="submit" onClick={this.saveClicked}>Lagre</Button>}
+                            </Col>
+                        </Row>
                     </Card.Header>
                     <Card.Body>
                         <Form.Group>
