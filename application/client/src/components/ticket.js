@@ -47,6 +47,8 @@ export class GetTicket extends Component{
         console.log(name + " verdi: " + value);
         this.setState({[name]: value,});
     }
+
+
     render() {
         return(
             <Card>
@@ -219,6 +221,7 @@ export class GetTicket extends Component{
         );
     }
 }
+
 
 
 export class ListTickets extends Component{
