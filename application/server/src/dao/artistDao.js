@@ -34,4 +34,12 @@ module.exports = class artistDao extends Dao {
         super.query('INSERT INTO document (eventID,documentName,documentLink,artistID,documentCategoryID) VALUES (?, ?, ?, ?, ?)', list, callback);
     }
 
+    assignOne(callback, list) {
+        super.query('INSERT INTO event_artist VALUES (?,?)', list, callback);
+    }
+
+    unAssignOne(callback, list) {
+        super.query('DELETE FROM event_artist where eventID = ? AND artistID = ?', list, callback);
+    }
+
 };

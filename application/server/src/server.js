@@ -454,6 +454,18 @@ app.post("/api/document/artist", (request, response) => {
     }, val)
 });
 
+app.post("/api/artist/assign", (request, response) => {
+    console.log("request to assign artist to event");
+    let val = [
+        request.body.eventID,
+        request.body.artistID
+    ];
+    artistDao.assignOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
 app.put("/api/artist/:artistID", (request, response) => {
     console.log("request to update artist");
     let val = [
@@ -475,6 +487,15 @@ app.delete("/api/artist/:artistID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.artistID)
+});
+
+app.delete("/api/artist/assign/:eventID/:artistID", (request, response) => {
+    console.log("request to unassign artist");
+
+    artistDao.unAssignOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID, request.params.artistID)
 });
 
 // CREW
