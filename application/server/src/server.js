@@ -492,13 +492,15 @@ app.post("/API/rider", (request, response) => {
 });
 
 //update a rider element
-app.put("/API/rider/:riderElementID", (request, response) => {
+app.put("/API/rider/:riderElementID/:artistID/:eventID", (request, response) => {
     console.log("Request to update a rider element");
     let val = [
         request.body.status,
         request.body.isDone,
         request.body.description,
-        request.params.riderElementID
+        request.params.riderElementID,
+        request.params.artistID,
+        request.params.eventID
     ];
     riderDao.updateOne((status, data) => {
         response.status(status);
@@ -507,12 +509,12 @@ app.put("/API/rider/:riderElementID", (request, response) => {
 });
 
 //delete a rider element
-app.delete("/API/rider/:riderElementID", (request, response) => {
+app.delete("/API/rider/:riderElementID/:artistID/:eventID", (request, response) => {
     console.log("Request to delete a rider element");
     riderDao.deleteOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, require.params.riderElementID);
+    }, request.params.riderElementID, request.params.artistID, request.params.eventID);
 });
 
 //DOCUMENT
