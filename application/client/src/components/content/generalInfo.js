@@ -6,6 +6,7 @@ import {Button, Card, Col, Form, Image, Row} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
 import lorde from './lorde.jpg';
 import map from './map.jpg';
+import {GetTicket} from "../ticket";
 
 
 export class GeneralInfo extends Component{
@@ -25,6 +26,11 @@ export class GeneralInfo extends Component{
                         </Card.Body>
                     </div>
                 </div>
+                <Row className="mb-2">
+                    <Col>
+                        <GetTicket/>
+                    </Col>
+                </Row>
             </div>
         )
     }
@@ -54,7 +60,7 @@ export class InfoForm extends Component {
     render() {
         return(
             <div>
-                <Card>
+                <Card className="mb-2">
                     <Card.Header>
                         <Row>
                             <Col xs="4">

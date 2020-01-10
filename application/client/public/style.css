@@ -89,13 +89,12 @@ body{
 
 /* Event registration */
 .tabContent {
-    overflow-y: scroll;
     padding-top: 25px;
     margin:0 auto;
 }
 
 .tabChildren {
-    height: 75vh;
+    /*height: 75vh;*/
 }
 
 .tabChildren {
