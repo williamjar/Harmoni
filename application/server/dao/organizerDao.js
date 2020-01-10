@@ -12,8 +12,8 @@ module.exports = class documentDao extends Dao {
         super.query('INSERT INTO organizer VALUES (default, ?, ?, default, ?)', list, callback);
     }
 
-    changePassword(callback, password, organizerID) {
-        super.query('UPDATE organizer SET password = ? WHERE organizerID = ?', [password, organizerID], callback);
+    changePassword(callback, list) {
+        super.query('UPDATE organizer SET password = ? WHERE organizerID = ?', list, callback);
     }
 
     getAllDocuments(callback, organizerID) {

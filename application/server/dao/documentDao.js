@@ -8,8 +8,9 @@ module.exports = class documentDao extends Dao {
         super.query('INSERT INTO document (documentID, eventID, documentName, documentLink, artistID, crewID, documentCategoryID) values(DEFAULT, ?, ?, ?, ?, ?, ?)', list, callback);
     }
 
-    updateOne(callback, list) {
-        super.query('UPDATE document SET eventID = ?, documentLink = ?, artistID = ?, crewID = ?, documentCategoryID = ? WHERE documentID = ?', list, callback);
+    updateOne(callback, list, documentID) {
+        list.push(documentID);
+        super.query('UPDATE document SET eventID = ?, documentName = ?, documentLink = ?, artistID = ?, crewID = ?, documentCategoryID = ? WHERE documentID = ?', list, callback);
     }
 
     deleteOne(callback, documentID) {
