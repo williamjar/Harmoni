@@ -2,32 +2,40 @@ import axios from "axios";
 import {sharedComponentData} from "react-simplified";
 import Artist from ".classes/artist.js"
 
-class ArtistService {
+export class ArtistService {
 
     // artistID, name, phone, email, genre, organizer
 
-    getArtist() {
-        let a = new Artist(name,phone,email,genre,organizer);
-        axios.get('/api/artist/1');
+    // OrganizerID == logget inn bruker.
+    createArtist(name, phone, email, genreID, organizerID) {
 
+        axios.post('/api/contact', {
+            "contactName": name,
+            "phone": phone,
+            "email": email
+        }).then((response => response.data);
+
+        // TODO - Get the id from the new created contact
+        // let contactID = ?
+
+        axios.post('/api/artist', {
+            "genreID": genreID,
+            "organizerID": organizerID,
+            "contactID": contactID
+        });
     }
 
-    createArtist() {
-
-    }
-
-    getArtistForOrganizer() {
-        axios.get('/api/artist/1');
-
+    getArtistForOrganizer(organizerID) {
+        return axios.get < Artist[] > ('/api/artist/organizer/' + organizerID).then(response =>
+        );
     }
 
     getArtistForEvent() {
     }
 
-
-
     // return axios.get<Student[]>('/students').then(response => response.data);
 
-
-
 }
+
+export let artistService = sharedComponentData(new artistService());
+

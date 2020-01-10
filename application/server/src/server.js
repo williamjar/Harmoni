@@ -353,7 +353,6 @@ app.get("/api/bug/:bugID", (request, response) => {
 });
 
 // CONTACT
-
 app.get("/api/contact/:contactID", (request, response) => {
     console.log("request to get a contact");
     contactDao.getOne((status, data) => {
