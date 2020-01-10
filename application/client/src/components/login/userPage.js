@@ -122,8 +122,8 @@ export class UserInfo extends React.Component {
 
                                         <tr>
                                         <td>
-                                            <Button variant="success" type="submit">Lagre</Button>
-                                            <Button variant="secondary">Last opp profilbilde</Button>
+                                            <Form.Group><Button variant="success" type="submit">Lagre</Button></Form.Group>
+                                            <Form.Group><Button variant="secondary">Last opp profilbilde</Button></Form.Group>
                                         </td>
                                         </tr>
 
