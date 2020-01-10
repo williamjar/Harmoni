@@ -104,7 +104,7 @@ CREATE TABLE event_crewCategory_crew(
     eventID INT,
     crewCategoryID INT,
     crewID INT,
-    isResponsible TINYINT(1),
+    isResponsible TINYINT(1) DEFAULT 0,
     PRIMARY KEY(eventID, crewCategoryID, crewID)
 );
 
