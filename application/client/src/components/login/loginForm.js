@@ -1,9 +1,10 @@
 import React from 'react';
 import {Form, Button, Card} from 'react-bootstrap'
+import { NavLink } from 'react-router-dom';
 
 export class LoginForm extends React.Component {
 
-    constructor(props: Object) {
+    constructor(props) {
         super(props);
         this.state = {
             email : '',
@@ -15,12 +16,10 @@ export class LoginForm extends React.Component {
     }
 
 
-    handleInputChange(event) : void {
+    handleInputChange(event){
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        console.log(name + " verdi: " + value);
-
         this.setState({[name]: value,});
     }
 
@@ -53,7 +52,9 @@ export class LoginForm extends React.Component {
 
                             <Button variant="btn btn-primary" type="submit" disabled={!this.validateForm()}> Logg inn </Button>
 
-                            <Form.Text> Ny bruker? Klikk <span className="NavLink">her for registrere deg</span></Form.Text>
+                            <Form.Text> Ny bruker? <NavLink to="/registrer"> Klikk <span className="NavLink">
+                                her for registrere deg
+                            </span></NavLink></Form.Text>
 
                             <Form.Text className="text-danger" hidden={!this.databaseUserIncorrectLogin()}>Feil brukernavn eller passord, prøv igjen.</Form.Text>
 
@@ -70,7 +71,7 @@ export class LoginForm extends React.Component {
 
     submitForm(){
         alert("Form submitted." + "\n" + "Username: " + "\n" + this.state.email + "\n" + "Password:"+  "\n" + this.state.password);
-
+        this.props.logIn();
         /*
         *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.email" and "this.state.password";
         * */
@@ -91,6 +92,4 @@ export class LoginForm extends React.Component {
          * return true if there is a database connection error
          */
     }
-
-
 }

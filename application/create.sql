@@ -1,3 +1,35 @@
+drop table bug;
+
+drop table document;
+
+drop table documentCategory;
+
+drop table event_artist;
+
+drop table event_crewCategory_crew;
+
+drop table crew;
+
+drop table crewCategory;
+
+drop table riderElement;
+
+drop table artist;
+
+drop table genre;
+
+drop table ticketType;
+
+drop table event;
+
+drop table eventType;
+
+drop table organizer;
+
+drop table contact;
+
+drop table picture;
+
 CREATE TABLE bug(
     bugID INT AUTO_INCREMENT PRIMARY KEY,
     date DATE,
@@ -104,7 +136,7 @@ CREATE TABLE event_crewCategory_crew(
     eventID INT,
     crewCategoryID INT,
     crewID INT,
-    isResponsible TINYINT(1),
+    isResponsible TINYINT(1) DEFAULT 0,
     PRIMARY KEY(eventID, crewCategoryID, crewID)
 );
 
@@ -162,6 +194,7 @@ ADD FOREIGN KEY (crewID) REFERENCES crew(crewID);
 ALTER TABLE document
 ADD FOREIGN KEY (eventID) REFERENCES event(eventID),
 ADD FOREIGN KEY (artistID) REFERENCES artist(artistID),
+ADD FOREIGN KEY (crew) REFERENCES crew(crewID),
 ADD FOREIGN KEY (documentCategoryID) REFERENCES documentCategory(documentCategoryID);
 
 ALTER TABLE riderElement
