@@ -620,7 +620,7 @@ app.post("/api/document/crew", (request, response) => {
         request.body.documentName,
         request.body.documentLink,
         request.body.crewID,
-        request.body.documentCategory
+        request.body.documentCategoryID
     ];
 
     crewDao.addDocument((status, data) => {
@@ -724,22 +724,13 @@ app.delete("/api/events/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
-//Publish an event
-app.put("/api/events/:eventID", (request, response) => {
-    console.log("Express: request to publish event " + request.params.eventID);
-    eventDao.publishOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.eventID);
-});
-
-//Archive an event
-app.put("/api/events/:eventID", (request, response) => {
+//Change event status
+app.put("/api/events/:eventID/status/:status", (request, response) => {
     console.log("Express: request to archive event " + request.params.eventID);
-    eventDao.archiveOne((status, data) => {
+    eventDao.setStatus((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.eventID);
+    }, request.params.eventID, request.params.status);
 });
 
 //Get number of events with status
