@@ -22,11 +22,11 @@ module.exports = class riderDao extends Dao {
         super.query('INSERT INTO riderElement VALUES (default, ?, ?, default, 0, ?)', list, callback);
     }
 
-    updateOne(callback, riderElement) {
-        super.query('UPDATE riderElement SET status = ?, isDone = ?, description = ? WHERE riderElementID = ?' , [riderElement.status, riderElement.isDone, riderElement.description, riderElement.riderID], callback);
+    updateOne(callback, list) {
+        super.query('UPDATE riderElement SET status = ?, isDone = ?, description = ? WHERE riderElementID = ? AND artistID = ? AND eventID = ?' , list, callback);
     }
 
-    deleteOne(callback, riderElementID) {
-        super.query('DELETE FROM riderElement WHERE riderElementID = ?', [riderElementID], callback);
+    deleteOne(callback, riderElementID, artistID, eventID) {
+        super.query('DELETE FROM riderElement WHERE riderElementID = ? AND artistID = ? AND eventID = ?', [riderElementID, artistID, eventID], callback);
     }
 };
