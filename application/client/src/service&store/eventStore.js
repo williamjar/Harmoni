@@ -41,7 +41,12 @@ class eventStore{
     }
 
     static getAllEvents(){
-        return axios.get(axiosConfig.root + "/api/events").then( response => {
+
+        let header = {
+            "Content-Type": "application/json"
+        };
+
+        return axios.get(axiosConfig.root + "/api/events", {headers: header}).then( response => {
             this.allEvents = null;
             for (let i = 0; i < response.data.length; i++) {
                 this.allEvents.push(new Event(response.data[i].eventID, response.data[i].eventName,
@@ -51,6 +56,16 @@ class eventStore{
                     response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
                     response.data[i].picture));
             }
+        });
+    }
+
+    static archiveEvent(eventID){
+
+        let header = {
+            "Content-Type": "application/json"
+        };
+
+        return axios.get(axiosConfig.root + "/api/events/" + eventID, {headers: header}).then( response => {
         });
     }
 }
