@@ -45,10 +45,12 @@ export class App extends Component{
 
                             <div className="col-lg-10">
                                 <Route exact path="/" component={() => <Content page={<Dashboard />} />} />
-                                <Route exact path="/opprett"  component={() => <Content page={<EventForm/>} />} />
+                                <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash/>} />} />
                                 <Route exact path="/artister" />
                                 <Route exact path="/personell" component={Content}/>
                                 <Route exact path="/kontrakter" component={Content}/>
+                                <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
+
                             </div>
                         </div>
                     </HashRouter>

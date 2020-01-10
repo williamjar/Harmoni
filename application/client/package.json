@@ -13,7 +13,8 @@
     "react-dom": "^16.12.0",
     "react-icons": "^3.8.0",
     "mysql": "^2.17.1",
-    "react-scripts": "3.3.0"
+    "react-scripts": "3.3.0",
+    "history": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
