@@ -51,7 +51,11 @@ body{
     margin: 0 auto;
 }
 
-/* Ticket*/
+/*Ticket*/
 .ticketStyle{
     padding: 10px;
+}
+
+.staTicket {
+    background: aqua;
 }

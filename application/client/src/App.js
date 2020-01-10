@@ -6,6 +6,7 @@ import {NavBar} from "./components/menu/navigation";
 import {Content} from "./components/content/content";
 import { HashRouter, Route} from 'react-router-dom';
 import {AddPerformer, Performers} from "./components/content/performers";
+import {GetTicket} from "./components/ticket";
 
 
 
@@ -21,7 +22,7 @@ function App() {
                 <div className="col-lg-10">
                     <Route exact path="/" component={() => <Content page="test" />} />
                     <Route exact path="/opprett"/>
-                    <Route exact path="/artister" component={() => <Content page={<AddPerformer/>} />} />
+                    <Route exact path="/artister" component={() => <Content page={<GetTicket/>} />} />
                     <Route exact path="/personell" component={Content}/>
                     <Route exact path="/kontrakter" component={Content}/>
                 </div>
