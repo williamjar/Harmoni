@@ -1,6 +1,10 @@
+//@flow
+
 import React from 'react';
 import {Form, Button, Card} from 'react-bootstrap'
 import { NavLink } from 'react-router-dom';
+import {LoginService} from "../../cookies_client/loginService";
+import {CookieStore} from "../../cookies_client/cookieStore";
 
 export class LoginForm extends React.Component {
 
@@ -68,15 +72,18 @@ export class LoginForm extends React.Component {
         )
     }
 
+    submitForm() {
+        alert("Form submitted." + "\n" + "Username: " + "\n" + this.state.email + "\n" + "Password:" + "\n" + this.state.password);
 
+        //The callback has to run in different places in the loginOrganizer() method to make sure synchronicity is complete
+        LoginService.loginOrganizer(this.state.email, this.state.password, () => {
+            if (CookieStore.currentToken != null) {
+                this.props.logIn();
+            } else {
+                console.log("Wrong username or password");
+            }
+        });
 
-
-    submitForm(){
-        alert("Form submitted." + "\n" + "Username: " + "\n" + this.state.email + "\n" + "Password:"+  "\n" + this.state.password);
-        this.props.logIn();
-        /*
-        *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.email" and "this.state.password";
-        * */
     }
 
     // Database control functions to display the proper error message to the user.
