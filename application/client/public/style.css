@@ -114,7 +114,27 @@ body{
     align-items: center;
 }
 
+/* Event registration */
+.tabContent {
+    padding-top: 25px;
+    margin:0 auto;
+}
 
+.tabChildren {
+    /*height: 75vh;*/
+}
+
+.tabChildren {
+}
+
+/*Ticket*/
+.ticketStyle{
+    padding: 10px;
+}
+
+.staTicket {
+    background: aqua;
+}
 /* Forms */
 .btn-file {
     position: relative;
@@ -150,3 +170,11 @@ body{
     margin-left:20px;
 }
 
+
+
+.dropzone{
+    padding-top: 100px;
+    padding-bottom: 100px;
+    text-align: center;
+
+}
