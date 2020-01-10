@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { NavLink } from 'react-router-dom';
 import {FaCalendarAlt} from "react-icons/all";
@@ -8,14 +7,16 @@ import {FaCalendarPlus} from "react-icons/all";
 import {FaMusic} from "react-icons/all";
 import {FaUsers} from "react-icons/all";
 import {FaFileSignature} from "react-icons/all";
+import logo from './logo.jpeg';
 
 
 export class NavBar extends Component{
     render(){
         return(
             <div className="Nav-Menu card">
-                Harmoni Logo
+                <img width={"300px"} src={logo} alt="logo image"/>
                 <div className="nav-links">
+
                     <div className="nav flex-column nav-pills" id="" role="tablist"
                          aria-orientation="vertical">
 

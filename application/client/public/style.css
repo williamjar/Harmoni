@@ -15,6 +15,10 @@ body{
     padding-left: 5px;
 }
 
+.text-red {
+    color:red;
+}
+
 /* Navigation */
 .Nav-Menu{
     height: 100vh;
@@ -65,6 +69,12 @@ body{
 
 .center{
     margin: 0 auto;
+}
+
+.splashCreateEvent{
+    padding:100px 100px 100px 100px;
+
+    text-align: center;
 }
 
 /* Dashboard */
