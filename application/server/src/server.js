@@ -13,6 +13,8 @@ const fs = require('fs');
 const EventEmitter = require("events").EventEmitter;
 const body = new EventEmitter();
 
+import {CookieStore} from "../../client/src/cookies_client/cookieStore";
+
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -55,9 +57,18 @@ let documentationDao = new documentationDaoObj(pool);
 let eventDao = new eventDaoObj(pool);
 let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
+let organizerIDDao = new OrganizerIDDao(pool);
 
 
 const public_path = path.join(__dirname, '/../../client/public');
+app.use(express.static(public_path));
+
+app.get('/products/:id', function (req, res, next) {
+    res.json({msg: 'This is CORS-enabled for all origins!'})
+});
+
+app.use(bodyParser.json());
+
 app.use(express.static(public_path));
 
 
@@ -262,25 +273,38 @@ app.post("/api/:eventID/documents/create/crew", (req, res) => {
     });
 });
 
-let publicKey = "tYQPoIe6PTRmFa1mTeuhE_JMi2_iU6hkZcWqM4YYlV9PQz7g-4PhwLen0u2nC4-n4Khegt6l198zm5xko7QBAChlUGSU_npFpSxKx_vDGuNdA8HDZFD7V6KRMIlkMTN0TrRHFkP8dBeO8TjkvwT65C9iYKRWKI7Ajw-qJOyB4eYnf4eqqsYYE1rcMWw6Y_bUpMYh2Ww5HOn-NA9q0NUSotTtXYfuKvVqxXFDzzsnG2QkzDshtKCDkWVDwKEnMwA_o18Woy3dTUzkH_o8WpC-KYaj688hVuLrUHfOrCtX_JgzUmT9iz92Nl05FupgM913O13_z0EZlAEmRNp1W1NnSQ";
-
-let privateKey = SECRET.secret;
-
-app.use(express.static(path.join(__dirname, '/../../client/public')));
+/*START LOGIN*/
+let privateKey = SECRET.privateKey;
+let publicKey = SECRET.publicKey;
 
 //Seconds
 let TOKEN_LENGTH = 3600;
 
 //Handle login and send JWT-token back as JSON
 app.post("/login", (req, res) => {
+    console.log("Logging in serverside...");
     let loginDao = new LoginDao(pool);
-    loginDao.checkLogin(req.body.username, req.body.password, (status, data) => {
+    loginDao.checkLogin(req.body.email, req.body.password, (status, data) => {
         console.log(status);
-        if (status === 200){
+        if (status === 200 && data.length > 0){
             console.log('Login OK');
-            let token = jwt.sign({username: req.body.username}, privateKey, {
-                expiresIn: TOKEN_LENGTH
+            let token = jwt.sign(
+                {
+                    email: req.body.email,
+                    exp: Math.floor(Date.now() / 1000) + (TOKEN_LENGTH)
+                }, privateKey, {
+                    algorithm: "RS512",
+                });
+            console.log("Token signed");
+            jwt.verify(token, publicKey,(err, decoded) => {
+                if (err){
+                    console.log(err);
+                }
+                else{
+                    console.log(decoded);
+                }
             });
+            console.log("Token verified");
             res.status(status);
             res.json({jwt: token});
         }
@@ -292,47 +316,66 @@ app.post("/login", (req, res) => {
     });
 });
 
-app.get("/api/organizerID/:username", (req, res) => {
-    let organizerIDDao = new OrganizerIDDao(pool);
-    organizerIDDao.getOrganizerIDFromUsername(req.username, (status, data) => {
+//Returns organizerID by email. Needed for login, thus not part of /api/
+app.get("/organizer/by-email/:email", (req, res) => {
+    organizerIDDao.getOrganizerFromEmail(req.params.email, (status, data) => {
         res.status(status);
         res.json(data);
-    });
+    })
 });
 
-//Update the token on the server
+//Update the token on the server, and "returns" it in the res.json().jwt
 app.post("/token", (req, res) => {
-    let token = req.header['x-access-token'];
+    let token = req.headers['x-access-token'];
     jwt.verify(token, publicKey, (err, decoded) => {
         if (err){
             console.log("Token not OK / Expired / User no longer logged in");
-            res.json({error: "Token expired or user not logged in"});
+            res.json({error: err});
         }
         else{
-            let newToken = jwt.sign({username: req.body.username}, privateKey, {
-                expiresIn: TOKEN_LENGTH
-            });
-            localStorage.setItem('access-token', newToken);
-            res.json({jwt: newToken});
+            console.log("Token accepted. Updating token clientside");
+            let newToken = jwt.sign(
+                {
+                    exp: Math.floor(Date.now() / 1000) + (TOKEN_LENGTH),
+                    email: req.body.email
+                }, privateKey, {
+                    algorithm: "RS512",
+                });
+            CookieStore.currentToken = newToken;
+            res.json({jwt: newToken, for: decoded.email});
         }
     })
 });
 
-//TODO Activate this
-/*app.use('/api', (req, res, next) => {
-    let token = req.headers['x-access-token'];
+app.use('/api', (req, res, next) => {
+    console.log("Testing /api");
+    let token = req.headers["x-access-token"];
     jwt.verify(token, publicKey, (err, decoded) => {
         if (err){
             console.log('Token not OK');
             res.status(401);
-            res.json({error: 'Not authorized'});
+            res.json({error: err});
         }
         else{
-            console.log('Token OK: ' + decoded.username);
+            console.log('Token OK for: ' + decoded.email);
+            CookieStore.currentToken = jwt.sign(
+                {
+                    exp: Math.floor(Date.now() / 1000) + (TOKEN_LENGTH),
+                    email: decoded.email
+                }, privateKey, {
+                    algorithm: "RS512",
+                });
+            res.json({jwt: CookieStore.currentToken, for: decoded.email});
             next();
         }
     })
-});*/
+});
+
+app.get('/api/test', () => {
+    console.log("Testing /api/test");
+});
+
+/*END LOGIN*/
 
 // BUG
 //TODO Not working right now
@@ -917,3 +960,10 @@ app.delete("/api/document/:documentID", (request, response) => {
 });
 
 const server = app.listen(8080);
+
+
+
+
+
+
+

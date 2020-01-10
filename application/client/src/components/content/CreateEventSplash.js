@@ -3,6 +3,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from "react-bootstrap/Form";
 import {InputGroup} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
+import { NavLink } from 'react-router-dom';
+import { createHashHistory } from 'history';
+
+let history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
+
+
+
 
 export class CreateEventSplash extends Component{
     emptyMessage = "Navn kan ikke være tomt";
@@ -59,6 +66,8 @@ export class CreateEventSplash extends Component{
             this.setState(state);
         } else{
             alert("success");
+            history.push('/arrangementEdit');
+
         }
     }
 }
