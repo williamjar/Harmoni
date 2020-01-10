@@ -38,7 +38,6 @@ const eventDaoObj = require('./dao/eventDao.js');
 const organizerDaoObj = require('./dao/organizerDao.js');
 const riderDaoObj = require('./dao/riderDao.js');
 const documentationDaoObj = require("./dao/documentationdao.js");
-const OrganizerIDDao = require("./dao/organizerIDDao");
 let artistDao = new artistDaoObj(pool);
 let bugDao = new bugDaoObj(pool);
 let contactDao = new contactDaoObj(pool);
@@ -48,6 +47,7 @@ let documentationDao = new documentationDaoObj(pool);
 let eventDao = new eventDaoObj(pool);
 let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
+let organizerIDDao = new OrganizerIDDao(pool);
 
 
 const public_path = path.join(__dirname, '/../../client/public');
@@ -60,16 +60,6 @@ app.get('/products/:id', function (req, res, next) {
 app.use(bodyParser.json());
 
 app.use(express.static(public_path));
-
-const pool = mysql.createPool({
-    connectionLimit: 2,
-    host: "mysql.stud.iie.ntnu.no",
-    user: "evengu",
-    password: "O7KhlwWQ",
-    database: "evengu",
-    debug: false,
-    multipleStatements: true
-});
 
 
 //----------------- DOCUMENTATION ---------------------
