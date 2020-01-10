@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Card, Col, Form, Image, Row} from "react-bootstrap";
+import {Button, Card, Col, Form, Image, Row} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
 import lorde from './lorde.jpg';
 import map from './map.jpg';
@@ -19,7 +19,8 @@ export class GeneralInfo extends Component{
                     </div>
                     <div className="col-5">
                         <Card.Body>
-                            <Image src={lorde} alt="event image" fluid />
+                            <Image src={lorde} alt="event image" fluid className="mb-2"/>
+                            <Button>Last opp bilde</Button>
                         </Card.Body>
                     </div>
                 </div>
