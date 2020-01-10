@@ -20,6 +20,10 @@ body{
 }
 
 /* Navigation */
+.logoImg img{
+    width: 75px !important;
+}
+
 .Nav-Menu{
     height: 100vh;
     text-align: center;
