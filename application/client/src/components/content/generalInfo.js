@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Card, Col, Form, Row} from "react-bootstrap";
+import {Card, Col, Form, Image, Row} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
 
 
@@ -15,9 +15,10 @@ export class GeneralInfo extends Component{
                     <div className="col-7 border-right">
                         <InfoForm/>
                     </div>
-
                     <div className="col-6">
-
+                        <Card.Body>
+                            <Image></Image>
+                        </Card.Body>
                     </div>
                 </div>
             </div>
