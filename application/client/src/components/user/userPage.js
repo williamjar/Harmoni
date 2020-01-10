@@ -41,7 +41,7 @@ export class UserPage extends React.Component {
     render() {
         if(this.state.mode===1){
             return (
-                <Card>
+                <Card className={"border-0"}>
                     <div className="justify-content-md-center m-5">
                         <CardDeck>
                         <br></br>
@@ -70,7 +70,7 @@ export class UserPage extends React.Component {
 
         else{
             return(
-                <Card>
+                <Card className={"border-0"}>
                     <div className="justify-content-md-center m-5">
                         <Form onSubmit={this.handleSubmit}>
                         <CardDeck>
