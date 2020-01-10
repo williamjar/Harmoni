@@ -1,22 +1,32 @@
 import axios from "axios";
 import {sharedComponentData} from "react-simplified";
 import Artist from ".classes/artist.js"
+
 const axiosConfig = require("./axiosConfig");
 
 export class ArtistService {
 
     // artistID, name, phone, email, genre, organizer
+
+    getArtist(artistID) {
+        axios.get(axiosConfig.root + '/api/artist/' + artistID).then(response => {
+                return new Artist(response.data[0].artistID, response.data[0].organizerID,
+                    response.data[0].contactID, response.data[0].organizerID, response.data[0].contactID,
+                    response.data[0].contactName, response.data[0].phone, response.data[0].email);
+            }
+        );
+    }
+
     // OrganizerID == innlogget bruker.
-
     createArtist(name, phone, email, genreID, organizerID) {
-        let contactID = 0;
+        let contactID;
 
-        axios.post('/api/contact', {
+        axios.post(axiosConfig.root + '/api/contact', {
             "contactName": name,
             "phone": phone,
             "email": email
         }).then(response => {
-                response.data.insertId = contactID
+                response.data[0].insertId = contactID;
             }
         );
 
@@ -27,6 +37,11 @@ export class ArtistService {
             "organizerID": organizerID,
             "contactID": contactID
         });
+    }
+
+    deleteArtist(artistID) {
+        axios.delete()
+
     }
 
     getArtistForOrganizer(organizerID) {
