@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 export class LoginForm extends React.Component {
 
-    constructor(props: Object) {
+    constructor(props) {
         super(props);
         this.state = {
             email : '',

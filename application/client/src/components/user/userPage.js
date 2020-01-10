@@ -3,16 +3,19 @@ import {Button, Card, Col, Form, Row, Table, Image} from 'react-bootstrap'
 
 
 export class UserPage extends React.Component {
-    constructor(props: Object) {
+    constructor(props) {
         super(props);
         this.state = {
-            username: 'William',
-            firstEmail: 'william@mekanisk.co',
-            secondEmail: '',
-            firstPassword: '',
-            secondPassword: '',
+            username: '',
+            newUsername: '',
+            email: 'william@mekanisk.co',
+            newEmail: '',
+            confirmNewEmail: '',
+            firstNewPassword: '',
+            secondNewPassword: '',
+            phonenumber : '',
+            newPhonenumber: '',
             profilePicture: 'https://www.jodilogik.com/wordpress/wp-content/uploads/2016/05/people-1.png',
-            phonenumber : 95521965,
             mode: 1
         };
 
@@ -20,7 +23,7 @@ export class UserPage extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleInputChange(event) : void {
+    handleInputChange(event){
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
@@ -43,22 +46,21 @@ export class UserPage extends React.Component {
                         <br></br>
                         <Row>
                             <Col>
-                                <Table  borderless>
+                                <Table borderless>
                                     <tbody>
                                     <tr><td>Brukernavn</td><td>{this.state.username}</td></tr>
-                                    <tr><td>E-postaddresse</td><td>{this.state.firstEmail}</td></tr>
+                                    <tr><td>E-postaddresse</td><td>{this.state.email}</td></tr>
                                     <tr><td>Telefonnummer</td><td>{this.state.phonenumber}</td></tr>
                                     <tr>
                                         <td>
-                                            <Button onClick={() => this.editMode()}>Oppdater brukerprofil</Button>
+                                            <Button onClick={() => this.changeMode()}>Oppdater brukerprofil</Button>
                                         </td>
                                     </tr>
                                     </tbody>
                                 </Table>
                             </Col>
-
                             <Col>
-                                <Image roundedCircle fluid thumbnail src={this.state.profilePicture} rounded />
+                                <Image width={"140px"} roundedCircle fluid thumbnail src={this.state.profilePicture} rounded />
                             </Col>
                         </Row>
                     </div>
@@ -80,34 +82,33 @@ export class UserPage extends React.Component {
                                         <tr>
                                             <td>Brukernavn</td>
                                             <td>
-                                                <Form.Control type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
+                                                <Form.Control type="text" name="newUsername" placeholder={this.state.username} value={this.state.newUsername} onChange={this.handleInputChange}/>
                                             </td>
                                         </tr>
 
                                         <td>E-postaddresse</td><td>
                                             <Form.Group>
-                                                <Form.Control type="email" name="firstEmail" value={this.state.firstEmail} onChange={this.handleInputChange}/>
+                                                <Form.Control type="email" name="newEmail" value={this.state.newEmail} placeholder={this.state.email} onChange={this.handleInputChange}/>
                                             </Form.Group>
 
                                             <Form.Group>
-                                                <Form.Control type="email" name="secondEmail" placeholder="Gjenta e-postaddressen" onChange={this.handleInputChange}/>
+                                                <Form.Control type="email" name="confirmNewEmail" value={this.state.confirmNewEmail} placeholder="Gjenta e-postaddressen" onChange={this.handleInputChange}/>
                                             </Form.Group>
                                         </td>
 
-
                                         <tr><td>Telefonnummer</td><td>
                                             <Form.Group>
-                                                <Form.Control type="number" name="phonenumber" placeholder={this.state.phonenumber} value={this.state.phonenumber} onChange={this.handleInputChange}/>
+                                                <Form.Control type="number" name="newPhonenumber" placeholder={this.state.phonenumber} value={this.state.newPhonenumber} onChange={this.handleInputChange}/>
                                             </Form.Group>
                                         </td></tr>
 
                                         <tr><td>Passord</td><td>
                                             <Form.Group>
-                                                <Form.Control type="password" name="firstPassword" placeholder="Nytt passord" value={this.state.firstPassword} onChange={this.handleInputChange}/>
+                                                <Form.Control type="password" name="firstNewPassword" placeholder="Nytt passord" value={this.state.firstNewPassword} onChange={this.handleInputChange}/>
                                             </Form.Group>
 
                                             <Form.Group>
-                                                <Form.Control type="password" name="secondPassword" placeholder="Gjenta nytt passord" value={this.state.secondPassword} onChange={this.handleInputChange}/>
+                                                <Form.Control type="password" name="secondNewPassword" placeholder="Gjenta nytt passord" value={this.state.secondNewPassword} onChange={this.handleInputChange}/>
                                             </Form.Group>
                                         </td>
                                         </tr>
@@ -115,7 +116,7 @@ export class UserPage extends React.Component {
                                             <td>
                                                 <Row>
                                                 <Form.Group><Button className={"ml-1"} variant="secondary">Last opp profilbilde</Button></Form.Group>
-                                                <Form.Group><Button className={"ml-1"} variant="danger" onClick={() => this.editMode()}>Avbryt</Button></Form.Group>
+                                                <Form.Group><Button className={"ml-1"} variant="danger" onClick={() => this.changeMode()}>Avbryt</Button></Form.Group>
                                                 <Form.Group><Button className={"ml-1"} variant="success" type="submit" disabled={!this.validateForm()}>Lagre</Button></Form.Group>
                                                 </Row>
                                             </td>
@@ -124,7 +125,7 @@ export class UserPage extends React.Component {
                                     </Table>
                                 </Col>
                                 <Col>
-                                    <Image roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} rounded />
+                                    <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} rounded />
                                 </Col>
                             </Row>
                         </Form >
@@ -133,28 +134,42 @@ export class UserPage extends React.Component {
             )}
     }
 
+    validateUsername(){
+        return (this.state.username !== this.state.newUsername) && (this.state.newUsername.length > 0);
+    }
+
+    validatePhoneNumber(){
+        return (this.state.newPhonenumber !== this.state.phonenumber) && (this.state.newPhonenumber.length > 0);
+    }
+
     validateEmail(){
-        return (this.state.firstEmail === this.state.secondEmail) && (this.state.firstEmail.length > 0);
+        return (this.state.newEmail === this.state.confirmNewEmail) && (this.state.newEmail.length > 0) && (this.state.email !== this.state.newEmail);
     }
 
     validatePassword(){
-        return (this.state.firstPassword === this.state.secondPassword) && (this.state.firstPassword > 0);
+        return (this.state.firstNewPassword === this.state.secondNewPassword) && (this.state.firstNewPassword.length > 0);
     }
 
     validateForm(){
-        return this.validateEmail() || this.validatePassword();
+        return this.validateEmail() || this.validatePassword() || this.validatePhoneNumber() || this.validateUsername();
     }
 
-    editMode() {
+    changeMode() {
         if(this.state.mode===1)this.setState({mode: 2,});
         else this.setState({mode: 1,})
     }
 
 
     submitForm(){
+        if(this.validateUsername()) this.setState({username: this.state.newUsername});
+        if(this.validateEmail()) this.setState({email: this.state.newEmail});
+        if(this.validatePhoneNumber())this.setState({phonenumber: this.state.newPhonenumber});
 
-        this.setState({firstPassword: '', secondPassword: '', secondEmail: ''});
-        this.editMode();
+        this.setState({newUsername: ''});
+        this.setState({newEmail: ''});
+        this.setState({newPhonenumber: ''});
+
+        this.changeMode();
     }
 
     // Database control functions to display the proper error message to the user.
