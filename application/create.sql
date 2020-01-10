@@ -1,3 +1,35 @@
+drop table bug;
+
+drop table document;
+
+drop table documentCategory;
+
+drop table event_artist;
+
+drop table event_crewCategory_crew;
+
+drop table crew;
+
+drop table crewCategory;
+
+drop table riderElement;
+
+drop table artist;
+
+drop table genre;
+
+drop table ticketType;
+
+drop table event;
+
+drop table eventType;
+
+drop table organizer;
+
+drop table contact;
+
+drop table picture;
+
 CREATE TABLE bug(
     bugID INT AUTO_INCREMENT PRIMARY KEY,
     date DATE,
