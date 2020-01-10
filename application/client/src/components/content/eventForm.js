@@ -4,6 +4,7 @@ import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
 import {AddPerformer, Performers} from "./performers";
 import {Crew} from "./crew";
+import {GeneralInfo} from "./generalInfo";
 
 
 
@@ -23,6 +24,7 @@ export class EventForm extends Component{
             <Tabs defaultActiveKey="0" id="tabs">
                 <Tab eventKey="0" title="Generelt" >
                     <TabContent onClick={this.nextClicked}>
+                        <GeneralInfo/>
                     </TabContent>
                 </Tab>
                 <Tab eventKey="1" title="Artister">
