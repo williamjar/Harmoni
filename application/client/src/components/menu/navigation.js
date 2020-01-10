@@ -46,6 +46,7 @@ export class NavBar extends Component{
 
                 </div>
 
+                <NavLink to="/brukerprofil">
                 <div className="user-nav">
                     <div className="row">
                         <div className="col-3">
@@ -57,6 +58,7 @@ export class NavBar extends Component{
                         </div>
                     </div>
                 </div>
+                </NavLink>
 
 
 
