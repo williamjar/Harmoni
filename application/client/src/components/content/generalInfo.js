@@ -26,8 +26,9 @@ export class GeneralInfo extends Component{
                         </Card.Body>
                     </div>
                 </div>
-                <Row className="mb-2">
+                <Row className="mb-3">
                     <Col>
+                        <Form.Label>Billetter</Form.Label>
                         <GetTicket/>
                     </Col>
                 </Row>
