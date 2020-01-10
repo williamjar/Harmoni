@@ -259,7 +259,6 @@ app.delete("/API/crew-category/:crewCategoryID", (request, response) => {
     }, request.params.crewCategoryID)
 });
 
-// Should be able do this with body instead, but dosnt work for some reason.
 app.delete("/API/crew/assign/:eventID/:crewCategoryID/:crewID", (request, response) => {
     console.log("request to unassign crew");
 
