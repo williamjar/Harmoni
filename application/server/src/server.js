@@ -100,6 +100,23 @@ app.post("/API/artist", (request, response) => {
     }, val);
 });
 
+app.post("/API/document/artist", (request, response) => {
+    console.log("Assign to a artistmember");
+
+    let val = [
+        request.body.eventID,
+        request.body.documentName,
+        request.body.documentLink,
+        request.body.artistID,
+        request.body.documentCategory
+    ];
+
+    artistDao.addDocument((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val)
+});
+
 app.put("/API/artist/:artistID", (request, response) => {
     console.log("request to update artist");
     let val = [

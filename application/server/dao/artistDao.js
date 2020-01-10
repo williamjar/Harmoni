@@ -22,8 +22,8 @@ module.exports = class artistDao extends Dao {
         super.query('DELETE FROM artist WHERE artistID = ?', [artistID], callback);
     }
 
-    addDocument(callback, artistID, documentID) {
-        super.query('UPDATE document SET artistID = ? WHERE documentID = ?', [artistID, documentID], callback);
+    addDocument(callback, list) {
+        super.query('INSERT INTO document (eventID,documentName,documentLink,artistID,documentCategoryID) VALUES (?, ?, ?, ?, ?)', list, callback);
     }
 
 };
