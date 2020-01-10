@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Card, Col, Form, Row, Table, Image} from 'react-bootstrap'
 
 
-export class UserInfo extends React.Component {
+export class UserPage extends React.Component {
     constructor(props: Object) {
         super(props);
         this.state = {

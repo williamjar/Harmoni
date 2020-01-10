@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {LoginForm} from "../login/loginForm";
 import {RegisterForm} from "../login/registerForm";
-import {UserInfo} from "../login/userPage";
+import {UserPage} from "../user/userPage";
 
 
 
@@ -15,7 +15,7 @@ export class Content extends Component{
                 {this.props.page}
                     </div>
                 </div>
-                <UserInfo/>
+                <UserPage/>
             </div>
         )
     }
