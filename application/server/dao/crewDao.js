@@ -28,8 +28,8 @@ module.exports = class crewDao extends Dao {
         super.query('SELECT * FROM crew, contact, event_crewCategory_crew WHERE eventID = ? AND crew.crewID = event_crewCategory_crew.crewID AND crew.contactID = contact.contactID', [eventID], callback);
     }
 
-    addDocument(callback, crewID, documentID) {
-        super.query('INSERT INTO document VALUES (DEFAULT, ?, ?, ?, ?, NULL, ?, documentCategoryID)', [crewID, documentID], callback);
+    addDocument(callback, list) {
+        super.query('INSERT INTO document (eventID,documentName,documentLink,crewID,documentCategoryID) VALUES (?, ?, ?, ?, ?)', list, callback);
     }
 
     setResponsible(callback, list) {
