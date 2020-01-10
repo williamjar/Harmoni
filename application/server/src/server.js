@@ -325,6 +325,7 @@ app.post("/token", (req, res) => {
 });*/
 
 // BUG
+//TODO Not working right now
 app.get("/api/bug", (request, response) => {
     console.log("request to get all bugs");
     bugDao.getAll((status, data) => {
