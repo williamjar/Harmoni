@@ -17,7 +17,7 @@ class ArtistService {
     }
 
     getArtistForOrganizer() {
-        axios.get('/api/artist/1);
+        axios.get('/api/artist/1');
 
     }
 
@@ -25,9 +25,9 @@ class ArtistService {
     }
 
 
-    getStudents() {
-        return axios.get<Student[]>('/students').then(response => response.data);
-    }
+
+    // return axios.get<Student[]>('/students').then(response => response.data);
+
 
 
 }
