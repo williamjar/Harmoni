@@ -60,7 +60,7 @@ export class InfoForm extends Component {
                             <Col xs="4">
                                 {this.state.edit === false ? <Card.Title>
                                     {this.state.name}
-                                </Card.Title> : <Form.Control type="text" placeholder={this.state.name} onChange={this.handleChange}/>}
+                                </Card.Title> : <Form.Control type="text" value={this.state.name} onChange={this.handleChange}/>}
                             </Col>
                             <Col>
                                 {this.state.edit === false ? <FaPencilAlt className="ml-1" onClick={this.editClicked}/>:
