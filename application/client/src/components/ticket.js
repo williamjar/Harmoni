@@ -42,7 +42,7 @@ export class GetTicket extends Component{
         console.log(this.state.ticketTypeName);
         let target = event.target;
         let value = target.type === 'checkbox' ? target.checked : target.value;
-        let name = target.value;
+        let name = target.name;
         console.log(name + " verdi: " + value);
         this.setState({[name]: value,});
     }
