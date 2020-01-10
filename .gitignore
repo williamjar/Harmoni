@@ -75,3 +75,4 @@ fabric.properties
 .idea/modules.xml
 .idea/vcs.xml
 /application/client/package-lock.json
+nodemodules/
