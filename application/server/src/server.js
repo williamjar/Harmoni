@@ -16,6 +16,7 @@ const pool = mysql.createPool({
 });
 
 const artistDaoObj = require('../dao/artistDao.js');
+const bugDaoObj = require('../dao/bugDao.js');
 const contactDaoObj = require('../dao/contactDao.js');
 const crewDaoObj = require('../dao/crewDao.js');
 const documentDaoObj = require('../dao/documentDao.js');
@@ -24,12 +25,30 @@ const organizerDaoObj = require('../dao/organizerDao.js');
 const riderDaoObj = require('../dao/riderDao.js');
 
 let artistDao = new artistDaoObj(pool);
+let bugDao = new bugDaoObj(pool);
 let contactDao = new contactDaoObj(pool);
 let crewDao = new crewDaoObj(pool);
 let documentDao = new documentDaoObj(pool);
 let eventDao = new eventDaoObj(pool);
 let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
+
+// BUG
+app.get("/API/bug", (request, response) => {
+    console.log("request to get all bugs");
+    bugDao.getAll((status, data) => {
+        response.status(status);
+        response.json(data);
+    });
+});
+
+app.get("/API/bug/:bugID", (request, response) => {
+    console.log("request to get one bug");
+    bugDao.getOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    },request.params.bugID);
+});
 
 // CONTACT
 
