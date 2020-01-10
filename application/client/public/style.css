@@ -43,7 +43,14 @@ body{
     bottom: 10px;
     left: 10px ;
     text-align: left;
+    color:black;
+    padding:10px
 
+}
+
+.Nav-Menu .user-nav:hover{
+   background: lightgreen;
+    border-radius: 5px;
 }
 
 .nav-link{
