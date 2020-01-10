@@ -21,13 +21,13 @@ export class GetTicket extends Component{
         super(props);
         this.state = {
             ticketTypeName: '',
-            /*price : '',
+            price : '',
             amount : '',
             releaseDate : '',
             endDate : '',
             releaseTime : '',
             endTime : '',
-            description : '' */
+            description : ''
         };
         this.handleInputChange = this.handleInputChange.bind(this);
     }
@@ -147,38 +147,50 @@ export class GetTicket extends Component{
                                             name = "price"
                                             placeholder="Pris,-"
                                             onChange = {this.handleInputChange}
-                                            value = {this}
+                                            value = {this.state.price}
                                         />
                                     </Col>
                                     <Col>
                                         <Form.Control
+                                            name = "amount"
                                             placeholder="Antall"
                                             onChange = {this.handleInputChange}
+                                            value = {this.state.amount}
+
                                         />
 
                                     </Col>
                                     <Col>
                                         <Form.Control
                                             type = "date"
+                                            name = "releaseDate"
                                             onChange={this.handleInputChange}/>
+                                            value = {this.state.releaseDate}
+
                                     </Col>
                                     <Col>
                                         <Form.Control
                                             type ="date"
+                                            name = "endDate"
                                             onChange={this.handleInputChange}
+                                            value = {this.state.endDate}
+
                                         />
                                     </Col>
                                     <Col >
                                         <Form.Control
                                             type = "time"
-                                            placeholder="Start tid"
+                                            name = "releaseTime"
                                             onChange={this.handleInputChange}
+                                            value = {this.state.releaseTime}
                                         />
                                     </Col>
                                     <Col >
                                         <Form.Control
                                             type = "time"
+                                            name = "endTime"
                                             onChange={this.handleInputChange}
+                                            value = {this.state.endTime}
                                         />
                                     </Col>
                                     <Col>
@@ -188,8 +200,10 @@ export class GetTicket extends Component{
                                 <Form.Row className="ticketStyle">
                                     <Col sm={6}>
                                         <Form.Control
+                                            name = "description"
                                             placeholder="Beskrivelse"
                                             onChange={this.handleInputChange}/>
+                                            value = {this.state.description}
                                     </Col>
                                 </Form.Row>
                                 <Button variant="primary" size="sm" type="submit" onClick={this.handleSubmit}>
