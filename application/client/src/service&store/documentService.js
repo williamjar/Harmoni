@@ -5,11 +5,11 @@ import Document from ".classes/document.js"
 class DocumentService {
 
     getAllDocumentsForOrganizer(organizerID) {
-        return axios.get<Document[]>('/api/organizer/' + organizerID + '/documents').then(response => response.data);
+        return axios.get('/api/organizer/' + organizerID + '/documents').then(response => response.data);
     }
 
     getAllDocumentsForEvent(eventID){
-        return axios.get<Document[]>('/api/events/' + eventID + '/documents').then(response => response.data);
+        return axios.get('/api/events/' + eventID + '/documents').then(response => response.data);
     }
 
     addDocument(eventID, documentLink, artistID, documentCategoryID){
@@ -22,8 +22,15 @@ class DocumentService {
     }
 
 
-    updateDocument(document) {
-        return axios.put<Document, void>('/api/document/' + id, document).then(response => response.data);
+    updateDocument(documentID, eventID, name, link, artistID, crewID, categoryID) {
+        return axios.put('/api/document/' + documentID, {
+            "eventID":eventID,
+            "documentName": name,
+            "documentLink": link,
+            "artistID": artistID,
+            "crewID": crewID,
+            "documentCategoryID": categoryID
+        }).then(response => response.data);
     }
 
     deleteDocument(id) {
