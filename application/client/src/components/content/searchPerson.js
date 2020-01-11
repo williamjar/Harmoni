@@ -30,7 +30,7 @@ export class SearchPeople extends Component{
     render() {
         return(
             <div>
-                <div className="row padding-top-20">
+                <div className="row">
                     <div className="col-12">
                         <InputGroup>
                             <FormControl
@@ -48,28 +48,25 @@ export class SearchPeople extends Component{
                             </InputGroup.Append>
                         </InputGroup>
 
-                        <div className="card-text margin-top-5">
-                            {!this.state.showRegisterNew?this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf(e.input.toLowerCase()) >= 0).map(show =>
-                                <div className="card-title card-header search" onClick={() => this.searchHandler(show.input)}> {show.input}</div>
-                            ):      <div className="card card-body">
-                                <RegisterPerformer />
-                            </div>}
+                        <div className="card-text margin-top-5 ma">
+                            {this.state.showRegisterNew === false && this.state.showSearchResults?
+                                this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf(e.input.toLowerCase()) >= 0).map(show =>
+                                <div className="card-title card-header search" onClick={() => this.searchHandler(show.input)}>{show.input}</div>
+                            ):null}
 
+                            {this.state.showRegisterNew?
+                                <div className="card card-body">
+                                    <RegisterPerformer />
+                                </div>:null}
 
                         </div>
-
-
-
                     </div>
                 </div>
-
-
             </div>
         )
     }
 
     searchHandler(input){
-        //TODO: Changing state does not work
         let currentState = this.state;
         currentState.showSearchResults = false;
         currentState.showRegisterNew = false;
@@ -82,14 +79,18 @@ export class SearchPeople extends Component{
     registerNew(){
         let currentState = this.state;
         currentState.showRegisterNew = !currentState.showRegisterNew;
-        currentState.showSearchResults = !currentState.showSearchResults;
+        currentState.showSearchResults = false;
 
         this.setState(currentState);
 
     }
 
     handleSearchInput(event){
-        this.setState({searchInput : event.target.value});
+        let currentState = this.state;
+        currentState.showSearchResults = true;
+        currentState.showRegisterNew = false;
+        currentState.searchInput = event.target.value;
+        this.setState(currentState);
 
 
 
@@ -126,7 +127,6 @@ export class RegisterPerformer extends Component{
                                 <option>Blues</option>
                             </Form.Control>
                         </Form.Group>
-
                     </Form.Row>
 
                     <Button variant="primary" type="submit">
@@ -135,6 +135,7 @@ export class RegisterPerformer extends Component{
                     <Button variant="secondary" type="cancel" className="margin-left-5">
                         Cancel
                     </Button>
+
                 </Form>
             </div>
         )

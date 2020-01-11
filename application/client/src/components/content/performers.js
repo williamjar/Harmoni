@@ -38,7 +38,7 @@ export class Performers extends Component{
     }
 
     searchHandler(selected){
-        alert(selected);
+        let personSelected = selected;
         let currentState = this.state;
         currentState.showArtistCard = true;
         this.setState(currentState);
@@ -51,7 +51,9 @@ export class PerformerPanel extends Component{
         return (
             <div>
                 <SearchPeople searchHandler={this.props.searchHandler}/>
+                <div className="padding-top-20">
                 {this.props.showCard?<AddPerformer />:null}
+                </div>
             </div>
         );
     }

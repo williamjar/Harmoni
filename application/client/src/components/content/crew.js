@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
+import {SearchPeople} from "./searchPerson";
 
 export class Crew extends Component{
     render(){
@@ -66,17 +67,7 @@ export class AddCrew extends Component{
 
                 <div className="row padding-top-20">
                     <div className="col-6">
-                        <InputGroup>
-                            <FormControl
-                                placeholder="Search"
-                                aria-label="Search"
-                                aria-describedby="basic-addon2"
-                            />
-                            <InputGroup.Append>
-                                <Button variant="outline-secondary rounded">Legg til fra arkiv</Button>
-                                <Button variant="outline-secondary rounded">Registrer ny</Button>
-                            </InputGroup.Append>
-                        </InputGroup>
+                        <SearchPeople />
                     </div>
                 </div>
 
@@ -102,7 +93,7 @@ export class AddCrew extends Component{
                     </div>
 
                     <div className="col-4 offset-2 text-right">
-                            <button className="btn btn-success rounded" onClick={this.addNew}>Lagre personell</button>
+                        <button className="btn btn-success rounded" onClick={this.addNew}>Lagre personell</button>
                     </div>
                 </div>
 
