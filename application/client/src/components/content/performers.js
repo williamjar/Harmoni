@@ -25,11 +25,11 @@ export class Performers extends Component{
             <div>
                 <div className="row">
 
-                    <div className="col-6 border-right">
+                    <div className="col-lg-6 col-md-12  border-right">
                         <PerformerPanel searchHandler={this.searchHandler} showCard={this.state.showArtistCard}/>
                     </div>
 
-                    <div className="col-6">
+                    <div className="col-lg-6 col-md-12">
                         <RegisteredPerformers />
                     </div>
                 </div>

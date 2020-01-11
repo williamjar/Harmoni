@@ -66,7 +66,7 @@ export class AddCrew extends Component{
                 </div>
 
                 <div className="row padding-top-20">
-                    <div className="col-6">
+                    <div className="col-lg-6 col-md-12">
                         <SearchPeople />
                     </div>
                 </div>

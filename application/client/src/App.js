@@ -24,6 +24,7 @@ export class App extends Component{
 
         this.state = {
             loggedIn : true,
+            mobileView : false,
         }
     }
 
@@ -43,7 +44,8 @@ export class App extends Component{
                     <HashRouter>
                         <div className="row no-gutters">
                             <div className="col-lg-2">
-                                <NavBar />
+                                {!this.state.mobileView?<NavBar />:null}
+
                             </div>
 
                             <div className="col-lg-10">
