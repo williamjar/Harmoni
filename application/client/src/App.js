@@ -36,16 +36,35 @@ export class App extends Component{
 
         window.addEventListener('resize', () =>{
             if(window.innerWidth > 900){
-                let currentState = this.state;
-                currentState.mobileView = false;
-                this.setState(currentState);
+               this.turnOffMobileView();
             } else{
-                let currentState = this.state;
-                currentState.mobileView = true;
-                this.setState(currentState);
+               this.turnOnMobileView();
             }
 
         });
+
+        this.turnOffMobileView = this.turnOffMobileView.bind(this);
+        this.turnOnMobileView = this.turnOnMobileView.bind(this);
+    }
+
+    turnOffMobileView(){
+        let currentState = this.state;
+        currentState.mobileView = false;
+        this.setState(currentState);
+    }
+
+    turnOnMobileView(){
+        let currentState = this.state;
+        currentState.mobileView = true;
+        this.setState(currentState);
+    }
+
+    componentDidMount() {
+        if(window.innerWidth>900){
+            this.turnOffMobileView();
+        } else {
+            this.turnOnMobileView();
+        }
     }
 
     render(){
