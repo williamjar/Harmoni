@@ -18,35 +18,53 @@ export class NavBar extends Component{
                 <img width={"300px"} src={logo} alt="logo image"/>
                 </div>
 
-                <div className="nav-links">
+                <Menu/>
 
-                    <div className="nav flex-column nav-pills" id="" role="tablist"
-                         aria-orientation="vertical">
+                <UserProfileButton/>
 
-                        <NavLink className="nav-link" to="/" exact={true}>
-                            <FaCalendarAlt/> Dine arrangement
-                        </NavLink>
+            </div>
+        )
+    }
+}
 
-                        <NavLink className="nav-link" to="/opprett">
-                            <FaCalendarPlus/> Opprett arrangement
-                        </NavLink>
+export class Menu extends Component{
+    render() {
+        return(
+            <div className="nav-links">
 
-                        <NavLink className="nav-link" to="/artister">
-                            <FaMusic/> Artister
-                        </NavLink>
+                <div className="nav flex-column nav-pills" id="" role="tablist"
+                     aria-orientation="vertical">
 
-                        <NavLink className="nav-link" to="/personell">
-                            <FaUsers/> Personell
-                        </NavLink>
+                    <NavLink className="nav-link" to="/" exact={true}>
+                        <FaCalendarAlt/> Dine arrangement
+                    </NavLink>
 
-                        <NavLink className="nav-link" to="/kontrakter">
-                            <FaFileSignature/> Kontrakter
-                        </NavLink>
-                    </div>
+                    <NavLink className="nav-link" to="/opprett">
+                        <FaCalendarPlus/> Opprett arrangement
+                    </NavLink>
 
+                    <NavLink className="nav-link" to="/artister">
+                        <FaMusic/> Artister
+                    </NavLink>
+
+                    <NavLink className="nav-link" to="/personell">
+                        <FaUsers/> Personell
+                    </NavLink>
+
+                    <NavLink className="nav-link" to="/kontrakter">
+                        <FaFileSignature/> Kontrakter
+                    </NavLink>
                 </div>
 
-                <NavLink to="/brukerprofil">
+            </div>
+        )
+    }
+}
+
+export class UserProfileButton extends Component{
+    render() {
+        return(
+            <NavLink to="/brukerprofil">
                 <div className="user-nav">
                     <div className="row">
                         <div className="col-3">
@@ -58,11 +76,7 @@ export class NavBar extends Component{
                         </div>
                     </div>
                 </div>
-                </NavLink>
-
-
-
-            </div>
+            </NavLink>
         )
     }
 }

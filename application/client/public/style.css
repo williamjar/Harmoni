@@ -39,6 +39,14 @@ body{
     margin-top:5px;
 }
 
+.margin-bottom-20{
+    margin-bottom: 20px;
+}
+
+.margin-bottom-30{
+    margin-bottom: 30px;
+}
+
 .text-red {
     color:red;
 }
@@ -184,3 +192,11 @@ body{
 }
 
 /* Different mediums, Mobile etc */
+@media only screen and (max-width: 911px) {
+    .content{
+        overflow-y: scroll;
+        height: 100vh;
+        padding: 20px 20px 50px 20px;
+        margin:0 auto;
+    }
+}
