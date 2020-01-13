@@ -18,22 +18,12 @@ import {CookieStore} from "../../client/src/store/cookieStore";
 app.use(bodyParser.json());
 app.use(cors());
 
-/*const pool = mysql.createPool({
+const pool = mysql.createPool({
     connectionLimit: 2,
     host: "mysql.stud.iie.ntnu.no",
     user: "evengu",
     password: "O7KhlwWQ",
     database: "evengu",
-    debug: false,
-    multipleStatements: true
-});*/
-
-const pool = mysql.createPool({
-    connectionLimit: 2,
-    host: "mysql.stud.iie.ntnu.no",
-    user: "joakimad",
-    password: "LQliMP1A",
-    database: "joakimad",
     debug: false,
     multipleStatements: true
 });
@@ -76,7 +66,7 @@ app.use(express.static(public_path));
 //----------------- BUG ---------------------
 //Request to register bug
 app.post('/api/bug/register/:organizerID', (req, res) => {
-    bugDao.registerBug(req.params.organizerID, req.body,(status, data) => {
+    bugDao.registerBug(req.params.organizerID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });
@@ -85,9 +75,9 @@ app.post('/api/bug/register/:organizerID', (req, res) => {
 //----------------- DOCUMENTATION ---------------------
 //Check if a folder exists for user
 function checkIfFolderExist(name, path) {
-    if(name != null){
+    if (name != null) {
         //Check folder existence
-        if(fs.existsSync(path + name)){
+        if (fs.existsSync(path + name)) {
             return true;
         } else {
             return false;
@@ -98,7 +88,7 @@ function checkIfFolderExist(name, path) {
 
 
 function deleteFile(path) {
-    try{
+    try {
         fs.unlink(path, function (err) {
             if (err) throw err;
             // if no error, file has been deleted successfully
@@ -112,29 +102,29 @@ function deleteFile(path) {
 const resource_path = path.join(__dirname, '/../../client/public/resources/');
 var storage = multer.diskStorage({
     //Declaring destination for file
-    destination: function(req, file, cb) {
-        try{
+    destination: function (req, file, cb) {
+        try {
             //If user folder exist but not document category folder, create and set destination path
-            if(checkIfFolderExist(req.params.id, resource_path)){
-               if(!checkIfFolderExist(req.params.folderName, resource_path + req.params.id + "/" + req.params.folderName)) {
-                   try {
-                       fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
-                   } catch (e) {
-                       console.log("Error creating document category folder");
-                   }
-                   cb(null, resource_path + req.params.id + "/" + req.params.folderName);
-               }
-               //User and document category folder exist. Set destination
-               else {
-                   cb(null, resource_path + req.params.id + "/" + req.params.folderName);
-               }
+            if (checkIfFolderExist(req.params.id, resource_path)) {
+                if (!checkIfFolderExist(req.params.folderName, resource_path + req.params.id + "/" + req.params.folderName)) {
+                    try {
+                        fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
+                    } catch (e) {
+                        console.log("Error creating document category folder");
+                    }
+                    cb(null, resource_path + req.params.id + "/" + req.params.folderName);
+                }
+                //User and document category folder exist. Set destination
+                else {
+                    cb(null, resource_path + req.params.id + "/" + req.params.folderName);
+                }
             }
             //If neither user folder or document category folder exist. Create both
             else {
                 try {
                     fs.mkdirSync(resource_path + req.params.id);
                     try {
-                        fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName );
+                        fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
                         cb(null, resource_path + req.params.id + "/" + req.params.folderName);
                     } catch (e) {
                         console.log("Error creating document category folder");
@@ -151,7 +141,7 @@ var storage = multer.diskStorage({
     //Adding file to destination
     filename: function (req, file, cb) {
         //Create file in server. If user upload same file append time for unique name
-        try{
+        try {
             if (fs.existsSync(resource_path + req.params.id + '/' + req.params.folderName + "/" + file.originalname)) {
                 cb(null, Date.now() + "--" + file.originalname)
             } else {
@@ -195,14 +185,14 @@ var storage = multer.diskStorage({
 });*/
 
 
-var upload = multer({ storage: storage });
+var upload = multer({storage: storage});
 
 
 //Post request for uploading multiple files
 app.post('/upload/:id/:folderName', upload.array('file', 10), (req, res) => {
     try {
         res.send(req.files);
-    }catch(err) {
+    } catch (err) {
         res.send(400);
     }
 });
@@ -225,7 +215,7 @@ app.get("/api/:eventID/documents", (req, res) => {
 });
 
 app.get("/api/:eventID/documents/:documentID", (req, res) => {
-    documentationDao.getOneDocument(req.params.eventID, req.params.documentID,(status, data) => {
+    documentationDao.getOneDocument(req.params.eventID, req.params.documentID, (status, data) => {
         res.status(status);
         res.json(data);
     });
@@ -233,7 +223,7 @@ app.get("/api/:eventID/documents/:documentID", (req, res) => {
 
 
 app.delete("/api/:eventID/documents/:documentCategory/:fileName", (req, res) => {
-    documentationDao.deleteDocument(req.params.eventID, req.params.documentID,(status, data) => {
+    documentationDao.deleteDocument(req.params.eventID, req.params.documentID, (status, data) => {
         res.status(status);
         res.json(data);
         //Server stops if file dont exists
@@ -242,42 +232,42 @@ app.delete("/api/:eventID/documents/:documentCategory/:fileName", (req, res) => 
 });
 
 app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
-    documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID,(status, data) => {
+    documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID, (status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
 app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
-    documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID,(status, data) => {
+    documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID, (status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
 app.put("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
-    documentationDao.changeDocumentCategory(req.params.eventID, req.params.documentCategoryID, req.body,(status, data) => {
+    documentationDao.changeDocumentCategory(req.params.eventID, req.params.documentCategoryID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
 app.post("/api/:eventID/documents/create", (req, res) => {
-    documentationDao.insertDocument(req.params.eventID, req.body,(status, data) => {
+    documentationDao.insertDocument(req.params.eventID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
 app.post("/api/:eventID/documents/create/artist", (req, res) => {
-    documentationDao.insertDocumentArtist(req.params.eventID, req.body,(status, data) => {
+    documentationDao.insertDocumentArtist(req.params.eventID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
 app.post("/api/:eventID/documents/create/crew", (req, res) => {
-    documentationDao.insertDocumentCrew(req.params.eventID, req.body,(status, data) => {
+    documentationDao.insertDocumentCrew(req.params.eventID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });
@@ -296,7 +286,7 @@ app.post("/login", (req, res) => {
     let loginDao = new LoginDao(pool);
     loginDao.checkLogin(req.body.email, req.body.password, (status, data) => {
         console.log(status);
-        if (status === 200 && data.length > 0){
+        if (status === 200 && data.length > 0) {
             console.log('Login OK');
             let token = jwt.sign(
                 {
@@ -306,19 +296,17 @@ app.post("/login", (req, res) => {
                     algorithm: "RS512",
                 });
             console.log("Token signed");
-            jwt.verify(token, publicKey,(err, decoded) => {
-                if (err){
+            jwt.verify(token, publicKey, (err, decoded) => {
+                if (err) {
                     console.log(err);
-                }
-                else{
+                } else {
                     console.log(decoded);
                 }
             });
             console.log("Token verified");
             res.status(status);
             res.json({jwt: token});
-        }
-        else{
+        } else {
             console.log('Login not OK');
             res.status(status);
             res.json({error: 'Not authorized'});
@@ -345,11 +333,10 @@ app.get("/organizer/by-email/:email", (req, res) => {
 app.post("/token", (req, res) => {
     let token = req.headers['x-access-token'];
     jwt.verify(token, publicKey, (err, decoded) => {
-        if (err){
+        if (err) {
             console.log("Token not OK / Expired / User no longer logged in");
             res.json({error: err});
-        }
-        else{
+        } else {
             console.log("Token accepted. Updating token clientside");
             let newToken = jwt.sign(
                 {
@@ -368,12 +355,11 @@ app.use('/api', (req, res, next) => {
     console.log("Testing /api");
     let token = req.headers["x-access-token"];
     jwt.verify(token, publicKey, (err, decoded) => {
-        if (err){
+        if (err) {
             console.log('Token not OK');
             res.status(401);
             res.json({error: err});
-        }
-        else{
+        } else {
             console.log('Token OK for: ' + decoded.email);
             CookieStore.currentToken = jwt.sign(
                 {
@@ -766,7 +752,7 @@ app.get("/api/events/organizer/:organizerID", (request, response) => {
 //TODO: Check if this endpoint works with localStorage
 //Get all events by status
 app.get("/api/events/status/:status", (request, response) => {
-    console.log("Express: Request to get all events for organizer " + CookieStore.currentUserID+ " with status " + request.params.status);
+    console.log("Express: Request to get all events for organizer " + CookieStore.currentUserID + " with status " + request.params.status);
     eventDao.getByStatusForOrganizer((status, data) => {
         response.status(status);
         response.json(data);

@@ -74,6 +74,16 @@ export class ArtistService {
         );
         return allArtistByEvent;
     }
+
+    static addDocumentToArtist(eventID, name, link, artistID, categoryID){
+        return axios.post(axiosConfig.root + '/api/document/artist',{
+            "eventID": eventID,
+            "documentName": name,
+            "documentLink": link,
+            "artistID": artistID,
+            "documentCategoryID": categoryID
+        }).then(response => response.data);
+    }
 }
 
 
