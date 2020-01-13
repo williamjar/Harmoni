@@ -1,4 +1,4 @@
-import {RegisterOrganizerService} from "../../service&store/registerOrganizerService";
+import {RegisterOrganizerService} from "../../store/registerOrganizerService";
 import runSQLFile from "../../../../runsqlfile";
 import axios from "axios";
 

@@ -1,5 +1,5 @@
 import runSQLFile from '../../../runsqlfile';
-import {ArtistService} from "../service&store/artistService.js";
+import {ArtistService} from "../store/artistService.js";
 import {Artist} from "../classes/artist.js";
 
 let mysql = require("mysql");
