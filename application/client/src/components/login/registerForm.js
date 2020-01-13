@@ -134,8 +134,7 @@ export class RegisterForm extends React.Component {
         *   It can be assumed that the emails are identical and that the passwords are identical.
         *
         * */
-        //TODO: Change "testusername" to this.state.username when merge happens!
-        RegisterOrganizerService.registerOrganizer("testusername", this.state.firstEmail, this.state.firstPassword, statusCode => {
+        RegisterOrganizerService.registerOrganizer(this.state.username, this.state.firstEmail, this.state.firstPassword, statusCode => {
             if (statusCode === 200){
                 console.log("User perfectly registered");
             }

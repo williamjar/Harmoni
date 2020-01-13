@@ -416,7 +416,7 @@ app.get("/api/contact/:contactID", (request, response) => {
 app.post("/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
-        request.body.contactName,
+        request.body.username,
         request.body.phone,
         request.body.email
     ];
@@ -854,6 +854,9 @@ app.post("/organizer", (request, response) => {
         request.body.password,
         request.body.contactID
     ];
+
+    console.log(request.body);
+
     organizerDao.createOne((status, data) => {
         response.status(status);
         response.json(data);
