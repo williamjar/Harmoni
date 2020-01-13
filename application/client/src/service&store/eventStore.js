@@ -7,12 +7,11 @@ let axiosConfig = require("./axiosConfig");
 
 class eventStore{
 
-    static currentEvent = new Event(-1, "", "", "", "", "", "", "", -1, "", "",
-        "", "", -1, -1);
+    static currentEvent = null;
 
     static allEvents = [];
 
-    static storeEvent(eventID){
+    static storeCurrentEvent(eventID){
 
         //Populates currentEvent
 
@@ -30,7 +29,18 @@ class eventStore{
         });
     }
 
-    static getAllEvents(){
+    static postCurrentEvent(){
+
+        let header = {};
+
+        let body = {
+            firstnme : ""
+        };
+
+        return axios.post(axiosConfig.root + "")
+    }
+
+    static storeAllEvents(){
 
         let header = {
             "Content-Type": "application/json"

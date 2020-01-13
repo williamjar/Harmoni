@@ -10,6 +10,14 @@ module.exports = class eventDao extends Dao {
         super.query('SELECT * FROM event WHERE eventID = ?', [eventID], callback);
     }
 
+    createOne(callback, list){
+        super.query('INSERT INTO event VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', list, callback);
+    }
+
+    updateOne(callback, list){
+        super.query('UPDATE event SET eventName = ?, startDate = ?, endDate = ?, startTime = ?, endTime = ?, address = ?, town = ?, zipCode = ?, status = ?, description = ?, publishDate = ?, publishTime = ?, eventTypeID = ?, pictureID = ? WHERE eventID = ?', list, callback);
+    }
+
     getByStatusForOrganizer(callback, status, organizerID) {
         super.query('SELECT * FROM event WHERE status = ? AND organizerID = ?', [status, organizerID], callback);
     }

@@ -705,6 +705,24 @@ app.get("/api/events/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
+//Create one event
+app.post("/api/events", (request, response) => {
+    console.log("Express: Request to create an event");
+    eventDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.eventTypeID, request.body.pictureID]);
+});
+
+//Update event
+app.put("/api/events/:eventID", (request, response) => {
+    console.log("Express: Request to update an event");
+    eventDao.updateOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.eventTypeID, request.body.pictureID, request.params.eventID]);
+});
+
 //TODO: Check if this endpoint works with localStorage
 //Get all events by status
 app.get("/api/events/status/:status", (request, response) => {
