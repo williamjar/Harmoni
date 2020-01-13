@@ -18,12 +18,22 @@ import {CookieStore} from "../../client/src/store/cookieStore";
 app.use(bodyParser.json());
 app.use(cors());
 
-const pool = mysql.createPool({
+/*const pool = mysql.createPool({
     connectionLimit: 2,
     host: "mysql.stud.iie.ntnu.no",
     user: "evengu",
     password: "O7KhlwWQ",
     database: "evengu",
+    debug: false,
+    multipleStatements: true
+});*/
+
+const pool = mysql.createPool({
+    connectionLimit: 2,
+    host: "mysql.stud.iie.ntnu.no",
+    user: "joakimad",
+    password: "LQliMP1A",
+    database: "joakimad",
     debug: false,
     multipleStatements: true
 });
@@ -38,6 +48,7 @@ const eventDaoObj = require('./dao/eventDao.js');
 const organizerDaoObj = require('./dao/organizerDao.js');
 const riderDaoObj = require('./dao/riderDao.js');
 const documentationDaoObj = require("./dao/documentationdao.js");
+const loginDaoObj = require("./dao/loginDao");
 let artistDao = new artistDaoObj(pool);
 let bugDao = new bugDaoObj(pool);
 let contactDao = new contactDaoObj(pool);
@@ -48,6 +59,7 @@ let eventDao = new eventDaoObj(pool);
 let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
 let organizerIDDao = new OrganizerIDDao(pool);
+let loginDao = new loginDaoObj(pool);
 
 
 const public_path = path.join(__dirname, '/../../client/public');
@@ -61,6 +73,14 @@ app.use(bodyParser.json());
 
 app.use(express.static(public_path));
 
+//----------------- BUG ---------------------
+//Request to register bug
+app.post('/api/bug/register/:organizerID', (req, res) => {
+    bugDao.registerBug(req.params.organizerID, req.body,(status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
 
 //----------------- DOCUMENTATION ---------------------
 //Check if a folder exists for user
@@ -85,7 +105,7 @@ function deleteFile(path) {
             console.log('File deleted!');
         });
     } catch (e) {
-        console.log("test");
+        console.log("Error, could not delete file:" + e);
     }
 }
 
@@ -263,7 +283,7 @@ app.post("/api/:eventID/documents/create/crew", (req, res) => {
     });
 });
 
-/*START LOGIN*/
+// START LOGIN
 let privateKey = SECRET.privateKey;
 let publicKey = SECRET.publicKey;
 
@@ -304,6 +324,13 @@ app.post("/login", (req, res) => {
             res.json({error: 'Not authorized'});
         }
     });
+});
+
+app.get("/organizer/username/:username", (req, res) => {
+    loginDao.checkUserExists(req.params.username, (status, data) => {
+        res.status(status);
+        res.json(data);
+    })
 });
 
 //Returns organizerID by email. Needed for login, thus not part of /api/
@@ -365,9 +392,10 @@ app.get('/api/test', () => {
     console.log("Testing /api/test");
 });
 
-/*END LOGIN*/
+// END LOGIN
 
 // BUG
+//TODO Not working right now
 app.get("/api/bug", (request, response) => {
     console.log("request to get all bugs");
     bugDao.getAll((status, data) => {
@@ -385,7 +413,6 @@ app.get("/api/bug/:bugID", (request, response) => {
 });
 
 // CONTACT
-
 app.get("/api/contact/:contactID", (request, response) => {
     console.log("request to get a contact");
     contactDao.getOne((status, data) => {
@@ -394,7 +421,7 @@ app.get("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID);
 });
 
-app.post("/api/contact", (request, response) => {
+app.post("/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
         request.body.contactName,
@@ -431,6 +458,20 @@ app.delete("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID)
 });
 
+//TODO: Header error
+app.put("/api/contact/:contactID/phone", (request, response) => {
+    console.log("Request to change phone for contact");
+    let val = [
+        request.body.phone,
+        request.params.contactID
+    ];
+    contactDao.changePhoneNumber((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+
 // ARTIST
 app.get("/api/artist/:artistID", (request, response) => {
     console.log("request for artist");
@@ -438,6 +479,22 @@ app.get("/api/artist/:artistID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.artistID);
+});
+
+app.get("/api/artist/organizer/:organizerID", (request, response) => {
+    console.log("request for artist per organizer");
+    artistDao.getAllForOrganizer((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.organizerID);
+});
+
+app.get("/api/artist/event/:eventID", (request, response) => {
+    console.log("request for artist per event");
+    artistDao.getAllForEvent((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID);
 });
 
 app.post("/api/artist", (request, response) => {
@@ -470,6 +527,18 @@ app.post("/api/document/artist", (request, response) => {
     }, val)
 });
 
+app.post("/api/artist/assign", (request, response) => {
+    console.log("request to assign artist to event");
+    let val = [
+        request.body.eventID,
+        request.body.artistID
+    ];
+    artistDao.assignOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
 app.put("/api/artist/:artistID", (request, response) => {
     console.log("request to update artist");
     let val = [
@@ -491,6 +560,15 @@ app.delete("/api/artist/:artistID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.artistID)
+});
+
+app.delete("/api/artist/assign/:eventID/:artistID", (request, response) => {
+    console.log("request to unassign artist");
+
+    artistDao.unAssignOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID, request.params.artistID)
 });
 
 // CREW
@@ -518,12 +596,12 @@ app.get("/api/event/crew/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
-app.get("/api/crew/categories/organizerID", (request, response) => {
-    console.log("request for all crew attached to en event");
+app.get("/api/crew/categories/:organizerID", (request, response) => {
+    console.log("request for all crew categories attached to organizer");
     crewDao.getAllCategories((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.eventID);
+    }, request.params.organizerID);
 });
 
 app.post("/api/crew", (request, response) => {
@@ -573,7 +651,7 @@ app.post("/api/document/crew", (request, response) => {
         request.body.documentName,
         request.body.documentLink,
         request.body.crewID,
-        request.body.documentCategory
+        request.body.documentCategoryID
     ];
 
     crewDao.addDocument((status, data) => {
@@ -658,14 +736,41 @@ app.get("/api/events/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
+//Create one event
+app.post("/api/events", (request, response) => {
+    console.log("Express: Request to create an event");
+    eventDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.eventTypeID, request.body.pictureID]);
+});
+
+//Update event
+app.put("/api/events/:eventID", (request, response) => {
+    console.log("Express: Request to update an event");
+    eventDao.updateOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.eventTypeID, request.body.pictureID, request.params.eventID]);
+});
+
+//Get all events for organizer
+app.get("/api/events/organizer/:organizerID", (request, response) => {
+    console.log("Express: Request to get all events for organizer" + request.params.organizerID);
+    eventDao.getAllForOrganizer((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.organizerID);
+});
+
 //TODO: Check if this endpoint works with localStorage
 //Get all events by status
 app.get("/api/events/status/:status", (request, response) => {
-    console.log("Express: Request to get all events for organizer " + localStorage.get("organizerID") + " with status " + request.params.status);
+    console.log("Express: Request to get all events for organizer " + CookieStore.currentUserID+ " with status " + request.params.status);
     eventDao.getByStatusForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.status, localStorage.get("organizerID"));
+    }, request.params.status, CookieStore.currentUserID);
 });
 
 //Delete an event
@@ -677,41 +782,32 @@ app.delete("/api/events/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
-//Publish an event
-app.put("/api/events/:eventID", (request, response) => {
-    console.log("Express: request to publish event " + request.params.eventID);
-    eventDao.publishOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.eventID);
-});
-
-//Archive an event
-app.put("/api/events/:eventID", (request, response) => {
+//Change event status
+app.put("/api/events/:eventID/status/:status", (request, response) => {
     console.log("Express: request to archive event " + request.params.eventID);
-    eventDao.archiveOne((status, data) => {
+    eventDao.setStatus((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.eventID);
+    }, request.params.eventID, request.params.status);
 });
 
 //Get number of events with status
 app.get("/api/events/status/:status/amount", (request, response) => {
-    console.log("Express: request to get number of elements with status " + request.params.status + " for organizer " + localStorage.get("organizerID"));
+    console.log("Express: request to get number of elements with status " + request.params.status + " for organizer " + CookieStore.currentUserID);
     eventDao.getNumberOfStatusForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.status, localStorage.get("organizerID"));
+    }, request.params.status, CookieStore.currentUserID);
 });
 
 //TODO: Check if this is necessary
 //Get X events with status after date
 app.get("/api/events/status/:status/:amount/:date", (request, response) => {
-    console.log("Express: request to get " + request.params.amount + " elements with status " + request.params.status + " after date " + request.params.date + " for organizer " + localStorage.get("organizerID"));
+    console.log("Express: request to get " + request.params.amount + " elements with status " + request.params.status + " after date " + request.params.date + " for organizer " + CookieStore.currentUserID);
     eventDao.getXOfStatusAfterDateForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.status, request.params.amount, request.params.date, localStorage.get("organizerID"));
+    }, request.params.status, request.params.amount, request.params.date, CookieStore.currentUserID);
 });
 
 //Get all artists for event
@@ -762,7 +858,7 @@ app.get("/api/organizer/:organizerID/documents", (require, response) => {
 });
 
 // post new organizer
-app.post("/api/organizer", (request, response) => {
+app.post("/organizer", (request, response) => {
     console.log("Request to add a organizer");
     let val = [
         request.body.username,
@@ -777,13 +873,27 @@ app.post("/api/organizer", (request, response) => {
 
 
 // change password for organizer
-app.put("/api/organizer/:organizerID", (request, response) => {
+app.put("/api/organizer/:organizerID/pass", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.password,
         request.params.organizerID
     ];
     organizerDao.changePassword((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+//TODO: Header error
+//Change username for organizer
+app.put("/api/organizer/:organizerID/username", (request, response) => {
+    console.log("Request to change password for organizer");
+    let val = [
+        request.body.username,
+        request.params.organizerID
+    ];
+    organizerDao.changeUsername((status, data) => {
         response.status(status);
         response.json(data);
     }, val);

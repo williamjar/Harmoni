@@ -1,10 +1,9 @@
 import axios from "axios";
-import {sharedComponentData} from "react-simplified";
 
 class BugService{
 
-    getOneBug(bugID){
-        return axios.get(`/api/bug/${bugID}`);
+    getOneBug(bugID, callback){
+        return axios.get(`/api/bug/${bugID}`).then(() => callback());
     }
 
     getAllBugs(){
@@ -13,4 +12,6 @@ class BugService{
 
 }
 
-export let bugService = sharedComponentData(new BugService());
+export let bugService = new BugService();
+
+
