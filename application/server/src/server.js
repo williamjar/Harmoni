@@ -620,7 +620,7 @@ app.post("/api/document/crew", (request, response) => {
         request.body.documentName,
         request.body.documentLink,
         request.body.crewID,
-        request.body.documentCategory
+        request.body.documentCategoryID
     ];
 
     crewDao.addDocument((status, data) => {

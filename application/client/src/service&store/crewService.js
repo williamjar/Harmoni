@@ -8,7 +8,7 @@ let axiosConfig = require("./axiosConfig");
 class CrewService {
 
     getCrewMember(crewID){
-        return axios.get<CrewMember>('/api/crew/' + crewID).then(response => response.data);
+        return axios.get('/api/crew/' + crewID).then(response => response.data);
     }
 
     getAllCrewMembersForOrganizer(organizerID) {
@@ -23,40 +23,72 @@ class CrewService {
         return axios.get('/api/event/crew/' + eventID).then(response => response.data);
     }
 
-    addCrewMember(){
-        return axios.post('/api/crew', crew).then(response => response.data);
+    addCrewMember(name, phone, email, description, organizerID){
+       /* axios.post('/api/contact', {
+            "contactName": name,
+            "phone": phone,
+            "email": email
+        }).then((response => response.data),
+
+       axios.post('/api/crew', {
+            "description": description,
+            "organizerID": organizerID,
+            "contactID": contactID
+        }).then(response => response.data); */
     }
 
-    addCategory(){
-        return axios.post('/api/crew-category', crew).then(response => response.data);
+    addCategory(categoryName, organizerID){
+        axios.post('/api/crew-category', {
+            "crewCategoryName": categoryName,
+            "organizerID": organizerID
+        }).then(response => response.data);
     }
 
-    assignCrewMemberToEvent(){
-        return axios.post('/api/crew/assign', crew).then(response => response.data);
+    assignCrewMemberToEvent(eventID, categoryID, crewID, isResponsible){
+        axios.post('/api/crew/assign', {
+            "eventID": eventID,
+            "crewCategoryID": categoryID,
+            "crewID": crewID,
+            "isResponsible": isResponsible
+        }).then(response => response.data);
     }
 
-    addDocumentToCrewMember(){
-        return axios.post('/api/document/crew', crewinfo).then(response => response.data);
+    addDocumentToCrewMember(eventID, name, link, crewID, categoryID){
+        return axios.post('/api/document/crew',{
+            "eventID": eventID,
+            "documentName": name,
+            "documentLink": link,
+            "crewID": crewID,
+            "documentCategoryID": categoryID
+        }).then(response => response.data);
     }
 
-    updateCrewMember(crewinfo) {
-        return axios.put('/api/crew/' + id, crewinfo).then(response => response.data);
+    updateCrewMember(description, id) {
+        return axios.put('/api/crew/' + id, {
+            "description": description,
+            "crewID": id
+        }).then(response => response.data);
     }
 
-    updateCrewMemberAsLeader(crew) {
-        return axios.put('/api/responsible/' + isResponsible, crew).then(response => response.data);
+    updateCrewMemberAsLeader(isResponsible, eventID, categoryID, crewID) {
+        return axios.put('/api/responsible/' + isResponsible, {
+            "isResponsible": isResponsible,
+            "eventID": eventID,
+            "crewCategoryID": categoryID,
+            "crewID": crewID
+        }).then(response => response.data);
     }
 
     deleteCrewMember(crewID) {
-        return axios.delete<CrewMember>('/api/crew/' + crewID).then(response => response.data);
+        return axios.delete('/api/crew/' + crewID).then(response => response.data);
     }
 
     deleteCrewMember(crewCategoryID) {
-        return axios.delete<CrewMember>('/api/crew-category/' + crewCategoryID).then(response => response.data);
+        return axios.delete('/api/crew-category/' + crewCategoryID).then(response => response.data);
     }
 
-    unassignCrewMember(){
-        return axios.delete<CrewMember>('/api/crew/assign/' + eventID + '/' + crewCategoryID + '/' + crewID).then(response => response.data);
+    unassignCrewMember(crewCategoryID, crewID){
+        return axios.delete('/api/crew/assign/' + eventID + '/' + crewCategoryID + '/' + crewID).then(response => response.data);
     }
 
 }
