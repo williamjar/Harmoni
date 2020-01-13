@@ -28,7 +28,6 @@ const pool = mysql.createPool({
     multipleStatements: true
 });
 
-const OrganizerIDDao = require("./dao/organizerIDDao");
 const artistDaoObj = require('./dao/artistDao.js');
 const bugDaoObj = require('./dao/bugDao.js');
 const contactDaoObj = require('./dao/contactDao.js');
@@ -48,9 +47,7 @@ let documentationDao = new documentationDaoObj(pool);
 let eventDao = new eventDaoObj(pool);
 let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
-let organizerIDDao = new OrganizerIDDao(pool);
 let loginDao = new loginDaoObj(pool);
-
 
 const public_path = path.join(__dirname, '/../../client/public');
 app.use(express.static(public_path));
@@ -353,6 +350,7 @@ app.post("/token", (req, res) => {
 
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
+
     let token = req.headers["x-access-token"];
     console.log(token === CookieStore.currentToken);
     jwt.verify(token, publicKey, (err, decoded) => {
@@ -369,7 +367,7 @@ app.use('/api', (req, res, next) => {
                 }, privateKey, {
                     algorithm: "RS512",
                 });
-            res.json({jwt: CookieStore.currentToken, for: decoded.email});
+            //res.json({jwt: CookieStore.currentToken, for: decoded.email});
             next();
         }
     })
@@ -445,17 +443,14 @@ app.delete("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID)
 });
 
-//TODO: Header error
-app.put("/api/contact/:contactID/phone", (request, response) => {
-    console.log("Request to change phone for contact");
-    let val = [
-        request.body.phone,
-        request.params.contactID
-    ];
+
+app.put("/api/contact/:contactID/change/phoneNumber", (request, response) => {
+    console.log("Request to change password for organizer");
+
     contactDao.changePhoneNumber((status, data) => {
         response.status(status);
         response.json(data);
-    }, val);
+    }, request.body.phone ,request.params.contactID);
 });
 
 
@@ -860,13 +855,15 @@ app.post("/organizer", (request, response) => {
 
 
 // change password for organizer
-app.put("/api/organizer/:organizerID/pass", (request, response) => {
+app.put("/api/organizer/:organizerID/change/password", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.password,
         request.params.organizerID
     ];
     organizerDao.changePassword((status, data) => {
+        console.log(status);
+        console.log(data);
         response.status(status);
         response.json(data);
     }, val);
@@ -874,16 +871,16 @@ app.put("/api/organizer/:organizerID/pass", (request, response) => {
 
 //TODO: Header error
 //Change username for organizer
-app.put("/api/organizer/:organizerID/username", (request, response) => {
+app.put("/api/organizer/:organizerID/change/username", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.username,
         request.params.organizerID
     ];
-    organizerDao.changeUsername((status, data) => {
+    organizerDao.changeUsername(val,(status, data) => {
         response.status(status);
         response.json(data);
-    }, val);
+    });
 });
 
 
@@ -1008,6 +1005,12 @@ app.delete("/api/document/:documentID", (request, response) => {
         response.json(data);
     }, request.params.documentID);
 });
+
+// PICTURE
+//Delete
+//Update
+//Insert
+
 
 const server = app.listen(8080);
 

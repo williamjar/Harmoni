@@ -7,7 +7,7 @@ export class OrganizerService {
 
     static getOrganizer(organizerID) {
         axios.get(axiosConfig.root + '/api/organizer/' + organizerID).then(response => {
-                let organizer = new Organizer(response.data[0].organizerID, response.data[0].contactName, response.data[0].phone,
+            return new Organizer(response.data[0].organizerID, response.data[0].contactName, response.data[0].phone,
                     response.data[0].email, response.data[0].username, response.data[0].pictureLink);
                 //callback(organizer);
                 return organizer;

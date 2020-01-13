@@ -6,37 +6,55 @@ import {Button, Card, Col, Form, Image, Row} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
 import lorde from './lorde.jpg';
 import map from './map.jpg';
-import {GetTicket} from "../ticket";
+import {GetTicket, TicketView} from "../ticket";
 
-
+// Component for viewing general information about an event
 export class GeneralInfo extends Component{
 
+    state = {
+        editable: [this.props.editable],
+    };
+
     render(){
+        console.log(this.state.editable);
         return(
             <div>
                 <div className="row">
 
                     <div className="col-7 border-right">
-                        <InfoForm/>
+                        {this.state.editable ? <InfoForm/> : <InfoView/>}
                     </div>
                     <div className="col-5">
                         <Card.Body>
                             <Image src={lorde} alt="event image" fluid className="mb-2"/>
-                            <Button>Last opp bilde</Button>
+                            {this.state.editable ? <Button>Last opp bilde</Button> : null}
                         </Card.Body>
                     </div>
                 </div>
                 <Row className="mb-3">
                     <Col>
-                        <Form.Label>Billetter</Form.Label>
-                        <GetTicket/>
+                        <Card>
+                            <Card.Header><Card.Title>Billetter</Card.Title></Card.Header>
+                            {this.state.editable ? <GetTicket/> : <TicketView/>}
+                        </Card>
                     </Col>
                 </Row>
             </div>
         )
     }
+
+    static getDerivedStateFromProps(props, state) {
+
+        if(props.editable !== state.editable) {
+            return {
+                editable: props.editable
+            };
+        }
+        return null;
+    }
 }
 
+// Component for editing or submitting general info about an event
 export class InfoForm extends Component {
 
     state = {
@@ -128,6 +146,128 @@ export class InfoForm extends Component {
                                 <Col>
                                     <Form.Label>Beskrivelse</Form.Label>
                                     <Form.Control as="textarea" rows="3"/>
+                                </Col>
+                            </Row>
+                        </Form.Group>
+                    </Card.Body>
+                </Card>
+            </div>
+        )
+    }
+}
+
+// Component for viewing the general information about an event
+export class InfoView extends Component {
+
+    state = {
+        edit: false,
+        name: "Lorde, intimkonsert",
+    };
+
+    editClicked = () => {
+        this.setState({edit: true})
+    };
+
+    render() {
+        return(
+            <div>
+                <Card className="mb-2">
+                    <Card.Header>
+                        <Row>
+                            <Card.Title>Lorde, intimkonsert</Card.Title>
+                        </Row>
+                    </Card.Header>
+                    <Card.Body>
+                        <Form.Group>
+                            <Row className="mb-2">
+                                <Col xs="5">
+                                    <Row>
+                                        <Col>
+                                            <FaCalendarAlt className="mr-1"/>
+                                            <Form.Label>Start</Form.Label>
+                                        </Col>
+                                    </Row>
+                                    01 Jan 2020
+                                </Col>
+                                <Col xs="3">
+                                    <Row>
+                                        <Col>
+                                            <FaClock className="mr-1"/>
+                                            <Form.Label>Tid</Form.Label>
+                                        </Col>
+                                    </Row>
+                                    18:00
+                                </Col>
+                                <Col>
+                                    <Row>
+                                        <Col>
+                                            <Form.Label>Type arrangement</Form.Label>
+                                        </Col>
+                                    </Row>
+                                    Musikk
+                                </Col>
+                            </Row>
+                            <Row className="mb-4">
+                                <Col xs="5">
+                                    <Row>
+                                        <Col>
+                                            <FaCalendarAlt className="mr-1"/>
+                                            <Form.Label>Slutt</Form.Label>
+                                        </Col>
+                                    </Row>
+                                    01 Jan 2020
+                                </Col>
+                                <Col xs="3">
+                                    <Row>
+                                        <Col>
+                                            <FaClock className="mr-1"/>
+                                            <Form.Label>Tid</Form.Label>
+                                        </Col>
+                                    </Row>
+                                    21:00
+                                </Col>
+                            </Row>
+                            <Row className="mb-4">
+                                <Col xs="5">
+                                    <Row>
+                                        <Col>
+                                            <FaHouseDamage className="mr-1"/>
+                                            <Form.Label>Adresse</Form.Label>
+                                        </Col>
+                                    </Row>
+                                    Trondheim Spektrum
+                                </Col>
+                                <Col xs="3">
+                                    <Row>
+                                        <Col>
+                                            <Form.Label>Postnummer</Form.Label>
+                                        </Col>
+                                    </Row>
+                                    7014
+                                </Col>
+                                <Col xs="3">
+                                    <Row>
+                                        <Col>
+                                            <Form.Label>Poststed</Form.Label>
+                                        </Col>
+                                    </Row>
+                                    Trondheim
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <Row className="mt-2">
+                                        <Col>
+                                            <Card.Title>Beskrivelse</Card.Title>
+                                        </Col>
+                                    </Row>
+                                    <Card.Body>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer a tempor est,
+                                        non pharetra diam. Nullam nulla nunc, malesuada quis cursus at, imperdiet
+                                        pellentesque nisl. Duis eget nulla eu ante congue tincidunt. Sed tristique odio
+                                        massa, ac suscipit odio lobortis ac. Sed fringilla tempor nulla, nec feugiat
+                                        augue hendrerit sit amet.
+                                    </Card.Body>
                                 </Col>
                             </Row>
                         </Form.Group>
