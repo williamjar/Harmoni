@@ -6,6 +6,7 @@ import { createHashHistory } from 'history';
 
 const history = createHashHistory();
 
+// Component displaying a single event as a table row
 export class EventCard extends React.Component {
 
     // Handles when the user

@@ -8,7 +8,7 @@ import lorde from './lorde.jpg';
 import map from './map.jpg';
 import {GetTicket, TicketView} from "../ticket";
 
-
+// Component for viewing general information about an event
 export class GeneralInfo extends Component{
 
     state = {
@@ -33,8 +33,10 @@ export class GeneralInfo extends Component{
                 </div>
                 <Row className="mb-3">
                     <Col>
-                        <Form.Label>Billetter</Form.Label>
-                        {this.state.editable ? <GetTicket/> : <TicketView/>}
+                        <Card>
+                            <Card.Header><Card.Title>Billetter</Card.Title></Card.Header>
+                            {this.state.editable ? <GetTicket/> : <TicketView/>}
+                        </Card>
                     </Col>
                 </Row>
             </div>
@@ -52,6 +54,7 @@ export class GeneralInfo extends Component{
     }
 }
 
+// Component for editing or submitting general info about an event
 export class InfoForm extends Component {
 
     state = {
@@ -153,6 +156,7 @@ export class InfoForm extends Component {
     }
 }
 
+// Component for viewing the general information about an event
 export class InfoView extends Component {
 
     state = {
