@@ -5,6 +5,9 @@ import {TabContent} from "./tabContent";
 import {AddPerformer, Performers, PerformersView} from "./performers";
 import {Crew} from "./crew";
 import {GeneralInfo, InfoView} from "./generalInfo";
+import {PerformerCard, PerformersTab} from "./performers";
+import {CrewTab} from "./crew";
+import {GeneralInfo} from "./generalInfo";
 import {DocumentationTab} from "../documentationTab";
 
 

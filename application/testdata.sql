@@ -39,7 +39,7 @@ INSERT INTO contact (contactName, phone, email) VALUES ('Arne', '47474747', 'pla
 -- Artists
 INSERT INTO contact (contactName, phone, email) VALUES ('Anne', '92929292', 'anne@music.no');
 INSERT INTO contact (contactName, phone, email) VALUES ('Demon SlayerZ', '66666666', 'dmonZ@cdrecords.no');
--- Crew
+-- CrewTab
 INSERT INTO contact (contactName, phone, email) VALUES ('Svein', '+4793939393', 'kontakt@rigging.no');
 INSERT INTO contact (contactName, phone, email) VALUES ('Roger', '+4793939393', 'kontakt@rigging.no');
 
@@ -93,5 +93,5 @@ INSERT INTO riderElement (riderElementID,artistID,eventID,status,isDone,descript
 INSERT INTO riderElement (riderElementID,artistID,eventID,status,isDone,description) VALUES (2,1,1,'Må dra innom butikken',0,'Brødskive med hvitost');
 INSERT INTO riderElement (riderElementID,artistID,eventID,status,isDone,description) VALUES (1,2,2,'Dobbeltsjekk tilgjengelighet',0,'3 stk. smalahove');
 
-INSERT INTO bug (date,description,organizerID) VALUES (now(),'Everything crashed',1);
-INSERT INTO bug (date,organizerID) VALUES (now(),1);
+INSERT INTO bug (date,description,organizerID, resolved) VALUES (now(),'Everything crashed',1, 0);
+INSERT INTO bug (date,organizerID, resolved) VALUES (now(),1, 1);
