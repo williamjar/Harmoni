@@ -13,7 +13,7 @@ import {CreateEventSplash} from "./components/content/CreateEventSplash";
 import {UserPage} from "./components/user/userPage";
 import {Search, SearchPeople} from "./components/content/searchPerson";
 
-import {GetTicket} from "./components/ticket";
+import {GetTicket, Ticket} from "./components/ticket";
 import {EventForm} from "./components/content/eventForm";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
@@ -94,7 +94,7 @@ export class App extends Component{
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
                                 <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash/>} />} />
                                 <Route exact path="/artister" component={() => <Content page={<SearchPeople/>} />} />
-                                <Route exact path="/personell" component={Content}/>
+                                <Route exact path="/personell" component={() => <Content page={<Ticket/>} /> }/>
                                 <Route exact path="/kontrakter" component={Content}/>
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage/>} />} />
                                 <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
