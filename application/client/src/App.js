@@ -14,7 +14,7 @@ import {UserPage} from "./components/user/userPage";
 
 import {GetTicket} from "./components/ticket";
 import {EventForm} from "./components/content/eventForm";
-import {DocView} from "./components/docView";
+import {DocList, Document, DocView} from "./components/docView";
 import {PersonellView} from "./components/persView";
 
 
@@ -51,7 +51,7 @@ export class App extends Component{
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
                                 <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash/>} />} />
                                 <Route exact path="/artister" />
-                                <Route exact path="/personell" component={Content}/>
+                                <Route exact path="/personell" component={()=> <Content page = {<DocList/>} />} />
                                 <Route exact path="/kontrakter" component={Content}/>
                                 <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage/>} />} />
