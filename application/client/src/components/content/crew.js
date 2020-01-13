@@ -8,6 +8,7 @@ import Button from "react-bootstrap/Button";
 import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
+import {TicketType} from "../../classes/ticketType";
 
 export class Crew extends Component{
     state = {
@@ -227,6 +228,7 @@ export class AddToCrew extends Component{
 }
 
 export class AddedCrew extends Component{
+
     render() {
         return (
             <div>
