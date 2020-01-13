@@ -65,6 +65,7 @@ export class CreateEventSplash extends Component{
             state.emptyMessage = true;
             this.setState(state);
         } else{
+            //eventStore.create
             history.push('/arrangementEdit');
         }
     }
