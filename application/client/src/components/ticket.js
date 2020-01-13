@@ -278,7 +278,7 @@ export class TicketView extends Component {
                     <td><FaAngleDown/></td>
                 </tr>
                 <tr className={this.state.collapse ? "collapse" : null}>
-                    Dette er en standard billett
+                    beskrivelse
                 </tr>
                 <tr align='center' className="accordion">
                     <td>GULL</td>
@@ -288,7 +288,7 @@ export class TicketView extends Component {
                     <td><FaAngleDown/></td>
                 </tr>
                 <tr className={this.state.collapse ? "collapse" : null}>
-                    Dette er ekstra gode plasser
+                    beskrivelse
                 </tr>
                 <tr align='center' className="accordion">
                     <td>VIP</td>
@@ -298,7 +298,7 @@ export class TicketView extends Component {
                     <td><FaAngleDown/></td>
                 </tr>
                 <tr className={this.state.collapse ? "collapse" : null}>
-                    Dette er de beste plassene
+                    beskrivelse
                 </tr>
                 </tbody>
             </Table>

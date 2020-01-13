@@ -5,7 +5,7 @@ import {TabContent} from "./tabContent";
 import {PerformersView} from "./performers";
 import {GeneralInfo} from "./generalInfo";
 import {PerformerCard, PerformersTab} from "./performers";
-import {CrewTab} from "./crew";
+import {CrewTab, CrewView} from "./crew";
 import {DocumentationTab} from "../documentationTab";
 import {DocList} from "../docView";
 
@@ -47,7 +47,7 @@ export class EventForm extends Component{
                 <Tab eventKey="2" title="Personell">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
                         <div className="padding-bottom-20">
-                            {this.state.edit ? <CrewTab/> : null}
+                            {this.state.edit ? <CrewTab/> : <CrewView/>}
                         </div>
                     </TabContent>
                 </Tab>
@@ -55,6 +55,7 @@ export class EventForm extends Component{
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editalbe={this.state.edit}>
                         <div className="padding-bottom-20">
                         <DocumentationTab editable={this.state.edit}/>
+                        <DocList/>
                         </div>
                     </TabContent>
                 </Tab>
