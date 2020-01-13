@@ -19,31 +19,37 @@ export class ArtistService {
 
     // OrganizerID == innlogget bruker.
     createArtist(name, phone, email, genreID, organizerID) {
-        let contactID;
+        let header = {
+            "Content-Type": "application/json"
+        };
 
-        axios.post(axiosConfig.root + '/api/contact', {
+        let contactBody = {
             "contactName": name,
             "phone": phone,
             "email": email
-        }).then(response => {
-                response.data[0].insertId = contactID;
+        };
+
+        let contactID = 0;
+
+        axios.post(axiosConfig.root + '/api/contact', JSON.stringify(contactBody), {headers: header}).then(response => {
+                contactID = response.insertId;
             }
         );
 
         // TODO - Get the id from the new created contact
 
-        axios.post('/api/artist', {
+        let artistBody = {
             "genreID": genreID,
             "organizerID": organizerID,
             "contactID": contactID
-        });
+        };
+
+        axios.post('/api/artist', JSON.stringify(artistBody), {headers: header}).then(response =>
+            console.log(response));
     }
 
     deleteArtist(artistID) {
-        axios.delete('/api/artist/organizer/' + artistID).then(response => {
-
-            }
-        );
+        axios.delete('/api/artist/organizer/' + artistID).then(response => console.log(response));
     }
 
     getArtistForOrganizer(organizerID) {

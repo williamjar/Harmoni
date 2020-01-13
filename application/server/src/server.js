@@ -72,6 +72,15 @@ app.use(bodyParser.json());
 app.use(express.static(public_path));
 
 
+//----------------- BUG ---------------------
+//Request to register bug
+app.post('/api/bug/register/:organizerID', (req, res) => {
+    bugDao.registerBug(req.params.organizerID, req.body,(status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
 //----------------- DOCUMENTATION ---------------------
 //Check if a folder exists for user
 function checkIfFolderExist(name, path) {
@@ -95,7 +104,7 @@ function deleteFile(path) {
             console.log('File deleted!');
         });
     } catch (e) {
-        console.log("test");
+        console.log("Error, could not delete file:" + e);
     }
 }
 
