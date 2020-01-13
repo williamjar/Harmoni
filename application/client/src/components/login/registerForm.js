@@ -2,6 +2,8 @@
 
 import React from 'react';
 import {Form, Button, Card} from 'react-bootstrap'
+import {LoginService} from "../../cookies_client/loginService";
+import {RegisterOrganizerService} from "../../service&store/registerOrganizerService";
 
 export class RegisterForm extends React.Component {
 
@@ -96,6 +98,21 @@ export class RegisterForm extends React.Component {
         /*
         *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.firstEmail" and "this.state.firstPassword";
         * */
+        //TODO: Change "testusername" to this.state.username when merge happens!
+        RegisterOrganizerService.registerOrganizer("testusername", this.state.firstEmail, this.state.firstPassword, statusCode => {
+            if (statusCode === 200){
+                console.log("User perfectly registered");
+            }
+            else if (statusCode === 501){
+                console.log("email already registered");
+            }
+            else if (statusCode === 502){
+                console.log("name already registered");
+            }
+            else if (statusCode === 500){
+                console.log("database error, please try again");
+            }
+        });
     }
 
     // Database control functions to display the proper error message to the user.

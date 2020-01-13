@@ -10,11 +10,10 @@ export class ArtistService {
     static getArtist(artistID, callback) {
 
         axios.get(axiosConfig.root + '/api/artist/' + artistID).then(response => {
-            console.log(response.data);
-            //return new Artist(response.data[0].artistID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
+                let artist = new Artist(response.data[0].artistID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
+                callback(artist);
             }
         );
-
     }
 
     // OrganizerID == innlogget bruker.
@@ -36,8 +35,6 @@ export class ArtistService {
             }
         );
 
-        // TODO - Get the id from the new created contact
-
         let artistBody = {
             "genreID": genreID,
             "organizerID": organizerID,
@@ -49,7 +46,7 @@ export class ArtistService {
     }
 
     static deleteArtist(artistID) {
-        axios.delete('/api/artist/organizer/' + artistID).then(response => console.log(response));
+        return axios.delete('/api/artist/organizer/' + artistID).then(response => response.data);
     }
 
     static getArtistForOrganizer(organizerID) {
