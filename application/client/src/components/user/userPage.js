@@ -103,7 +103,7 @@ export class UserPage extends React.Component {
 
                                         <tr><td>Telefonnummer</td><td>
                                             <Form.Group>
-                                                <Form.Control type="number" name="newPhonenumber" placeholder={this.state.phonenumber} value={this.state.newPhonenumber} onChange={this.handleInputChange}/>
+                                                <Form.Control maxLength="8" type="number"  name="newPhonenumber" placeholder={this.state.phonenumber} value={this.state.newPhonenumber} onChange={this.handleInputChange}/>
                                             </Form.Group>
                                         </td></tr>
 
