@@ -34,7 +34,7 @@ export class LoginService{
                             console.log(emailResponse);
                             if (!(loginResponse.error)){
                                 console.log("UserID and Token set");
-                                CookieStore.currentUserID = emailResponse.organizerID;
+                                CookieStore.currentUserID = emailResponse[0].organizerID;
                                 CookieStore.currentToken = loginResponse.jwt;
                                 //The user logs in
                                 callback(loginResponse.status);

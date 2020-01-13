@@ -6,7 +6,6 @@ import {CookieStore} from "../../store/cookieStore";
 
 export class LoginForm extends React.Component {
 
-
     constructor(props) {
         super(props);
         this.state = {
@@ -108,7 +107,5 @@ export class LoginForm extends React.Component {
     }
 
     // Database control functions to display the proper error message to the user.
-
-
 
 }

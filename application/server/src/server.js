@@ -352,6 +352,7 @@ app.use('/api', (req, res, next) => {
     console.log("Testing /api");
 
     let token = req.headers["x-access-token"];
+    console.log(token === CookieStore.currentToken);
     jwt.verify(token, publicKey, (err, decoded) => {
         if (err) {
             console.log('Token not OK');
