@@ -32,14 +32,22 @@ beforeAll(done => {
 });
 
 test('Check that right artist can be pulled from database', () => {
-    let expected = new Artist("Anne","+92929292","anne@music.no",1,1,1);
-    let actual = ArtistService.getArtist(1);
-    expect(actual).toBe(expected);
+    let expected = new Artist(1, "Anne", "+92929292", "anne@music.no", 1, 1, 1);
+    ArtistService.getArtist(1, artist => {
+            expect(artist).toBe(expected);
+        }
+    );
 });
 
 test('Check that a artist can be added', () => {
-    ArtistService.createArtist("DJ Disk Jockey","+4891325221","DJDJ@gmail.com",1,1);
-    let expected = new Artist("DJ Disk Jockey","+4891325221","DJDJ@gmail.com");
+    ArtistService.createArtist("DJ Disk Jockey", "+4891325221", "DJDJ@gmail.com", 1, 1);
+    let expected = new Artist(3, "DJ Disk Jockey", "+4891325221", "DJDJ@gmail.com", 1, 1);
     expect(expected).toBe(ArtistService.getArtist(3));
+});
+
+test('Check that a artist can be deleted', () => {
+    let response = ArtistService.deleteArtist(3);
+    let affectedRows = response.data[0].affectedRows;
+    expect(affectedRows).toBe(1);
 });
 
