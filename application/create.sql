@@ -194,7 +194,7 @@ ADD FOREIGN KEY (crewID) REFERENCES crew(crewID) ON DELETE CASCADE;
 ALTER TABLE document
 ADD FOREIGN KEY (eventID) REFERENCES event(eventID),
 ADD FOREIGN KEY (artistID) REFERENCES artist(artistID),
-ADD FOREIGN KEY (crew) REFERENCES crew(crewID),
+ADD FOREIGN KEY (crewID) REFERENCES crew(crewID),
 ADD FOREIGN KEY (documentCategoryID) REFERENCES documentCategory(documentCategoryID);
 
 ALTER TABLE riderElement
