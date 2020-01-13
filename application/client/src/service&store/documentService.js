@@ -22,8 +22,8 @@ class DocumentService {
         let allDocumentsByEvent = [];
         axios.get(axiosConfig.root + '/api/events/' + eventID + '/documents').then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
-                allDocumentsByEvent.push(new Document(response.data[0].documentID, response.data[0].documentLink,
-                    response.data[0].documentCategory));
+                allDocumentsByEvent.push(new Document(response.data[i].documentID, response.data[i].documentLink,
+                    response.data[i].documentCategory));
             }
         });
         return allDocumentsByEvent;
