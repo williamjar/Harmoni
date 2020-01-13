@@ -10,7 +10,7 @@ import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {TicketType} from "../../classes/ticketType";
 
-export class Crew extends Component{
+export class CrewTab extends Component{
     state = {
         editable: [this.props.editable]
     };

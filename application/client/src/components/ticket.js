@@ -244,9 +244,22 @@ export class ListTickets extends Component{
 
 // Component for viewing all types of tickets associated with the event
 export class TicketView extends Component {
+
+    state = {
+        collapse: true
+    };
+
+    collapse = (e) => {
+        if(this.state.collapse) {
+            this.setState({collapse: false})
+        } else {
+            this.setState({collapse: true})
+        }
+    };
+
     render() {
         return(
-            <Table>
+            <Table striped>
                 <thead>
                 <tr align="center">
                     <th>Billettype</th>
@@ -257,30 +270,39 @@ export class TicketView extends Component {
                 </tr>
                 </thead>
                 <tbody>
-                    <Ticket/>
-                    <Ticket/>
-                    <Ticket/>
-                    <Ticket/>
+                <tr align='center' onClick={this.collapse}>
+                    <td>Standard</td>
+                    <td>200kr</td>
+                    <td>1000</td>
+                    <td>01 JAN 2020</td>
+                    <td><FaAngleDown/></td>
+                </tr>
+                <tr className={this.state.collapse ? "collapse" : null}>
+                    beskrivelse
+                </tr>
+                <tr align='center' className="accordion">
+                    <td>GULL</td>
+                    <td>500kr</td>
+                    <td>500</td>
+                    <td>01 JAN 2020</td>
+                    <td><FaAngleDown/></td>
+                </tr>
+                <tr className={this.state.collapse ? "collapse" : null}>
+                    beskrivelse
+                </tr>
+                <tr align='center' className="accordion">
+                    <td>VIP</td>
+                    <td>1000kr</td>
+                    <td>100</td>
+                    <td>01 JAN 2020</td>
+                    <td><FaAngleDown/></td>
+                </tr>
+                <tr className={this.state.collapse ? "collapse" : null}>
+                    beskrivelse
+                </tr>
                 </tbody>
             </Table>
         )
     }
 }
 
-// Component for a single ticket
-export class Ticket extends Component {
-    render() {
-        return(
-            <tr align='center' className="accordion-toggle">
-                <td>Standard</td>
-                <td>200kr</td>
-                <td>1000</td>
-                <td>01 JAN 2020</td>
-                <td></td>
-                <Row className="collapse in">
-
-                </Row>
-            </tr>
-        )
-    }
-}

@@ -75,8 +75,8 @@ export class ArtistService {
         return allArtistByEvent;
     }
 
-    static addDocumentToArtist(eventID, name, link, artistID, categoryID){
-        return axios.post(axiosConfig.root + '/api/document/artist',{
+    static addDocumentToArtist(eventID, name, link, artistID, categoryID) {
+        return axios.post(axiosConfig.root + '/api/document/artist', {
             "eventID": eventID,
             "documentName": name,
             "documentLink": link,
@@ -84,6 +84,21 @@ export class ArtistService {
             "documentCategoryID": categoryID
         }).then(response => response.data);
     }
+
+    static assignArtist(eventID, artistID) {
+        return axios.post(axiosConfig.root + '/api/artist/assign', {
+            "eventID": eventID,
+            "artistID": artistID
+        }).then(response => response.data);
+    }
+
+    static unAssignArtist(eventID, artistID) {
+        return axios.delete(axiosConfig.root + '/api/artist/unassign/' + eventID + '/' + artistID, {
+            "eventID": eventID,
+            "artistID": artistID
+        }).then(response => response.data);
+    }
+
 }
 
 
