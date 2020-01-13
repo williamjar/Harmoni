@@ -91,7 +91,6 @@ export class App extends Component{
                             </div>
 
                             <div className="col-lg-10">
-                                <RegisterForm/>
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
                                 <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash/>} />} />
                                 <Route exact path="/artister" component={() => <Content page={<SearchPeople/>} />} />
