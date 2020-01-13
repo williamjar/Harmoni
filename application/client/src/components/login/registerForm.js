@@ -5,7 +5,7 @@ import {Form, Button, Card} from 'react-bootstrap'
 
 export class RegisterForm extends React.Component {
 
-    constructor(props: Object) {
+    constructor(props) {
         super(props);
         this.state = {
             firstEmail: '',
@@ -18,7 +18,7 @@ export class RegisterForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleInputChange(event) : void {
+    handleInputChange(event){
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;

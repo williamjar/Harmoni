@@ -1,5 +1,6 @@
 import React from 'react';
-import {Button, Card, Col, Form, Row, Table, Image} from 'react-bootstrap'
+import {Button, Card, Col, Form, Row, Table, Image, CardColumns, ListGroup, CardDeck} from 'react-bootstrap'
+import {CardText} from "react-bootstrap/Card";
 
 
 export class UserPage extends React.Component {
@@ -40,12 +41,12 @@ export class UserPage extends React.Component {
     render() {
         if(this.state.mode===1){
             return (
-                <Card>
+                <Card className={"border-0"}>
                     <div className="justify-content-md-center m-5">
-                        <h2>Brukerprofil</h2>
+                        <CardDeck>
                         <br></br>
-                        <Row>
-                            <Col>
+                            <Card className={"p-2 card border-0"}>
+                                <Card.Title>Brukerprofil</Card.Title>
                                 <Table borderless>
                                     <tbody>
                                     <tr><td>Brukernavn</td><td>{this.state.username}</td></tr>
@@ -58,27 +59,25 @@ export class UserPage extends React.Component {
                                     </tr>
                                     </tbody>
                                 </Table>
-                            </Col>
-                            <Col>
+                            </Card>
+                            <Card className={"p-2 card border-0"}>
                                 <Image width={"140px"} roundedCircle fluid thumbnail src={this.state.profilePicture} rounded />
-                            </Col>
-                        </Row>
+                            </Card>
+                        </CardDeck>
                     </div>
                 </Card>
             )}
 
         else{
             return(
-                <Card>
+                <Card className={"border-0"}>
                     <div className="justify-content-md-center m-5">
-                        <h2>Brukerprofil</h2>
-                        <br></br>
                         <Form onSubmit={this.handleSubmit}>
-                            <Row>
-                                <Col>
+                        <CardDeck>
+                            <Card className={"p-2 card border-0"}>
+                                <Card.Title>Rediger brukerprofil</Card.Title>
                                     <Table  borderless>
                                         <tbody>
-
                                         <tr>
                                             <td>Brukernavn</td>
                                             <td>
@@ -88,12 +87,13 @@ export class UserPage extends React.Component {
 
                                         <td>E-postaddresse</td><td>
                                             <Form.Group>
-                                                <Form.Control type="email" name="newEmail" value={this.state.newEmail} placeholder={this.state.email} onChange={this.handleInputChange}/>
+                                                <Form.Control type="email" name="newEmail" value={this.state.newEmail} placeholder="Ny e-postaddresse" onChange={this.handleInputChange}/>
                                             </Form.Group>
 
                                             <Form.Group>
                                                 <Form.Control type="email" name="confirmNewEmail" value={this.state.confirmNewEmail} placeholder="Gjenta e-postaddressen" onChange={this.handleInputChange}/>
                                             </Form.Group>
+                                            <Form.Text className={"text-muted"}>Den oppdaterte e-postaddressen må være lik i begge feltene.</Form.Text>
                                         </td>
 
                                         <tr><td>Telefonnummer</td><td>
@@ -110,26 +110,41 @@ export class UserPage extends React.Component {
                                             <Form.Group>
                                                 <Form.Control type="password" name="secondNewPassword" placeholder="Gjenta nytt passord" value={this.state.secondNewPassword} onChange={this.handleInputChange}/>
                                             </Form.Group>
+                                            <Form.Text className={"text-muted"}>Det oppdaterte passordet må være lik i begge feltene.</Form.Text>
                                         </td>
                                         </tr>
                                         </tbody>
                                     </Table>
-                                    <Form.Group><Button variant="danger" onClick={() => this.changeMode()}>Avbryt</Button></Form.Group>
-                                </Col>
 
-                                <Col>
-                                    <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} rounded />
-                                    <Form.Group><Button variant="secondary">Last opp profilbilde</Button></Form.Group>
-                                </Col>
-                            </Row>
-                            <Form.Text className="text-danger" hidden={this.validateForm()}>Ingen endringer kan blir utført. Sjekk informasjonen og prøv igjen.</Form.Text>
-                            <Form.Text className="text-danger" hidden={!this.validatePhoneNumber()}>Endre telefonnummer til {this.state.newPhonenumber}</Form.Text>
-                            <Form.Text className="text-danger" hidden={!this.validateUsername()}>Endre brukernavn til {this.state.newUsername}</Form.Text>
-                            <Form.Text className="text-danger" hidden={!this.validateEmail()}>Endre e-postaddresse fra {this.state.email} to {this.state.newEmail}</Form.Text>
-                            <Form.Text className="text-danger" hidden={!this.validatePassword()}>Utfør en passordendring</Form.Text>
+                            </Card>
+                            <Card className={"p-2 card border-0"}>
+                                 <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} rounded />
+                                 <Form.Group><Button variant="secondary">Last opp profilbilde</Button></Form.Group>
+
                             <br></br>
-                            <Form.Group><Button variant="success" type="submit" disabled={!this.validateForm()}>Utfør endringer</Button></Form.Group>
-                        </Form >
+
+                            </Card>
+                        </CardDeck>
+                            <CardDeck>
+
+                            <Card className={"p-2 card border-0"}>
+                                <ListGroup>
+                                    <ListGroup.Item>Endringer:</ListGroup.Item>
+                                    <ListGroup.Item disabled hidden={this.validateForm()}>Ingen endringer registrert. Utfør endringer over, eller avbryt.</ListGroup.Item>
+                                    <ListGroup.Item className="text-danger" hidden={!this.validateUsername()}>Endre brukernavn til {this.state.newUsername}</ListGroup.Item>
+                                    <ListGroup.Item className="text-danger" hidden={!this.validateEmail()}>Endre e-postaddresse fra {this.state.email} til {this.state.newEmail}</ListGroup.Item>
+                                    <ListGroup.Item className="text-danger" hidden={!this.validatePhoneNumber()}>Endre telefonnummer til {this.state.newPhonenumber}</ListGroup.Item>
+                                    <ListGroup.Item className="text-danger" hidden={!this.validatePassword()}>Utfør en passordendring</ListGroup.Item>
+                                </ListGroup>
+                                <Form.Group className={"mt-4"}><Button variant="success" type="submit" disabled={!this.validateForm()}>Utfør endringer</Button></Form.Group>
+                                <Form.Group><Button className="align-right" variant="danger" onClick={() => this.changeMode()}>Avbryt</Button></Form.Group>
+                            </Card>
+
+                                <Card className={"p-2 card border-0"}>
+                                </Card>
+                            </CardDeck>
+
+                    </Form>
                     </div>
                 </Card>
             )}
@@ -140,7 +155,7 @@ export class UserPage extends React.Component {
     }
 
     validatePhoneNumber(){
-        return (this.state.newPhonenumber !== this.state.phonenumber) && (this.state.newPhonenumber.length > 0);
+        return (this.state.newPhonenumber !== this.state.phonenumber) && (this.state.newPhonenumber.length === 8);
     }
 
     validateEmail(){
@@ -169,6 +184,8 @@ export class UserPage extends React.Component {
         this.setState({newUsername: ''});
         this.setState({newEmail: ''});
         this.setState({newPhonenumber: ''});
+        this.setState({firstNewPassword: ''});
+        this.setState({secondNewPassword: ''});
 
         this.changeMode();
     }
