@@ -1,11 +1,10 @@
 import axios from "axios";
 import {sharedComponentData} from "react-simplified";
-import CrewMember from ".classes/crewMember.js"
-import CrewLeader from ".classes/crewLeader.js"
+import {CrewMember} from "../classes/crewMember"
 
 let axiosConfig = require("./axiosConfig");
 
-class CrewService {
+export class CrewService {
 
     static getCrewMember(crewID){
         axios.get(axiosConfig.root + '/api/crew/' + crewID).then(response => {
@@ -47,17 +46,31 @@ class CrewService {
     }
 
     static createCrewMember(name, phone, email, description, organizerID){
-       /* axios.post('/api/contact', {
+        let header = {
+            "Content-Type": "application/json"
+        };
+
+        let contactBody = {
             "contactName": name,
             "phone": phone,
             "email": email
-        }).then((response => response.data),
+        };
 
-       axios.post('/api/crew', {
+        let contactID = 0;
+
+        axios.post(axiosConfig.root + '/api/contact', JSON.stringify(contactBody), {headers: header}).then(response => {
+                contactID = response.insertId;
+            }
+        );
+
+        let crewBody = {
             "description": description,
             "organizerID": organizerID,
             "contactID": contactID
-        }).then(response => response.data); */
+        };
+
+        axios.post('/api/crew', JSON.stringify(crewBody), {headers: header}).then(response =>
+            console.log(response));
     }
 
     static addCategory(categoryName, organizerID){
@@ -111,7 +124,7 @@ class CrewService {
     }
 
     static unassignCrewMember(crewCategoryID, crewID){
-        return axios.delete(axiosConfig.root + '/api/crew/assign/' + eventID + '/' + crewCategoryID + '/' + crewID).then(response => console.log(response));
+        return axios.delete(axiosConfig.root + '/api/crew/assign/' + crewID + '/' + crewCategoryID + '/' + crewID).then(response => console.log(response));
     }
 
 }

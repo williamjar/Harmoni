@@ -9,6 +9,7 @@ import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {TicketType} from "../../classes/ticketType";
+import {CrewService} from "../../store/crewService";
 
 export class CrewTab extends Component{
     state = {
@@ -348,7 +349,8 @@ export class AddCrewMember extends Component{
     }
 
     submitForm = () => {
-        console.log(this.state);
+        CrewService.createCrewMember(this.state.name, this.state.phone, this.state.email)
+
     }
 
     cancelRegister = () => {
