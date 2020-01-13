@@ -20,7 +20,17 @@ module.exports = class documentDao extends Dao {
 
     getAllEvents(callback, organizerID) {
         super.query('SELECT * FROM organizer JOIN event ON organizer.organizerID = event.organizerID WHERE organizer.organizerID = ?', [organizerID], callback);
+    }
 
+
+    changeUsername(callback, list){
+        super.query('UPDATE organizer SET username = ? WHERE organizerID = ?', list ,callback)
+    }
+
+
+//TODO: må lages picture dao og endepunker - flytt denne til pictureDao
+    changeOrganizerProfilePicture(callback, pictureID, pictureLink){
+        super.query('update picture set pictureLink = ? where pictureID = ?', [pictureLink, pictureID], callback)
     }
 
 };

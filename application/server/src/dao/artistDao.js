@@ -6,8 +6,16 @@ module.exports = class artistDao extends Dao {
         super.query('SELECT * FROM artist, contact WHERE artist.contactID = contact.contactID',  callback);
     }
 
+    getAllForOrganizer(callback, organizerID) {
+        super.query('SELECT * FROM artist, contact WHERE organizerID = ? AND artist.contactID = contact.contactID', [organizerID], callback);
+    }
+
+    getAllForEvent(callback, eventID) {
+        super.query('SELECT * FROM artist, contact, event_artist WHERE artist.contactID = contact.contactID  AND artist.artistID = event_artist.artistID AND event_artist.eventID = ?', [eventID], callback);
+    }
+
     getOne(callback, artistID) {
-        super.query('SELECT contactName,phone,email,genreName,organizer.organizerID FROM artist JOIN organizer ON artist.organizerID = organizer.organizerID JOIN contact ON artist.contactID = contact.contactID JOIN genre ON artist.genreID = genre.genreID WHERE artistID = ?', [artistID], callback);
+        super.query('SELECT * FROM artist JOIN organizer ON artist.organizerID = organizer.organizerID JOIN contact ON artist.contactID = contact.contactID JOIN genre ON artist.genreID = genre.genreID WHERE artistID = ?', [artistID], callback);
     }
 
     createOne(callback, list) {
@@ -24,6 +32,14 @@ module.exports = class artistDao extends Dao {
 
     addDocument(callback, list) {
         super.query('INSERT INTO document (eventID,documentName,documentLink,artistID,documentCategoryID) VALUES (?, ?, ?, ?, ?)', list, callback);
+    }
+
+    assignOne(callback, list) {
+        super.query('INSERT INTO event_artist VALUES (?,?)', list, callback);
+    }
+
+    unAssignOne(callback, list) {
+        super.query('DELETE FROM event_artist where eventID = ? AND artistID = ?', list, callback);
     }
 
 };
