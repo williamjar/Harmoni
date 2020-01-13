@@ -10,7 +10,7 @@ class DocumentService {
         let allDocumentsByOrganizer = [];
         axios.get(axiosConfig.root + '/api/organizer/' + organizerID + '/documents').then(response => {
             for (let i = 0; i < response.data.length; i++) {
-                allDocumentByOrganizer.push(new Document(response.data[i].documentID, response.data[i].documentLink,
+                allDocumentsByOrganizer.push(new Document(response.data[i].documentID, response.data[i].documentLink,
                     response.data[i].documentCategory));
             }
         });
