@@ -283,8 +283,8 @@ app.post("/api/:eventID/documents/create/crew", (req, res) => {
     });
 });
 
-/*START LOGIN*/
-/*let privateKey = SECRET.privateKey;
+START LOGIN
+let privateKey = SECRET.privateKey;
 let publicKey = SECRET.publicKey;
 
 //Seconds
@@ -390,9 +390,9 @@ app.use('/api', (req, res, next) => {
 
 app.get('/api/test', () => {
     console.log("Testing /api/test");
-});*/
+});
 
-/*END LOGIN*/
+END LOGIN
 
 // BUG
 //TODO Not working right now
