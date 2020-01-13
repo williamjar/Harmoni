@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Card, Col, Form, Row, Table, Image, CardColumns, ListGroup, CardDeck, Spinner} from 'react-bootstrap'
 import {CardText} from "react-bootstrap/Card";
-import {OrganizerStore} from "../../store/organizerService";
+import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 
 export class UserPage extends React.Component {
