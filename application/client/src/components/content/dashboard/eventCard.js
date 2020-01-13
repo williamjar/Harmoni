@@ -2,12 +2,15 @@ import React from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button} from "react-bootstrap";
+import { createHashHistory } from 'history';
+
+const history = createHashHistory();
 
 export class EventCard extends React.Component {
 
     // Handles when the user
     viewEvent = () => {
-
+        history.push("/arrangementEdit");
     };
 
     render() {

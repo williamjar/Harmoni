@@ -8,6 +8,8 @@ import Accordion from "react-bootstrap/Accordion";
 import {TicketType} from "../classes/ticketType";
 import { FaCalendar } from 'react-icons/fa';
 import ListGroup from "react-bootstrap/ListGroup";
+import {Row, Table} from "react-bootstrap";
+import {FaAngleDown} from "react-icons/all";
 
 
 
@@ -237,5 +239,48 @@ export class ListTickets extends Component{
                 </Card.Body>
             </Card>
         );
+    }
+}
+
+// Component for viewing all types of tickets associated with the event
+export class TicketView extends Component {
+    render() {
+        return(
+            <Table>
+                <thead>
+                <tr align="center">
+                    <th>Billettype</th>
+                    <th>Pris</th>
+                    <th>Antall</th>
+                    <th>Slippdato</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    <Ticket/>
+                    <Ticket/>
+                    <Ticket/>
+                    <Ticket/>
+                </tbody>
+            </Table>
+        )
+    }
+}
+
+// Component for a single ticket
+export class Ticket extends Component {
+    render() {
+        return(
+            <tr align='center' className="accordion-toggle">
+                <td>Standard</td>
+                <td>200kr</td>
+                <td>1000</td>
+                <td>01 JAN 2020</td>
+                <td></td>
+                <Row className="collapse in">
+
+                </Row>
+            </tr>
+        )
     }
 }

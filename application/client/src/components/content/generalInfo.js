@@ -6,7 +6,7 @@ import {Button, Card, Col, Form, Image, Row} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
 import lorde from './lorde.jpg';
 import map from './map.jpg';
-import {GetTicket} from "../ticket";
+import {GetTicket, TicketView} from "../ticket";
 
 
 export class GeneralInfo extends Component{
@@ -34,7 +34,7 @@ export class GeneralInfo extends Component{
                 <Row className="mb-3">
                     <Col>
                         <Form.Label>Billetter</Form.Label>
-                        <GetTicket/>
+                        {this.state.editable ? <GetTicket/> : <TicketView/>}
                     </Col>
                 </Row>
             </div>
