@@ -18,17 +18,17 @@ export class TabContent extends Component {
                 </div>
                 <Row>
                     <Col xs={8}>
-                        {this.state.editable ? <Button variant="danger">Slett arrangement</Button> : null}
+                        {this.state.editable ? <Button variant="danger">Slett arrangement</Button> :
+                            <Button onClick={this.props.editClicked}>Rediger</Button>}
                     </Col>
                     <Col xs={6} md={3}>
                         {
                             this.state.editable ?
                                 <div>
                                     <Button className="mr-1" onClick={this.props.onClick}>Neste</Button>
-                                    <Button className="mr-1" variant="secondary" onClick={this.props.editClicked}>Lagre og lukk</Button>
+                                    <Button className="mr-1" variant="secondary" onClick={this.props.saveClicked}>Lagre og lukk</Button>
                                     <Button  className="mr-1" disabled variant="success">Publiser</Button>
-                                </div> :
-                                <Button onClick={this.props.editClicked}>Rediger</Button>
+                                </div> : null
                         }
                     </Col>
                 </Row>

@@ -239,3 +239,13 @@ export class ListTickets extends Component{
         );
     }
 }
+
+export class TicketView extends Component {
+    render() {
+        return(
+            <div>
+
+            </div>
+        )
+    }
+}
