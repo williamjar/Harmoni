@@ -5,24 +5,57 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
+import {SearchPeople} from "./searchPerson";
 
 
 export class Performers extends Component{
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            showArtistCard: false,
+        };
+
+        this.searchHandler = this.searchHandler.bind(this);
+    }
+
     render(){
         return(
             <div>
                 <div className="row">
 
-                    <div className="col-6 border-right">
-                        <AddPerformer/>
+                    <div className="col-lg-6 col-md-12  border-right">
+                        <PerformerPanel searchHandler={this.searchHandler} showCard={this.state.showArtistCard}/>
                     </div>
 
-                    <div className="col-6">
-                        <RegisteredPerformers/>
+                    <div className="col-lg-6 col-md-12">
+                        <RegisteredPerformers />
                     </div>
                 </div>
             </div>
         )
+    }
+
+    searchHandler(selected){
+        let personSelected = selected;
+        let currentState = this.state;
+        currentState.showArtistCard = true;
+        this.setState(currentState);
+    }
+}
+
+export class PerformerPanel extends Component{
+
+    render() {
+        return (
+            <div>
+                <SearchPeople searchHandler={this.props.searchHandler}/>
+                <div className="padding-top-20">
+                {this.props.showCard?<AddPerformer />:null}
+                </div>
+            </div>
+        );
     }
 }
 
@@ -40,12 +73,10 @@ export class AddPerformer extends Component{
 
     }
 
-
     render(){
         return(
             <div className="card card-body">
                 <div className="row align-items-center">
-
                     <div className="col-2">
                         <img src="https://s3.us-east-2.amazonaws.com/upload-icon/uploads/icons/png/19339625881548233621-512.png" width={50} alt=""/>
                     </div>
