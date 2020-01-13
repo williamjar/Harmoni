@@ -13,12 +13,16 @@ export class EventForm extends Component{
 
     state = {
         activeTab: 0,
-        edit: false,
+        edit: true,
     };
 
     // Handles when the user clicks "neste"
     editClicked = () => {
-        this.setState({edit: true})
+        if(this.state.edit) {
+            this.setState({edit: false});
+        } else {
+            this.setState({edit: true})
+        }
     };
 
     render(){

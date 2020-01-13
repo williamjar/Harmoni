@@ -16,17 +16,18 @@ export class GeneralInfo extends Component{
     };
 
     render(){
+        console.log(this.state.editable);
         return(
             <div>
                 <div className="row">
 
                     <div className="col-7 border-right">
-                        {this.state.editable === true ? <InfoForm/> : <InfoView/>}
+                        {this.state.editable ? <InfoForm/> : <InfoView/>}
                     </div>
                     <div className="col-5">
                         <Card.Body>
                             <Image src={lorde} alt="event image" fluid className="mb-2"/>
-                            {this.state.editable === true ? <Button>Last opp bilde</Button> : null}
+                            {this.state.editable ? <Button>Last opp bilde</Button> : null}
                         </Card.Body>
                     </div>
                 </div>
@@ -38,6 +39,16 @@ export class GeneralInfo extends Component{
                 </Row>
             </div>
         )
+    }
+
+    static getDerivedStateFromProps(props, state) {
+
+        if(props.editable !== state.editable) {
+            return {
+                editable: props.editable
+            };
+        }
+        return null;
     }
 }
 
