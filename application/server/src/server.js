@@ -732,6 +732,15 @@ app.put("/api/events/:eventID", (request, response) => {
     }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.eventTypeID, request.body.pictureID, request.params.eventID]);
 });
 
+//Get all events for organizer
+app.get("/api/events/organizer/:organizerID", (request, response) => {
+    console.log("Express: Request to get all events for organizer" + request.params.organizerID);
+    eventDao.getAllForOrganizer((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.organizerID);
+});
+
 //TODO: Check if this endpoint works with localStorage
 //Get all events by status
 app.get("/api/events/status/:status", (request, response) => {

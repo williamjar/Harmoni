@@ -6,6 +6,10 @@ module.exports = class eventDao extends Dao {
         super.query('SELECT * FROM event', [], callback);
     }
 
+    getAllForOrganizer(callback, organizerID){
+        super.query('SELECT * FROM event WHERE organizerID = ?', [organizerID], callback);
+    }
+
     getOne(callback, eventID) {
         super.query('SELECT * FROM event WHERE eventID = ?', [eventID], callback);
     }
