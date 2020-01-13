@@ -228,6 +228,19 @@ export class Rider extends Component{
 }
 
 export class RegisterPerformer extends Component{
+    constructor(props){
+        super(props);
+
+
+        this.state = {
+          name : "",
+          phone : "",
+          email : "",
+          genre : "",  //Genre should be set from start
+        };
+
+    }
+
     render() {
         return(
             <div>
@@ -235,31 +248,31 @@ export class RegisterPerformer extends Component{
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
-                            <Form.Control type="name" placeholder="" />
+                            <Form.Control type="name" placeholder="" onChange={this.handleNameChange}/>
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="formGridPassword">
                             <Form.Label>Telefon</Form.Label>
-                            <Form.Control type="phone" placeholder="" />
+                            <Form.Control type="phone" placeholder="" onChange={this.handlePhoneChange}/>
                         </Form.Group>
                     </Form.Row>
 
                     <Form.Group controlId="formGridAddress1">
                         <Form.Label>Epost</Form.Label>
-                        <Form.Control type="email" placeholder="" />
+                        <Form.Control type="email" placeholder="" onChange={this.handleEmailChange}/>
                     </Form.Group>
 
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridState">
                             <Form.Label>Sjanger</Form.Label>
-                            <Form.Control as="select">
+                            <Form.Control as="select" onChange={this.handleGenreChange}>
                                 <option>Country</option>
                                 <option>Blues</option>
                             </Form.Control>
                         </Form.Group>
                     </Form.Row>
 
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" onClick={this.submitForm}>
                         Submit
                     </Button>
                     <Button variant="secondary" type="cancel" className="margin-left-5">
@@ -269,6 +282,35 @@ export class RegisterPerformer extends Component{
                 </Form>
             </div>
         )
+    }
+
+    handleNameChange = (event) => {
+        let currentState = this.state;
+        currentState.name = event.target.value;
+        this.setState(currentState);
+    }
+
+    handlePhoneChange = (event) => {
+        let currentState = this.state;
+        currentState.phone = event.target.value;
+        this.setState(currentState);
+    }
+
+    handleEmailChange = (event) => {
+        let currentState = this.state;
+        currentState.email = event.target.value;
+        this.setState(currentState);
+    }
+
+    handleGenreChange = (event) => {
+        let currentState = this.state;
+        currentState.genre = event.target.value;
+        this.setState(currentState);
+    }
+
+    submitForm = () => {
+        //Error handling should be inserted here
+        console.log(this.state);
     }
 }
 

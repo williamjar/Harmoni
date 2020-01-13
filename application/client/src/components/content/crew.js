@@ -22,6 +22,15 @@ export class CrewTab extends Component{
 }
 
 export class AddCrewType extends Component{
+    constructor(props){
+        super(props);
+
+        this.state = {
+            crewType : "",
+        };
+
+    }
+
     render(){
         return(
             <div className="card card-body">
@@ -29,12 +38,12 @@ export class AddCrewType extends Component{
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Personell type</Form.Label>
-                            <Form.Control type="name" placeholder="" />
+                            <Form.Control type="name" placeholder="" onChange={this.handleInputChange}/>
                         </Form.Group>
                     </Form.Row>
 
 
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" onClick={this.submitForm}>
                         Submit
                     </Button>
                     <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.props.cancelButton}>
@@ -45,6 +54,22 @@ export class AddCrewType extends Component{
             </div>
         )
     }
+
+    handleInputChange = (event) => {
+        let currentState = this.state;
+        currentState.crewType = event.target.value;
+        this.setState(currentState);
+    }
+
+    submitForm = () => {
+        if(this.state.crewType.trim() === ""){
+            //Error message
+            alert("Du kan ikke ha en blank kategori");
+        } else{
+            alert(this.state.crewType);
+            this.props.cancelButton();
+        }
+    }
 }
 
 export class AddToCrew extends Component{
@@ -54,12 +79,8 @@ export class AddToCrew extends Component{
         this.state = {
             numberOfFilesAdded: 0,
             showRegisterCrewType:false,
+            showRegisterCrewMember : false,
         };
-
-        this.showRegisterCrewTypeForm = this.showRegisterCrewTypeForm.bind(this);
-        this.addFile = this.addFile.bind(this);
-        this.addNew = this.addNew.bind(this);
-        this.cancelCrewTypeAdd = this.cancelCrewTypeAdd.bind(this);
 
     }
 
@@ -110,7 +131,7 @@ export class AddToCrew extends Component{
 
                 <div className="row padding-top-20">
                     <div className="col-lg-6 col-md-12">
-                        <Search addRegisterButton={true} searchHandler={this.searchHandler} registerComponent={<AddCrewMember/>}/>
+                        <Search addRegisterButton={true} searchHandler={this.searchHandler} registerComponent={<AddCrewMember />} />
                     </div>
                 </div>
 
@@ -144,13 +165,14 @@ export class AddToCrew extends Component{
         )
     }
 
-    cancelCrewTypeAdd(){
+    cancelCrewTypeAdd = () => {
         let currentState = this.state;
         currentState.showRegisterCrewType = false;
         this.setState(currentState);
     }
 
-    showRegisterCrewTypeForm(event){
+
+    showRegisterCrewTypeForm = (event) => {
         if(event.target.value === "Legg til ny..".trim()){
             let currentState = this.state;
             currentState.showRegisterCrewType = true;
@@ -158,11 +180,11 @@ export class AddToCrew extends Component{
         }
     }
 
-    searchHandler(){
+    searchHandler = () => {
 
     }
 
-    addFile(){
+    addFile = () =>{
         /*For adding attachments to crew */
 
         let attachment = document.querySelector("#uploadAttachment").files.length;
@@ -174,7 +196,7 @@ export class AddToCrew extends Component{
 
     }
 
-    addNew(){
+    addNew = () => {
         /* Fetches the information from the forms to be used with database */
 
         //TODO: Search bar is not functiong yet.
@@ -227,6 +249,17 @@ export class AddedCrew extends Component{
 }
 
 export class AddCrewMember extends Component{
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            name : "",
+            phone : "",
+            email : "",
+        };
+    }
+
     render() {
         return(
             <div>
@@ -234,24 +267,24 @@ export class AddCrewMember extends Component{
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
-                            <Form.Control type="name" placeholder="" />
+                            <Form.Control type="name" placeholder="" onChange={this.handleNameChange} />
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="formGridPassword">
                             <Form.Label>Telefon</Form.Label>
-                            <Form.Control type="phone" placeholder="" />
+                            <Form.Control type="phone" placeholder="" onChange={this.handlePhoneChange}/>
                         </Form.Group>
                     </Form.Row>
 
                     <Form.Group controlId="formGridAddress1">
                         <Form.Label>Epost</Form.Label>
-                        <Form.Control type="email" placeholder="" />
+                        <Form.Control type="email" placeholder="" onChange={this.handleEmailChange} />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" onClick={this.submitForm}>
                         Submit
                     </Button>
-                    <Button variant="secondary" type="cancel" className="margin-left-5">
+                    <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
                         Cancel
                     </Button>
 
@@ -259,4 +292,32 @@ export class AddCrewMember extends Component{
             </div>
         )
     }
+
+    handleNameChange = (event) =>{
+        let currentState = this.state;
+        currentState.name = event.target.value;
+        this.setState(currentState);
+    }
+
+    handlePhoneChange = (event) => {
+        let currentState = this.state;
+        currentState.phone = event.target.value;
+        this.setState(currentState);
+    }
+
+    handleEmailChange = (event) => {
+        let currentState = this.state;
+        currentState.email = event.target.value;
+        this.setState(currentState);
+    }
+
+    submitForm = () => {
+        console.log(this.state);
+    }
+
+    cancelRegister = () => {
+
+    }
+
+
 }
