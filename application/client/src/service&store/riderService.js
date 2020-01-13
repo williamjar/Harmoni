@@ -4,15 +4,6 @@ const axiosConfig = require("./axiosConfig");
 import RiderElement from "../classes/riderElement"
 
 
-//COLUMNS DB
-//riderElementID
-//artistID
-//eventID
-//status
-//isDone
-//description
-
-
 export class Rider {
     //get a rider element
     getRider(riderID) {
