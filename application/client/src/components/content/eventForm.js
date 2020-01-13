@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
-import {AddPerformer, Performers} from "./performers";
-import {Crew} from "./crew";
+import {PerformerCard, PerformersTab} from "./performers";
+import {CrewTab} from "./crew";
 import {GeneralInfo} from "./generalInfo";
 import {DocumentationTab} from "../documentationTab";
 
@@ -33,14 +33,14 @@ export class EventForm extends Component{
                 <Tab eventKey="1" title="Artister">
                     <TabContent onClick={this.nextClicked}>
                         <div className="padding-bottom-20">
-                        <Performers/>
+                        <PerformersTab/>
                         </div>
                     </TabContent>
                 </Tab>
                 <Tab eventKey="2" title="Personell">
                     <TabContent onClick={this.nextClicked}>
                         <div className="padding-bottom-20">
-                        <Crew />
+                        <CrewTab />
                         </div>
                     </TabContent>
                 </Tab>
