@@ -10,9 +10,7 @@ export class ArtistService {
     static getArtist(artistID, callback) {
 
         axios.get(axiosConfig.root + '/api/artist/' + artistID).then(response => {
-
                 let artist = new Artist(response.data[0].artistID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
-
                 callback(artist);
             }
         );
@@ -36,8 +34,6 @@ export class ArtistService {
                 contactID = response.insertId;
             }
         );
-
-        // TODO - Get the id from the new created contact
 
         let artistBody = {
             "genreID": genreID,

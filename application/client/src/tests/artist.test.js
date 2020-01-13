@@ -33,10 +33,10 @@ beforeAll(done => {
 
 test('Check that right artist can be pulled from database', () => {
     let expected = new Artist(1, "Anne", "+92929292", "anne@music.no", 1, 1, 1);
+
     ArtistService.getArtist(1, artist => {
-            expect(artist).toBe(expected);
-        }
-    );
+        expect(artist).toBe(expected);
+    });
 });
 
 test('Check that a artist can be added', () => {
