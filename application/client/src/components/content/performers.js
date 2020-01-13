@@ -357,3 +357,24 @@ export class RegisteredPerformers extends Component{
         )
     }
 }
+
+export class PerformersView extends Component {
+    render() {
+        return(
+            <div>
+                <b>Artister som er lagt til</b>
+                <div className="card card-body">
+                    <div className="row">
+                        <div className="col-10">
+                            Lorde
+                        </div>
+
+                        <div className="col-2">
+                            <button className="btn-primary rounded mr-2">Vis artist</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}

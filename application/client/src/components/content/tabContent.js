@@ -6,6 +6,10 @@ import {Button, Card, Col, Row} from "react-bootstrap";
 
 export class TabContent extends Component {
 
+    state = {
+        editable: [this.props.editable],
+    };
+
     render(){
         return(
             <div className="tabContent">
@@ -13,16 +17,32 @@ export class TabContent extends Component {
                     {this.props.children}
                 </div>
                 <Row>
-                    <Col xs={12} md={8}>
-                        <Button variant="danger">Slett arrangement</Button>
+                    <Col xs={8}>
+                        {this.state.editable ? <Button variant="danger">Slett arrangement</Button> :
+                            <Button onClick={this.props.editClicked}>Rediger</Button>}
                     </Col>
-                    <Col xs={6} md={4}>
-                        <Button className="mr-1" onClick={this.props.onClick}>Neste</Button>
-                        <Button className="mr-1" variant="secondary">Lagre og lukk</Button>
-                        <Button  className="mr-1" disabled variant="success">Publiser</Button>
+                    <Col xs={6} md={3}>
+                        {
+                            this.state.editable ?
+                                <div>
+                                    <Button className="mr-1" onClick={this.props.onClick}>Neste</Button>
+                                    <Button className="mr-1" variant="secondary" onClick={this.props.saveClicked}>Lagre og lukk</Button>
+                                    <Button  className="mr-1" disabled variant="success">Publiser</Button>
+                                </div> : null
+                        }
                     </Col>
                 </Row>
             </div>
         )
+    }
+
+    static getDerivedStateFromProps(props, state) {
+
+        if(props.editable !== state.editable) {
+            return {
+                editable: props.editable
+            };
+        }
+        return null;
     }
 }

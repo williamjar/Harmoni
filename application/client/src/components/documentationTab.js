@@ -4,6 +4,9 @@ import Card from "react-bootstrap/Card";
 import Dropzone from 'react-dropzone';
 import { FaArrowAltCircleDown } from 'react-icons/fa';
 
+
+
+
 export class DocumentationTab extends Component{
 
     //Prints out the adde files in the console log.

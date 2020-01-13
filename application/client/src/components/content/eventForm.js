@@ -2,52 +2,60 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
-import {PerformerCard, PerformersTab} from "./performers";
-import {CrewTab} from "./crew";
+import {PerformersView} from "./performers";
 import {GeneralInfo} from "./generalInfo";
+import {PerformerCard, PerformersTab} from "./performers";
+import {CrewTab, CrewView} from "./crew";
 import {DocumentationTab} from "../documentationTab";
+import {DocList} from "../docView";
 
 
 
 export class EventForm extends Component{
 
     state = {
-      activeTab: "0",
+        activeTab: 0,
+        edit: false,
     };
 
     // Handles when the user clicks "neste"
-    nextClicked = () => {
+    editClicked = () => {
+        this.setState({edit: true})
+    };
 
+    saveClicked = () => {
+        this.setState({edit: false})
     };
 
     render(){
         return(
             <Tabs defaultActiveKey="0" id="tabs">
                 <Tab eventKey="0" title="Generelt" >
-                    <TabContent onClick={this.nextClicked}>
+                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
                         <div className="padding-bottom-20">
-                        <GeneralInfo/>
+                            <GeneralInfo editable={this.state.edit}/>
                         </div>
                     </TabContent>
                 </Tab>
                 <Tab eventKey="1" title="Artister">
-                    <TabContent onClick={this.nextClicked}>
+                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
                         <div className="padding-bottom-20">
-                        <PerformersTab/>
+                            {this.state.edit ? <PerformersTab editable={this.state.edit}/> : <PerformersView/>}
                         </div>
                     </TabContent>
                 </Tab>
                 <Tab eventKey="2" title="Personell">
-                    <TabContent onClick={this.nextClicked}>
+                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
                         <div className="padding-bottom-20">
-                        <CrewTab />
+                            {this.state.edit ? <CrewTab/> : <CrewView/>}
                         </div>
                     </TabContent>
                 </Tab>
                 <Tab eventKey="3" title="Dokumentasjon">
-                    <TabContent onClick={this.nextClicked}>
+                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editalbe={this.state.edit}>
                         <div className="padding-bottom-20">
-                        <DocumentationTab/>
+                        <DocumentationTab editable={this.state.edit}/>
+                        <DocList/>
                         </div>
                     </TabContent>
                 </Tab>
