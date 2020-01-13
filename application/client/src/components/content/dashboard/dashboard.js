@@ -5,6 +5,7 @@ import {Accordion, Button, ButtonGroup, Col, Dropdown, DropdownButton, ListGroup
 import {FaAngleDown} from "react-icons/fa";
 import {EventView} from "./eventView";
 import {Event} from "../../../classes/event";
+import {Search} from "../search";
 
 // Test events
 
@@ -38,6 +39,7 @@ export class Dashboard extends React.Component {
 
         return(
             <div>
+                <Search searchHandler={this.searchHandler}/>
                 <h3>Arrangementer</h3>
                     <Row className="filterMenu">
                         <Col>
@@ -92,5 +94,9 @@ export class Dashboard extends React.Component {
                 </Accordion>
             </div>
         )
+    }
+
+    searchHandler(){
+
     }
 }

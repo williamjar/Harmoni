@@ -9,7 +9,7 @@ class CreateEventStore {
         axios.get("", id).then(res => this.eventObject.eventID = res.data.eventID); // Under development
     }
 
-    /* Performers */
+    /* PerformersTab */
     getPerformers(){
         axios.get("").then();
     }

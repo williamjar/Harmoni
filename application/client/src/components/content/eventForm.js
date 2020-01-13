@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
-import {AddPerformer, Performers, PerformersView} from "./performers";
-import {Crew} from "./crew";
-import {GeneralInfo, InfoView} from "./generalInfo";
+import {PerformerCard, PerformersTab, PerformersView} from "./performers";
+import {Crew, CrewTab} from "./crew";
+import {GeneralInfo} from "./generalInfo";
 import {DocumentationTab} from "../documentationTab";
 import {DocList} from "../docView";
 
@@ -39,7 +39,7 @@ export class EventForm extends Component{
                 <Tab eventKey="1" title="Artister">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
                         <div className="padding-bottom-20">
-                            {this.state.edit ? <Performers editable={this.state.edit}/> : <PerformersView/>}
+                            {this.state.edit ? <PerformersTab editable={this.state.edit}/> : <PerformersView/>}
                         </div>
                     </TabContent>
                 </Tab>

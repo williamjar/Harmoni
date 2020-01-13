@@ -11,6 +11,7 @@ export class Content extends Component{
         return(
             <div className="content">
                 <div className="card">
+
                     <div className="card-body">
                 {this.props.page}
                     </div>
