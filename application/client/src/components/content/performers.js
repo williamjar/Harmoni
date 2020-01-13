@@ -53,17 +53,26 @@ export class PerformerPanel extends Component{
     constructor(props){
         super(props);
 
+        this.state = {
+            performerList : [],
+        }
     }
 
     render() {
         return (
             <div>
-                <Search searchHandler={this.props.searchHandler} registerComponent={<RegisterPerformer/>} addRegisterButton={true}/>
+                <Search searchHandler={this.props.searchHandler} registerComponent={<RegisterPerformer/>} addRegisterButton={true} SearchList={this.performerList} />
                 <div className="padding-top-20">
                 {this.props.showCard?<PerformerCard />:null}
                 </div>
             </div>
         );
+    }
+
+    componentDidMount = () => {
+        //let currentState = this.state;
+        //currentState.performerList = ArtistService.getArtistForOrganizer(1);
+        //this.setState(currentState);
     }
 
 }
@@ -343,8 +352,10 @@ export class RegisterPerformer extends Component{
 
     submitForm = () => {
         //Error handling should be inserted here
+        let genreID = 1;
+        let organizerID = 1;
 
-        //ArtistService.createArtist(this.state.name, this.state.phone, this.state.email, )
+        ArtistService.createArtist(this.state.name, this.state.phone, this.state.email, genreID, organizerID );
         console.log(this.state);
     }
 }
