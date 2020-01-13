@@ -320,7 +320,7 @@ app.get("/organizer/username/:username", (req, res) => {
 
 //Returns organizerID by email. Needed for login, thus not part of /api/
 app.get("/organizer/by-email/:email", (req, res) => {
-    organizerIDDao.getOrganizerFromEmail(req.params.email, (status, data) => {
+    organizerDao.getOrganizerFromEmail(req.params.email, (status, data) => {
         res.status(status);
         res.json(data);
     })
@@ -350,9 +350,14 @@ app.post("/token", (req, res) => {
 
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
-
-    let token = req.headers["x-access-token"];
-    console.log(token === CookieStore.currentToken);
+    let token;
+    if (req.headers["x-access-token"]){
+        token = req.headers["x-access-token"];
+    }
+    else{
+        token = CookieStore.currentToken;
+    }
+    console.log(token);
     jwt.verify(token, publicKey, (err, decoded) => {
         if (err) {
             console.log('Token not OK');
