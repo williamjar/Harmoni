@@ -9,15 +9,27 @@ import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 
+export class Crew extends Component{
+    state = {
+        editable: [this.props.editable]
+    };
 
-export class CrewTab extends Component{
     render(){
         return(
             <div>
-                <AddToCrew />
-                <AddedCrew />
+                {this.state.editable ? <div><AddToCrew/><AddedCrew/></div> : <CrewView/>}
             </div>
         )
+    }
+
+    static getDerivedStateFromProps(props, state) {
+
+        if(props.editable !== state.editable) {
+            return {
+                editable: props.editable
+            }
+        }
+        return null;
     }
 }
 
@@ -244,6 +256,29 @@ export class AddedCrew extends Component{
 
             </div>
         );
+    }
+
+}
+
+
+export class CrewView extends Component {
+    render() {
+        return(
+            <div>
+                <b>Personell lagt til</b>
+                <div className="card card-body">
+                    <div className="row">
+                        <div className="col-10">
+                            Lydman
+                        </div>
+
+                        <div className="col-2">
+                            <button className="btn-primary rounded mr-2">Vis personell</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
     }
 }
 

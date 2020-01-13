@@ -7,6 +7,7 @@ import {GeneralInfo} from "./generalInfo";
 import {PerformerCard, PerformersTab} from "./performers";
 import {CrewTab} from "./crew";
 import {DocumentationTab} from "../documentationTab";
+import {DocList} from "../docView";
 
 
 
