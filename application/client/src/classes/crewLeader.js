@@ -1,9 +1,14 @@
 import {CrewMember} from "./crewMember";
 
-export class CrewLeader extends CrewMember{
-    constructor(crewID, name, phone, email, description, crewCategory){
-        super(crewID, name, phone, email, description);
+export class CrewLeader{
+    constructor(crewID, name, phone, email, description, crewCategory, eventID){
+        this.crewID = crewID;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.description = description;
         this.crewCategory = crewCategory;
+        this.eventID = eventID;
     }
 
     static getTestCrewLeader(){
