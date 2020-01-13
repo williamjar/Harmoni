@@ -2,6 +2,8 @@
 
 import React from 'react';
 import {Form, Button, Card} from 'react-bootstrap'
+import {LoginService} from "../../cookies_client/loginService";
+import {RegisterOrganizerService} from "../../service&store/registerOrganizerService";
 
 export class RegisterForm extends React.Component {
 
@@ -96,6 +98,9 @@ export class RegisterForm extends React.Component {
         /*
         *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.firstEmail" and "this.state.firstPassword";
         * */
+        RegisterOrganizerService.registerOrganizer(this.state.username, this.state.email, this.state.password, contactID => {
+            console.log(contactID);
+        });
     }
 
     // Database control functions to display the proper error message to the user.

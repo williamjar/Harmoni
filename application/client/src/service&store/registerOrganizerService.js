@@ -15,7 +15,7 @@ export class RegisterOrganizerService{
         };
 
         console.log("Creating contact at /contact");
-        axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), {headers: header})
+        return axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), {headers: header})
             .then(res => {
                 console.log("Some text");
                 console.log(res.status);
