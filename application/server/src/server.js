@@ -34,7 +34,7 @@ const pool = mysql.createPool({
     user: "joakimad",
     password: "LQliMP1A",
     database: "joakimad",
-    debug: false,
+    debug: true,
     multipleStatements: true
 });
 
@@ -404,7 +404,7 @@ app.get("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID);
 });
 
-app.post("/api/contact", (request, response) => {
+app.post('/contact', (request, response) => {
     console.log("request to add contact");
     let val = [
         request.body.contactName,
@@ -800,7 +800,7 @@ app.get("/api/organizer/:organizerID/documents", (require, response) => {
 });
 
 // post new organizer
-app.post("/api/organizer", (request, response) => {
+app.post("/organizer", (request, response) => {
     console.log("Request to add a organizer");
     let val = [
         request.body.username,

@@ -34,7 +34,8 @@ CREATE TABLE bug(
     bugID INT AUTO_INCREMENT PRIMARY KEY,
     date DATE,
     description VARCHAR(255),
-    organizerID INT
+    organizerID INT,
+    resolved TINYINT(1)
 );
 
 CREATE TABLE genre(
@@ -194,7 +195,7 @@ ADD FOREIGN KEY (crewID) REFERENCES crew(crewID) ON DELETE CASCADE;
 ALTER TABLE document
 ADD FOREIGN KEY (eventID) REFERENCES event(eventID),
 ADD FOREIGN KEY (artistID) REFERENCES artist(artistID),
-ADD FOREIGN KEY (crew) REFERENCES crew(crewID),
+ADD FOREIGN KEY (crewID) REFERENCES crew(crewID),
 ADD FOREIGN KEY (documentCategoryID) REFERENCES documentCategory(documentCategoryID);
 
 ALTER TABLE riderElement

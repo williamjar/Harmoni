@@ -1,43 +1,32 @@
 import axios from 'axios';
-const root = require('./axiosConfig');
+const root = require('./axiosConfig').root;
 
 export class RegisterOrganizerService{
 
-    static registerOrganizer(email, password, successCallback, errorCallback){
+    static registerOrganizer(username, email, password, callback){
         let header = {
             "Content-Type": "application/json"
         };
 
         let contactBody = {
-            "contactName": null,
+            "username": username,
             "phone": null,
             "email": email
         };
-        console.log("Inserting contact");
-        axios.post(root + "/api/contact", JSON.stringify(contactBody), {headers: header}).then(res => {
-            let contactID = res.data[0].insertId;
-            console.log("Inserting organizer on contact with ID" + contactID);
 
-            let organizerBody = {
-                "username": null,
-                "password": password,
-                "contactID": contactID
-            };
-
-            axios.post("/api/organizer", JSON.stringify(organizerBody), {headers: header}).then(res => {
-                console.log("Added organizer with organizerID " + res.data[0].insertId);
-                //Used in tests for now, can also be used for other things.
-                if (successCallback){
-                    successCallback(res.data[0].insertId);
-                }
-            }).catch(err => {
-                console.log(err);
-                errorCallback();
+        console.log("Creating contact at /contact");
+        axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), {headers: header})
+            .then(res => {
+                console.log("Some text");
+                console.log(res.status);
+                console.log(res.data);
+                return res.data.insertId;
             })
-        }).catch(err => {
-            console.log(err);
-            errorCallback();
-        });
+            .then(contactID => {
+                console.log("Creating organizer with contactID" + contactID);
+                callback(contactID);
+            })
+            .catch(error => console.log("Error: " + error));
     }
 
 }
