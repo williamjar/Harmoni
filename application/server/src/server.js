@@ -28,7 +28,6 @@ const pool = mysql.createPool({
     multipleStatements: true
 });
 
-const OrganizerIDDao = require("./dao/organizerIDDao");
 const artistDaoObj = require('./dao/artistDao.js');
 const bugDaoObj = require('./dao/bugDao.js');
 const contactDaoObj = require('./dao/contactDao.js');
@@ -48,9 +47,7 @@ let documentationDao = new documentationDaoObj(pool);
 let eventDao = new eventDaoObj(pool);
 let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
-let organizerIDDao = new OrganizerIDDao(pool);
 let loginDao = new loginDaoObj(pool);
-
 
 const public_path = path.join(__dirname, '/../../client/public');
 app.use(express.static(public_path));
