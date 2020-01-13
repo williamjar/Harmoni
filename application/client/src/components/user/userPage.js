@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Card, Col, Form, Row, Table, Image, CardColumns, ListGroup, CardDeck} from 'react-bootstrap'
+import {Button, Card, Col, Form, Row, Table, Image, CardColumns, ListGroup, CardDeck, Spinner} from 'react-bootstrap'
 import {CardText} from "react-bootstrap/Card";
 
 
@@ -9,14 +9,15 @@ export class UserPage extends React.Component {
         this.state = {
             username: '',
             newUsername: '',
-            email: 'william@mekanisk.co',
+            email: '',
             newEmail: '',
             confirmNewEmail: '',
             firstNewPassword: '',
             secondNewPassword: '',
             phonenumber : '',
             newPhonenumber: '',
-            profilePicture: 'https://www.jodilogik.com/wordpress/wp-content/uploads/2016/05/people-1.png',
+            profilePicture: '',
+            savingInformation: false,
             mode: 1
         };
 
@@ -35,6 +36,10 @@ export class UserPage extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         this.submitForm();
+    }
+
+    componentDidMount() {
+        this.updateInfo();
     }
 
     // Functions to verify the contents in the form.
@@ -136,7 +141,9 @@ export class UserPage extends React.Component {
                                     <ListGroup.Item className="text-danger" hidden={!this.validatePhoneNumber()}>Endre telefonnummer til {this.state.newPhonenumber}</ListGroup.Item>
                                     <ListGroup.Item className="text-danger" hidden={!this.validatePassword()}>Utfør en passordendring</ListGroup.Item>
                                 </ListGroup>
-                                <Form.Group className={"mt-4"}><Button variant="success" type="submit" disabled={!this.validateForm()}>Utfør endringer</Button></Form.Group>
+                                <Form.Group className={"mt-4"}><Button variant="success" type="submit" disabled={!this.validateForm()} hidden={this.state.savingInformation}>Utfør endringer</Button></Form.Group>
+                                <Form.Group><Button variant="success" disabled hidden={!this.state.savingInformation}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Lagrer informasjon</Button></Form.Group>
+
                                 <Form.Group><Button className="align-right" variant="danger" onClick={() => this.changeMode()}>Avbryt</Button></Form.Group>
                             </Card>
 
@@ -150,8 +157,14 @@ export class UserPage extends React.Component {
             )}
     }
 
+
     validateUsername(){
-        return (this.state.username !== this.state.newUsername) && (this.state.newUsername.length > 0);
+        let  illegalCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+        if(illegalCharacters.test(this.state.newUsername)){
+            return false;
+        }else{
+            return (this.state.username !== this.state.newUsername) && (this.state.newUsername.length > 0);
+        }
     }
 
     validatePhoneNumber(){
@@ -176,10 +189,34 @@ export class UserPage extends React.Component {
     }
 
 
+
+    updateInfo(){
+        var databaseUsername = 'Kebab';
+        var databaseEmail = 'Kebab@gmail.com';
+        var databaseProfilePicture = 'https://images.matprat.no/ybrpxttmmy-jumbotron/xsmall';
+
+        this.setState(this.setState({
+            username: databaseUsername,
+            email: databaseEmail,
+            profilePicture: databaseProfilePicture
+        }));
+    }
+
     submitForm(){
+
+        this.setState({savingInformation: true});
+
         if(this.validateUsername()) this.setState({username: this.state.newUsername});
+        //Service: update username
         if(this.validateEmail()) this.setState({email: this.state.newEmail});
+        //Service: update email
         if(this.validatePhoneNumber())this.setState({phonenumber: this.state.newPhonenumber});
+        //Service: update phone number
+        if(this.validatePassword()) {
+            // /api/organizer/:organizerID
+        }
+
+        // /api/contact/:contactID
 
         this.setState({newUsername: ''});
         this.setState({newEmail: ''});
@@ -188,6 +225,7 @@ export class UserPage extends React.Component {
         this.setState({secondNewPassword: ''});
 
         this.changeMode();
+        this.setState({savingInformation: false});
     }
 
     // Database control functions to display the proper error message to the user.
