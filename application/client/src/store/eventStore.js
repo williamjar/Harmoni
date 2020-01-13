@@ -14,6 +14,21 @@ class eventStore{
     static allEventsForOrganizer = [];
 
 
+    static createEvent(callback, eventName, organizerID){
+        // ^ Unsure if callback is needed for this method ^
+        //Call to create an event
+
+        axios.post(axiosConfig.root + "/api/events" ).then(response =>{
+
+            //Create an event from the insertID returned from the query and the organizerID, the rest is null
+            this.currentEvent = new Event(response.insertID, null, null, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
+            callback();
+        });
+
+
+    }
+
+
     static storeCurrentEvent(eventID){
 
         //Populates currentEvent
