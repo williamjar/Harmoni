@@ -1,7 +1,8 @@
 import React from 'react';
 import {Button, Card, Col, Form, Row, Table, Image, CardColumns, ListGroup, CardDeck, Spinner} from 'react-bootstrap'
 import {CardText} from "react-bootstrap/Card";
-
+import {OrganizerService} from "../../store/organizerService";
+import {CookieStore} from "../../store/cookieStore";
 
 export class UserPage extends React.Component {
     constructor(props) {
@@ -191,14 +192,16 @@ export class UserPage extends React.Component {
 
 
     updateInfo(){
-        var databaseUsername = 'Kebab';
-        var databaseEmail = 'Kebab@gmail.com';
-        var databaseProfilePicture = 'https://images.matprat.no/ybrpxttmmy-jumbotron/xsmall';
+
+        //var user = OrganizerService.getOrganizer(CookieStore.currentUserID);
+
+
+        var databaseUsername = '';
+        var databaseEmail = '';
 
         this.setState(this.setState({
             username: databaseUsername,
             email: databaseEmail,
-            profilePicture: databaseProfilePicture
         }));
     }
 
