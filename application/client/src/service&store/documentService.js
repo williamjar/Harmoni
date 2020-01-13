@@ -2,18 +2,35 @@ import axios from "axios";
 import {sharedComponentData} from "react-simplified";
 import Document from ".classes/document.js"
 
+const axiosConfig = require("./axiosConfig");
+
 class DocumentService {
 
     getAllDocumentsForOrganizer(organizerID) {
-        return axios.get('/api/organizer/' + organizerID + '/documents').then(response => response.data);
+        let allDocumentsByOrganizer = [];
+        axios.get(axiosConfig.root + '/api/organizer/' + organizerID + '/documents').then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+                allDocumentByOrganizer.push(new Document(response.data[i].documentID, response.data[i].documentLink,
+                    response.data[i].documentCategory));
+            }
+        });
+        return allDocumentsByOrganizer;
     }
 
+
     getAllDocumentsForEvent(eventID){
-        return axios.get('/api/events/' + eventID + '/documents').then(response => response.data);
+        let allDocumentsByEvent = [];
+        axios.get(axiosConfig.root + '/api/events/' + eventID + '/documents').then(response =>  {
+            for (let i = 0; i < response.data.length; i++) {
+                allDocumentsByEvent.push(new Document(response.data[0].documentID, response.data[0].documentLink,
+                    response.data[0].documentCategory));
+            }
+        });
+        return allDocumentsByEvent;
     }
 
     addDocument(eventID, documentLink, artistID, documentCategoryID){
-        axios.post('/api/document/', {
+        axios.post(axiosConfig.root + '/api/document/', {
             "eventID": eventID,
             "documentLink": documentLink,
             "artistID": artistID,
@@ -23,7 +40,7 @@ class DocumentService {
 
 
     updateDocument(documentID, eventID, name, link, artistID, crewID, categoryID) {
-        return axios.put('/api/document/' + documentID, {
+        return axios.put(axiosConfig.root + '/api/document/' + documentID, {
             "eventID":eventID,
             "documentName": name,
             "documentLink": link,
@@ -34,7 +51,7 @@ class DocumentService {
     }
 
     deleteDocument(id) {
-        return axios.delete<Document>('/api/document/' + id).then(response => response.data);
+        return axios.delete<Document>(axiosConfig.root + '/api/document/' + id).then(response => response.data);
     }
 
 }
