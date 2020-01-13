@@ -450,6 +450,20 @@ app.delete("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID)
 });
 
+//TODO: Header error
+app.put("/api/contact/:contactID/phone", (request, response) => {
+    console.log("Request to change phone for contact");
+    let val = [
+        request.body.phone,
+        request.params.contactID
+    ];
+    contactDao.changePhoneNumber((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+
 // ARTIST
 app.get("/api/artist/:artistID", (request, response) => {
     console.log("request for artist");
@@ -842,13 +856,27 @@ app.post("/api/organizer", (request, response) => {
 
 
 // change password for organizer
-app.put("/api/organizer/:organizerID", (request, response) => {
+app.put("/api/organizer/:organizerID/pass", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.password,
         request.params.organizerID
     ];
     organizerDao.changePassword((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+//TODO: Header error
+//Change username for organizer
+app.put("/api/organizer/:organizerID/username", (request, response) => {
+    console.log("Request to change password for organizer");
+    let val = [
+        request.body.username,
+        request.params.organizerID
+    ];
+    organizerDao.changeUsername((status, data) => {
         response.status(status);
         response.json(data);
     }, val);
