@@ -2,8 +2,8 @@
   "name": "server",
   "version": "1.0.0",
   "scripts": {
-    "start": "node src/server.js",
-    "test": "jest --runInBand --passWithNoTests --detectOpenHandles --forceExit"
+    "start": "node -r esm src/server.js",
+    "test": " -r esm --runInBand --passWithNoTests --detectOpenHandles --forceExit"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -17,6 +17,7 @@
     "mysql": "^2.17.1",
     "node": "^13.5.0",
     "npm": "^6.13.4",
-    "require": "^2.4.20"
+    "require": "^2.4.20",
+    "esm": "^3.2.25"
   }
 }
