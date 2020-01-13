@@ -8,6 +8,7 @@ import Button from "react-bootstrap/Button";
 import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
+import {ArtistService} from "../../store/artistService";
 
 
 export class PerformersTab extends Component{
@@ -49,6 +50,11 @@ export class PerformersTab extends Component{
 
 export class PerformerPanel extends Component{
 
+    constructor(props){
+        super(props);
+
+    }
+
     render() {
         return (
             <div>
@@ -59,6 +65,7 @@ export class PerformerPanel extends Component{
             </div>
         );
     }
+
 }
 
 export class PerformerCard extends Component{
@@ -256,6 +263,7 @@ export class RegisterPerformer extends Component{
 
 
         this.state = {
+          addCategory : false,
           name : "",
           phone : "",
           email : "",
@@ -295,6 +303,8 @@ export class RegisterPerformer extends Component{
                         </Form.Group>
                     </Form.Row>
 
+
+                    <div className="padding-top-20"></div>
                     <Button variant="primary" type="submit" onClick={this.submitForm}>
                         Submit
                     </Button>
@@ -308,9 +318,9 @@ export class RegisterPerformer extends Component{
     }
 
     handleNameChange = (event) => {
-        let currentState = this.state;
-        currentState.name = event.target.value;
-        this.setState(currentState);
+            let currentState = this.state;
+            currentState.name = event.target.value;
+            this.setState(currentState);
     }
 
     handlePhoneChange = (event) => {
@@ -333,9 +343,12 @@ export class RegisterPerformer extends Component{
 
     submitForm = () => {
         //Error handling should be inserted here
+
+        //ArtistService.createArtist(this.state.name, this.state.phone, this.state.email, )
         console.log(this.state);
     }
 }
+
 
 export class RegisteredPerformers extends Component{
     render(){

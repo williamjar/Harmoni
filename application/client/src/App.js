@@ -30,7 +30,7 @@ export class App extends Component{
         super(props);
 
         this.state = {
-            loggedIn : true,
+            loggedIn : false,
             mobileView : false,
         }
 

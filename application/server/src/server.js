@@ -21,14 +21,13 @@ app.use(cors());
 const pool = mysql.createPool({
     connectionLimit: 2,
     host: "mysql.stud.iie.ntnu.no",
-    user: "evengu",
-    password: "O7KhlwWQ",
-    database: "evengu",
+    user: "joakimad",
+    password: "LQliMP1A",
+    database: "joakimad",
     debug: false,
     multipleStatements: true
 });
 
-const OrganizerIDDao = require("./dao/organizerIDDao");
 const artistDaoObj = require('./dao/artistDao.js');
 const bugDaoObj = require('./dao/bugDao.js');
 const contactDaoObj = require('./dao/contactDao.js');
@@ -39,6 +38,7 @@ const organizerDaoObj = require('./dao/organizerDao.js');
 const riderDaoObj = require('./dao/riderDao.js');
 const documentationDaoObj = require("./dao/documentationdao.js");
 const loginDaoObj = require("./dao/loginDao");
+const pictureDaoObj = require("./dao/pictureDao");
 let artistDao = new artistDaoObj(pool);
 let bugDao = new bugDaoObj(pool);
 let contactDao = new contactDaoObj(pool);
@@ -48,9 +48,8 @@ let documentationDao = new documentationDaoObj(pool);
 let eventDao = new eventDaoObj(pool);
 let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
-let organizerIDDao = new OrganizerIDDao(pool);
 let loginDao = new loginDaoObj(pool);
-
+let pictureDao = new pictureDaoObj(pool);
 
 const public_path = path.join(__dirname, '/../../client/public');
 app.use(express.static(public_path));
@@ -323,7 +322,7 @@ app.get("/organizer/username/:username", (req, res) => {
 
 //Returns organizerID by email. Needed for login, thus not part of /api/
 app.get("/organizer/by-email/:email", (req, res) => {
-    organizerIDDao.getOrganizerFromEmail(req.params.email, (status, data) => {
+    organizerDao.getOrganizerFromEmail(req.params.email, (status, data) => {
         res.status(status);
         res.json(data);
     })
@@ -353,7 +352,14 @@ app.post("/token", (req, res) => {
 
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
-    let token = req.headers["x-access-token"];
+    let token;
+    if (req.headers["x-access-token"]){
+        token = req.headers["x-access-token"];
+    }
+    else{
+        token = CookieStore.currentToken;
+    }
+    console.log(token);
     jwt.verify(token, publicKey, (err, decoded) => {
         if (err) {
             console.log('Token not OK');
@@ -368,7 +374,7 @@ app.use('/api', (req, res, next) => {
                 }, privateKey, {
                     algorithm: "RS512",
                 });
-            res.json({jwt: CookieStore.currentToken, for: decoded.email});
+            //res.json({jwt: CookieStore.currentToken, for: decoded.email});
             next();
         }
     })
@@ -444,17 +450,14 @@ app.delete("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID)
 });
 
-//TODO: Header error
-app.put("/api/contact/:contactID/phone", (request, response) => {
-    console.log("Request to change phone for contact");
-    let val = [
-        request.body.phone,
-        request.params.contactID
-    ];
+
+app.put("/api/contact/:contactID/change/phoneNumber", (request, response) => {
+    console.log("Request to change password for organizer");
+
     contactDao.changePhoneNumber((status, data) => {
         response.status(status);
         response.json(data);
-    }, val);
+    }, request.body.phone ,request.params.contactID);
 });
 
 
@@ -859,13 +862,15 @@ app.post("/organizer", (request, response) => {
 
 
 // change password for organizer
-app.put("/api/organizer/:organizerID/pass", (request, response) => {
+app.put("/api/organizer/:organizerID/change/password", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.password,
         request.params.organizerID
     ];
     organizerDao.changePassword((status, data) => {
+        console.log(status);
+        console.log(data);
         response.status(status);
         response.json(data);
     }, val);
@@ -873,16 +878,16 @@ app.put("/api/organizer/:organizerID/pass", (request, response) => {
 
 //TODO: Header error
 //Change username for organizer
-app.put("/api/organizer/:organizerID/username", (request, response) => {
+app.put("/api/organizer/:organizerID/change/username", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.username,
         request.params.organizerID
     ];
-    organizerDao.changeUsername((status, data) => {
+    organizerDao.changeUsername(val,(status, data) => {
         response.status(status);
         response.json(data);
-    }, val);
+    });
 });
 
 
@@ -1007,6 +1012,44 @@ app.delete("/api/document/:documentID", (request, response) => {
         response.json(data);
     }, request.params.documentID);
 });
+
+// PICTURE
+//Insert picture
+app.post("/api/picture/insert", (request, response) => {
+    console.log("Request to add a picture link");
+    pictureDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.body.pictureLink);
+});
+
+//Delete picture
+app.delete("/api/picture/delete/:pictureID", (request, response) => {
+    console.log("Request to delete a picture");
+    pictureDao.deleteOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.pictureID);
+});
+
+//Update picture
+app.put("/api/picture/update/:pictureID", (request, response) => {
+    console.log("Request to update a picture");
+    pictureDao.updateOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.body.pictureLink, request.params.pictureID);
+});
+
+//Get one picture
+app.get("/api/picture/:pictureID", (require, response) => {
+    console.log("Request to get a rider element");
+    pictureDao.getPicture((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.pictureID);
+});
+
 
 const server = app.listen(8080);
 

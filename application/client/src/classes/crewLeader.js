@@ -6,6 +6,11 @@ export class CrewLeader extends CrewMember{
         this.crewCategory = crewCategory;
     }
 
+    /*constructor(crewMember, leaderCategory){
+        super(crewMember.crewID, crewMember.name, crewMember.phone, crewMember.email, crewMember.description);
+        this.crewCategory = leaderCategory;
+    }*/
+
     static getTestCrewLeader(){
         let crewLeader = new CrewLeader(super.getTestCrewMember()[0].crewID,
             super.getTestCrewMember()[0].contactName,
