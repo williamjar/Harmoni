@@ -205,7 +205,6 @@ export class AddToCrew extends Component{
             currentState.numberOfFilesAdded = attachment;
             this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
         }
-
     }
 
     addNew = () => {

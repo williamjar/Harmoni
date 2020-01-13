@@ -1,7 +1,7 @@
 const Dao = require("./dao.js");
 
 //Sql queries for associated with Documentation
-module.exports = class test extends Dao {
+module.exports = class documentationDao extends Dao {
     getAllDocumentCategories(callback){
         super.query(
             "select documentCategoryName from documentCategory",

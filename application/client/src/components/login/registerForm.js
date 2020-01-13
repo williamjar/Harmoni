@@ -1,5 +1,6 @@
 import React from 'react';
 import {Form, Button, Card, Row, Col} from 'react-bootstrap'
+import {RegisterOrganizerService} from "../../store/registerOrganizerService";
 
 export class RegisterForm extends React.Component {
 
@@ -133,6 +134,21 @@ export class RegisterForm extends React.Component {
         *   It can be assumed that the emails are identical and that the passwords are identical.
         *
         * */
+        //TODO: Change "testusername" to this.state.username when merge happens!
+        RegisterOrganizerService.registerOrganizer("testusername", this.state.firstEmail, this.state.firstPassword, statusCode => {
+            if (statusCode === 200){
+                console.log("User perfectly registered");
+            }
+            else if (statusCode === 501){
+                console.log("email already registered");
+            }
+            else if (statusCode === 502){
+                console.log("name already registered");
+            }
+            else if (statusCode === 500){
+                console.log("database error, please try again");
+            }
+        });
     }
 
     // Database control functions to display the proper error message to the user.
