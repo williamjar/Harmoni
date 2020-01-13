@@ -47,7 +47,7 @@ export class EventForm extends Component{
                 <Tab eventKey="2" title="Personell">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
                         <div className="padding-bottom-20">
-                            {this.state.edit ? <CrewTab/> : <CrewView/>}
+                            <CrewTab editable={this.state.edit}/>
                         </div>
                     </TabContent>
                 </Tab>
