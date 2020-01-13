@@ -7,40 +7,40 @@ let axiosConfig = require("./axiosConfig");
 
 class eventStore{
 
-    static currentEvent = new Event(-1, "", "", "", "", "", "", "", -1, "", "",
-        "", "", -1, -1);
+    static currentEvent = null;
 
     static allEvents = [];
 
-    static getEvent(eventID){
+    static storeCurrentEvent(eventID){
+
+        //Populates currentEvent
 
         let header = {
             "Content-Type": "application/json"
         };
 
-        let body = {
-            "email": email,
-            "password": hashedSaltedPassword
-        };
-
-        return axios.post("http://localhost/login", JSON.stringify(body), {headers: header}).then(res => res.json())
-            .then(loginResponse => {
-                console.log(loginResponse);
-                axios.get("http://localhost:8080/organizer/by-email/" + email).then(res => res.json)
-                    .then(emailResponse => {
-                        if (!(loginResponse.error)){
-                            localStorage.setItem('organizerID', emailResponse.organizerID);
-                            localStorage.setItem('access-token', loginResponse.jwt);
-                        }
-                        else{
-                            localStorage.setItem('organizerID', null);
-                            localStorage.setItem('access-token', null);
-                        }
-                    });
-            });
+        return axios.get(axiosConfig.root + "/login", {headers: header}).then(response => {
+            this.currentEvent = new Event(response.data.eventID, response.data.eventName,
+                response.data.startDate, response.data.endDate, response.data.startTime,
+                response.data.endTime, response.data.address, response.data.town,
+                response.data.zipCode, response.data.status, response.data.description,
+                response.data.publishDate, response.data.publishTime, response.data.organizerID,
+                response.data.picture);
+        });
     }
 
-    static getAllEvents(){
+    static postCurrentEvent(){
+
+        let header = {};
+
+        let body = {
+            firstnme : ""
+        };
+
+        return axios.post(axiosConfig.root + "")
+    }
+
+    static storeAllEvents(){
 
         let header = {
             "Content-Type": "application/json"
@@ -59,13 +59,22 @@ class eventStore{
         });
     }
 
+    //TODO: change local event to archived
     static archiveEvent(eventID){
 
         let header = {
             "Content-Type": "application/json"
         };
 
-        return axios.get(axiosConfig.root + "/api/events/" + eventID, {headers: header}).then( response => {
-        });
+        return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/3", {headers: header}).then( response => {});
+    }
+
+    static publishEvent(eventID){
+
+        let header = {
+            "Content-Type": "application/json"
+        };
+
+        return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/2", {headers: header}).then( response => {});
     }
 }

@@ -34,7 +34,7 @@ const pool = mysql.createPool({
     user: "joakimad",
     password: "LQliMP1A",
     database: "joakimad",
-    debug: true,
+    debug: false,
     multipleStatements: true
 });
 
@@ -71,6 +71,14 @@ app.use(bodyParser.json());
 
 app.use(express.static(public_path));
 
+//----------------- BUG ---------------------
+//Request to register bug
+app.post('/api/bug/register/:organizerID', (req, res) => {
+    bugDao.registerBug(req.params.organizerID, req.body,(status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
 
 //----------------- DOCUMENTATION ---------------------
 //Check if a folder exists for user
@@ -95,7 +103,7 @@ function deleteFile(path) {
             console.log('File deleted!');
         });
     } catch (e) {
-        console.log("test");
+        console.log("Error, could not delete file:" + e);
     }
 }
 
@@ -404,7 +412,7 @@ app.get("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID);
 });
 
-app.post('/contact', (request, response) => {
+app.post("/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
         request.body.contactName,
@@ -705,10 +713,28 @@ app.get("/api/events/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
-//TODO: Check if this endpoint works with CookieStore.currentUserID
+//Create one event
+app.post("/api/events", (request, response) => {
+    console.log("Express: Request to create an event");
+    eventDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.eventTypeID, request.body.pictureID]);
+});
+
+//Update event
+app.put("/api/events/:eventID", (request, response) => {
+    console.log("Express: Request to update an event");
+    eventDao.updateOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.eventTypeID, request.body.pictureID, request.params.eventID]);
+});
+
+//TODO: Check if this endpoint works with localStorage
 //Get all events by status
 app.get("/api/events/status/:status", (request, response) => {
-    console.log("Express: Request to get all events for organizer " + CookieStore.currentUserID + " with status " + request.params.status);
+    console.log("Express: Request to get all events for organizer " + CookieStore.currentUserID+ " with status " + request.params.status);
     eventDao.getByStatusForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
