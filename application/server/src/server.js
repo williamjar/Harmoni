@@ -283,7 +283,7 @@ app.post("/api/:eventID/documents/create/crew", (req, res) => {
     });
 });
 
-START LOGIN
+// START LOGIN
 let privateKey = SECRET.privateKey;
 let publicKey = SECRET.publicKey;
 
@@ -392,7 +392,7 @@ app.get('/api/test', () => {
     console.log("Testing /api/test");
 });
 
-END LOGIN
+// END LOGIN
 
 // BUG
 //TODO Not working right now
