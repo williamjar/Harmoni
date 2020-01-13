@@ -11,8 +11,40 @@ body{
     padding-top: 20px;
 }
 
+.padding-bottom-20{
+    padding-bottom: 20px;
+}
+
+.padding-top-5{
+    padding-top: 5px;
+}
+
 .padding-left-5{
     padding-left: 5px;
+}
+
+.padding-left-10{
+    padding-left: 10px;
+}
+
+.margin-left-5{
+    margin-left:5px;
+}
+
+.margin-left-10{
+    margin-left:10px;
+}
+
+.margin-top-5{
+    margin-top:5px;
+}
+
+.margin-bottom-20{
+    margin-bottom: 20px;
+}
+
+.margin-bottom-30{
+    margin-bottom: 30px;
 }
 
 .text-red {
@@ -43,7 +75,14 @@ body{
     bottom: 10px;
     left: 10px ;
     text-align: left;
+    color:black;
+    padding:10px
 
+}
+
+.Nav-Menu .user-nav:hover{
+   background: lightgreen;
+    border-radius: 5px;
 }
 
 .nav-link{
@@ -67,7 +106,7 @@ body{
 .content{
     overflow-y: scroll;
     height: 100vh;
-    padding: 50px 150px 20px 150px;
+    padding: 20px 50px 50px 50px;
     margin:0 auto;
 }
 
@@ -129,9 +168,35 @@ body{
     display: block;
 }
 
+.search:hover{
+    background:lightcyan;
+    cursor:pointer;
+}
+
+.searchButtons{
+    margin-left: -25px;
+    z-index: 0;
+}
+
+.searchButtons button{
+    margin-left:20px;
+}
+
+
+
 .dropzone{
     padding-top: 100px;
     padding-bottom: 100px;
     text-align: center;
 
+}
+
+/* Different mediums, Mobile etc */
+@media only screen and (max-width: 911px) {
+    .content{
+        overflow-y: scroll;
+        height: 100vh;
+        padding: 20px 20px 50px 20px;
+        margin:0 auto;
+    }
 }
