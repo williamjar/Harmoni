@@ -10,8 +10,8 @@ export class Artist extends Contact{
         this.artistID = artistID;
         this.genre = genre;
         this.organizer = organizer;
-        //this.events = [];
-        //this.documents = [];
+        this.events = [];
+        this.documents = [];
     }
 
     addEvent(event){
