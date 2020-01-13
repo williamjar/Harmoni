@@ -34,7 +34,8 @@ CREATE TABLE bug(
     bugID INT AUTO_INCREMENT PRIMARY KEY,
     date DATE,
     description VARCHAR(255),
-    organizerID INT
+    organizerID INT,
+    resolved TINYINT(1)
 );
 
 CREATE TABLE genre(
