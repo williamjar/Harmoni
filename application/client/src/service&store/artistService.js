@@ -1,6 +1,5 @@
 import axios from "axios";
-import {sharedComponentData} from "react-simplified";
-import Artist from ".classes/artist.js"
+import {Artist} from "../classes/artist.js"
 
 const axiosConfig = require("./axiosConfig");
 
@@ -8,17 +7,18 @@ export class ArtistService {
 
     // artistID, name, phone, email, genre, organizer
 
-    getArtist(artistID) {
+    static getArtist(artistID, callback) {
+
         axios.get(axiosConfig.root + '/api/artist/' + artistID).then(response => {
-                return new Artist(response.data[0].artistID, response.data[0].organizerID,
-                    response.data[0].contactID, response.data[0].organizerID, response.data[0].contactID,
-                    response.data[0].contactName, response.data[0].phone, response.data[0].email);
+            console.log(response.data);
+            //return new Artist(response.data[0].artistID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
             }
         );
+
     }
 
     // OrganizerID == innlogget bruker.
-    createArtist(name, phone, email, genreID, organizerID) {
+    static createArtist(name, phone, email, genreID, organizerID) {
         let header = {
             "Content-Type": "application/json"
         };
@@ -48,11 +48,11 @@ export class ArtistService {
             console.log(response));
     }
 
-    deleteArtist(artistID) {
+    static deleteArtist(artistID) {
         axios.delete('/api/artist/organizer/' + artistID).then(response => console.log(response));
     }
 
-    getArtistForOrganizer(organizerID) {
+    static getArtistForOrganizer(organizerID) {
         let allArtistByOrganizer = [];
         axios.get(axiosConfig.root + '/api/artist/organizer/' + organizerID).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
@@ -65,7 +65,7 @@ export class ArtistService {
         return allArtistByOrganizer;
     }
 
-    getArtistForEvent(eventID) {
+    static getArtistForEvent(eventID) {
         let allArtistByEvent = [];
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
@@ -79,5 +79,4 @@ export class ArtistService {
     }
 }
 
-export let artistService = sharedComponentData(new artistService());
 
