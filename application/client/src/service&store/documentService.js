@@ -51,7 +51,7 @@ class DocumentService {
     }
 
     deleteDocument(id) {
-        return axios.delete<Document>(axiosConfig.root + '/api/document/' + id).then(response => response.data);
+        return axios.delete(axiosConfig.root + '/api/document/' + id).then(response => response.data);
     }
 
 }

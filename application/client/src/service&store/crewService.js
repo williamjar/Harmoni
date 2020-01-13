@@ -10,9 +10,8 @@ class CrewService {
     getCrewMember(crewID){
         axios.get(axiosConfig.root + '/api/crew/' + crewID).then(response =>
         {
-            return new CrewMember(response.data[0].crewID, response.data[0].description,
-                response.data[0].crewCategory, response.data[0].contactID,
-                response.data[0].contactName, response.data[0].phone, response.data[0].email);
+            return new CrewMember(response.data[0].description, response.data[0].contactName,
+                response.data[0].phone, response.data[0].email);
         });
     }
 
@@ -21,8 +20,7 @@ class CrewService {
         axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
                 allCrewMembersByOrganizer.push(new CrewMember(response.data[i].crewID, response.data[i].description,
-                    response.data[i].crewCategory, response.data[i].contactID,
-                    response.data[i].contactName, response.data[i].phone, response.data[i].email));
+                    response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
             }
         });
         return allCrewMembersByOrganizer;
@@ -32,8 +30,7 @@ class CrewService {
         let allCrewCategoriesByOrganizer = [];
         axios.get(axiosConfig.root + '/api/crew/categories/' +  organizerID).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
-                allCrewCategoriesByOrganizer.push(new CrewMember(response.data[i].crewCategoryID,
-                    response.data[i].crewCategory));
+                allCrewCategoriesByOrganizer.push(new CrewMember(response.data[i].crewCategory));
             }
         });
         return allCrewCategoriesByOrganizer;
@@ -44,8 +41,7 @@ class CrewService {
         axios.get(axiosConfig.root + '/api/event/crew/' + eventID).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
                 allCrewMembersForEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
-                    response.data[i].crewCategory, response.data[i].contactID,
-                    response.data[i].contactName, response.data[i].phone, response.data[i].email));
+                    response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
             }
         });
         return allCrewMembersForEvent;
