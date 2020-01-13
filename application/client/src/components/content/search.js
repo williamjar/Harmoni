@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import {FaSearch} from "react-icons/all";
 import Form from "react-bootstrap/Form";
 import {Row, Col} from 'react-bootstrap';
+import {ArtistService as artistService} from "../../store/artistService";
 
 
 export class Search extends Component{
@@ -17,15 +18,20 @@ export class Search extends Component{
         this.state = {
             registerNewButtonAdded : this.props.addRegisterButton,
             searchInput : "",
-            results : [{input : "Lorde"}, {input : "lor"}],
+            results : [],
             showRegisterNew : false,
             showSearchResults: true,
             showPerformerCard: false,
         };
 
+
         this.handleSearchInput = this.handleSearchInput.bind(this);
         this.registerNew = this.registerNew.bind(this);
         this.searchHandler = this.searchHandler.bind(this);
+    }
+
+    componentDidMount() {
+        this.callBackSearchResult();
     }
 
     render() {
@@ -51,7 +57,7 @@ export class Search extends Component{
 
                         <div className="card-text margin-top-5 ma">
                             {this.state.showRegisterNew === false && this.state.showSearchResults?
-                                this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf(e.input.toLowerCase()) >= 0).map(show =>
+                                this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf(e.contactName.toLowerCase()) >= 0).map(show =>
                                 <div className="card-title card-header search" onClick={() => this.searchHandler(show.input)}>{show.input}</div>
                             ):null}
 
@@ -65,6 +71,13 @@ export class Search extends Component{
                 </div>
             </div>
         )
+    }
+
+    callBackSearchResult = () => {
+        let currentState = this.state;
+        currentState.results = artistService.getArtistForOrganizer(1);
+        this.setState(currentState);
+        console.log(this.state.results);
     }
 
     searchHandler(input){
