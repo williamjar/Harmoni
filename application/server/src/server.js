@@ -48,6 +48,7 @@ const eventDaoObj = require('./dao/eventDao.js');
 const organizerDaoObj = require('./dao/organizerDao.js');
 const riderDaoObj = require('./dao/riderDao.js');
 const documentationDaoObj = require("./dao/documentationdao.js");
+const loginDaoObj = require("./dao/loginDao");
 let artistDao = new artistDaoObj(pool);
 let bugDao = new bugDaoObj(pool);
 let contactDao = new contactDaoObj(pool);
@@ -58,6 +59,7 @@ let eventDao = new eventDaoObj(pool);
 let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
 let organizerIDDao = new OrganizerIDDao(pool);
+let loginDao = new loginDaoObj(pool);
 
 
 const public_path = path.join(__dirname, '/../../client/public');
@@ -322,6 +324,13 @@ app.post("/login", (req, res) => {
             res.json({error: 'Not authorized'});
         }
     });
+});
+
+app.get("/organizer/username/:username", (req, res) => {
+    loginDao.checkUserExists(req.params.username, (status, data) => {
+        res.status(status);
+        res.json(data);
+    })
 });
 
 //Returns organizerID by email. Needed for login, thus not part of /api/
