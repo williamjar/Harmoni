@@ -26,6 +26,7 @@ export class CookieStore{
                 }
                 else{
                     this.currentToken = res.jwt;
+                    console.log("Token set to " + this.currentToken);
                 }
             }
         ).then(() => {

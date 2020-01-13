@@ -193,7 +193,7 @@ export class UserPage extends React.Component {
 
     updateInfo(){
 
-        //var user = OrganizerService.getOrganizer(CookieStore.currentUserID);
+        var user = OrganizerService.getOrganizer(CookieStore.currentUserID);
 
 
         var databaseUsername = '';

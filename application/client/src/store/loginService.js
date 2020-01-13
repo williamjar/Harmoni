@@ -22,6 +22,7 @@ export class LoginService{
                 if (loginResponse.error){
                     CookieStore.currentToken = null;
                     CookieStore.currentUserID = null;
+                    console.log("Current token set to null");
                 }
                 else{
                     console.log("before getting id");
@@ -36,12 +37,14 @@ export class LoginService{
                                 console.log("UserID and Token set");
                                 CookieStore.currentUserID = emailResponse[0].organizerID;
                                 CookieStore.currentToken = loginResponse.jwt;
+                                console.log("Token set to " + CookieStore.currentToken);
                                 //The user logs in
                                 callback(loginResponse.status);
                             }
                             else{
                                 CookieStore.currentToken = null;
                                 CookieStore.currentUserID = null;
+                                console.log("Current token set to null");
                                 //The user doesn't log in
                                 callback(loginResponse.status);
                             }

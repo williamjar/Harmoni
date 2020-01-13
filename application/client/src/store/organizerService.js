@@ -1,18 +1,19 @@
 import axios from "axios";
 import {Organizer} from "../classes/organizer.js"
+import {CookieStore} from "./cookieStore";
 
 const axiosConfig = require("./axiosConfig");
 
 export class OrganizerService {
 
     static getOrganizer(organizerID) {
+        console.log(CookieStore.currentToken);
         axios.get(axiosConfig.root + '/api/organizer/' + organizerID).then(response => {
             return new Organizer(response.data[0].organizerID, response.data[0].contactName, response.data[0].phone,
                     response.data[0].email, response.data[0].username, response.data[0].pictureLink);
                 //callback(organizer);
-                return organizer;
             }
-        );
+        ).catch(err => console.log(err));
     }
 
     // organizerID, name, phone, email, username, pictureLink
