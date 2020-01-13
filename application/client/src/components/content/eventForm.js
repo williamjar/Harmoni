@@ -6,6 +6,7 @@ import {AddPerformer, Performers, PerformersView} from "./performers";
 import {Crew} from "./crew";
 import {GeneralInfo, InfoView} from "./generalInfo";
 import {DocumentationTab} from "../documentationTab";
+import {DocList} from "../docView";
 
 
 
@@ -53,6 +54,7 @@ export class EventForm extends Component{
                     <TabContent editClicked={this.editClicked}>
                         <div className="padding-bottom-20">
                         <DocumentationTab editable={this.state.edit}/>
+                        <DocList/>
                         </div>
                     </TabContent>
                 </Tab>

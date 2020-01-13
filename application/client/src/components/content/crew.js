@@ -8,14 +8,26 @@ import Button from "react-bootstrap/Button";
 import {SearchPeople} from "./searchPerson";
 
 export class Crew extends Component{
+    state = {
+        editable: [this.props.editable]
+    };
+
     render(){
         return(
             <div>
-                <AddCrew />
-
-                <AddedCrew />
+                {this.state.editable ? <div><AddCrew/><AddedCrew/></div> : <CrewView/>}
             </div>
         )
+    }
+
+    static getDerivedStateFromProps(props, state) {
+
+        if(props.editable !== state.editable) {
+            return {
+                editable: props.editable
+            }
+        }
+        return null;
     }
 }
 
@@ -163,4 +175,26 @@ export class AddedCrew extends Component{
         );
     }
 
+}
+
+
+export class CrewView extends Component {
+    render() {
+        return(
+            <div>
+                <b>Personell lagt til</b>
+                <div className="card card-body">
+                    <div className="row">
+                        <div className="col-10">
+                            Lydman
+                        </div>
+
+                        <div className="col-2">
+                            <button className="btn-primary rounded mr-2">Vis personell</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 }
