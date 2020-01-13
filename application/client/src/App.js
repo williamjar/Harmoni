@@ -5,13 +5,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Menu, NavBar, UserProfileButton} from "./components/menu/navigation";
 import {Content} from "./components/content/content";
 import {HashRouter, NavLink, Route} from 'react-router-dom';
-import {AddPerformer, Performers} from "./components/content/performers";
+import {PerformerCard, PerformersTab} from "./components/content/performers";
 import {Dashboard} from "./components/content/dashboard/dashboard";
 import {LoginForm} from "./components/login/loginForm";
 import {RegisterForm} from "./components/login/registerForm";
 import {CreateEventSplash} from "./components/content/CreateEventSplash";
 import {UserPage} from "./components/user/userPage";
-import {Search, SearchPeople} from "./components/content/searchPerson";
+import {Search} from "./components/content/search";
 
 import {GetTicket} from "./components/ticket";
 import {EventForm} from "./components/content/eventForm";
@@ -30,7 +30,7 @@ export class App extends Component{
         super(props);
 
         this.state = {
-            loggedIn : true,
+            loggedIn : false,
             mobileView : false,
         }
 
@@ -93,7 +93,7 @@ export class App extends Component{
                             <div className="col-lg-10">
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
                                 <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash/>} />} />
-                                <Route exact path="/artister" component={() => <Content page={<SearchPeople/>} />} />
+                                <Route exact path="/artister" component={() => <Content page={<Search/>} />} />
                                 <Route exact path="/personell" component={Content}/>
                                 <Route exact path="/kontrakter" component={Content}/>
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage/>} />} />
