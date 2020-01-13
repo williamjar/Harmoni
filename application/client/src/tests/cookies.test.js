@@ -1,6 +1,6 @@
 import {LoginService} from "../cookies_client/loginService";
 import runSQLFile from '../../../runsqlfile';
-import {CookieStore as CookieService, CookieStore} from "../cookies_client/cookieStore";
+import {CookieStore} from "../cookies_client/cookieStore";
 
 let mysql = require("mysql");
 
@@ -26,8 +26,8 @@ let privatePool = mysql.createPool({
 
 beforeAll(done => {
     console.log("Hello world!");
-    runSQLFile("../create.sql", privatePool, () => {
-        runSQLFile("../testData.sql", privatePool, done);
+    runSQLFile("../create.sql", pool, () => {
+        runSQLFile("../testData.sql", pool, done);
     });
 });
 

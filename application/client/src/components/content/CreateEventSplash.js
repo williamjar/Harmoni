@@ -60,14 +60,12 @@ export class CreateEventSplash extends Component{
 
     create(){
         let eventName = this.state.inputName;
-        if(this.state.inputName === ""){
+        if(this.state.inputName.trim() === ""){
             let state = this.state;
             state.emptyMessage = true;
             this.setState(state);
         } else{
-            alert("success");
             history.push('/arrangementEdit');
-
         }
     }
 }

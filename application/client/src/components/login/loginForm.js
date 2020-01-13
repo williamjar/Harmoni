@@ -1,26 +1,30 @@
-//@flow
-
 import React from 'react';
-import {Form, Button, Card} from 'react-bootstrap'
+import {Form, Button, Card, Spinner} from 'react-bootstrap'
 import { NavLink } from 'react-router-dom';
-import {LoginService} from "../../cookies_client/loginService";
-import {CookieStore} from "../../cookies_client/cookieStore";
+import {LoginService} from "../../store/loginService";
+import {CookieStore} from "../../store/cookieStore";
 
 export class LoginForm extends React.Component {
+
 
     constructor(props) {
         super(props);
         this.state = {
             email : '',
-            password : ''
+            password : '',
+            loginError : false,
+            serverError: false,
+            loggingIn: false
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-
     handleInputChange(event){
+        this.setState({serverError: false});
+        this.setState({loginError: false});
+        this.setState({loggingIn: false});
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
@@ -54,15 +58,17 @@ export class LoginForm extends React.Component {
                                 <Form.Control type="password" maxLength="30" name="password" placeholder="Passord" value={this.state.password} onChange={this.handleInputChange}/>
                             </Form.Group>
 
-                            <Button variant="btn btn-primary" type="submit" disabled={!this.validateForm()}> Logg inn </Button>
+                            <Button variant="btn btn-primary" type="submit" hidden={this.state.loggingIn} disabled={!this.validateForm()}> Logg inn</Button>
+
+                            <Button variant="btn btn-primary" disabled hidden={!this.state.loggingIn}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Logger inn</Button>
 
                             <Form.Text> Ny bruker? <NavLink to="/registrer"> Klikk <span className="NavLink">
                                 her for registrere deg
                             </span></NavLink></Form.Text>
 
-                            <Form.Text className="text-danger" hidden={!this.databaseUserIncorrectLogin()}>Feil brukernavn eller passord, prøv igjen.</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.state.loginError}>Feil brukernavn eller passord</Form.Text>
 
-                            <Form.Text className="text-danger" hidden={!this.databaseConnectionError()}>Beklager, det har skjedde en oppkoblingsfeil.</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.state.serverError}>Feil med oppkoblingen, prøv igjen senere</Form.Text>
 
                         </Form>
                     </div>
@@ -71,32 +77,38 @@ export class LoginForm extends React.Component {
     }
 
     submitForm() {
-        alert("Form submitted." + "\n" + "Username: " + "\n" + this.state.email + "\n" + "Password:" + "\n" + this.state.password);
-
         //The callback has to run in different places in the loginOrganizer() method to make sure synchronicity is complete
-        LoginService.loginOrganizer(this.state.email, this.state.password, () => {
+        if(this.dataBaseLogin()){
+            console.log("login successfull")
+        }
+    }
+
+    dataBaseLogin() {
+        this.setState({loggingIn: true});
+
+        LoginService.loginOrganizer(this.state.email, this.state.password, status => {
             if (CookieStore.currentToken != null) {
                 this.props.logIn();
-            } else {
-                console.log("Wrong username or password");
+                this.setState({loggingIn: false});
+            }
+            else if (status === 500){
+                alert("500");
+                this.setState({serverError: true});
+                this.setState({loggingIn: false});
+            }
+            else if (status === 200){
+                alert("200");
+                this.setState({loginError: true});
+                this.setState({loggingIn: false});
+            }
+            else {
+                alert(status);
             }
         });
-
     }
 
     // Database control functions to display the proper error message to the user.
 
-    databaseUserIncorrectLogin(){
-        return false;
-        /*
-         * return true if the user is already registered.
-         */
-    }
 
-    databaseConnectionError() {
-        return false;
-        /*
-         * return true if there is a database connection error
-         */
-    }
+
 }

@@ -5,28 +5,63 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
+import {Search} from "./search";
+import Form from "react-bootstrap/Form";
+import {Col} from "react-bootstrap";
 
 
-export class Performers extends Component{
+export class PerformersTab extends Component{
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            showArtistCard: false,
+        };
+
+        this.searchHandler = this.searchHandler.bind(this);
+    }
+
     render(){
         return(
             <div>
                 <div className="row">
 
-                    <div className="col-6 border-right">
-                        <AddPerformer/>
+                    <div className="col-lg-6 col-md-12  border-right">
+                        <PerformerPanel searchHandler={this.searchHandler} showCard={this.state.showArtistCard}/>
                     </div>
 
-                    <div className="col-6">
-                        <RegisteredPerformers/>
+                    <div className="col-lg-6 col-md-12">
+                        <RegisteredPerformers />
                     </div>
                 </div>
             </div>
         )
     }
+
+    searchHandler(selected){
+        let personSelected = selected;
+        let currentState = this.state;
+        currentState.showArtistCard = true;
+        this.setState(currentState);
+    }
 }
 
-export class AddPerformer extends Component{
+export class PerformerPanel extends Component{
+
+    render() {
+        return (
+            <div>
+                <Search searchHandler={this.props.searchHandler} registerComponent={<RegisterPerformer/>} addRegisterButton={true}/>
+                <div className="padding-top-20">
+                {this.props.showCard?<PerformerCard />:null}
+                </div>
+            </div>
+        );
+    }
+}
+
+export class PerformerCard extends Component{
 
     constructor(props){
         super(props);
@@ -40,12 +75,10 @@ export class AddPerformer extends Component{
 
     }
 
-
     render(){
         return(
             <div className="card card-body">
                 <div className="row align-items-center">
-
                     <div className="col-2">
                         <img src="https://s3.us-east-2.amazonaws.com/upload-icon/uploads/icons/png/19339625881548233621-512.png" width={50} alt=""/>
                     </div>
@@ -191,6 +224,93 @@ export class Rider extends Component{
         this.setState({taskDone: false, status: status});
 
         /* Need to post this state to database */
+    }
+}
+
+export class RegisterPerformer extends Component{
+    constructor(props){
+        super(props);
+
+
+        this.state = {
+          name : "",
+          phone : "",
+          email : "",
+          genre : "",  //Genre should be set from start
+        };
+
+    }
+
+    render() {
+        return(
+            <div>
+                <Form>
+                    <Form.Row>
+                        <Form.Group as={Col} controlId="formGridEmail">
+                            <Form.Label>Navn</Form.Label>
+                            <Form.Control type="name" placeholder="" onChange={this.handleNameChange}/>
+                        </Form.Group>
+
+                        <Form.Group as={Col} controlId="formGridPassword">
+                            <Form.Label>Telefon</Form.Label>
+                            <Form.Control type="phone" placeholder="" onChange={this.handlePhoneChange}/>
+                        </Form.Group>
+                    </Form.Row>
+
+                    <Form.Group controlId="formGridAddress1">
+                        <Form.Label>Epost</Form.Label>
+                        <Form.Control type="email" placeholder="" onChange={this.handleEmailChange}/>
+                    </Form.Group>
+
+                    <Form.Row>
+                        <Form.Group as={Col} controlId="formGridState">
+                            <Form.Label>Sjanger</Form.Label>
+                            <Form.Control as="select" onChange={this.handleGenreChange}>
+                                <option>Country</option>
+                                <option>Blues</option>
+                            </Form.Control>
+                        </Form.Group>
+                    </Form.Row>
+
+                    <Button variant="primary" type="submit" onClick={this.submitForm}>
+                        Submit
+                    </Button>
+                    <Button variant="secondary" type="cancel" className="margin-left-5">
+                        Cancel
+                    </Button>
+
+                </Form>
+            </div>
+        )
+    }
+
+    handleNameChange = (event) => {
+        let currentState = this.state;
+        currentState.name = event.target.value;
+        this.setState(currentState);
+    }
+
+    handlePhoneChange = (event) => {
+        let currentState = this.state;
+        currentState.phone = event.target.value;
+        this.setState(currentState);
+    }
+
+    handleEmailChange = (event) => {
+        let currentState = this.state;
+        currentState.email = event.target.value;
+        this.setState(currentState);
+    }
+
+    handleGenreChange = (event) => {
+        let currentState = this.state;
+        currentState.genre = event.target.value;
+        this.setState(currentState);
+    }
+
+    submitForm = () => {
+        //Error handling should be inserted here
+        console.log(this.state);
     }
 }
 

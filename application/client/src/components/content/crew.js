@@ -5,47 +5,104 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
+import {Search} from "./search";
+import Form from "react-bootstrap/Form";
+import {Col} from "react-bootstrap";
 
-export class Crew extends Component{
+
+export class CrewTab extends Component{
     render(){
         return(
             <div>
-                <AddCrew />
-
+                <AddToCrew />
                 <AddedCrew />
             </div>
         )
     }
 }
 
-export class AddCrew extends Component{
+export class AddCrewType extends Component{
+    constructor(props){
+        super(props);
+
+        this.state = {
+            crewType : "",
+        };
+
+    }
+
+    render(){
+        return(
+            <div className="card card-body">
+                <Form>
+                    <Form.Row>
+                        <Form.Group as={Col} controlId="formGridEmail">
+                            <Form.Label>Personell type</Form.Label>
+                            <Form.Control type="name" placeholder="" onChange={this.handleInputChange}/>
+                        </Form.Group>
+                    </Form.Row>
+
+
+                    <Button variant="primary" type="submit" onClick={this.submitForm}>
+                        Submit
+                    </Button>
+                    <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.props.cancelButton}>
+                        Cancel
+                    </Button>
+
+                </Form>
+            </div>
+        )
+    }
+
+    handleInputChange = (event) => {
+        let currentState = this.state;
+        currentState.crewType = event.target.value;
+        this.setState(currentState);
+    }
+
+    submitForm = () => {
+        if(this.state.crewType.trim() === ""){
+            //Error message
+            alert("Du kan ikke ha en blank kategori");
+        } else{
+            alert(this.state.crewType);
+            this.props.cancelButton();
+        }
+    }
+}
+
+export class AddToCrew extends Component{
     constructor(props){
         super(props);
 
         this.state = {
             numberOfFilesAdded: 0,
+            showRegisterCrewType:false,
+            showRegisterCrewMember : false,
         };
 
     }
-
-
 
     render() {
         return(
             <div className="card card-body">
                 <div className="row">
                     <div className="col-12">
-                        Legg til ny
+                        Personell type
                     </div>
                 </div>
+
+
 
                 <div className="row padding-top-20 align-items-center">
 
                     <div className="col-4">
 
-                    <select className="form-control" id="crewCategory">
+                    <select className="form-control" id="crewCategory" onChange={this.showRegisterCrewTypeForm}>
                         <option>Lydperson</option>
                         <option>Lysperson</option>
+                        <option>Legg til ny..</option>
                     </select>
 
                     </div>
@@ -58,6 +115,14 @@ export class AddCrew extends Component{
                     </div>
                 </div>
 
+                {this.state.showRegisterCrewType?
+                    <div className="row padding-top-20">
+                        <div className="col-12">
+                            <AddCrewType cancelButton={this.cancelCrewTypeAdd}/>
+                        </div>
+                    </div>
+                    :null}
+
                 <div className="row padding-top-20">
                     <div className="col-12">
                         Legg til personell
@@ -65,18 +130,8 @@ export class AddCrew extends Component{
                 </div>
 
                 <div className="row padding-top-20">
-                    <div className="col-6">
-                        <InputGroup>
-                            <FormControl
-                                placeholder="Search"
-                                aria-label="Search"
-                                aria-describedby="basic-addon2"
-                            />
-                            <InputGroup.Append>
-                                <Button variant="outline-secondary rounded">Legg til fra arkiv</Button>
-                                <Button variant="outline-secondary rounded">Registrer ny</Button>
-                            </InputGroup.Append>
-                        </InputGroup>
+                    <div className="col-lg-6 col-md-12">
+                        <Search addRegisterButton={true} searchHandler={this.searchHandler} registerComponent={<AddCrewMember />} />
                     </div>
                 </div>
 
@@ -102,7 +157,7 @@ export class AddCrew extends Component{
                     </div>
 
                     <div className="col-4 offset-2 text-right">
-                            <button className="btn btn-success rounded" onClick={this.addNew}>Lagre personell</button>
+                        <button className="btn btn-success rounded" onClick={this.addNew}>Lagre personell</button>
                     </div>
                 </div>
 
@@ -110,18 +165,38 @@ export class AddCrew extends Component{
         )
     }
 
-    addFile(){
-        /*For adding attachments to crew */
+    cancelCrewTypeAdd = () => {
+        let currentState = this.state;
+        currentState.showRegisterCrewType = false;
+        this.setState(currentState);
+    }
 
+
+    showRegisterCrewTypeForm = (event) => {
+        if(event.target.value === "Legg til ny..".trim()){
+            let currentState = this.state;
+            currentState.showRegisterCrewType = true;
+            this.setState(currentState);
+        }
+    }
+
+    searchHandler = () => {
+
+    }
+
+    addFile = () =>{
+        /*For adding attachments to crew */
 
         let attachment = document.querySelector("#uploadAttachment").files.length;
         if(attachment !== undefined){
-            this.setState({numberOfFilesAdded: attachment,}); // Get the number of files selected for upload, to be used for user GUI
+            let currentState = this.state;
+            currentState.numberOfFilesAdded = attachment;
+            this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
         }
 
     }
 
-    addNew(){
+    addNew = () => {
         /* Fetches the information from the forms to be used with database */
 
         //TODO: Search bar is not functiong yet.
@@ -171,5 +246,78 @@ export class AddedCrew extends Component{
             </div>
         );
     }
+}
+
+export class AddCrewMember extends Component{
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            name : "",
+            phone : "",
+            email : "",
+        };
+    }
+
+    render() {
+        return(
+            <div>
+                <Form>
+                    <Form.Row>
+                        <Form.Group as={Col} controlId="formGridEmail">
+                            <Form.Label>Navn</Form.Label>
+                            <Form.Control type="name" placeholder="" onChange={this.handleNameChange} />
+                        </Form.Group>
+
+                        <Form.Group as={Col} controlId="formGridPassword">
+                            <Form.Label>Telefon</Form.Label>
+                            <Form.Control type="phone" placeholder="" onChange={this.handlePhoneChange}/>
+                        </Form.Group>
+                    </Form.Row>
+
+                    <Form.Group controlId="formGridAddress1">
+                        <Form.Label>Epost</Form.Label>
+                        <Form.Control type="email" placeholder="" onChange={this.handleEmailChange} />
+                    </Form.Group>
+
+                    <Button variant="primary" type="submit" onClick={this.submitForm}>
+                        Submit
+                    </Button>
+                    <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
+                        Cancel
+                    </Button>
+
+                </Form>
+            </div>
+        )
+    }
+
+    handleNameChange = (event) =>{
+        let currentState = this.state;
+        currentState.name = event.target.value;
+        this.setState(currentState);
+    }
+
+    handlePhoneChange = (event) => {
+        let currentState = this.state;
+        currentState.phone = event.target.value;
+        this.setState(currentState);
+    }
+
+    handleEmailChange = (event) => {
+        let currentState = this.state;
+        currentState.email = event.target.value;
+        this.setState(currentState);
+    }
+
+    submitForm = () => {
+        console.log(this.state);
+    }
+
+    cancelRegister = () => {
+
+    }
+
 
 }

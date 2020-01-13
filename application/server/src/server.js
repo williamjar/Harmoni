@@ -13,7 +13,7 @@ const fs = require('fs');
 const EventEmitter = require("events").EventEmitter;
 const body = new EventEmitter();
 
-import {CookieStore} from "../../client/src/cookies_client/cookieStore";
+import {CookieStore} from "../../client/src/store/cookieStore";
 
 app.use(bodyParser.json());
 app.use(cors());

@@ -39,7 +39,7 @@ INSERT INTO contact (contactName, phone, email) VALUES ('Arne', '47474747', 'pla
 -- Artists
 INSERT INTO contact (contactName, phone, email) VALUES ('Anne', '92929292', 'anne@music.no');
 INSERT INTO contact (contactName, phone, email) VALUES ('Demon SlayerZ', '66666666', 'dmonZ@cdrecords.no');
--- Crew
+-- CrewTab
 INSERT INTO contact (contactName, phone, email) VALUES ('Svein', '+4793939393', 'kontakt@rigging.no');
 INSERT INTO contact (contactName, phone, email) VALUES ('Roger', '+4793939393', 'kontakt@rigging.no');
 
