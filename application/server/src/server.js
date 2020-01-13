@@ -350,6 +350,7 @@ app.post("/token", (req, res) => {
 
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
+
     let token = req.headers["x-access-token"];
     jwt.verify(token, publicKey, (err, decoded) => {
         if (err) {
@@ -365,7 +366,7 @@ app.use('/api', (req, res, next) => {
                 }, privateKey, {
                     algorithm: "RS512",
                 });
-            res.json({jwt: CookieStore.currentToken, for: decoded.email});
+            //res.json({jwt: CookieStore.currentToken, for: decoded.email});
             next();
         }
     })
@@ -441,17 +442,14 @@ app.delete("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID)
 });
 
-//TODO: Header error
-app.put("/api/contact/:contactID/phone", (request, response) => {
-    console.log("Request to change phone for contact");
-    let val = [
-        request.body.phone,
-        request.params.contactID
-    ];
+
+app.put("/api/contact/:contactID/change/phoneNumber", (request, response) => {
+    console.log("Request to change password for organizer");
+
     contactDao.changePhoneNumber((status, data) => {
         response.status(status);
         response.json(data);
-    }, val);
+    }, request.body.phone ,request.params.contactID);
 });
 
 
@@ -856,13 +854,15 @@ app.post("/organizer", (request, response) => {
 
 
 // change password for organizer
-app.put("/api/organizer/:organizerID/pass", (request, response) => {
+app.put("/api/organizer/:organizerID/change/password", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.password,
         request.params.organizerID
     ];
     organizerDao.changePassword((status, data) => {
+        console.log(status);
+        console.log(data);
         response.status(status);
         response.json(data);
     }, val);
@@ -870,16 +870,16 @@ app.put("/api/organizer/:organizerID/pass", (request, response) => {
 
 //TODO: Header error
 //Change username for organizer
-app.put("/api/organizer/:organizerID/username", (request, response) => {
+app.put("/api/organizer/:organizerID/change/username", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.username,
         request.params.organizerID
     ];
-    organizerDao.changeUsername((status, data) => {
+    organizerDao.changeUsername(val,(status, data) => {
         response.status(status);
         response.json(data);
-    }, val);
+    });
 });
 
 
@@ -1004,6 +1004,12 @@ app.delete("/api/document/:documentID", (request, response) => {
         response.json(data);
     }, request.params.documentID);
 });
+
+// PICTURE
+//Delete
+//Update
+//Insert
+
 
 const server = app.listen(8080);
 

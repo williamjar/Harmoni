@@ -23,7 +23,7 @@ module.exports = class documentDao extends Dao {
     }
 
 
-    changeUsername(callback, list){
+    changeUsername(list, callback){
         super.query('UPDATE organizer SET username = ? WHERE organizerID = ?', list ,callback)
     }
 
