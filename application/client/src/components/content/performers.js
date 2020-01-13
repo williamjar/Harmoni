@@ -68,9 +68,9 @@ export class PerformerCard extends Component{
 
         this.state = {
             riderInput : "",
+            numberOfFilesAdded: 0,
         };
 
-        this.handleInputRider = this.handleInputRider.bind(this);
 
 
     }
@@ -140,9 +140,22 @@ export class PerformerCard extends Component{
                 </div>
 
                <div className="row padding-top-20">
+
+
+
                    <div className="col-4">
-                       <button className="btn-primary rounded">Legg til vedlegg</button>
+                        <span className="btn btn-primary btn-file">
+                            Legg til vedlegg <input type="file" multiple="multiple" id="uploadAttachmentPerformer" onChange={() => this.addFile()}/>
+                        </span>
+                       {this.state.numberOfFilesAdded > 0 && this.state.numberOfFilesAdded<2? <div className="padding-left-5">{this.state.numberOfFilesAdded + " file added"}</div>: null}
+                       {this.state.numberOfFilesAdded > 1 ? <div className="padding-left-5">{this.state.numberOfFilesAdded + " files added"}</div>: null}
+
                    </div>
+
+
+
+
+
                    <div className="col-4 offset-4 text-right">
                        <button className="btn-success rounded" onClick={() => this.save()}>Lagre</button>
                    </div>
@@ -152,15 +165,25 @@ export class PerformerCard extends Component{
         )
     }
 
-    addRider(){
+    addFile = () =>{
+        /*For adding attachments to crew */
+
+        let attachment = document.querySelector("#uploadAttachmentPerformer").files.length;
+        if(attachment !== undefined){
+            let currentState = this.state;
+            currentState.numberOfFilesAdded = attachment;
+            this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
+        }
+    }
+    addRider = () =>{
         alert(this.state.riderInput);
     }
 
-    handleInputRider(event){
+    handleInputRider = (event) =>{
         this.setState({riderInput: event.target.value});
     }
 
-    save(){
+    save = () => {
         /* Gathers the input boxes and puts the information into variables */
         let genre = document.querySelector("#genreSelect").value;
         let signedContract = document.querySelector("#signedContract").checked;
@@ -228,6 +251,19 @@ export class Rider extends Component{
 }
 
 export class RegisterPerformer extends Component{
+    constructor(props){
+        super(props);
+
+
+        this.state = {
+          name : "",
+          phone : "",
+          email : "",
+          genre : "",  //Genre should be set from start
+        };
+
+    }
+
     render() {
         return(
             <div>
@@ -235,31 +271,31 @@ export class RegisterPerformer extends Component{
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
-                            <Form.Control type="name" placeholder="" />
+                            <Form.Control type="name" placeholder="" onChange={this.handleNameChange}/>
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="formGridPassword">
                             <Form.Label>Telefon</Form.Label>
-                            <Form.Control type="phone" placeholder="" />
+                            <Form.Control type="phone" placeholder="" onChange={this.handlePhoneChange}/>
                         </Form.Group>
                     </Form.Row>
 
                     <Form.Group controlId="formGridAddress1">
                         <Form.Label>Epost</Form.Label>
-                        <Form.Control type="email" placeholder="" />
+                        <Form.Control type="email" placeholder="" onChange={this.handleEmailChange}/>
                     </Form.Group>
 
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridState">
                             <Form.Label>Sjanger</Form.Label>
-                            <Form.Control as="select">
+                            <Form.Control as="select" onChange={this.handleGenreChange}>
                                 <option>Country</option>
                                 <option>Blues</option>
                             </Form.Control>
                         </Form.Group>
                     </Form.Row>
 
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" onClick={this.submitForm}>
                         Submit
                     </Button>
                     <Button variant="secondary" type="cancel" className="margin-left-5">
@@ -269,6 +305,35 @@ export class RegisterPerformer extends Component{
                 </Form>
             </div>
         )
+    }
+
+    handleNameChange = (event) => {
+        let currentState = this.state;
+        currentState.name = event.target.value;
+        this.setState(currentState);
+    }
+
+    handlePhoneChange = (event) => {
+        let currentState = this.state;
+        currentState.phone = event.target.value;
+        this.setState(currentState);
+    }
+
+    handleEmailChange = (event) => {
+        let currentState = this.state;
+        currentState.email = event.target.value;
+        this.setState(currentState);
+    }
+
+    handleGenreChange = (event) => {
+        let currentState = this.state;
+        currentState.genre = event.target.value;
+        this.setState(currentState);
+    }
+
+    submitForm = () => {
+        //Error handling should be inserted here
+        console.log(this.state);
     }
 }
 
