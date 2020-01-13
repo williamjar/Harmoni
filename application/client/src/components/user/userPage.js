@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Card, Col, Form, Row, Table, Image, CardColumns, ListGroup, CardDeck, Spinner} from 'react-bootstrap'
 import {CardText} from "react-bootstrap/Card";
-import {OrganizerService} from "../../store/organizerService";
+import {OrganizerStore} from "../../store/organizerService";
 import {CookieStore} from "../../store/cookieStore";
 
 export class UserPage extends React.Component {
@@ -193,7 +193,14 @@ export class UserPage extends React.Component {
 
     updateInfo(){
 
-        var user = OrganizerService.getOrganizer(CookieStore.currentUserID);
+        var user = OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
+            if (statusCode === 200){
+                console.log("User is here: " + OrganizerStore.currentOrganizer);
+            }
+            else{
+                console.log("We have an error!");
+            }
+        });
 
 
         var databaseUsername = '';
