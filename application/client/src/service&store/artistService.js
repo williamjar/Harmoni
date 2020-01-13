@@ -40,8 +40,10 @@ export class ArtistService {
     }
 
     deleteArtist(artistID) {
-        axios.delete()
+        axios.delete('/api/artist/organizer/' + artistID).then(response => {
 
+            }
+        );
     }
 
     getArtistForOrganizer(organizerID) {
