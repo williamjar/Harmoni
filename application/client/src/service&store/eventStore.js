@@ -1,6 +1,7 @@
 import axios from "axios";
 import Event from "../classes/event.js";
 import {CookieStore} from "../cookies_client/cookieStore.js";
+import {forEach} from "react-bootstrap/esm/ElementChildren";
 
 let axiosConfig = require("./axiosConfig");
 
@@ -41,6 +42,30 @@ class eventStore{
 
     static getAllEvents(){
 
-        return axios.get(axiosConfig.root + "/api/events")
+        let header = {
+            "Content-Type": "application/json"
+        };
+
+        return axios.get(axiosConfig.root + "/api/events", {headers: header}).then( response => {
+            this.allEvents = null;
+            for (let i = 0; i < response.data.length; i++) {
+                this.allEvents.push(new Event(response.data[i].eventID, response.data[i].eventName,
+                    response.data[i].startDate, response.data[i].endDate, response.data[i].startTime,
+                    response.data[i].endTime, response.data[i].address, response.data[i].town,
+                    response.data[i].zipCode, response.data[i].status, response.data[i].description,
+                    response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
+                    response.data[i].picture));
+            }
+        });
+    }
+
+    static archiveEvent(eventID){
+
+        let header = {
+            "Content-Type": "application/json"
+        };
+
+        return axios.get(axiosConfig.root + "/api/events/" + eventID, {headers: header}).then( response => {
+        });
     }
 }

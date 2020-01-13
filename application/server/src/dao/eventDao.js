@@ -18,12 +18,8 @@ module.exports = class eventDao extends Dao {
         super.query('DELETE FROM event WHERE eventID = ?', [eventID], callback);
     }
 
-    publishOne(callback, eventID) {
-        super.query('UPDATE event SET status = 1 WHERE eventID = ?', [eventID], callback);
-    }
-
-    archiveOne(callback, eventID) {
-        super.query('UPDATE event SET status = 0 WHERE eventID = ?', [eventID], callback);
+    setStatus(callback, eventID, status){
+        super.query('UPDATE event SET status = ? WHERE eventID = ?', [status, eventID], callback);
     }
 
     getNumberOfStatusForOrganizer(callback, status, organizerID) {
