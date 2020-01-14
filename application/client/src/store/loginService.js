@@ -7,6 +7,7 @@ export class LoginService {
 
         let hashedSaltedPassword = getHashedPassword(enteredPassword, email);
 
+
         let header = {
             "Content-Type": "application/json",
         };
@@ -91,10 +92,12 @@ function getHashedPassword(enteredPassword, email) {
                 return salt + '/' + value;
             }
 
-            return sha512(enteredPassword, salt);
+            let hashed = sha512(enteredPassword, salt);
+            console.log(hashed);
+            return hashed;
         })
     });
-
+}
 
     /*
     function verifyPassword(enteredPassword, email, hashedSaltedPassword) {
@@ -114,5 +117,3 @@ function getHashedPassword(enteredPassword, email) {
 
         return (hashInDB.equals(sha512(enteredPassword, salt)));
     }*/
-
-}
