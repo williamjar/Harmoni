@@ -7,6 +7,7 @@ import {EventView} from "./eventView";
 import {Event} from "../../../classes/event";
 import {Search} from "../search";
 import {eventStore} from "../../../store/eventStore";
+import {CookieStore} from "../../../store/cookieStore";
 
 // Component displaying all of the users events
 export class Dashboard extends React.Component {
@@ -16,7 +17,7 @@ export class Dashboard extends React.Component {
 
         this.state = {
             active: "all",
-            events: []
+            events: [],
         };
     }
 
@@ -38,7 +39,7 @@ export class Dashboard extends React.Component {
     };
 
     componentDidMount() {
-        eventStore.storeAllEventsForOrganizer(() => {this.setState({events: eventStore.allEventsForOrganizer})},2);
+        eventStore.storeAllEventsForOrganizer(() => {this.setState({events: eventStore.allEventsForOrganizer})}, CookieStore.currentUserID);
     }
 
     render() {
@@ -71,7 +72,7 @@ export class Dashboard extends React.Component {
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
                             {console.log(eventStore.allEventsForOrganizer)}
-                            <EventView events={this.state.events}/>
+                            <EventView events={this.state.events.filter(event => event.status === 1)}/>
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
@@ -83,7 +84,7 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            <EventView events={this.state.events}/>
+                            <EventView events={this.state.events.filter(event => event.status === 0)}/>
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
@@ -95,7 +96,7 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            <EventView events={this.state.events}/>
+                            <EventView events={this.state.events.filter(event => event.status === 2)}/>
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
