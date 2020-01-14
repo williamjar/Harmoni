@@ -91,8 +91,19 @@ function deleteFile(path) {
     }
 }
 
+function deleteAllFilesInFolder(path, callback) {
+    fs.readdir(path, (err, files) => {
+        if (err) console.log(err);
+        for (const file of files) {
+            fs.unlink(path + '/' + file, err => {
+            if (err) console.log(err);
+            });
+        }
+    });
+    callback();
+}
+
 const resource_path = path.join(__dirname, '/../../client/public/resources/');
-let pathToFile = path.join(__dirname, '/../../client/public/resources/');
 var storage = multer.diskStorage({
     //Declaring destination for file
     destination: function (req, file, cb) {
@@ -137,10 +148,8 @@ var storage = multer.diskStorage({
         try {
             if (fs.existsSync(resource_path + req.params.id + '/' + req.params.folderName + "/" + file.originalname)) {
                 cb(null, Date.now() + "--" + file.originalname);
-                //return pathToFile += req.params.id + '/' + req.params.folderName + "/" + Date.now() + "--" + file.originalname;
             } else {
                 cb(null, file.originalname);
-                //pathToFile += req.params.id + '/' + req.params.folderName + "/" + file.originalname;
             }
         } catch (e) {
             console.log("An error occurred")
@@ -149,38 +158,100 @@ var storage = multer.diskStorage({
 });
 
 
-//Create one directory for user with id as name
-/*
-const resource_path = path.join(__dirname, '/../../client/public/resources/');
-var storage = multer.diskStorage({
+
+//Add profile picture to server filesystem
+const user_path = path.join(__dirname, '/../../client/public/resources/users/');
+var storageUser = multer.diskStorage({
     destination: function(req, file, cb) {
         try{
-            if (fs.existsSync(resource_path + req.params.id)) {
+            if (fs.existsSync(user_path + req.params.organizerID)) {
                 console.log('The folder exists.');
             } else {
-                fs.mkdirSync( resource_path + req.params.id );
+                console.log('User folder created.');
+                fs.mkdirSync(user_path + req.params.organizerID );
             }
         } catch (e) {
             console.log("An error occurred");
         }
-        cb(null, resource_path + req.params.id );
+        cb(null, user_path + req.params.organizerID );
 
     },
     filename: function (req, file, cb) {
         try{
-            if (fs.existsSync(resource_path + req.params.id + '/' + file.originalname)) {
-                 cb(null, Date.now() + "--" + file.originalname)
+            if (fs.existsSync(user_path + req.params.organizerID + '/' + file.originalname)) {
+                deleteAllFilesInFolder(user_path + req.params.organizerID, () => {
+                    cb(null, file.originalname)});
             } else {
-                cb(null, file.originalname)
+                deleteAllFilesInFolder(user_path + req.params.organizerID, () => {
+                    cb(null, file.originalname)});
             }
         } catch (e) {
             console.log("An error occurred")
         }
     }
-});*/
+});
 
 
-var upload = multer({storage: storage});
+//init upload
+var uploadUserPicture = multer({
+    storage: storageUser,
+    limits: {fileSize: 50000000},
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype == "image/png" || file.mimetype == "image/jpg" ||
+            file.mimetype == "image/jpeg" || file.mimetype == "image/gif") {
+            cb(null, true);
+        } else {
+            cb(null, false);
+            return cb(new Error('Allowed only .png, .jpg, .jpeg and .gif'));
+        }
+    }
+});
+
+// PICTURE
+
+//Insert picture
+app.post("/api/organizer/picture/upload/:organizerID",  uploadUserPicture.single('file'), (req, res) => {
+    try {
+        res.send(req.file);
+        pictureDao.insertPicture(req.file, (status) => {
+            res.status(status);
+        });
+    } catch (err) {
+        res.send(400);
+    }
+});
+
+//Delete picture
+app.delete("/api/organizer/picture/delete/:pictureID", (request, response) => {
+    console.log("Request to delete a picture");
+    pictureDao.deleteOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.pictureID);
+});
+
+//Update picture
+app.put("/api/organizer/picture/update/:pictureID", (request, response) => {
+    console.log("Request to update a picture");
+    pictureDao.updateOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.body.pictureLink, request.params.pictureID);
+});
+
+//Get one picture
+app.get("/api/organizer/picture/:pictureID", (require, response) => {
+    console.log("Request to get a rider element");
+    pictureDao.getPicture((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.pictureID);
+});
+
+
+
+
+var upload = multer({storage: storage,  limits: {fileSize: 10000000000},});
 
 app.post("/api/documents/upload/:id/:folderName/:categoryID",  upload.array('file', 10), (req, res) => {
     try {
@@ -1033,44 +1104,6 @@ app.delete("/api/document/:documentID", (request, response) => {
         response.json(data);
     }, request.params.documentID);
 });
-
-// PICTURE
-//Insert picture
-app.post("/api/picture/insert", (request, response) => {
-    console.log("Request to add a picture link");
-    pictureDao.createOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.body.pictureLink);
-});
-
-//Delete picture
-app.delete("/api/picture/delete/:pictureID", (request, response) => {
-    console.log("Request to delete a picture");
-    pictureDao.deleteOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.pictureID);
-});
-
-//Update picture
-app.put("/api/picture/update/:pictureID", (request, response) => {
-    console.log("Request to update a picture");
-    pictureDao.updateOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.body.pictureLink, request.params.pictureID);
-});
-
-//Get one picture
-app.get("/api/picture/:pictureID", (require, response) => {
-    console.log("Request to get a rider element");
-    pictureDao.getPicture((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, require.params.pictureID);
-});
-
 
 const server = app.listen(8080);
 
