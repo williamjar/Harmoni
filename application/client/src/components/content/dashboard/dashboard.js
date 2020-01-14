@@ -99,7 +99,6 @@ export class Dashboard extends React.Component {
 
     componentDidMount() {
         eventStore.storeAllEventsForOrganizer(2);
-        console.log(eventStore.allEventsForOrganizer);
     }
 
     searchHandler(){

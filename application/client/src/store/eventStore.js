@@ -1,5 +1,5 @@
 import axios from "axios";
-import Event from "../classes/event.js";
+import {Event} from "../classes/event.js";
 import {CookieStore} from "../store/cookieStore.js";
 import {forEach} from "react-bootstrap/esm/ElementChildren";
 
@@ -60,21 +60,21 @@ export class eventStore{
         };
 
         let body = {
-            "eventID" : currentEvent.eventID,
-            "eventName" : currentEvent.eventName,
-            "startDate" : currentEvent.startDate,
-            "endDate" : currentEvent.endDate,
-            "startTime" : currentEvent.startDate,
-            "endTime" : currentEvent.endTime,
-            "address" : currentEvent.address,
-            "town" : currentEvent.town,
-            "zipCode" : currentEvent.zipCode,
-            "status" : currentEvent.status,
-            "description" : currentEvent.description,
-            "publishDate" : currentEvent.publishDate,
-            "publishTime" : currentEvent.publishTime,
-            "organizerID" : currentEvent.organizer,
-            "pictureID" : currentEvent.picture
+            "eventID" : this.currentEvent.eventID,
+            "eventName" : this.currentEvent.eventName,
+            "startDate" : this.currentEvent.startDate,
+            "endDate" : this.currentEvent.endDate,
+            "startTime" : this.currentEvent.startDate,
+            "endTime" : this.currentEvent.endTime,
+            "address" : this.currentEvent.address,
+            "town" : this.currentEvent.town,
+            "zipCode" : this.currentEvent.zipCode,
+            "status" : this.currentEvent.status,
+            "description" : this.currentEvent.description,
+            "publishDate" : this.currentEvent.publishDate,
+            "publishTime" : this.currentEvent.publishTime,
+            "organizerID" : this.currentEvent.organizer,
+            "pictureID" : this.currentEvent.picture
         };
 
         return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, body.json.stringify(), {headers: header});
