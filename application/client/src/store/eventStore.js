@@ -140,7 +140,7 @@ export class eventStore{
             console.log("EventStore: data length: " + response.data.length);
 
             for (let i = 0; i < response.data.length; i++) {
-                this.allEvents.push(new Event(response.data[i].eventID, response.data[i].eventName,
+                this.allEventsForOrganizer.push(new Event(response.data[i].eventID, response.data[i].eventName,
                     response.data[i].startDate, response.data[i].endDate, response.data[i].startTime,
                     response.data[i].endTime, response.data[i].address, response.data[i].town,
                     response.data[i].zipCode, response.data[i].status, response.data[i].description,
