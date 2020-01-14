@@ -75,7 +75,7 @@ export class Search extends Component{
 
     callBackSearchResult = () => {
         let currentState = this.state;
-        currentState.results = artistService.getArtistForOrganizer(1);
+        //currentState.results = artistService.getArtistForOrganizer(1);
         this.setState(currentState);
         console.log(this.state.results);
     }
