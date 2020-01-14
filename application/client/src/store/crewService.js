@@ -1,12 +1,11 @@
 import axios from "axios";
-import {sharedComponentData} from "react-simplified";
 import {CrewMember} from "../classes/crewMember.js"
 import {CrewLeader} from "../classes/crewLeader.js"
 import {CookieStore} from "./cookieStore";
 
 let axiosConfig = require("./axiosConfig");
 
-class CrewService {
+export class CrewService {
 
     static getCrewMember(crewID){
 
@@ -71,19 +70,41 @@ class CrewService {
         return allCrewMembersForEvent;
     }
 
-    static createCrewMember(name, phone, email, description, organizerID){
-       /* axios.post('/api/contact', {
-            "contactName": name,
+    static createCrewMember(name, phone, email, description, organizerID, callback){
+
+        console.log("Inside createCrewMember");
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let contactBody = {
+            "username": name,
             "phone": phone,
             "email": email
-        }).then((response => response.data),
+        };
 
-       axios.post('/api/crew', {
-            "description": description,
-            "organizerID": organizerID,
-            "contactID": contactID
-        }).then(response => response.data); */
+
+
+        axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
+            console.log("Axios post then");
+            let crewBody = {
+                "description": description,
+                "organizerID": organizerID,
+                "contactID": response.data.insertId
+            };
+
+            axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>
+                console.log(response));
+                callback();
+
+        })
+
+
     }
+
+
+
 
     static addCategory(categoryName, organizerID){
 
