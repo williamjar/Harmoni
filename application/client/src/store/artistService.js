@@ -51,6 +51,7 @@ export class ArtistService {
 
         axios.post('/api/artist', JSON.stringify(artistBody), {headers: header}).then(response =>
             console.log(response));
+
     }
 
     static deleteArtist(artistID) {
