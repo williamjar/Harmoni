@@ -55,18 +55,21 @@ class DocumentService {
     }
 
     insertDocument(eventID, folderName, documentCategoryID){
-        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID)
-            .then(response => response.data);
+        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID, formdata, {})
+            .then(res => console.log(res.data))
+            .catch(err => console.error(err));
     }
 
     insertDocumentArtist(eventID, folderName, documentCategoryID, artistID){
         axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/artist/' + artistID)
-            .then(response => response.data);
+            .then(res => console.log(res.data))
+            .catch(err => console.error(err));
     }
 
     insertDocumentCrew(eventID, folderName, documentCategoryID, crewID){
         axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/crew/' + crewID)
-            .then(response => response.data);
+            .then(res => console.log(res.data))
+            .catch(err => console.error(err));
     }
 
 }
