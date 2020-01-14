@@ -34,17 +34,17 @@ export class LoginService{
                                 CookieStore.currentUserID = emailResponse[0].organizerID;
                                 CookieStore.currentToken = loginResponse.jwt;
                                 //The user logs in
-                                callback(loginResponse.status);
+                                callback(200);
                             }
                             else{
                                 CookieStore.currentToken = null;
                                 CookieStore.currentUserID = null;
                                 console.log("Current token set to null");
                                 //The user doesn't log in
-                                callback(loginResponse.status);
+                                callback(500);
                             }
                         });
                 }
-            }).catch(error => callback(500));
+            }).catch(error => callback(501));
     }
 }

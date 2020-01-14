@@ -16,9 +16,11 @@ export class LoginForm extends React.Component {
             loggingIn: false
         };
 
+
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
+
 
     handleInputChange(event){
         this.setState({serverError: false});
@@ -81,20 +83,22 @@ export class LoginForm extends React.Component {
         //The callback has to run in different places in the loginOrganizer() method to make sure synchronicity is complete
         this.dataBaseLogin();
     }
+
     dataBaseLogin(){
         this.setState({loggingIn: true});
 
         LoginService.loginOrganizer(this.state.email, this.state.password, status => {
-            if (CookieStore.currentToken != null) {
+
+            if (status===200 && CookieStore.currentToken != null) {
                 // Approved login
                 sessionStorage.setItem('loggedIn', 'true');
                 this.props.logIn();
                 this.setState({loggingIn: false});
-            } else {
-                alert("det har oppstått en feil");
-                this.setState({loggingIn: false});
-                this.setState({serverError: true});
             }
+
+            this.setState({loggingIn: false});
+            this.setState({serverError: true});
+
 
         });
 
