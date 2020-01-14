@@ -554,6 +554,15 @@ app.delete("/api/artist/assign/:eventID/:artistID", (request, response) => {
     }, request.params.eventID, request.params.artistID)
 });
 
+app.get("/api/artist-genres", (request, response) => {
+    console.log("request to get all genres");
+
+    artistDao.getAllGenres((status, data) => {
+        response.status(status);
+        response.json(data);
+    })
+});
+
 // CREW
 app.get("/api/crew/:crewID", (request, response) => {
     console.log("request for crew");
@@ -725,7 +734,7 @@ app.post("/api/events", (request, response) => {
     eventDao.createOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.eventTypeID, request.body.pictureID]);
+    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.organizerID, request.body.eventTypeID, request.body.pictureID]);
 });
 
 //Update event

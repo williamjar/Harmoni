@@ -22,10 +22,27 @@ export class eventStore{
         // ^ Unsure if callback is needed for this method ^
         //Call to create an event
 
-        axios.post(axiosConfig.root + "/api/events" , {headers: header}).then(response =>{
+        let body = {
+            "eventName" : eventName,
+            "startDate" : null,
+            "endDate" : null,
+            "startTime" : null,
+            "endTime" : null,
+            "address" : null,
+            "town" : null,
+            "zipCode" : null,
+            "status" : 0,
+            "description" : null,
+            "publishDate" : null,
+            "publishTime" : null,
+            "organizerID" : organizerID,
+            "pictureID" : null
+        };
+
+        axios.post(axiosConfig.root + "/api/events" , body, {headers: header}).then(response =>{
 
             //Create an event from the insertID returned from the query and the organizerID, the rest is null
-            this.currentEvent = new Event(response.data.insertId, null, null, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
+            this.currentEvent = new Event(response.data.insertId, null, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
             callback();
         });
 

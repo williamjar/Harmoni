@@ -14,11 +14,8 @@ export class RegisterOrganizerService{
             "phone": null,
             "email": email
         };
-
-        console.log("Creating contact at /contact with body " + contactBody);
         axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), {headers: header})
             .then(res => {
-                console.log("Return from inserting contact: " + res.data);
                 return res.data.insertId;
             })
             .then(contactID => {
@@ -31,7 +28,6 @@ export class RegisterOrganizerService{
                                     "password": password,
                                     "contactID": contactID
                                 };
-                                console.log(JSON.stringify(organizerBody));
                                 return axios.post('http://localhost:8080/organizer', JSON.stringify(organizerBody), {headers: header}).then(res => {
                                     callback(200);
                                 }).catch(() => callback(500));
