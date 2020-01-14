@@ -276,12 +276,18 @@ export class CrewView extends Component {
                         </div>
 
                         <div className="col-2">
-                            <button className="btn-primary rounded mr-2">Vis personell</button>
+                            <button className="btn-primary rounded mr-2" onClick={this.returnCrew}>Vis personell</button>
                         </div>
                     </div>
                 </div>
             </div>
         )
+    }
+
+    returnCrew = () => {
+        console.log('hei');
+        CrewService.getCrewMember(1);
+
     }
 }
 
