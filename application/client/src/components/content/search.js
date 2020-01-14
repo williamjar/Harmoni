@@ -8,6 +8,7 @@ import {FaSearch} from "react-icons/all";
 import Form from "react-bootstrap/Form";
 import {Row, Col} from 'react-bootstrap';
 import {ArtistService as artistService} from "../../store/artistService";
+import {CookieStore} from "../../store/cookieStore";
 
 
 export class Search extends Component{
@@ -75,7 +76,7 @@ export class Search extends Component{
 
     callBackSearchResult = () => {
         let currentState = this.state;
-        //currentState.results = artistService.getArtistForOrganizer(1);
+        currentState.results = artistService.getArtistForOrganizer(CookieStore.currentUserID);
         this.setState(currentState);
         console.log(this.state.results);
     }
