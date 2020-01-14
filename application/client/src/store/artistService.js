@@ -134,6 +134,15 @@ export class ArtistService {
         }, {headers: header}).then(response => response.data);
     }
 
+    static getAllGenres(callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        return axios.get(axiosConfig.root + "/api/artist/all-genres", {headers: header}).then(res => res.data).then(data => callback(data));
+    }
+
 }
 
 

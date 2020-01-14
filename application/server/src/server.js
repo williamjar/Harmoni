@@ -554,6 +554,15 @@ app.delete("/api/artist/assign/:eventID/:artistID", (request, response) => {
     }, request.params.eventID, request.params.artistID)
 });
 
+app.get("/api/artist/all-genres", (request, response) => {
+    console.log("request to get all genres");
+
+    artistDao.getAllGenres((status, data) => {
+        response.status(status);
+        response.data(data);
+    })
+});
+
 // CREW
 app.get("/api/crew/:crewID", (request, response) => {
     console.log("request for crew");

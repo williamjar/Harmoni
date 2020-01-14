@@ -42,4 +42,8 @@ module.exports = class artistDao extends Dao {
         super.query('DELETE FROM event_artist where eventID = ? AND artistID = ?', list, callback);
     }
 
+    getAllGenres(callback){
+        super.query('SELECT * FROM genre', null, callback);
+    }
+
 };
