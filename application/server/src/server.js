@@ -827,6 +827,7 @@ app.get("/api/organizer/:organizerID", (require, response) => {
         response.status(status);
         response.json(data);
     }, require.params.organizerID);
+    console.log(require.params.organizerID);
 });
 
 //ORGANIZER

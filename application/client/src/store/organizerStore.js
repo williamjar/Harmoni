@@ -10,11 +10,11 @@ export class OrganizerStore {
 
 
     static getOrganizer(organizerID, callback) {
-
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
+
         axios.get(axiosConfig.root + '/api/organizer/' + organizerID, {headers: header})
             .then(response => {
             this.currentOrganizer = new Organizer(response.data[0].organizerID, response.data[0].contactName, response.data[0].phone,
@@ -22,22 +22,36 @@ export class OrganizerStore {
             callback(200);
             }
         ).catch(err => callback(500));
+
     }
 
     // organizerID, name, phone, email, username, pictureLink
 
+    static changeUsername(organizerID, newUsername) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
 
-    changeUserName() {
 
+        return axios.put(axiosConfig.root + `/api/organizer/${organizerID}/change/username`, {
+            username : newUsername,
+        }, {headers: header});
     }
 
-    changePassword(organizerID, oldPassword, newPassword) {
-        //TODO: Add check for old password to see if password change is allowed
 
-        let json = {
-            'password': newPassword
+    static changePassword(organizerID, oldPassword,newPassword) {
+        //check old password
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
-        return axios.put(`/api/organizer/${organizerID}`, json);
+
+
+        return axios.put(axiosConfig.root + `/api/organizer/${organizerID}/change/username`, {
+            newPassword : newPassword,
+        }, {headers: header});
     }
 
     changePhoneNumber() {
