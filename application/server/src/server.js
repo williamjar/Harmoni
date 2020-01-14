@@ -9,6 +9,7 @@ const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const LoginDao = require('./dao/loginDao');
 const SECRET = require('./cookieConfig');
+const databaseConfig = require("./databaseConfig").config;
 const fs = require('fs');
 const EventEmitter = require("events").EventEmitter;
 const body = new EventEmitter();
@@ -18,15 +19,7 @@ import {CookieStore} from "../../client/src/store/cookieStore";
 app.use(bodyParser.json());
 app.use(cors());
 
-const pool = mysql.createPool({
-    connectionLimit: 2,
-    host: "mysql.stud.iie.ntnu.no",
-    user: "joakimad",
-    password: "LQliMP1A",
-    database: "joakimad",
-    debug: false,
-    multipleStatements: true
-});
+const pool = mysql.createPool(databaseConfig);
 
 const artistDaoObj = require('./dao/artistDao.js');
 const bugDaoObj = require('./dao/bugDao.js');
@@ -353,6 +346,7 @@ app.post("/token", (req, res) => {
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
     let token;
+    console.log(req.headers);
     if (req.headers["x-access-token"]){
         token = req.headers["x-access-token"];
     }
