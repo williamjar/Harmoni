@@ -39,7 +39,7 @@ export class eventStore{
             "pictureID" : null
         };
 
-        axios.post(axiosConfig.root + "/api/events" , body.json.stringify(), {headers: header}).then(response =>{
+        axios.post(axiosConfig.root + "/api/events" , body, {headers: header}).then(response =>{
 
             //Create an event from the insertID returned from the query and the organizerID, the rest is null
             this.currentEvent = new Event(response.data.insertId, null, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
