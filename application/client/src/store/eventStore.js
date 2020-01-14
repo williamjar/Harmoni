@@ -28,8 +28,6 @@ class eventStore{
             this.currentEvent = new Event(response.data.insertId, null, null, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
             callback();
         });
-
-
     }
 
 
