@@ -61,13 +61,15 @@ export class LoginForm extends React.Component {
 
                             <Button variant="btn btn-primary" disabled hidden={!this.state.loggingIn}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Logger inn</Button>
 
+
+                            <Form.Text className="text-danger" hidden={!this.state.loginError}>Feil brukernavn eller passord</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.state.serverError}>Feil med oppkoblingen, prøv igjen senere</Form.Text>
+
                             <Form.Text> Ny bruker? <NavLink to="/registrer"> Klikk <span className="NavLink">
                                 her for registrere deg
                             </span></NavLink></Form.Text>
 
-                            <Form.Text className="text-danger" hidden={!this.state.loginError}>Feil brukernavn eller passord</Form.Text>
 
-                            <Form.Text className="text-danger" hidden={!this.state.serverError}>Feil med oppkoblingen, prøv igjen senere</Form.Text>
 
                         </Form>
                     </div>
@@ -77,34 +79,26 @@ export class LoginForm extends React.Component {
 
     submitForm() {
         //The callback has to run in different places in the loginOrganizer() method to make sure synchronicity is complete
-        if(this.dataBaseLogin()){
-            console.log("login successfull")
-        }
+        this.dataBaseLogin();
     }
-
-    dataBaseLogin() {
+    dataBaseLogin(){
         this.setState({loggingIn: true});
 
         LoginService.loginOrganizer(this.state.email, this.state.password, status => {
             if (CookieStore.currentToken != null) {
+                // Approved login
                 sessionStorage.setItem('loggedIn', 'true');
                 this.props.logIn();
                 this.setState({loggingIn: false});
-            }
-            else if (status === 500){
-                alert("500");
+            } else {
+                alert("det har oppstått en feil");
+                this.setState({loggingIn: false});
                 this.setState({serverError: true});
-                this.setState({loggingIn: false});
             }
-            else if (status === 200){
-                alert("200");
-                this.setState({loginError: true});
-                this.setState({loggingIn: false});
-            }
-            else {
-                alert(status);
-            }
+
         });
+
+
     }
 
     // Database control functions to display the proper error message to the user.
