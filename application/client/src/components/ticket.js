@@ -13,11 +13,26 @@ import {FaAngleDown} from "react-icons/all";
 
 
 
-/* Component to add tickets to concert*/
+export class Ticket extends Component{
+    render(){
+        return(
+            <Card>
+                <Form>
+                    <ListTickets/>
+                </Form>
+                <Form>
+                    <GetTicket/>
+                </Form>
+
+            </Card>
+        );
+
+    }
+}
+
+/*Component to retrive tickets from the database*/
 
 export class GetTicket extends Component{
-
-    tickets = TicketType.getTestTicketTypes();
 
     constructor(props) {
         super(props);
@@ -48,86 +63,13 @@ export class GetTicket extends Component{
         let name = target.name;
         console.log(name + " verdi: " + value);
         this.setState({[name]: value,});
+
     }
 
 
     render() {
         return(
-            <Card>
                 <Card.Body>
-                    {this.tickets.map(ticket => (
-                    <Form key={ticket.ticketTypeID}>
-                        <Form.Row className="ticketStyle" >
-                            <Col sm={2}>
-                                <Form.Control
-                                    placeholder = {'Navn'}
-                                />
-
-                            </Col>
-                            <Col sm={1}>
-                                <Form.Control
-                                    value={ticket.price}
-                                    readOnly
-                                />
-                            </Col>
-                            <Col sm={1}>
-                                <Form.Control
-                                    value={ticket.amount}
-                                    readOnly
-                                 />
-                            </Col>
-                            <Col sm={2}>
-                                <Form.Control
-                                    value={ticket.releaseDate}
-                                    readOnly
-                                />
-                            </Col>
-
-                            <Col sm={2}>
-                                <Form.Control
-                                    value={ticket.endDate}
-                                    readOnly
-                                />
-                            </Col>
-                            <Col sm={1}>
-                                <Form.Control
-                                    value={ticket.releaseTime}
-                                    readOnly
-                                />
-                            </Col>
-                            <Col sm={1}>
-                                <Form.Control
-                                    value={ticket.endTime}
-                                    readOnly
-                                />
-                            </Col>
-                            <Col>
-                                <h5><FaCalendar/></h5>
-                            </Col>
-                        </Form.Row>
-                        <Form.Row className="ticketStyle">
-                            <Col sm={6}>
-                                <Form.Control
-                                    value={ticket.description}
-                                    readOnly
-                                />
-                            </Col>
-                        </Form.Row>
-                        <Form.Row className="ticketStyle">
-                            <Col>
-                                <Form.Check
-                                    type="switch"
-                                    id="custom-switch"
-                                    label="Legg til denne billetten"
-                                    key={ticket.ticketTypeID}
-                                    onClick = {this.addToList}
-                                />
-                            </Col>
-
-                        </Form.Row>
-
-                    </Form>
-                    ))}
                     <Accordion>
                         <Accordion.Toggle as={Button} variant="link" eventKey="0">
                                 + Lag ny billett
@@ -219,25 +161,84 @@ export class GetTicket extends Component{
                      </Accordion.Collapse>
                     </Accordion>
                 </Card.Body>
-            </Card>
         );
     }
 }
 
-
-
+/* Component to add tickets to the concert*/
 export class ListTickets extends Component{
+
+    tickets = TicketType.getTestTicketTypes();
+
     render(){
         return(
-            <Card>
                 <Card.Body>
                     <ListGroup>
-                        <ListGroup.Item>Hei</ListGroup.Item>
-                        <ListGroup.Item>Hei</ListGroup.Item>
-                        <ListGroup.Item>Hei</ListGroup.Item>
+                        {this.tickets.map(ticket =>(
+                            <ListGroup.Item>
+                                <Form>
+                                    <Form.Row className="ticketStyle" >
+                                        <Col sm={2}>
+                                            <Form.Control
+                                                value={ticket.ticketTypeID}
+                                                readOnly
+                                            />
+
+                                        </Col>
+                                        <Col sm={1}>
+                                            <Form.Control
+                                                value={ticket.price}
+                                                readOnly
+                                            />
+                                        </Col>
+                                        <Col sm={1}>
+                                            <Form.Control
+                                                value={ticket.amount}
+                                                readOnly
+                                            />
+                                        </Col>
+                                        <Col sm={2}>
+                                            <Form.Control
+                                                value={ticket.releaseDate}
+                                                readOnly
+                                            />
+                                        </Col>
+
+                                        <Col sm={2}>
+                                            <Form.Control
+                                                value={ticket.endDate}
+                                                readOnly
+                                            />
+                                        </Col>
+                                        <Col sm={1}>
+                                            <Form.Control
+                                                value={ticket.releaseTime}
+                                                readOnly
+                                            />
+                                        </Col>
+                                        <Col sm={1}>
+                                            <Form.Control
+                                                value={ticket.endTime}
+                                                readOnly
+                                            />
+                                        </Col>
+                                        <Col>
+                                            <h5><FaCalendar/></h5>
+                                        </Col>
+                                    </Form.Row>
+                                    <Form.Row className="ticketStyle">
+                                        <Col sm={6}>
+                                            <Form.Control
+                                                value={ticket.description}
+                                                readOnly
+                                            />
+                                        </Col>
+                                    </Form.Row>
+                                </Form>
+                            </ListGroup.Item>
+                        ))}
                     </ListGroup>
                 </Card.Body>
-            </Card>
         );
     }
 }
