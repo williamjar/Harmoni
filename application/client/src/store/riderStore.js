@@ -70,7 +70,7 @@ export class RiderStore {
     }
 
     //get all riders for an event
-    storeAllRidersForEvent(eventID){
+    storeAllRidersForEvent(callback, eventID){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -83,8 +83,12 @@ export class RiderStore {
                         response.data[0].eventID, response.data[0].status, response.data[0].isDone,
                         response.data[0].description))
                 }
+                callback();
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                console.log(error);
+                callback();
+            });
     }
 
 

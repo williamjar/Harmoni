@@ -1059,10 +1059,3 @@ app.get("/api/picture/:pictureID", (require, response) => {
 
 
 const server = app.listen(8080);
-
-
-
-
-
-
-
