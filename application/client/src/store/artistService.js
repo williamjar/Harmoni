@@ -24,7 +24,7 @@ export class ArtistService {
     }
 
     // OrganizerID == innlogget bruker.
-    static createArtist(callback, name, phone, email, genreID, organizerID) {
+    static createArtist(name, phone, email, genreID, organizerID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -46,7 +46,6 @@ export class ArtistService {
 
                 axios.post(axiosConfig.root  + '/api/artist', artistBody, {headers: header}).then(response =>
                     console.log(response));
-                    callback();
                 }
         );
     }
