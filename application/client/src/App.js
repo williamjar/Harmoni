@@ -32,7 +32,7 @@ export class App extends Component{
         super(props);
 
         this.state = {
-            loggedIn : false,
+            loggedIn : CookieStore.validateToken(),
             mobileView : false,
         };
 
@@ -52,13 +52,13 @@ export class App extends Component{
         let currentState = this.state;
         currentState.mobileView = false;
         this.setState(currentState);
-    }
+    };
 
     turnOnMobileView = () =>{
         let currentState = this.state;
         currentState.mobileView = true;
         this.setState(currentState);
-    }
+    };
 
     componentDidMount = () => {
         if(window.innerWidth>900){
@@ -71,9 +71,7 @@ export class App extends Component{
     };
 
     render(){
-        console.log("state loggedIn:" + this.state.loggedIn);
         if (this.state.loggedIn){
-            console.log("Render App");
             return (
                 <div className="App">
                     <HashRouter>
@@ -101,8 +99,6 @@ export class App extends Component{
             );
         }
         else {
-            console.log("Render login");
-            console.log(CookieStore.currentToken);
             return(
                 <div className="Login-Container">
                     <HashRouter>
@@ -117,9 +113,8 @@ export class App extends Component{
     handleLogin = () => {
         let currentState = this.state;
 
-        let validate = CookieStore.validateToken();
 
-        console.log(CookieStore.currentUserID + " is validated? " + validate + " with token " + CookieStore.currentToken);
+        let validate = CookieStore.validateToken();
 
         if (!validate){
             sessionStorage.removeItem('loggedIn');
@@ -129,7 +124,13 @@ export class App extends Component{
             sessionStorage.setItem('loggedIn', 'true');
         }
 
-        currentState.loggedIn = sessionStorage.getItem('loggedIn');
+        if (sessionStorage.getItem('loggedIn')){
+            currentState.loggedIn = true;
+        }
+        else{
+            currentState.loggedIn = false;
+        }
+
         this.setState(currentState);
     }
 
