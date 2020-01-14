@@ -11,9 +11,14 @@ import {eventStore} from "../../../store/eventStore";
 // Component displaying all of the users events
 export class Dashboard extends React.Component {
 
-    state = {
-        active: "all"
-    };
+    constructor(props){
+        super(props);
+
+        this.state = {
+            active: "all",
+            events: []
+        };
+    }
 
     filterEvents = (e) => {
         this.setState({active: e.target.name});
@@ -32,9 +37,11 @@ export class Dashboard extends React.Component {
         }
     };
 
-    render() {
+    componentDidMount() {
+        eventStore.storeAllEventsForOrganizer(() => {this.setState({events: eventStore.allEventsForOrganizer})},2);
+    }
 
-        const testEvent = Event.getTestEvents()[0];
+    render() {
 
         return(
             <div>
@@ -63,9 +70,8 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            <EventView events={eventStore.allEventsForOrganizer}/>
-                            <EventView events={eventStore.allEventsForOrganizer}/>
-                            <EventView events={eventStore.allEventsForOrganizer}/>
+                            {console.log(eventStore.allEventsForOrganizer)}
+                            <EventView events={this.state.events}/>
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
@@ -77,7 +83,7 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            <EventView event1={testEvent}/>
+                            <EventView events={this.state.events}/>
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
@@ -89,16 +95,12 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            <EventView event1={testEvent}/>
+                            <EventView events={this.state.events}/>
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
             </div>
         )
-    }
-
-    componentDidMount() {
-        eventStore.storeAllEventsForOrganizer(2);
     }
 
     searchHandler(){
