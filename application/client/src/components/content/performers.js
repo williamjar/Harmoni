@@ -10,7 +10,7 @@ import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {ArtistService} from "../../store/artistService";
 import {CookieStore} from "../../store/cookieStore";
-import {riderService} from "../../store/riderService";
+import {riderStore} from "../../store/riderStore";
 import {eventStore} from "../../store/eventStore";
 
 
@@ -91,8 +91,7 @@ export class PerformerCard extends Component{
     }
 
     componentDidMount() {
-        console.log(riderService.getAllRiderElementsFromArtistAndEvent(eventStore.currentEvent.eventID, this.state.performer.artistID));
-        console.log("lol");
+        console.log(riderStore.getAllRiderElementsFromArtistAndEvent(eventStore.currentEvent.eventID, this.state.performer.artistID));
     }
 
     render(){
@@ -193,7 +192,9 @@ export class PerformerCard extends Component{
     }
     addRider = () =>{
         alert(this.state.riderInput);
-        riderService.createNewRiderElement(this.state.performer.artistID, eventStore.currentEvent.eventID, this.state.riderInput);
+
+
+        riderStore.createNewRiderElement(this.state.performer.artistID, eventStore.currentEvent.eventID, this.state.riderInput);
     }
 
     handleInputRider = (event) =>{
