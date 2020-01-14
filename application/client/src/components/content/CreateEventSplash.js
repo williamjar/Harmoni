@@ -9,9 +9,6 @@ import {CookieStore} from "../../store/cookieStore";
 import {eventStore} from "../../store/eventStore";
 let history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 
-
-
-
 export class CreateEventSplash extends Component{
     emptyMessage = "Navn kan ikke være tomt";
     error = false;
@@ -66,9 +63,10 @@ export class CreateEventSplash extends Component{
             state.emptyMessage = true;
             this.setState(state);
         } else{
-            eventStore.createEvent(() => {history.push('/arrangementEdit')}, this.state.inputName,CookieStore.currentUserID);
-
-
+            eventStore.createEvent(() => {
+                history.push("/arrangementEdit");
+                console.log(history.location);
+            }, this.state.inputName, CookieStore.currentUserID);
         }
     }
 }
