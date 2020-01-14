@@ -19,7 +19,7 @@ export class TicketType{
 
     static getTestTicketTypes(){
         let endingTicket = new TicketType(0, 100, 150, '20200801', '2200', true, '20230218', '2300', 'VIP ståplasser');
-        //let nonEndingTicket = new TicketType(1, 110, 2000, '20190202', '0000', false, null, null, 'Damn expensive tickets');
-        return [endingTicket, /*nonEndingTicket*/];
+        let nonEndingTicket = new TicketType(1, 110, 2000, '20190202', '0000', false, null, null, 'Damn expensive tickets');
+        return [endingTicket, nonEndingTicket];
     }
 }
