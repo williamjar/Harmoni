@@ -59,7 +59,7 @@ export class ArtistService {
         return axios.delete('/api/artist/organizer/' + artistID, {headers: header}).then(response => response.data);
     }
 
-    static getArtistForOrganizer(organizerID) {
+    static getArtistForOrganizer(callback, organizerID) {
         let allArtistByOrganizer = [];
         let header = {
             "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export class ArtistService {
                         response.data[i].contactID, response.data[i].organizerID, response.data[i].contactID,
                         response.data[i].contactName, response.data[i].phone, response.data[i].email));
                 }
-                return allArtistByOrganizer;
+                callback(allArtistByOrganizer);
             }
         );
 
