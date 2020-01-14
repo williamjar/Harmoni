@@ -61,6 +61,26 @@ export class Menu extends Component{
     }
 }
 
+export class LogoutButton extends Component{
+    render() {
+        return(
+            <NavLink to="/">
+                <div className="user-nav">
+                    <div className="row">
+                        <div className="col-3">
+                            <img src="https://s3.us-east-2.amazonaws.com/upload-icon/uploads/icons/png/19339625881548233621-512.png" width={50} alt=""/>
+                        </div>
+                        <div className="col-9">
+                            <b>Navn Navnesen</b><br/>
+                            Arrangør
+                        </div>
+                    </div>
+                </div>
+            </NavLink>
+        )
+    }
+}
+
 export class UserProfileButton extends Component{
     render() {
         return(

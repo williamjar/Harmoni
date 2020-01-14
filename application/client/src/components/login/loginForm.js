@@ -46,9 +46,10 @@ export class LoginForm extends React.Component {
     render(){
         return (
 
-            <Card>
-                <div className="card-header"><h2 className="card-title text-center">Logg inn</h2></div>
-                    <div className="justify-content-md-center m-5">
+            <Card >
+                <Card.Body className={"m-4"}>
+                <Card.Title>Logg inn</Card.Title>
+                    <div className="justify-content-md-center">
                         <Form onSubmit={this.handleSubmit}>
 
                             <Form.Group>
@@ -75,6 +76,7 @@ export class LoginForm extends React.Component {
 
                         </Form>
                     </div>
+                </Card.Body>
             </Card>
         )
     }
