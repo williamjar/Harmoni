@@ -6,7 +6,7 @@ import {Button, Card, Col, Form, Image, Row} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
 import lorde from './lorde.jpg';
 import map from './map.jpg';
-import {GetTicket, TicketView} from "../ticket";
+import {GetTicket, Ticket, TicketView} from "../ticket";
 
 // Component for viewing general information about an event
 export class GeneralInfo extends Component{
@@ -35,7 +35,7 @@ export class GeneralInfo extends Component{
                     <Col>
                         <Card>
                             <Card.Header><Card.Title>Billetter</Card.Title></Card.Header>
-                            {this.state.editable ? <GetTicket/> : <TicketView/>}
+                            {this.state.editable ? <Ticket/> : <TicketView/>}
                         </Card>
                     </Col>
                 </Row>
