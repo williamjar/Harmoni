@@ -1,5 +1,9 @@
 import React from 'react';
 import {Form, Button, Card, Row, Col} from 'react-bootstrap'
+import {RegisterOrganizerService} from "../../store/registerOrganizerService";
+import { createHashHistory } from 'history';
+
+let history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 
 export class RegisterForm extends React.Component {
 
@@ -127,12 +131,26 @@ export class RegisterForm extends React.Component {
 
 
     submitForm(){
-        alert("Du er nå registrert.");
         /*
         *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.firstEmail" and "this.state.firstPassword";
         *   It can be assumed that the emails are identical and that the passwords are identical.
         *
         * */
+        RegisterOrganizerService.registerOrganizer(this.state.username, this.state.firstEmail, this.state.firstPassword, statusCode => {
+            if (statusCode === 200){
+                console.log("User perfectly registered");
+                history.push('/');
+            }
+            else if (statusCode === 501){
+                console.log("email already registered");
+            }
+            else if (statusCode === 502){
+                console.log("name already registered");
+            }
+            else if (statusCode === 500){
+                console.log("database error, please try again");
+            }
+        });
     }
 
     // Database control functions to display the proper error message to the user.

@@ -9,6 +9,7 @@ const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const LoginDao = require('./dao/loginDao');
 const SECRET = require('./cookieConfig');
+const databaseConfig = require("./databaseConfig").config;
 const fs = require('fs');
 const EventEmitter = require("events").EventEmitter;
 const body = new EventEmitter();
@@ -18,17 +19,8 @@ import {CookieStore} from "../../client/src/store/cookieStore";
 app.use(bodyParser.json());
 app.use(cors());
 
-const pool = mysql.createPool({
-    connectionLimit: 2,
-    host: "mysql.stud.iie.ntnu.no",
-    user: "evengu",
-    password: "O7KhlwWQ",
-    database: "evengu",
-    debug: false,
-    multipleStatements: true
-});
+const pool = mysql.createPool(databaseConfig);
 
-const OrganizerIDDao = require("./dao/organizerIDDao");
 const artistDaoObj = require('./dao/artistDao.js');
 const bugDaoObj = require('./dao/bugDao.js');
 const contactDaoObj = require('./dao/contactDao.js');
@@ -38,6 +30,8 @@ const eventDaoObj = require('./dao/eventDao.js');
 const organizerDaoObj = require('./dao/organizerDao.js');
 const riderDaoObj = require('./dao/riderDao.js');
 const documentationDaoObj = require("./dao/documentationdao.js");
+const loginDaoObj = require("./dao/loginDao");
+const pictureDaoObj = require("./dao/pictureDao");
 let artistDao = new artistDaoObj(pool);
 let bugDao = new bugDaoObj(pool);
 let contactDao = new contactDaoObj(pool);
@@ -47,8 +41,8 @@ let documentationDao = new documentationDaoObj(pool);
 let eventDao = new eventDaoObj(pool);
 let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
-let organizerIDDao = new OrganizerIDDao(pool);
-
+let loginDao = new loginDaoObj(pool);
+let pictureDao = new pictureDaoObj(pool);
 
 const public_path = path.join(__dirname, '/../../client/public');
 app.use(express.static(public_path));
@@ -61,13 +55,21 @@ app.use(bodyParser.json());
 
 app.use(express.static(public_path));
 
+//----------------- BUG ---------------------
+//Request to register bug
+app.post('/api/bug/register/:organizerID', (req, res) => {
+    bugDao.registerBug(req.params.organizerID, req.body, (status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
 
 //----------------- DOCUMENTATION ---------------------
 //Check if a folder exists for user
 function checkIfFolderExist(name, path) {
-    if(name != null){
+    if (name != null) {
         //Check folder existence
-        if(fs.existsSync(path + name)){
+        if (fs.existsSync(path + name)) {
             return true;
         } else {
             return false;
@@ -78,43 +80,43 @@ function checkIfFolderExist(name, path) {
 
 
 function deleteFile(path) {
-    try{
+    try {
         fs.unlink(path, function (err) {
             if (err) throw err;
             // if no error, file has been deleted successfully
             console.log('File deleted!');
         });
     } catch (e) {
-        console.log("test");
+        console.log("Error, could not delete file:" + e);
     }
 }
 
 const resource_path = path.join(__dirname, '/../../client/public/resources/');
 var storage = multer.diskStorage({
     //Declaring destination for file
-    destination: function(req, file, cb) {
-        try{
+    destination: function (req, file, cb) {
+        try {
             //If user folder exist but not document category folder, create and set destination path
-            if(checkIfFolderExist(req.params.id, resource_path)){
-               if(!checkIfFolderExist(req.params.folderName, resource_path + req.params.id + "/" + req.params.folderName)) {
-                   try {
-                       fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
-                   } catch (e) {
-                       console.log("Error creating document category folder");
-                   }
-                   cb(null, resource_path + req.params.id + "/" + req.params.folderName);
-               }
-               //User and document category folder exist. Set destination
-               else {
-                   cb(null, resource_path + req.params.id + "/" + req.params.folderName);
-               }
+            if (checkIfFolderExist(req.params.id, resource_path)) {
+                if (!checkIfFolderExist(req.params.folderName, resource_path + req.params.id + "/" + req.params.folderName)) {
+                    try {
+                        fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
+                    } catch (e) {
+                        console.log("Error creating document category folder");
+                    }
+                    cb(null, resource_path + req.params.id + "/" + req.params.folderName);
+                }
+                //User and document category folder exist. Set destination
+                else {
+                    cb(null, resource_path + req.params.id + "/" + req.params.folderName);
+                }
             }
             //If neither user folder or document category folder exist. Create both
             else {
                 try {
                     fs.mkdirSync(resource_path + req.params.id);
                     try {
-                        fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName );
+                        fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
                         cb(null, resource_path + req.params.id + "/" + req.params.folderName);
                     } catch (e) {
                         console.log("Error creating document category folder");
@@ -131,7 +133,7 @@ var storage = multer.diskStorage({
     //Adding file to destination
     filename: function (req, file, cb) {
         //Create file in server. If user upload same file append time for unique name
-        try{
+        try {
             if (fs.existsSync(resource_path + req.params.id + '/' + req.params.folderName + "/" + file.originalname)) {
                 cb(null, Date.now() + "--" + file.originalname)
             } else {
@@ -175,14 +177,14 @@ var storage = multer.diskStorage({
 });*/
 
 
-var upload = multer({ storage: storage });
+var upload = multer({storage: storage});
 
 
 //Post request for uploading multiple files
 app.post('/upload/:id/:folderName', upload.array('file', 10), (req, res) => {
     try {
         res.send(req.files);
-    }catch(err) {
+    } catch (err) {
         res.send(400);
     }
 });
@@ -205,7 +207,7 @@ app.get("/api/:eventID/documents", (req, res) => {
 });
 
 app.get("/api/:eventID/documents/:documentID", (req, res) => {
-    documentationDao.getOneDocument(req.params.eventID, req.params.documentID,(status, data) => {
+    documentationDao.getOneDocument(req.params.eventID, req.params.documentID, (status, data) => {
         res.status(status);
         res.json(data);
     });
@@ -213,7 +215,7 @@ app.get("/api/:eventID/documents/:documentID", (req, res) => {
 
 
 app.delete("/api/:eventID/documents/:documentCategory/:fileName", (req, res) => {
-    documentationDao.deleteDocument(req.params.eventID, req.params.documentID,(status, data) => {
+    documentationDao.deleteDocument(req.params.eventID, req.params.documentID, (status, data) => {
         res.status(status);
         res.json(data);
         //Server stops if file dont exists
@@ -222,48 +224,48 @@ app.delete("/api/:eventID/documents/:documentCategory/:fileName", (req, res) => 
 });
 
 app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
-    documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID,(status, data) => {
+    documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID, (status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
 app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
-    documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID,(status, data) => {
+    documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID, (status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
 app.put("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
-    documentationDao.changeDocumentCategory(req.params.eventID, req.params.documentCategoryID, req.body,(status, data) => {
+    documentationDao.changeDocumentCategory(req.params.eventID, req.params.documentCategoryID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
 app.post("/api/:eventID/documents/create", (req, res) => {
-    documentationDao.insertDocument(req.params.eventID, req.body,(status, data) => {
+    documentationDao.insertDocument(req.params.eventID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
 app.post("/api/:eventID/documents/create/artist", (req, res) => {
-    documentationDao.insertDocumentArtist(req.params.eventID, req.body,(status, data) => {
+    documentationDao.insertDocumentArtist(req.params.eventID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
 app.post("/api/:eventID/documents/create/crew", (req, res) => {
-    documentationDao.insertDocumentCrew(req.params.eventID, req.body,(status, data) => {
+    documentationDao.insertDocumentCrew(req.params.eventID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });
 });
 
-/*START LOGIN*/
+// START LOGIN
 let privateKey = SECRET.privateKey;
 let publicKey = SECRET.publicKey;
 
@@ -276,7 +278,7 @@ app.post("/login", (req, res) => {
     let loginDao = new LoginDao(pool);
     loginDao.checkLogin(req.body.email, req.body.password, (status, data) => {
         console.log(status);
-        if (status === 200 && data.length > 0){
+        if (status === 200 && data.length > 0) {
             console.log('Login OK');
             let token = jwt.sign(
                 {
@@ -286,19 +288,17 @@ app.post("/login", (req, res) => {
                     algorithm: "RS512",
                 });
             console.log("Token signed");
-            jwt.verify(token, publicKey,(err, decoded) => {
-                if (err){
+            jwt.verify(token, publicKey, (err, decoded) => {
+                if (err) {
                     console.log(err);
-                }
-                else{
+                } else {
                     console.log(decoded);
                 }
             });
             console.log("Token verified");
             res.status(status);
             res.json({jwt: token});
-        }
-        else{
+        } else {
             console.log('Login not OK');
             res.status(status);
             res.json({error: 'Not authorized'});
@@ -306,9 +306,16 @@ app.post("/login", (req, res) => {
     });
 });
 
+app.get("/organizer/username/:username", (req, res) => {
+    loginDao.checkUserExists(req.params.username, (status, data) => {
+        res.status(status);
+        res.json(data);
+    })
+});
+
 //Returns organizerID by email. Needed for login, thus not part of /api/
 app.get("/organizer/by-email/:email", (req, res) => {
-    organizerIDDao.getOrganizerFromEmail(req.params.email, (status, data) => {
+    organizerDao.getOrganizerFromEmail(req.params.email, (status, data) => {
         res.status(status);
         res.json(data);
     })
@@ -318,11 +325,10 @@ app.get("/organizer/by-email/:email", (req, res) => {
 app.post("/token", (req, res) => {
     let token = req.headers['x-access-token'];
     jwt.verify(token, publicKey, (err, decoded) => {
-        if (err){
+        if (err) {
             console.log("Token not OK / Expired / User no longer logged in");
             res.json({error: err});
-        }
-        else{
+        } else {
             console.log("Token accepted. Updating token clientside");
             let newToken = jwt.sign(
                 {
@@ -339,14 +345,21 @@ app.post("/token", (req, res) => {
 
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
-    let token = req.headers["x-access-token"];
+    let token;
+    console.log(req.headers);
+    if (req.headers["x-access-token"]){
+        token = req.headers["x-access-token"];
+    }
+    else{
+        token = CookieStore.currentToken;
+    }
+    console.log(token);
     jwt.verify(token, publicKey, (err, decoded) => {
-        if (err){
+        if (err) {
             console.log('Token not OK');
             res.status(401);
             res.json({error: err});
-        }
-        else{
+        } else {
             console.log('Token OK for: ' + decoded.email);
             CookieStore.currentToken = jwt.sign(
                 {
@@ -355,7 +368,7 @@ app.use('/api', (req, res, next) => {
                 }, privateKey, {
                     algorithm: "RS512",
                 });
-            res.json({jwt: CookieStore.currentToken, for: decoded.email});
+            //res.json({jwt: CookieStore.currentToken, for: decoded.email});
             next();
         }
     })
@@ -365,9 +378,10 @@ app.get('/api/test', () => {
     console.log("Testing /api/test");
 });
 
-/*END LOGIN*/
+// END LOGIN
 
 // BUG
+//TODO Not working right now
 app.get("/api/bug", (request, response) => {
     console.log("request to get all bugs");
     bugDao.getAll((status, data) => {
@@ -385,7 +399,6 @@ app.get("/api/bug/:bugID", (request, response) => {
 });
 
 // CONTACT
-
 app.get("/api/contact/:contactID", (request, response) => {
     console.log("request to get a contact");
     contactDao.getOne((status, data) => {
@@ -394,10 +407,10 @@ app.get("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID);
 });
 
-app.post("/api/contact", (request, response) => {
+app.post("/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
-        request.body.contactName,
+        request.body.username,
         request.body.phone,
         request.body.email
     ];
@@ -431,6 +444,17 @@ app.delete("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID)
 });
 
+
+app.put("/api/contact/:contactID/change/phoneNumber", (request, response) => {
+    console.log("Request to change password for organizer");
+
+    contactDao.changePhoneNumber((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.body.phone ,request.params.contactID);
+});
+
+
 // ARTIST
 app.get("/api/artist/:artistID", (request, response) => {
     console.log("request for artist");
@@ -438,6 +462,22 @@ app.get("/api/artist/:artistID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.artistID);
+});
+
+app.get("/api/artist/organizer/:organizerID", (request, response) => {
+    console.log("request for artist per organizer");
+    artistDao.getAllForOrganizer((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.organizerID);
+});
+
+app.get("/api/artist/event/:eventID", (request, response) => {
+    console.log("request for artist per event");
+    artistDao.getAllForEvent((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID);
 });
 
 app.post("/api/artist", (request, response) => {
@@ -470,6 +510,18 @@ app.post("/api/document/artist", (request, response) => {
     }, val)
 });
 
+app.post("/api/artist/assign", (request, response) => {
+    console.log("request to assign artist to event");
+    let val = [
+        request.body.eventID,
+        request.body.artistID
+    ];
+    artistDao.assignOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
 app.put("/api/artist/:artistID", (request, response) => {
     console.log("request to update artist");
     let val = [
@@ -491,6 +543,24 @@ app.delete("/api/artist/:artistID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.artistID)
+});
+
+app.delete("/api/artist/assign/:eventID/:artistID", (request, response) => {
+    console.log("request to unassign artist");
+
+    artistDao.unAssignOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID, request.params.artistID)
+});
+
+app.get("/api/artist-genres", (request, response) => {
+    console.log("request to get all genres");
+
+    artistDao.getAllGenres((status, data) => {
+        response.status(status);
+        response.json(data);
+    })
 });
 
 // CREW
@@ -518,12 +588,12 @@ app.get("/api/event/crew/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
-app.get("/api/crew/categories/organizerID", (request, response) => {
-    console.log("request for all crew attached to en event");
+app.get("/api/crew/categories/:organizerID", (request, response) => {
+    console.log("request for all crew categories attached to organizer");
     crewDao.getAllCategories((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.eventID);
+    }, request.params.organizerID);
 });
 
 app.post("/api/crew", (request, response) => {
@@ -573,7 +643,7 @@ app.post("/api/document/crew", (request, response) => {
         request.body.documentName,
         request.body.documentLink,
         request.body.crewID,
-        request.body.documentCategory
+        request.body.documentCategoryID
     ];
 
     crewDao.addDocument((status, data) => {
@@ -658,14 +728,41 @@ app.get("/api/events/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
+//Create one event
+app.post("/api/events", (request, response) => {
+    console.log("Express: Request to create an event");
+    eventDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.eventTypeID, request.body.pictureID]);
+});
+
+//Update event
+app.put("/api/events/:eventID", (request, response) => {
+    console.log("Express: Request to update an event");
+    eventDao.updateOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.eventTypeID, request.body.pictureID, request.params.eventID]);
+});
+
+//Get all events for organizer
+app.get("/api/events/organizer/:organizerID", (request, response) => {
+    console.log("Express: Request to get all events for organizer" + request.params.organizerID);
+    eventDao.getAllForOrganizer((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.organizerID);
+});
+
 //TODO: Check if this endpoint works with localStorage
 //Get all events by status
 app.get("/api/events/status/:status", (request, response) => {
-    console.log("Express: Request to get all events for organizer " + localStorage.get("organizerID") + " with status " + request.params.status);
+    console.log("Express: Request to get all events for organizer " + CookieStore.currentUserID + " with status " + request.params.status);
     eventDao.getByStatusForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.status, localStorage.get("organizerID"));
+    }, request.params.status, CookieStore.currentUserID);
 });
 
 //Delete an event
@@ -677,41 +774,32 @@ app.delete("/api/events/:eventID", (request, response) => {
     }, request.params.eventID);
 });
 
-//Publish an event
-app.put("/api/events/:eventID", (request, response) => {
-    console.log("Express: request to publish event " + request.params.eventID);
-    eventDao.publishOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.eventID);
-});
-
-//Archive an event
-app.put("/api/events/:eventID", (request, response) => {
+//Change event status
+app.put("/api/events/:eventID/status/:status", (request, response) => {
     console.log("Express: request to archive event " + request.params.eventID);
-    eventDao.archiveOne((status, data) => {
+    eventDao.setStatus((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.eventID);
+    }, request.params.eventID, request.params.status);
 });
 
 //Get number of events with status
 app.get("/api/events/status/:status/amount", (request, response) => {
-    console.log("Express: request to get number of elements with status " + request.params.status + " for organizer " + localStorage.get("organizerID"));
+    console.log("Express: request to get number of elements with status " + request.params.status + " for organizer " + CookieStore.currentUserID);
     eventDao.getNumberOfStatusForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.status, localStorage.get("organizerID"));
+    }, request.params.status, CookieStore.currentUserID);
 });
 
 //TODO: Check if this is necessary
 //Get X events with status after date
 app.get("/api/events/status/:status/:amount/:date", (request, response) => {
-    console.log("Express: request to get " + request.params.amount + " elements with status " + request.params.status + " after date " + request.params.date + " for organizer " + localStorage.get("organizerID"));
+    console.log("Express: request to get " + request.params.amount + " elements with status " + request.params.status + " after date " + request.params.date + " for organizer " + CookieStore.currentUserID);
     eventDao.getXOfStatusAfterDateForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.status, request.params.amount, request.params.date, localStorage.get("organizerID"));
+    }, request.params.status, request.params.amount, request.params.date, CookieStore.currentUserID);
 });
 
 //Get all artists for event
@@ -762,13 +850,16 @@ app.get("/api/organizer/:organizerID/documents", (require, response) => {
 });
 
 // post new organizer
-app.post("/api/organizer", (request, response) => {
+app.post("/organizer", (request, response) => {
     console.log("Request to add a organizer");
     let val = [
         request.body.username,
         request.body.password,
         request.body.contactID
     ];
+
+    console.log(request.body);
+
     organizerDao.createOne((status, data) => {
         response.status(status);
         response.json(data);
@@ -777,16 +868,32 @@ app.post("/api/organizer", (request, response) => {
 
 
 // change password for organizer
-app.put("/api/organizer/:organizerID", (request, response) => {
+app.put("/api/organizer/:organizerID/change/password", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.password,
         request.params.organizerID
     ];
     organizerDao.changePassword((status, data) => {
+        console.log(status);
+        console.log(data);
         response.status(status);
         response.json(data);
     }, val);
+});
+
+//TODO: Header error
+//Change username for organizer
+app.put("/api/organizer/:organizerID/change/username", (request, response) => {
+    console.log("Request to change password for organizer");
+    let val = [
+        request.body.username,
+        request.params.organizerID
+    ];
+    organizerDao.changeUsername(val,(status, data) => {
+        response.status(status);
+        response.json(data);
+    });
 });
 
 
@@ -911,6 +1018,44 @@ app.delete("/api/document/:documentID", (request, response) => {
         response.json(data);
     }, request.params.documentID);
 });
+
+// PICTURE
+//Insert picture
+app.post("/api/picture/insert", (request, response) => {
+    console.log("Request to add a picture link");
+    pictureDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.body.pictureLink);
+});
+
+//Delete picture
+app.delete("/api/picture/delete/:pictureID", (request, response) => {
+    console.log("Request to delete a picture");
+    pictureDao.deleteOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.pictureID);
+});
+
+//Update picture
+app.put("/api/picture/update/:pictureID", (request, response) => {
+    console.log("Request to update a picture");
+    pictureDao.updateOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.body.pictureLink, request.params.pictureID);
+});
+
+//Get one picture
+app.get("/api/picture/:pictureID", (require, response) => {
+    console.log("Request to get a rider element");
+    pictureDao.getPicture((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.pictureID);
+});
+
 
 const server = app.listen(8080);
 

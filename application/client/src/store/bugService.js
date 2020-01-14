@@ -1,16 +1,39 @@
 import axios from "axios";
-import {sharedComponentData} from "react-simplified";
+import {CookieStore} from "./cookieStore";
 
 class BugService{
 
-    getOneBug(bugID){
-        return axios.get(`/api/bug/${bugID}`);
+    getOneBug(bugID, callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.get(`/api/bug/${bugID}`, {headers: header}).then(() => callback());
     }
 
     getAllBugs(){
-        return axios.get('/api/bug');
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.get('/api/bug', {headers: header});
+    }
+
+    //Register bug
+    registerBug(organizerID, description, date){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        axios.post(axiosConfig.root + '/api/bug/register/' + organizerID, {
+            date: date,
+            description: description
+        }, {headers: header})
+            .catch(error => console.log(error))
     }
 
 }
 
-export let bugService = sharedComponentData(new BugService());
+export let bugService = new BugService();
+
+

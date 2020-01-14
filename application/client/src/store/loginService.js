@@ -5,7 +5,7 @@ export class LoginService{
     static loginOrganizer(email, hashedSaltedPassword, callback){
 
         let header = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         };
 
         let body = {
@@ -18,23 +18,20 @@ export class LoginService{
                 return res.data;
             })
             .then(loginResponse => {
-                console.log(loginResponse);
                 if (loginResponse.error){
                     CookieStore.currentToken = null;
                     CookieStore.currentUserID = null;
+                    console.log("Current token set to null");
                 }
                 else{
-                    console.log("before getting id");
-                    axios.get("http://localhost:8080/organizer/by-email/" + email)
+                    axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header})
                         .then(res => {
-                            console.log("transforming to .data");
                             return res.data;
                         })
                         .then(emailResponse => {
-                            console.log(emailResponse);
                             if (!(loginResponse.error)){
                                 console.log("UserID and Token set");
-                                CookieStore.currentUserID = emailResponse.organizerID;
+                                CookieStore.currentUserID = emailResponse[0].organizerID;
                                 CookieStore.currentToken = loginResponse.jwt;
                                 //The user logs in
                                 callback(loginResponse.status);
@@ -42,6 +39,7 @@ export class LoginService{
                             else{
                                 CookieStore.currentToken = null;
                                 CookieStore.currentUserID = null;
+                                console.log("Current token set to null");
                                 //The user doesn't log in
                                 callback(loginResponse.status);
                             }

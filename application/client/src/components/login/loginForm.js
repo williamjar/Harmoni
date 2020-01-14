@@ -6,7 +6,6 @@ import {CookieStore} from "../../store/cookieStore";
 
 export class LoginForm extends React.Component {
 
-
     constructor(props) {
         super(props);
         this.state = {
@@ -88,6 +87,7 @@ export class LoginForm extends React.Component {
 
         LoginService.loginOrganizer(this.state.email, this.state.password, status => {
             if (CookieStore.currentToken != null) {
+                sessionStorage.setItem('loggedIn', 'true');
                 this.props.logIn();
                 this.setState({loggingIn: false});
             }
@@ -108,7 +108,5 @@ export class LoginForm extends React.Component {
     }
 
     // Database control functions to display the proper error message to the user.
-
-
 
 }

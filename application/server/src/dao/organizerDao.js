@@ -3,7 +3,7 @@ const Dao = require('./dao.js');
 module.exports = class documentDao extends Dao {
 
     getOne(callback, organizerID) {
-        super.query('SELECT * FROM organizer JOIN contact ON organizer.contactID = contact.contactID WHERE organizerID = ?', [organizerID], callback);
+        super.query('SELECT * FROM organizer JOIN contact ON organizer.contactID = contact.contactID JOIN picture ON organizer.pictureID = picture.pictureID WHERE organizerID = 1', [organizerID], callback);
     }
 
     createOne(callback, list) {
@@ -20,7 +20,21 @@ module.exports = class documentDao extends Dao {
 
     getAllEvents(callback, organizerID) {
         super.query('SELECT * FROM organizer JOIN event ON organizer.organizerID = event.organizerID WHERE organizer.organizerID = ?', [organizerID], callback);
+    }
 
+
+    changeUsername(list, callback){
+        super.query('UPDATE organizer SET username = ? WHERE organizerID = ?', list ,callback)
+    }
+
+    getOrganizerFromEmail(email, callback){
+        super.query("select organizer.organizerID from organizer join contact c on organizer.contactID = c.contactID where c.email = ?", [email], callback);
+    }
+
+
+//TODO: må lages picture dao og endepunker - flytt denne til pictureDao
+    changeOrganizerProfilePicture(callback, pictureID, pictureLink){
+        super.query('update picture set pictureLink = ? where pictureID = ?', [pictureLink, pictureID], callback)
     }
 
 };
