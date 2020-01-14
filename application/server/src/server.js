@@ -407,7 +407,7 @@ app.get("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID);
 });
 
-app.post("api/contact", (request, response) => {
+app.post("/api/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
         request.body.username,
@@ -599,8 +599,8 @@ app.get("/api/crew/categories/:organizerID", (request, response) => {
 app.post("/api/crew", (request, response) => {
     console.log("request to add crew");
     let val = [
-        request.body.crewID,
         request.body.description,
+        request.body.organizerID,
         request.body.contactID
     ];
     crewDao.createOne((status, data) => {

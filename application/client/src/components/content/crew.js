@@ -8,6 +8,8 @@ import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {TicketType} from "../../classes/ticketType";
 import {CrewService} from "../../store/crewService";
+import {CookieStore} from "../../store/cookieStore";
+
 
 export class CrewTab extends Component{
     state = {
@@ -365,7 +367,7 @@ export class AddCrewMember extends Component{
     }
 
     submitForm = () => {
-        CrewService.createCrewMember(this.state.name, this.state.phone, this.state.email);
+        CrewService.createCrewMember(this.state.name, this.state.phone, this.state.email, '',  CookieStore.currentUserID, () => {});
 
 
 

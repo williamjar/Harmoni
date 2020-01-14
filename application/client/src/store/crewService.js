@@ -1,5 +1,4 @@
 import axios from "axios";
-import {sharedComponentData} from "react-simplified";
 import {CrewMember} from "../classes/crewMember.js"
 import {CrewLeader} from "../classes/crewLeader.js"
 import {CookieStore} from "./cookieStore";
@@ -72,6 +71,8 @@ export class CrewService {
     }
 
     static createCrewMember(name, phone, email, description, organizerID, callback){
+
+        console.log("Inside createCrewMember");
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -86,6 +87,7 @@ export class CrewService {
 
 
         axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
+            console.log("Axios post then");
             let crewBody = {
                 "description": description,
                 "organizerID": organizerID,
@@ -94,6 +96,7 @@ export class CrewService {
 
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>
                 console.log(response));
+                callback();
 
         })
 

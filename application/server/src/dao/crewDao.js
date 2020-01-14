@@ -7,7 +7,7 @@ module.exports = class crewDao extends Dao {
     }
 
     createOne(callback, list) {
-        super.query('INSERT INTO crew (crewID, description, contactID) values(?, ?, ?) ', list, callback);
+        super.query('INSERT INTO crew (crewID, description, organizerID, contactID) values(DEFAULT , ?, ?, ?) ', list, callback);
     }
 
     updateOne(callback, list) {
