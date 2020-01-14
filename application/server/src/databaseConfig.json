@@ -1,0 +1,11 @@
+{
+  "config": {
+    "connectionLimit": 2,
+    "host": "mysql.stud.iie.ntnu.no",
+    "user": "evengu",
+    "password": "O7KhlwWQ",
+    "database": "evengu",
+    "debug": false,
+    "multipleStatements": true
+  }
+}
