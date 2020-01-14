@@ -7,7 +7,6 @@ export class CookieStore{
 
     static checkToken(email){
         let header = {
-            'x-access-token': this.currentToken,
             'Content-Type': 'application/json'
         };
 
@@ -31,7 +30,7 @@ export class CookieStore{
             }
         ).then(() => {
             if (this.currentToken != null){
-                axios.get("http://localhost:8080/organizer/by-email/" + email).then(response => response.json).then(IDResponse => {
+                axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header}).then(response => response.json).then(IDResponse => {
                     if (IDResponse.status === 200 && IDResponse.organizerID){
                         this.currentUserID = IDResponse.organizerID;
                     }

@@ -8,13 +8,11 @@ export class Picture {
 
     //Get picture
     getPicture(pictureID){
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
-        axios.get(axiosConfig.root + '/api/picture/' + pictureID, headers)
+        axios.get(axiosConfig.root + '/api/picture/' + pictureID, {headers: header})
             .then(response => {
                 return new PictureElement(response.data[0].pictureID, response.data[0].pictureLink);
             })
@@ -22,36 +20,36 @@ export class Picture {
 
     //Update picture
     updatePicture(pictureID, pictureLink){
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
         axios.post(axiosConfig.root + '/api/picture/insert/' + pictureID, {
             pictureLink: pictureLink
-        }, headers)
+        }, {headers: header})
             .catch(error => console.log(error));
     }
 
     //Insert picture
     insertPicture(pictureID, pictureLink){
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
         axios.post(axiosConfig.root + '/api/picture/insert/', {
             pictureLink: pictureLink
-        }, headers)
+        }, {headers: header})
             .catch(error => console.log(error));
     }
 
 
     //Delete picture
     deletePicture(pictureID){
-        axios.post(axiosConfig.root + '/api/picture/delete/' + pictureID)
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        axios.post(axiosConfig.root + '/api/picture/delete/' + pictureID, [], {headers: header})
             .catch(error => console.log(error));
     }
 }

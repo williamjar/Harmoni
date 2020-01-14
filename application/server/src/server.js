@@ -346,6 +346,7 @@ app.post("/token", (req, res) => {
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
     let token;
+    console.log(req.headers);
     if (req.headers["x-access-token"]){
         token = req.headers["x-access-token"];
     }

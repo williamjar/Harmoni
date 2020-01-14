@@ -10,14 +10,12 @@ export class ArtistService {
 
     static getArtist(artistID, callback) {
 
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
 
-        axios.get(axiosConfig.root + '/api/artist/' + artistID, headers).then(response => {
+        axios.get(axiosConfig.root + '/api/artist/' + artistID, {headers: header}).then(response => {
                 let artist = new Artist(response.data[0].artistID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
                 callback(artist);
             }
@@ -55,24 +53,20 @@ export class ArtistService {
     }
 
     static deleteArtist(artistID) {
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
-        return axios.delete('/api/artist/organizer/' + artistID, headers).then(response => response.data);
+        return axios.delete('/api/artist/organizer/' + artistID, {headers: header}).then(response => response.data);
     }
 
     static getArtistForOrganizer(organizerID) {
         let allArtistByOrganizer = [];
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
-        axios.get(axiosConfig.root + '/api/artist/organizer/' + organizerID, headers).then(response => {
+        axios.get(axiosConfig.root + '/api/artist/organizer/' + organizerID, {headers: header}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
                     allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].organizerID,
                         response.data[i].contactID, response.data[i].organizerID, response.data[i].contactID,
@@ -85,13 +79,11 @@ export class ArtistService {
 
     static getArtistForEvent(eventID) {
         let allArtistByEvent = [];
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
-        axios.get(axiosConfig.root + '/api/artist/event/' + eventID, headers).then(response => {
+        axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
                     allArtistByEvent.push(new Artist(response.data[i].artistID, response.data[i].organizerID,
                         response.data[i].contactID, response.data[i].organizerID, response.data[i].contactID,
@@ -103,11 +95,9 @@ export class ArtistService {
     }
 
     static addDocumentToArtist(eventID, name, link, artistID, categoryID) {
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
         return axios.post(axiosConfig.root + '/api/document/artist', {
             "eventID": eventID,
@@ -115,37 +105,33 @@ export class ArtistService {
             "documentLink": link,
             "artistID": artistID,
             "documentCategoryID": categoryID
-        }, headers).then(response => response.data);
+        }, {headers: header}).then(response => response.data);
     }
 
     static assignArtist(eventID, artistID) {
 
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
 
         return axios.post(axiosConfig.root + '/api/artist/assign', {
             "eventID": eventID,
             "artistID": artistID
-        }, headers).then(response => response.data);
+        }, {headers: header}).then(response => response.data);
     }
 
     static unAssignArtist(eventID, artistID) {
 
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
 
         return axios.delete(axiosConfig.root + '/api/artist/unassign/' + eventID + '/' + artistID, {
             "eventID": eventID,
             "artistID": artistID
-        }, headers).then(response => response.data);
+        }, {headers: header}).then(response => response.data);
     }
 
 }

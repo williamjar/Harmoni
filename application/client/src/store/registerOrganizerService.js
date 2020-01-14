@@ -8,7 +8,6 @@ export class RegisterOrganizerService{
         let headers = {
             header: {
                 "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
             }
         };
 

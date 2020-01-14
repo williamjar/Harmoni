@@ -5,7 +5,7 @@ export class LoginService{
     static loginOrganizer(email, hashedSaltedPassword, callback){
 
         let header = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         };
 
         let body = {
@@ -26,7 +26,7 @@ export class LoginService{
                 }
                 else{
                     console.log("before getting id");
-                    axios.get("http://localhost:8080/organizer/by-email/" + email)
+                    axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header})
                         .then(res => {
                             console.log("transforming to .data");
                             return res.data;

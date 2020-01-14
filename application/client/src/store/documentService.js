@@ -8,14 +8,12 @@ const axiosConfig = require("./axiosConfig");
 class DocumentService {
 
     getAllDocumentsForOrganizer(organizerID) {
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
         let allDocumentsByOrganizer = [];
-        axios.get(axiosConfig.root + '/api/organizer/' + organizerID + '/documents', headers).then(response => {
+        axios.get(axiosConfig.root + '/api/organizer/' + organizerID + '/documents', {headers: header}).then(response => {
             for (let i = 0; i < response.data.length; i++) {
                 allDocumentsByOrganizer.push(new Document(response.data[i].documentID, response.data[i].documentLink,
                     response.data[i].documentCategory));
@@ -27,13 +25,11 @@ class DocumentService {
 
     getAllDocumentsForEvent(eventID){
         let allDocumentsByEvent = [];
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
-        axios.get(axiosConfig.root + '/api/events/' + eventID + '/documents', headers).then(response =>  {
+        axios.get(axiosConfig.root + '/api/events/' + eventID + '/documents', {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
                 allDocumentsByEvent.push(new Document(response.data[0].documentID, response.data[0].documentLink,
                     response.data[0].documentCategory));
@@ -43,27 +39,23 @@ class DocumentService {
     }
 
     addDocument(eventID, documentLink, artistID, documentCategoryID){
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
         axios.post(axiosConfig.root + '/api/document/', {
             "eventID": eventID,
             "documentLink": documentLink,
             "artistID": artistID,
             "documentCategoryID" : documentCategoryID
-    }, headers).then(response => response.data);
+    }, {headers: header}).then(response => response.data);
     }
 
 
     updateDocument(documentID, eventID, name, link, artistID, crewID, categoryID) {
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
         return axios.put(axiosConfig.root + '/api/document/' + documentID, {
             "eventID":eventID,
@@ -72,17 +64,15 @@ class DocumentService {
             "artistID": artistID,
             "crewID": crewID,
             "documentCategoryID": categoryID
-        }, headers).then(response => response.data);
+        }, {headers: header}).then(response => response.data);
     }
 
     deleteDocument(id) {
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
-        return axios.delete(axiosConfig.root + '/api/document/' + id, headers).then(response => response.data);
+        return axios.delete(axiosConfig.root + '/api/document/' + id, {headers: header}).then(response => response.data);
     }
 
 }

@@ -11,14 +11,12 @@ export class OrganizerStore {
 
     static getOrganizer(organizerID, callback) {
 
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
-
-        axios.get(axiosConfig.root + '/api/organizer/' + organizerID, headers)
+        console.log("Using token " + CookieStore.currentToken + " on getting organizer (before axios)");
+        axios.get(axiosConfig.root + '/api/organizer/' + organizerID, {headers: header})
             .then(response => {
             this.currentOrganizer = new Organizer(response.data[0].organizerID, response.data[0].contactName, response.data[0].phone,
                     response.data[0].email, response.data[0].username, response.data[0].pictureLink);
@@ -53,13 +51,11 @@ export class OrganizerStore {
 
 
     getAllEvents(organizerId) {
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-                "x-access-token": CookieStore.currentToken
-            }
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
-        return axios.get(`/api/organizer/${organizerId}/events`, headers);
+        return axios.get(`/api/organizer/${organizerId}/events`, {headers: header});
     }
 
 
