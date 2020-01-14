@@ -1,6 +1,7 @@
 import axios from "axios";
 import {sharedComponentData} from "react-simplified";
-import {CrewMember} from "../classes/crewMember"
+import {CrewMember} from "../classes/crewMember";
+import {CrewLeader} from "../classes/crewLeader";
 
 let axiosConfig = require("./axiosConfig");
 
@@ -69,13 +70,9 @@ export class CrewService {
             "contactID": contactID
         };
 
-        axios.post('/api/crew', JSON.stringify(crewBody), {headers: header}).then(response =>
-            console.log(response));
-        };
-
-        axios.post('/api/crew', JSON.stringify(crewBody), {headers: header})
+        axios.post( axiosConfig.root +'/api/crew', JSON.stringify(crewBody), {headers: header})
             .then(response => console.log(response));
-    }
+        };
 
     static addCategory(categoryName, organizerID){
         axios.post(axiosConfig.root + '/api/crew-category', {
