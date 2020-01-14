@@ -21,9 +21,9 @@ app.use(cors());
 const pool = mysql.createPool({
     connectionLimit: 2,
     host: "mysql.stud.iie.ntnu.no",
-    user: "joakimad",
-    password: "LQliMP1A",
-    database: "joakimad",
+    user: "evengu",
+    password: "O7KhlwWQ",
+    database: "evengu",
     debug: false,
     multipleStatements: true
 });
@@ -99,6 +99,7 @@ function deleteFile(path) {
 }
 
 const resource_path = path.join(__dirname, '/../../client/public/resources/');
+let pathToFile = path.join(__dirname, '/../../client/public/resources/');
 var storage = multer.diskStorage({
     //Declaring destination for file
     destination: function (req, file, cb) {
@@ -142,9 +143,11 @@ var storage = multer.diskStorage({
         //Create file in server. If user upload same file append time for unique name
         try {
             if (fs.existsSync(resource_path + req.params.id + '/' + req.params.folderName + "/" + file.originalname)) {
-                cb(null, Date.now() + "--" + file.originalname)
+                cb(null, Date.now() + "--" + file.originalname);
+                //return pathToFile += req.params.id + '/' + req.params.folderName + "/" + Date.now() + "--" + file.originalname;
             } else {
-                cb(null, file.originalname)
+                cb(null, file.originalname);
+                //pathToFile += req.params.id + '/' + req.params.folderName + "/" + file.originalname;
             }
         } catch (e) {
             console.log("An error occurred")
@@ -186,15 +189,48 @@ var storage = multer.diskStorage({
 
 var upload = multer({storage: storage});
 
-
-//Post request for uploading multiple files
-app.post('/upload/:id/:folderName', upload.array('file', 10), (req, res) => {
+app.post("/api/documents/upload/:id/:folderName/:categoryID",  upload.array('file', 10), (req, res) => {
     try {
         res.send(req.files);
+        for(let i = 0; i < req.files.length; i++){
+            console.log(req.files[i].originalname);
+            documentationDao.insertDocument(req.params.id, req.params.categoryID, req.files[i], (status, data) => {
+                res.status(status);
+            });
+        }
     } catch (err) {
         res.send(400);
     }
 });
+
+app.post("/api/documents/upload/:id/:folderName/:categoryID/artist/:artistID",  upload.array('file', 10), (req, res) => {
+    try {
+        res.send(req.files);
+        for(let i = 0; i < req.files.length; i++){
+            console.log(req.files[i].originalname);
+            documentationDao.insertDocumentArtist(req.params.id, req.params.categoryID, req.files[i], req.params.artistID, (status, data) => {
+                res.status(status);
+            });
+        }
+    } catch (err) {
+        res.send(400);
+    }
+});
+
+app.post("/api/documents/upload/:id/:folderName/:categoryID/crew/:crewID",  upload.array('file', 10), (req, res) => {
+    try {
+        res.send(req.files);
+        for(let i = 0; i < req.files.length; i++){
+            console.log(req.files[i].originalname);
+            documentationDao.insertDocumentCrew(req.params.id, req.params.categoryID, req.files[i], req.params.crewID, (status, data) => {
+                res.status(status);
+            });
+        }
+    } catch (err) {
+        res.send(400);
+    }
+});
+
 
 app.get("/api/:eventID/documents/category", (req, res) => {
     console.log("/doc: fikk request fra klient");
@@ -246,27 +282,6 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
 
 app.put("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     documentationDao.changeDocumentCategory(req.params.eventID, req.params.documentCategoryID, req.body, (status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
-
-app.post("/api/:eventID/documents/create", (req, res) => {
-    documentationDao.insertDocument(req.params.eventID, req.body, (status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
-
-app.post("/api/:eventID/documents/create/artist", (req, res) => {
-    documentationDao.insertDocumentArtist(req.params.eventID, req.body, (status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
-
-app.post("/api/:eventID/documents/create/crew", (req, res) => {
-    documentationDao.insertDocumentCrew(req.params.eventID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });

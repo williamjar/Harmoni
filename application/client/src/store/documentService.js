@@ -54,4 +54,19 @@ class DocumentService {
         return axios.delete(axiosConfig.root + '/api/document/' + id).then(response => response.data);
     }
 
+    insertDocument(eventID, folderName, documentCategoryID){
+        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID)
+            .then(response => response.data);
+    }
+
+    insertDocumentArtist(eventID, folderName, documentCategoryID, artistID){
+        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/artist/' + artistID)
+            .then(response => response.data);
+    }
+
+    insertDocumentCrew(eventID, folderName, documentCategoryID, crewID){
+        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/crew/' + crewID)
+            .then(response => response.data);
+    }
+
 }
