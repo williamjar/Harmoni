@@ -1,8 +1,9 @@
 import axios from "axios";
 
-const axiosConfig = require("./axiosConfig");
-import RiderElement from "../classes/riderElement"
+
+import {RiderElement} from "../classes/riderElement"
 import {CookieStore} from "./cookieStore";
+const axiosConfig = require("./axiosConfig");
 
 
 export class Rider {
@@ -125,6 +126,6 @@ export class Rider {
     }
 }
 
-export let riderService = sharedComponentData(new riderService());
+export let riderService = new Rider();
 
 

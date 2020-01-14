@@ -10,6 +10,8 @@ import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {ArtistService} from "../../store/artistService";
 import {CookieStore} from "../../store/cookieStore";
+import {riderService} from "../../store/riderService";
+import {eventStore} from "../../store/eventStore";
 
 
 export class PerformersTab extends Component{
@@ -42,7 +44,7 @@ export class PerformerPanel extends Component{
         this.state = {
             performerList : [],
             showArtistCard: false,
-            performerSelected : "",
+            performerSelected : {},
         }
     }
 
@@ -76,15 +78,20 @@ export class PerformerCard extends Component{
         super(props);
 
         this.state = {
+            performer : this.props.performerSelected,
             riderInput : "",
             numberOfFilesAdded: 0,
-            name : "",
-            email : "",
-            genre : "",
+            riders : {},
         };
 
+        console.log(this.props.performerSelected);
 
 
+
+    }
+
+    componentDidMount() {
+        console.log(riderService.getAllRiderElementsFromArtistAndEvent(eventStore.currentEvent.eventID, this.state.performer.artistID));
     }
 
     render(){
@@ -96,8 +103,8 @@ export class PerformerCard extends Component{
                     </div>
 
                     <div className="col-7">
-                        Lorde<br/>
-                        artist@hotmail.com
+                        {this.state.performer.contactName}<br/>
+                        {this.state.performer.email}
                     </div>
 
                     <div className="col-3">
@@ -172,9 +179,6 @@ export class PerformerCard extends Component{
             </div>
         )
     }
-    componentDidMount() {
-        this.fillCard(); // Fills the card with information from database
-    }
 
     addFile = () =>{
         /*For adding attachments to crew */
@@ -188,6 +192,7 @@ export class PerformerCard extends Component{
     }
     addRider = () =>{
         alert(this.state.riderInput);
+        riderService.createNewRiderElement(this.state.performer.artistID, eventStore.currentEvent.eventID, this.state.riderInput);
     }
 
     handleInputRider = (event) =>{
@@ -212,13 +217,7 @@ export class PerformerCard extends Component{
 
     }
 
-    fillCard = () => {
-        let performer = this.props.performerSelected;
-        let currentState = this.state;
-        ArtistService.getArtist(performer, (artist) =>{
-            console.log(artist);
-        });
-    }
+
 }
 
 export class Rider extends Component{
