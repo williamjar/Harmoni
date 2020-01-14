@@ -748,7 +748,7 @@ app.put("/api/events/:eventID", (request, response) => {
 
 //Get all events for organizer
 app.get("/api/events/organizer/:organizerID", (request, response) => {
-    console.log("Express: Request to get all events for organizer" + request.params.organizerID);
+    console.log("Express: Request to get all events for organizer " + request.params.organizerID);
     eventDao.getAllForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
