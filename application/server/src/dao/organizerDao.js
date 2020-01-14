@@ -23,8 +23,12 @@ module.exports = class documentDao extends Dao {
     }
 
 
-    changeUsername(callback, list){
+    changeUsername(list, callback){
         super.query('UPDATE organizer SET username = ? WHERE organizerID = ?', list ,callback)
+    }
+
+    getOrganizerFromEmail(email, callback){
+        super.query("select organizer.organizerID from organizer join contact c on organizer.contactID = c.contactID where c.email = ?", [email], callback);
     }
 
 

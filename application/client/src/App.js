@@ -30,9 +30,9 @@ export class App extends Component{
         super(props);
 
         this.state = {
-            loggedIn : true,
+            loggedIn : false,
             mobileView : false,
-        }
+        };
 
         window.addEventListener('resize', () =>{
             if(window.innerWidth > 900){
