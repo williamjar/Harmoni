@@ -121,8 +121,6 @@ export class RegisterForm extends React.Component {
                         <Form.Text className="text-danger" hidden={!this.databaseUsernameAlreadyExists()}>Brukernavnet finnes allerede</Form.Text>
                         <Form.Text className="text-danger" hidden={!this.databaseConnectionError()}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
 
-
-
                     </Form>
                 </div>
             </Card>

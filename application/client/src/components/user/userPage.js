@@ -13,6 +13,7 @@ export class UserPage extends React.Component {
             email: '',
             newEmail: '',
             confirmNewEmail: '',
+            oldPassword: '',
             firstNewPassword: '',
             secondNewPassword: '',
             phonenumber : '',
@@ -109,13 +110,23 @@ export class UserPage extends React.Component {
                                         </td></tr>
 
                                         <tr><td>Passord</td><td>
+
+                                            <Form.Group>
+                                                <Form.Control type="password" name="oldPassword" placeholder="Gammelt passord" value={this.state.oldPassword} onChange={this.handleInputChange}/>
+                                            </Form.Group>
+                                            <Row>
+                                                <Col>
                                             <Form.Group>
                                                 <Form.Control type="password" name="firstNewPassword" placeholder="Nytt passord" value={this.state.firstNewPassword} onChange={this.handleInputChange}/>
                                             </Form.Group>
+                                                </Col>
+                                                <Col>
 
                                             <Form.Group>
                                                 <Form.Control type="password" name="secondNewPassword" placeholder="Gjenta nytt passord" value={this.state.secondNewPassword} onChange={this.handleInputChange}/>
                                             </Form.Group>
+                                                </Col>
+                                            </Row>
                                             <Form.Text className={"text-muted"}>Det oppdaterte passordet må være lik i begge feltene.</Form.Text>
                                         </td>
                                         </tr>
@@ -185,6 +196,7 @@ export class UserPage extends React.Component {
     }
 
     changeMode() {
+        this.updateInfo();
         if(this.state.mode===1)this.setState({mode: 2,});
         else this.setState({mode: 1,})
     }
@@ -192,24 +204,27 @@ export class UserPage extends React.Component {
 
 
     updateInfo(){
+        console.log("currentuserID: " + CookieStore.currentUserID);
+       OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
 
-        var user = OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
-            if (statusCode === 200){
-                console.log("User is here: " + OrganizerStore.currentOrganizer);
-            }
-            else{
-                console.log("We have an error!");
-            }
+
+            /*if (statusCode === 200){
+                console.log("User is here:" + OrganizerStore.currentOrganizer.username);
+
+                var databaseUsername = OrganizerStore.currentOrganizer.username;
+                var dataBbaseEmail = OrganizerStore.currentOrganizer.email;
+                var databasePhone = OrganizerStore.currentOrganizer.phone;
+
+                this.setState(this.setState({
+                    username: databaseUsername,
+                    email: dataBbaseEmail,
+                    phonenumber: databasePhone
+                }));
+           // }
+            //else{
+                //console.log("We have an error!");
+            / }*/
         });
-
-
-        var databaseUsername = '';
-        var databaseEmail = '';
-
-        this.setState(this.setState({
-            username: databaseUsername,
-            email: databaseEmail,
-        }));
     }
 
     submitForm(){
@@ -223,7 +238,7 @@ export class UserPage extends React.Component {
         if(this.validatePhoneNumber())this.setState({phonenumber: this.state.newPhonenumber});
         //Service: update phone number
         if(this.validatePassword()) {
-            // /api/organizer/:organizerID
+            OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword);
         }
 
         // /api/contact/:contactID
