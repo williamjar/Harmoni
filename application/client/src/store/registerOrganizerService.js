@@ -5,10 +5,8 @@ const root = require('./axiosConfig').root;
 export class RegisterOrganizerService{
 
     static registerOrganizer(username, email, password, callback){
-        let headers = {
-            header: {
-                "Content-Type": "application/json",
-            }
+        let header = {
+            "Content-Type": "application/json",
         };
 
         let contactBody = {
@@ -16,24 +14,21 @@ export class RegisterOrganizerService{
             "phone": null,
             "email": email
         };
-
-        console.log("Creating contact at /contact");
-        axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), headers)
+        axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), {headers: header})
             .then(res => {
                 return res.data.insertId;
             })
             .then(contactID => {
-                axios.get("http://localhost:8080/organizer/username/" + username, headers).then(res => {
+                axios.get("http://localhost:8080/organizer/username/" + username, {headers: header}).then(res => {
                     if (res.data.length === 0){
-                        axios.get("http://localhost:8080/organizer/by-email/" + email, headers).then(res => {
+                        axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header}).then(res => {
                             if (res.data.length === 0){
                                 let organizerBody = {
                                     "username": username,
                                     "password": password,
                                     "contactID": contactID
                                 };
-                                console.log(JSON.stringify(organizerBody));
-                                return axios.post('http://localhost:8080/organizer', JSON.stringify(organizerBody), headers).then(res => {
+                                return axios.post('http://localhost:8080/organizer', JSON.stringify(organizerBody), {headers: header}).then(res => {
                                     callback(200);
                                 }).catch(() => callback(500));
                             }

@@ -15,7 +15,6 @@ export class OrganizerStore {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        console.log("Using token " + CookieStore.currentToken + " on getting organizer (before axios)");
         axios.get(axiosConfig.root + '/api/organizer/' + organizerID, {headers: header})
             .then(response => {
             this.currentOrganizer = new Organizer(response.data[0].organizerID, response.data[0].contactName, response.data[0].phone,
