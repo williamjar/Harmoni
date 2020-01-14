@@ -58,9 +58,9 @@ export class Search extends Component{
 
                         <div className="card-text margin-top-5 ma">
                             {this.state.showRegisterNew === false && this.state.showSearchResults?
-                                this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf(e.contactName.toLowerCase()) >= 0).map(show =>
-                                <div className="card-title card-header search" onClick={() => this.searchHandler(show.input)}>{show.input}</div>
-                            ):null}
+                                this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf((e.contactName) >= 0).map(show =>
+                                <div className="card-title card-header search" onClick={() => this.searchHandler(show.contactName)}>{show.contactName}</div>
+                                )):null}
 
                             {this.state.showRegisterNew?
                                 <div className="card card-body">
@@ -76,9 +76,13 @@ export class Search extends Component{
 
     callBackSearchResult = () => {
         let currentState = this.state;
-        currentState.results = artistService.getArtistForOrganizer(CookieStore.currentUserID);
-        this.setState(currentState);
-        console.log(this.state.results);
+
+        artistService.getArtistForOrganizer((allArtistByOrganizer) => {
+            currentState.results = allArtistByOrganizer;
+            console.log(allArtistByOrganizer);
+            this.setState(currentState);
+            console.log(this.state);
+        },CookieStore.currentUserID);
     }
 
     searchHandler(input){
