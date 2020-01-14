@@ -408,7 +408,7 @@ app.get("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID);
 });
 
-app.post("/api/contact", (request, response) => {
+app.post("/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
         request.body.username,
