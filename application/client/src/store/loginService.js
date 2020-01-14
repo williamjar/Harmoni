@@ -1,5 +1,6 @@
 import axios from "axios";
 import {CookieStore} from './cookieStore';
+const crypto = require('crypto');
 
 export class LoginService {
     static loginOrganizer(email, enteredPassword, callback) {

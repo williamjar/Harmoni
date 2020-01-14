@@ -278,6 +278,7 @@ app.post("/login", (req, res) => {
     let loginDao = new LoginDao(pool);
     loginDao.checkLogin(req.body.email, req.body.password, (status, data) => {
         console.log(status);
+        console.log(data);
         if (status === 200 && data.length > 0) {
             console.log('Login OK');
             let token = jwt.sign(
@@ -821,7 +822,7 @@ app.put("/api/events/:eventID/documents/:documentID", (request, response) => {
 });
 
 //get one organizer
-app.get("/api/organizer/:organizerID", (require, response) => {
+app.get("/organizer/:organizerID", (require, response) => {
     console.log("Request to get a organizer");
     organizerDao.getOne((status, data) => {
         response.status(status);
