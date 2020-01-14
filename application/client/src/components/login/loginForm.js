@@ -87,6 +87,7 @@ export class LoginForm extends React.Component {
 
         LoginService.loginOrganizer(this.state.email, this.state.password, status => {
             if (CookieStore.currentToken != null) {
+                sessionStorage.setItem('loggedIn', 'true');
                 this.props.logIn();
                 this.setState({loggingIn: false});
             }

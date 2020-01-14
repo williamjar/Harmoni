@@ -67,6 +67,7 @@ export class CreateEventSplash extends Component{
         } else{
             //eventStore.create
             history.push('/arrangementEdit');
+
         }
     }
 }
