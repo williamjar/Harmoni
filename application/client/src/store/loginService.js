@@ -52,7 +52,7 @@ export class LoginService {
 
 
 }
-
+/** Uses email to find the organizers organizerID */
 function getOrganizerID(email, callback) {
     let header = {
         "Content-Type": "application/json",
@@ -64,6 +64,7 @@ function getOrganizerID(email, callback) {
         })
 }
 
+/** Uses organizerID to find the organizers password */
 function getPassword(organizerID, callback) {
     let header = {
         "Content-Type": "application/json",
@@ -75,8 +76,8 @@ function getPassword(organizerID, callback) {
         })
 }
 
+/** Takes the entered password and hashes it with the salt from the database. */
 function getHashedPassword(enteredPassword, email) {
-
     getOrganizerID(email, organizerID => {
         console.log(organizerID);
         getPassword(organizerID, passwordInDB => {
@@ -98,22 +99,3 @@ function getHashedPassword(enteredPassword, email) {
         })
     });
 }
-
-    /*
-    function verifyPassword(enteredPassword, email, hashedSaltedPassword) {
-
-        let fullPwd = getPassword(email, hashedSaltedPassword);
-        let pwdArr = fullPwd.split("/");
-        let salt = pwdArr[0];
-        let hashInDB = pwdArr[1];
-
-        function sha512(password, salt) {
-            let hash = crypto.createHmac('sha512', salt);
-            /!** Hashing algorithm sha512 *!/
-            hash.update(password);
-            let value = hash.digest('hex');
-            return salt + '/' + value;
-        }
-
-        return (hashInDB.equals(sha512(enteredPassword, salt)));
-    }*/
