@@ -22,9 +22,9 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "react-icons/all";
-
-
-
+import {CookieStore} from "./store/cookieStore";
+import { createHashHistory } from 'history';
+let history = createHashHistory();
 
 export class App extends Component{
 
@@ -68,21 +68,13 @@ export class App extends Component{
         }
 
         this.handleLogin();
-    }
+    };
 
     render(){
-
-        if(!this.state.loggedIn){
-            return(
-                <div className="Login-Container">
-                    <HashRouter>
-                        <Route exact path="/" component={() => <LoginForm logIn={() => this.handleLogin()}/>} />
-                        <Route exact path="/registrer" component={() => <RegisterForm />} />
-                    </HashRouter>
-                </div>
-            )
-        } else {
-              return (
+        console.log("state loggedIn:" + this.state.loggedIn);
+        if (this.state.loggedIn){
+            console.log("Render App");
+            return (
                 <div className="App">
                     <HashRouter>
                         <div className="row no-gutters">
@@ -106,18 +98,40 @@ export class App extends Component{
                         </div>
                     </HashRouter>
                 </div>
-              );
+            );
+        }
+        else {
+            console.log("Render login");
+            console.log(CookieStore.currentToken);
+            return(
+                <div className="Login-Container">
+                    <HashRouter>
+                        <Route exact path="/" component={() => <LoginForm logIn={() => this.handleLogin()}/>} />
+                        <Route exact path="/registrer" component={() => <RegisterForm />} />
+                    </HashRouter>
+                </div>
+            )
         }
     }
 
     handleLogin = () => {
         let currentState = this.state;
+
+        let validate = CookieStore.validateToken();
+
+        console.log(CookieStore.currentUserID + " is validated? " + validate + " with token " + CookieStore.currentToken);
+
+        if (!validate){
+            sessionStorage.removeItem('loggedIn');
+            history.push("/");
+        }
+        else{
+            sessionStorage.setItem('loggedIn', 'true');
+        }
+
         currentState.loggedIn = sessionStorage.getItem('loggedIn');
         this.setState(currentState);
     }
-
-
-
 
 }
 

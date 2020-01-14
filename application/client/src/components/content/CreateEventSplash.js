@@ -33,9 +33,9 @@ export class CreateEventSplash extends Component{
         return (
             <div className="splashCreateEvent w-75 center">
                 <Form>
-                <Form.Label column={6}>
-                    <h1>Navn på arrangement:</h1>
-                </Form.Label>
+                    <Form.Label column={6}>
+                        <h1>Navn på arrangement:</h1>
+                    </Form.Label>
 
                     <div className = "padding-top-20">
                         <Form.Control type="text" placeholder="" onChange={this.inputHandler}/>

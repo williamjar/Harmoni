@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
@@ -8,6 +6,10 @@ import Button from "react-bootstrap/Button";
 import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
+import {TicketType} from "../../classes/ticketType";
+import {CrewService} from "../../store/crewService";
+import {CookieStore} from "../../store/cookieStore";
+
 
 export class CrewTab extends Component{
     state = {
@@ -227,6 +229,7 @@ export class AddToCrew extends Component{
 }
 
 export class AddedCrew extends Component{
+
     render() {
         return (
             <div>
@@ -262,6 +265,17 @@ export class AddedCrew extends Component{
 
 
 export class CrewView extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            crewID : null,
+            contactID : null,
+            description : '',
+            organizerID : null
+        }
+    }
+
     render() {
         return(
             <div>
@@ -273,12 +287,19 @@ export class CrewView extends Component {
                         </div>
 
                         <div className="col-2">
-                            <button className="btn-primary rounded mr-2">Vis personell</button>
+                            <button className="btn-primary rounded mr-2" onClick={this.returnCrew}>Vis personell</button>
                         </div>
                     </div>
                 </div>
             </div>
         )
+    }
+
+    returnCrew = () => {
+        console.log('hei');
+        CrewService.getCrewMember(1);
+        this.setState(this.props)
+
     }
 }
 
@@ -346,7 +367,10 @@ export class AddCrewMember extends Component{
     }
 
     submitForm = () => {
-        console.log(this.state);
+        CrewService.createCrewMember(this.state.name, this.state.phone, this.state.email, '',  CookieStore.currentUserID, () => {});
+
+
+
     }
 
     cancelRegister = () => {
