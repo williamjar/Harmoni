@@ -6,8 +6,7 @@ import {FaAngleDown} from "react-icons/fa";
 import {EventView} from "./eventView";
 import {Event} from "../../../classes/event";
 import {Search} from "../search";
-
-// Test events
+import {eventStore} from "../../../store/eventStore";
 
 // Component displaying all of the users events
 export class Dashboard extends React.Component {
@@ -64,6 +63,9 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
+                            {eventStore.allEventsForOrganizer.map(event => (
+                                <p>{event.eventName}</p>
+                            ))}
                             <EventView event1={testEvent}/>
                         </Row>
                     </Accordion.Collapse>
@@ -94,6 +96,11 @@ export class Dashboard extends React.Component {
                 </Accordion>
             </div>
         )
+    }
+
+    componentDidMount() {
+        eventStore.storeAllEventsForOrganizer(2);
+        console.log(eventStore.allEventsForOrganizer);
     }
 
     searchHandler(){
