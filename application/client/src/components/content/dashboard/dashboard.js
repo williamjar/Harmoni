@@ -63,10 +63,9 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            {eventStore.allEventsForOrganizer.map(event => (
-                                <p>{event.eventName}</p>
-                            ))}
-                            <EventView event1={testEvent}/>
+                            <EventView events={eventStore.allEventsForOrganizer}/>
+                            <EventView events={eventStore.allEventsForOrganizer}/>
+                            <EventView events={eventStore.allEventsForOrganizer}/>
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>

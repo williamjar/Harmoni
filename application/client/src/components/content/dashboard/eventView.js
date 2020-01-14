@@ -8,18 +8,14 @@ export class EventView extends React.Component {
 
     render() {
 
-        const event = this.props.event1;
+        const events = this.props.events;
 
-
-        console.log(event);
+        console.log(events);
 
         return(
             <Table striped>
                 <tbody>
-                    <EventCard date={event.startDate}/>
-                    <EventCard event/>
-                    <EventCard event/>
-                    <EventCard event/>
+
                 </tbody>
             </Table>
         )
