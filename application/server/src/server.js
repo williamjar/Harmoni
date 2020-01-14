@@ -210,7 +210,7 @@ var uploadUserPicture = multer({
 // PICTURE
 
 //Insert picture
-app.post("/api/organizer/picture/upload/:organizerID",  uploadUserPicture.single('file'), (req, res) => {
+app.post("/api/organizer/picture/:organizerID",  uploadUserPicture.single('file'), (req, res) => {
     try {
         res.send(req.file);
         pictureDao.insertPicture(req.file, (status) => {
@@ -222,7 +222,7 @@ app.post("/api/organizer/picture/upload/:organizerID",  uploadUserPicture.single
 });
 
 //Delete picture
-app.delete("/api/organizer/picture/delete/:pictureID", (request, response) => {
+app.delete("/api/organizer/picture/:pictureID", (request, response) => {
     console.log("Request to delete a picture");
     pictureDao.deleteOne((status, data) => {
         response.status(status);
@@ -231,7 +231,7 @@ app.delete("/api/organizer/picture/delete/:pictureID", (request, response) => {
 });
 
 //Update picture
-app.put("/api/organizer/picture/update/:pictureID", (request, response) => {
+app.put("/api/organizer/picture/:pictureID", (request, response) => {
     console.log("Request to update a picture");
     pictureDao.updateOne((status, data) => {
         response.status(status);
@@ -241,11 +241,20 @@ app.put("/api/organizer/picture/update/:pictureID", (request, response) => {
 
 //Get one picture
 app.get("/api/organizer/picture/:pictureID", (require, response) => {
-    console.log("Request to get a rider element");
+    console.log("Request to get a organizer profile picture");
     pictureDao.getPicture((status, data) => {
         response.status(status);
         response.json(data);
     }, require.params.pictureID);
+});
+
+//Does picture exist?
+app.get("/api/organizer/picture/:organizerID", (require, response) => {
+    console.log("Request to check if organizer has profile picture");
+    pictureDao.checkIfOrganizerPictureExists((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.organizerID);
 });
 
 

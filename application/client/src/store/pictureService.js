@@ -31,11 +31,31 @@ export class Picture {
     }
 
     //Insert picture
-    insertPicture(organizerID){
+    insertPicture(organizerID, pictureLink){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
+
+        axios.get(axiosConfig.root + "/api/organizer/picture/" + organizerID, {headers: header}).then(response => {
+           if (response.status === 500 || response.data.length === 0){
+               //Picture doesn't exist -> Create
+               let body = {
+                    pictureLink: pictureLink
+               };
+               axios.post(axiosConfig.root + "/api/organizer/picture/" + organizerID)
+           }
+           else{
+               //Picture does exist -> Update
+               let updateBody = {
+                   pictureLink: pictureLink
+               };
+               axios.put("/api/organizer/picture/" + response.data.pictureID, JSON.stringify(updateBody), {headers: header}).then(response => {
+                   console.log("Picture link updated in DB");
+               });
+           }
+        });
+
         axios.post(axiosConfig.root + '/api/organizer/picture/upload/' + organizerID, {
 
         }, {headers: header})
@@ -52,4 +72,5 @@ export class Picture {
         axios.post(axiosConfig.root + '/api/organizer/picture/delete/' + pictureID, [], {headers: header})
             .catch(error => console.log(error));
     }
+
 }
