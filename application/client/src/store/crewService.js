@@ -73,7 +73,8 @@ export class CrewService {
 
     static createCrewMember(name, phone, email, description, organizerID){
         let header = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
 
         let contactBody = {
