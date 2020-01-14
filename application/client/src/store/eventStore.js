@@ -127,7 +127,7 @@ export class eventStore{
         return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/2", {headers: header}).then( response => {});
     }
 
-    static storeAllEventsForOrganizer(organizerID){
+    static storeAllEventsForOrganizer(callback, organizerID){
 
         let header = {
             "Content-Type": "application/json",
@@ -144,6 +144,8 @@ export class eventStore{
                     response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
                     response.data[i].picture));
             }
+
+            callback();
         });
     }
 }
