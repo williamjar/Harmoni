@@ -5,8 +5,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Card, Col, Form, Image, Row} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
 import lorde from './lorde.jpg';
+import placeholder from './placeholder.jpg'
 import map from './map.jpg';
 import {GetTicket, Ticket, TicketView} from "../ticket";
+import {eventStore} from "../../store/eventStore";
 
 // Component for viewing general information about an event
 export class GeneralInfo extends Component{
@@ -16,7 +18,6 @@ export class GeneralInfo extends Component{
     };
 
     render(){
-        console.log(this.state.editable);
         return(
             <div>
                 <div className="row">
@@ -26,7 +27,7 @@ export class GeneralInfo extends Component{
                     </div>
                     <div className="col-5">
                         <Card.Body>
-                            <Image src={lorde} alt="event image" fluid className="mb-2"/>
+                            <Image src={eventStore.currentEvent.picture != null ? lorde : placeholder} alt="event image" fluid className="mb-2"/>
                             {this.state.editable ? <Button>Last opp bilde</Button> : null}
                         </Card.Body>
                     </div>
@@ -49,6 +50,10 @@ export class GeneralInfo extends Component{
             return {
                 editable: props.editable
             };
+        } else if (props.event !== state.currentEvent) {
+            return {
+                currentEvent: props.event
+            }
         }
         return null;
     }
@@ -169,12 +174,15 @@ export class InfoView extends Component {
     };
 
     render() {
+
+        let options = {year: 'numeric', month: 'long', day: 'numeric'};
+
         return(
             <div>
                 <Card className="mb-2">
                     <Card.Header>
                         <Row>
-                            <Card.Title>Lorde, intimkonsert</Card.Title>
+                            <Card.Title>{eventStore.currentEvent.eventName}</Card.Title>
                         </Row>
                     </Card.Header>
                     <Card.Body>
@@ -187,7 +195,7 @@ export class InfoView extends Component {
                                             <Form.Label>Start</Form.Label>
                                         </Col>
                                     </Row>
-                                    01 Jan 2020
+                                    {new Date(eventStore.currentEvent.startDate).toLocaleDateString("no-NO", options)}
                                 </Col>
                                 <Col xs="3">
                                     <Row>
@@ -196,7 +204,7 @@ export class InfoView extends Component {
                                             <Form.Label>Tid</Form.Label>
                                         </Col>
                                     </Row>
-                                    18:00
+                                    {eventStore.currentEvent.startTime}
                                 </Col>
                                 <Col>
                                     <Row>
@@ -215,7 +223,7 @@ export class InfoView extends Component {
                                             <Form.Label>Slutt</Form.Label>
                                         </Col>
                                     </Row>
-                                    01 Jan 2020
+                                    {new Date(eventStore.currentEvent.endDate).toLocaleDateString("no-NO", options)}
                                 </Col>
                                 <Col xs="3">
                                     <Row>
@@ -224,7 +232,7 @@ export class InfoView extends Component {
                                             <Form.Label>Tid</Form.Label>
                                         </Col>
                                     </Row>
-                                    21:00
+                                    {eventStore.currentEvent.endTime}
                                 </Col>
                             </Row>
                             <Row className="mb-4">
@@ -235,7 +243,7 @@ export class InfoView extends Component {
                                             <Form.Label>Adresse</Form.Label>
                                         </Col>
                                     </Row>
-                                    Trondheim Spektrum
+                                    {eventStore.currentEvent.address}
                                 </Col>
                                 <Col xs="3">
                                     <Row>
@@ -243,7 +251,7 @@ export class InfoView extends Component {
                                             <Form.Label>Postnummer</Form.Label>
                                         </Col>
                                     </Row>
-                                    7014
+                                    {eventStore.currentEvent.zipCode}
                                 </Col>
                                 <Col xs="3">
                                     <Row>
@@ -251,7 +259,7 @@ export class InfoView extends Component {
                                             <Form.Label>Poststed</Form.Label>
                                         </Col>
                                     </Row>
-                                    Trondheim
+                                    {eventStore.currentEvent.town}
                                 </Col>
                             </Row>
                             <Row>
@@ -262,11 +270,7 @@ export class InfoView extends Component {
                                         </Col>
                                     </Row>
                                     <Card.Body>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer a tempor est,
-                                        non pharetra diam. Nullam nulla nunc, malesuada quis cursus at, imperdiet
-                                        pellentesque nisl. Duis eget nulla eu ante congue tincidunt. Sed tristique odio
-                                        massa, ac suscipit odio lobortis ac. Sed fringilla tempor nulla, nec feugiat
-                                        augue hendrerit sit amet.
+                                        {eventStore.currentEvent.description}
                                     </Card.Body>
                                 </Col>
                             </Row>

@@ -8,15 +8,21 @@ import {PerformerCard, PerformersTab} from "./performers";
 import {CrewTab, CrewView} from "./crew";
 import {DocumentationTab} from "../documentationTab";
 import {DocList} from "../docView";
+import {eventStore} from "../../store/eventStore";
 
 
 
 export class EventForm extends Component{
 
-    state = {
-        activeTab: 0,
-        edit: false,
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            activeTab: 0,
+            edit: false,
+        };
+
+    }
 
     // Handles when the user clicks "neste"
     editClicked = () => {
