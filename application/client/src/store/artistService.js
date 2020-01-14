@@ -49,9 +49,6 @@ export class ArtistService {
                     callback();
                 }
         );
-
-
-
     }
 
     static deleteArtist(artistID) {
