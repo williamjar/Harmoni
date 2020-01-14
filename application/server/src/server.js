@@ -822,8 +822,18 @@ app.put("/api/events/:eventID/documents/:documentID", (request, response) => {
     }, request.params.eventID, request.params.documentID);
 });
 
-//get one organizer
+//get one organizer without api
 app.get("/organizer/:organizerID", (require, response) => {
+    console.log("Request to get a organizer");
+    organizerDao.getOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.organizerID);
+    console.log(require.params.organizerID);
+});
+
+//get one organizer with api
+app.get("/api/organizer/:organizerID", (require, response) => {
     console.log("Request to get a organizer");
     organizerDao.getOne((status, data) => {
         response.status(status);

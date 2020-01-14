@@ -96,7 +96,7 @@ export class LoginForm extends React.Component {
     dataBaseLogin() {
         this.setState({loggingIn: true});
 
-        LoginService.loginOrganizer(this.state.email, this.getHashedPassword(this.state.password,this.state.email), status => {
+        LoginService.loginOrganizer(this.state.email, this.state.password, status => {
             if (CookieStore.currentToken != null) {
                 sessionStorage.setItem('loggedIn', 'true');
                 this.props.logIn();
@@ -112,30 +112,6 @@ export class LoginForm extends React.Component {
             } else {
                 alert(status);
             }
-        });
-    }
-
-    getHashedPassword(enteredPassword, email) {
-        LoginService.getOrganizerID(email, organizerID => {
-            console.log(organizerID);
-            LoginService.getPassword(organizerID, passwordInDB => {
-                console.log("Password in DB: "+passwordInDB);
-
-                let saltHash = passwordInDB.split("/");
-                let salt = saltHash[0];
-                console.log("Salt: "+salt);
-
-                function sha512(password, salt) {
-                    let hash = crypto.createHmac('sha512', salt);
-                    /** Hashing algorithm sha512 */
-                    hash.update(password);
-                    let value = hash.digest('hex');
-                    return salt + '/' + value;
-                }
-                let hashed = sha512(enteredPassword, salt);
-                console.log(hashed);
-                return hashed;
-            })
         });
     }
 
