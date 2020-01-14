@@ -1,6 +1,7 @@
 import axios from "axios";
 import {Artist} from "../classes/artist.js"
 import {CookieStore} from "./cookieStore";
+import {Genre} from "../classes/genre";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -133,6 +134,19 @@ export class ArtistService {
             "eventID": eventID,
             "artistID": artistID
         }, {headers: header}).then(response => response.data);
+    }
+
+    static getAllGenres(callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        return axios.get(axiosConfig.root + "/api/artist-genres", {headers: header})
+            .then(res => res.data)
+            .then(data => data
+                .map(element => new Genre(element.genreID, element.genreName)))
+            .then(genreList => callback(genreList));
     }
 
 }
