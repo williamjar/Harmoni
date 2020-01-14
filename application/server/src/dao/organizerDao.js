@@ -3,7 +3,7 @@ const Dao = require('./dao.js');
 module.exports = class documentDao extends Dao {
 
     getOne(callback, organizerID) {
-        super.query('SELECT * FROM organizer JOIN contact ON organizer.contactID = contact.contactID LEFT JOIN picture ON organizer.pictureID = picture.pictureID WHERE organizerID = 1', [organizerID], callback);
+        super.query('SELECT * FROM organizer JOIN contact ON organizer.contactID = contact.contactID LEFT JOIN picture ON organizer.pictureID = picture.pictureID WHERE organizerID = ?', [organizerID], callback);
     }
 
     createOne(callback, list) {
