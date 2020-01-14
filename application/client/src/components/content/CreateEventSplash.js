@@ -5,6 +5,7 @@ import {InputGroup} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import { NavLink } from 'react-router-dom';
 import { createHashHistory } from 'history';
+import {CookieStore} from "../../store/cookieStore";
 
 let history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 
@@ -55,17 +56,21 @@ export class CreateEventSplash extends Component{
     }
 
     inputHandler(event){
+        console.log(this.state);
         this.setState({inputName: event.target.value});
+        console.log(this.state);
     }
 
     create(){
         let eventName = this.state.inputName;
         if(this.state.inputName.trim() === ""){
+            console.log("Error in create");
             let state = this.state;
             state.emptyMessage = true;
             this.setState(state);
         } else{
             //eventStore.create
+            console.log("Pushing /arrangementEdit");
             history.push('/arrangementEdit');
 
         }

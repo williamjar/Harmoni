@@ -6,19 +6,29 @@ const jwt = require('jsonwebtoken');
 export class CookieStore{
 
     static currentToken = "";
-    static currentUserID = 0;
+    static currentUserID = -1;
 
     static validateToken(){
 
         console.log("Validating token");
 
         if (this.currentToken == null || this.currentToken.trim() === '' || this.currentUserID == null){
+            console.log("Token:" + this.currentToken);
+            console.log("ID" + this.currentUserID);
+            console.log("Token doesn't exist");
             return false;
         }
 
-        console.log(this.currentToken);
+        try{
+            jwt.verify(this.currentToken, publicKey);
+            console.log("Token verified in CookieStore");
+            return true;
+        }
+        catch (err) {
+            console.log("Token not verified in CookieStore");
+            return false;
+        }
 
-        return jwt.verify(this.currentToken, publicKey);
     }
 
     static checkToken(email){
