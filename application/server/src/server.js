@@ -554,12 +554,12 @@ app.delete("/api/artist/assign/:eventID/:artistID", (request, response) => {
     }, request.params.eventID, request.params.artistID)
 });
 
-app.get("/api/artist/all-genres", (request, response) => {
+app.get("/api/artist-genres", (request, response) => {
     console.log("request to get all genres");
 
     artistDao.getAllGenres((status, data) => {
         response.status(status);
-        response.data(data);
+        response.json(data);
     })
 });
 

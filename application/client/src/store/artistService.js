@@ -140,7 +140,7 @@ export class ArtistService {
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.get(axiosConfig.root + "/api/artist/all-genres", {headers: header}).then(res => res.data).then(data => callback(data));
+        return axios.get(axiosConfig.root + "/api/artist-genres", {headers: header}).then(res => res.data).then(data => callback(data));
     }
 
 }
