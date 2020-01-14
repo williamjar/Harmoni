@@ -70,9 +70,10 @@ export class ArtistService {
                         response.data[i].contactID, response.data[i].organizerID, response.data[i].contactID,
                         response.data[i].contactName, response.data[i].phone, response.data[i].email));
                 }
+                return allArtistByOrganizer;
             }
         );
-        return allArtistByOrganizer;
+
     }
 
     static getArtistForEvent(eventID) {
