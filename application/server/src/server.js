@@ -599,8 +599,8 @@ app.get("/api/crew/categories/:organizerID", (request, response) => {
 app.post("/api/crew", (request, response) => {
     console.log("request to add crew");
     let val = [
-        request.body.crewID,
         request.body.description,
+        request.body.organizerID,
         request.body.contactID
     ];
     crewDao.createOne((status, data) => {
@@ -748,7 +748,7 @@ app.put("/api/events/:eventID", (request, response) => {
 
 //Get all events for organizer
 app.get("/api/events/organizer/:organizerID", (request, response) => {
-    console.log("Express: Request to get all events for organizer" + request.params.organizerID);
+    console.log("Express: Request to get all events for organizer " + request.params.organizerID);
     eventDao.getAllForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
@@ -827,6 +827,7 @@ app.get("/api/organizer/:organizerID", (require, response) => {
         response.status(status);
         response.json(data);
     }, require.params.organizerID);
+    console.log(require.params.organizerID);
 });
 
 //ORGANIZER
