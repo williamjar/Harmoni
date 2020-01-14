@@ -21,7 +21,7 @@ class eventStore{
         axios.post(axiosConfig.root + "/api/events" ).then(response =>{
 
             //Create an event from the insertID returned from the query and the organizerID, the rest is null
-            this.currentEvent = new Event(response.insertID, null, null, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
+            this.currentEvent = new Event(response.data.insertId, null, null, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
             callback();
         });
 
