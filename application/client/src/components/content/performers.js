@@ -9,6 +9,7 @@ import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {ArtistService} from "../../store/artistService";
+import {CookieStore} from "../../store/cookieStore";
 
 
 export class PerformersTab extends Component{
@@ -353,9 +354,8 @@ export class RegisterPerformer extends Component{
     submitForm = () => {
         //Error handling should be inserted here
         let genreID = 1;
-        let organizerID = 1;
-
-        ArtistService.createArtist(this.state.name, this.state.phone, this.state.email, genreID, organizerID );
+        alert("submit clicked");
+        ArtistService.createArtist(this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
         console.log(this.state);
     }
 }
