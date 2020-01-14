@@ -13,16 +13,7 @@ import {CookieStore} from "../../store/cookieStore";
 
 
 export class PerformersTab extends Component{
-
-    constructor(props){
-        super(props);
-
-        this.state = {
-            showArtistCard: false,
-        };
-
-        this.searchHandler = this.searchHandler.bind(this);
-    }
+    /* All the performer content for use in the Performer tab */
 
     render(){
         return(
@@ -30,7 +21,7 @@ export class PerformersTab extends Component{
                 <div className="row">
 
                     <div className="col-lg-6 col-md-12  border-right">
-                        <PerformerPanel searchHandler={this.searchHandler} showCard={this.state.showArtistCard}/>
+                        <PerformerPanel />
                     </div>
 
                     <div className="col-lg-6 col-md-12">
@@ -40,45 +31,46 @@ export class PerformersTab extends Component{
             </div>
         )
     }
-
-    searchHandler(selected){
-        let personSelected = selected;
-        let currentState = this.state;
-        currentState.showArtistCard = true;
-        this.setState(currentState);
-    }
 }
 
 export class PerformerPanel extends Component{
+    /* Performerpanel is the left side in the PerformerTab, it is combined, because of the search and performercard. */
 
     constructor(props){
         super(props);
 
         this.state = {
             performerList : [],
+            showArtistCard: false,
+            performerSelected : "",
         }
     }
 
     render() {
         return (
             <div>
-                <Search searchHandler={this.props.searchHandler} registerComponent={<RegisterPerformer/>} addRegisterButton={true} SearchList={this.performerList} />
+                <Search searchHandler={this.searchHandler} registerComponent={<RegisterPerformer/>} addRegisterButton={true} SearchList={this.performerList} />
                 <div className="padding-top-20">
-                {this.props.showCard?<PerformerCard />:null}
+                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} />:null}
                 </div>
             </div>
         );
     }
 
-    componentDidMount = () => {
-        //let currentState = this.state;
-        //currentState.performerList = ArtistService.getArtistForOrganizer(1);
-        //this.setState(currentState);
+    searchHandler = (selected) => {
+        /* This searchhandler is called when search result is selected
+        * It then shows the performer card for that performer.
+        * */
+        let currentState = this.state;
+        currentState.performerSelected = selected;
+        currentState.showArtistCard = true;
+        this.setState(currentState);
     }
 
 }
 
 export class PerformerCard extends Component{
+    /* Performer card that shows information about artist and riders connected to it */
 
     constructor(props){
         super(props);
@@ -86,6 +78,9 @@ export class PerformerCard extends Component{
         this.state = {
             riderInput : "",
             numberOfFilesAdded: 0,
+            name : "",
+            email : "",
+            genre : "",
         };
 
 
@@ -169,10 +164,6 @@ export class PerformerCard extends Component{
 
                    </div>
 
-
-
-
-
                    <div className="col-4 offset-4 text-right">
                        <button className="btn-success rounded" onClick={() => this.save()}>Lagre</button>
                    </div>
@@ -180,6 +171,9 @@ export class PerformerCard extends Component{
 
             </div>
         )
+    }
+    componentDidMount() {
+        this.fillCard(); // Fills the card with information from database
     }
 
     addFile = () =>{
@@ -197,7 +191,10 @@ export class PerformerCard extends Component{
     }
 
     handleInputRider = (event) =>{
-        this.setState({riderInput: event.target.value});
+        /* Handles the input for new riders to be added */
+        let currentState = this.state;
+        currentState.riderInput = event.target.value;
+        this.setState(currentState);
     }
 
     save = () => {
@@ -214,6 +211,14 @@ export class PerformerCard extends Component{
         };
 
     }
+
+    fillCard = () => {
+        let performer = this.props.performerSelected;
+        let currentState = this.state;
+        ArtistService.getArtist(performer, (artist) =>{
+            console.log(artist);
+        });
+    }
 }
 
 export class Rider extends Component{
@@ -224,9 +229,6 @@ export class Rider extends Component{
             taskDone: false,
             status : "",
         };
-
-        this.handleInput = this.handleInput.bind(this);
-
     }
 
     render(){
@@ -256,7 +258,7 @@ export class Rider extends Component{
         )
     }
 
-    handleInput(event){
+    handleInput = (event) =>{
         /* Gets the input from the status and checkbox */
         let completedTask = document.querySelector("#riderCompleted").checked;
         let status = document.querySelector("#statusRider").value;
@@ -359,7 +361,6 @@ export class RegisterPerformer extends Component{
         console.log(this.state);
     }
 }
-
 
 export class RegisteredPerformers extends Component{
     render(){

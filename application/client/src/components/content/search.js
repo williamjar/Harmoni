@@ -58,9 +58,9 @@ export class Search extends Component{
 
                         <div className="card-text margin-top-5 ma">
                             {this.state.showRegisterNew === false && this.state.showSearchResults?
-                                this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf((e.contactName) >= 0).map(show =>
+                                this.state.results.filter(e => this.state.searchInput.indexOf(e.contactName.toString()) > -1).map(show =>
                                 <div className="card-title card-header search" onClick={() => this.searchHandler(show.contactName)}>{show.contactName}</div>
-                                )):null}
+                                ):null}
 
                             {this.state.showRegisterNew?
                                 <div className="card card-body">
