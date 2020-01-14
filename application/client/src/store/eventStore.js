@@ -136,6 +136,9 @@ export class eventStore{
 
         axios.get(axiosConfig.root + "/api/events/organizer/" + organizerID, {headers: header}).then( response => {
             this.allEventsForOrganizer = [];
+
+            console.log("EventStore: data length: " + response.data.length);
+
             for (let i = 0; i < response.data.length; i++) {
                 this.allEvents.push(new Event(response.data[i].eventID, response.data[i].eventName,
                     response.data[i].startDate, response.data[i].endDate, response.data[i].startTime,
@@ -144,6 +147,8 @@ export class eventStore{
                     response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
                     response.data[i].picture));
             }
+
+            console.log("EventStore: allEventsForOrganizer: " + this.allEventsForOrganizer);
 
             callback();
         });
