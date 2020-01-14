@@ -31,7 +31,7 @@ export class ArtistService {
         };
 
         let contactBody = {
-            "contactName": name,
+            "username": name,
             "phone": phone,
             "email": email
         };
