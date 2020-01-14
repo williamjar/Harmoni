@@ -1,12 +1,29 @@
 import axios from 'axios';
 
+const publicKey = require('../cookieConfig').publicKey;
+const jwt = require('jsonwebtoken');
+
 export class CookieStore{
 
     static currentToken = "";
     static currentUserID = 0;
 
+    static validateToken(){
+
+        console.log("Validating token");
+
+        if (this.currentToken == null || this.currentToken.trim() === '' || this.currentUserID == null){
+            return false;
+        }
+
+        console.log(this.currentToken);
+
+        return jwt.verify(this.currentToken, publicKey);
+    }
+
     static checkToken(email){
         let header = {
+            'x-access-token': this.currentToken,
             'Content-Type': 'application/json'
         };
 

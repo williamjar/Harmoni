@@ -22,6 +22,7 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "react-icons/all";
+import {CookieStore} from "./store/cookieStore";
 
 
 
@@ -68,11 +69,12 @@ export class App extends Component{
         }
 
         this.handleLogin();
-    }
+    };
 
     render(){
-
+        console.log(this.state.loggedIn);
         if(!this.state.loggedIn){
+            console.log("Render login");
             return(
                 <div className="Login-Container">
                     <HashRouter>
@@ -82,6 +84,7 @@ export class App extends Component{
                 </div>
             )
         } else {
+            console.log("Render app");
               return (
                 <div className="App">
                     <HashRouter>
@@ -112,7 +115,9 @@ export class App extends Component{
 
     handleLogin = () => {
         let currentState = this.state;
+        sessionStorage.setItem('loggedIn', CookieStore.validateToken());
         currentState.loggedIn = sessionStorage.getItem('loggedIn');
+        console.log(currentState.loggedIn);
         this.setState(currentState);
     }
 
