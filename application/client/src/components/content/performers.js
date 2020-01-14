@@ -12,10 +12,19 @@ import {ArtistService} from "../../store/artistService";
 import {CookieStore} from "../../store/cookieStore";
 import {riderStore} from "../../store/riderStore";
 import {eventStore} from "../../store/eventStore";
+import {RiderElement} from "../../classes/riderElement";
 
 
 export class PerformersTab extends Component{
     /* All the performer content for use in the Performer tab */
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            performersAdded : [],
+        }
+    }
 
     render(){
         return(
@@ -23,15 +32,21 @@ export class PerformersTab extends Component{
                 <div className="row">
 
                     <div className="col-lg-6 col-md-12  border-right">
-                        <PerformerPanel />
+                        <PerformerPanel addPerformer={this.addPerformer}/>
                     </div>
 
                     <div className="col-lg-6 col-md-12">
-                        <RegisteredPerformers />
+                        <RegisteredPerformers performersAdded={this.state.performersAdded}/>
                     </div>
                 </div>
             </div>
         )
+    }
+
+    addPerformer = (selected) => {
+        let currentState = this.state;
+        currentState.performersAdded.push(selected);
+        this.setState(currentState);
     }
 }
 
@@ -66,6 +81,7 @@ export class PerformerPanel extends Component{
         let currentState = this.state;
         currentState.performerSelected = selected;
         currentState.showArtistCard = true;
+        this.props.addPerformer(selected);
         this.setState(currentState);
     }
 
@@ -88,10 +104,6 @@ export class PerformerCard extends Component{
 
 
 
-    }
-
-    componentDidMount() {
-        console.log(riderStore.getAllRiderElementsFromArtistAndEvent(eventStore.currentEvent.eventID, this.state.performer.artistID));
     }
 
     render(){
@@ -133,8 +145,10 @@ export class PerformerCard extends Component{
                             </InputGroup.Append>
                         </InputGroup>
 
-                        <Rider />
-                        <Rider />
+                        {this.state.riders.map(e =>
+                            <Rider description={e.description} isDone={e.isDone} status={e.status}/>
+                        )}
+
 
                     </div>
                 </div>
@@ -190,11 +204,18 @@ export class PerformerCard extends Component{
             this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
         }
     }
+
     addRider = () =>{
         alert(this.state.riderInput);
+        riderStore.createNewRiderElement((newRider) => {
+            riderStore.allRidersForCurrentEvent.push(newRider);
+            console.log(riderStore.allRidersForCurrentEvent);
 
-
-        riderStore.createNewRiderElement(this.state.performer.artistID, eventStore.currentEvent.eventID, this.state.riderInput);
+            let currentState = this.state;
+            currentState.riders = riderStore.allRidersForCurrentEvent;
+            this.setState(currentState);
+            console.log(this.state);
+        }, this.state.performer.artistID, eventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
     }
 
     handleInputRider = (event) =>{
@@ -238,12 +259,12 @@ export class Rider extends Component{
                 <div className="row align-items-center">
 
                     <div className="col-5">
-                        Knekkebrød med ost
+                        {this.props.description}
                     </div>
 
                     <div className="col-3">
                         <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value="" id="riderCompleted" onChange={this.handleInput}/>
+                            <input className="form-check-input" type="checkbox" value={this.props.isDone} id="riderCompleted" onChange={this.handleInput}/>
                                 <label className="form-check-label" htmlFor="riderCompleted">
                                     Utført
                                 </label>
@@ -251,7 +272,7 @@ export class Rider extends Component{
                     </div>
 
                     <div className="col-4">
-                        <input type="text" className="form-control" placeholder="Status" id="statusRider" onChange={this.handleInput}/>
+                        <input type="text" className="form-control" placeholder="Status" id="statusRider" value={this.props.status} onChange={this.handleInput}/>
                     </div>
 
                 </div>
@@ -368,16 +389,24 @@ export class RegisteredPerformers extends Component{
         return(
             <div>
                 <b>Artister som er lagt til</b>
-                <div className="card card-body">
-                    <div className="row">
-                        <div className="col-10">
-                    Lorde
+                <div className="card card-body" onClick={""}>
+
+                    {this.props.performersAdded.map(p =>
+                        <div className="row">
+                            <div className="col-10">
+                                {p.contactName}
+                            </div>
+
+                            <div className="col-2">
+                                <button className="btn-danger rounded">Slett</button>
+                            </div>
                         </div>
 
-                        <div className="col-2">
-                            <button className="btn-danger rounded">Slett</button>
-                        </div>
-                    </div>
+                    )}
+
+
+
+
                 </div>
             </div>
         )

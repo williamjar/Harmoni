@@ -9,8 +9,6 @@ const axiosConfig = require("./axiosConfig");
 export class RiderStore {
     allRidersForCurrentEvent = [];
 
-
-
     //get a rider element
     getRider(riderID) {
 
@@ -70,7 +68,7 @@ export class RiderStore {
     }
 
     //get all riders for an event
-    storeAllRidersForEvent(callback, eventID){
+    storeAllRidersForEvent(eventID){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -83,27 +81,25 @@ export class RiderStore {
                         response.data[0].eventID, response.data[0].status, response.data[0].isDone,
                         response.data[0].description))
                 }
-                callback();
             })
-            .catch(error => {
-                console.log(error);
-                callback();
-            });
+            .catch(error => console.log(error));
     }
 
 
     //create a new rider element.
-    createNewRiderElement(artistID, eventID, description){
+    createNewRiderElement(callback, artistID, eventID, description){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
+
         axios.post(axiosConfig.root + '/api/rider', {
             artistID: artistID,
             eventID: eventID,
             description: description
-        }, {headers: header})
-            .catch(error => console.log(error));
+        }, {headers: header}).then(response =>{
+            callback(new RiderElement(response.data.insertId, artistID, "", false, description));
+        }).catch(error => console.log(error));
     }
 
     //update a rider element
