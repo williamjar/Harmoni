@@ -8,9 +8,17 @@ export class OrganizerStore {
 
     static currentOrganizer;
 
+
     static getOrganizer(organizerID, callback) {
-        console.log(CookieStore.currentToken);
-        axios.get(axiosConfig.root + '/api/organizer/' + organizerID, {headers: {"x-access-token": CookieStore.currentToken}})
+
+        let headers = {
+            header: {
+                "Content-Type": "application/json",
+                "x-access-token": CookieStore.currentToken
+            }
+        };
+
+        axios.get(axiosConfig.root + '/api/organizer/' + organizerID, headers)
             .then(response => {
             this.currentOrganizer = new Organizer(response.data[0].organizerID, response.data[0].contactName, response.data[0].phone,
                     response.data[0].email, response.data[0].username, response.data[0].pictureLink);
@@ -45,7 +53,13 @@ export class OrganizerStore {
 
 
     getAllEvents(organizerId) {
-        return axios.get(`/api/organizer/${organizerId}/events`);
+        let headers = {
+            header: {
+                "Content-Type": "application/json",
+                "x-access-token": CookieStore.currentToken
+            }
+        };
+        return axios.get(`/api/organizer/${organizerId}/events`, headers);
     }
 
 

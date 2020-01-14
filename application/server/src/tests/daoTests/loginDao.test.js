@@ -15,15 +15,7 @@ let pool = mysql.createPool({
     multipleStatements: true
 });
 
-let privatePool = mysql.createPool({
-    connectionLimit: 1,
-    host: "mysql-ait.stud.idi.ntnu.no",
-    user: "evengu",
-    password: "O7KhlwWQ",
-    database: "evengu",
-    debug: false,
-    multipleStatements: true
-});
+let privatePool = mysql.createPool(require('../../databaseConfig')).config;
 
 let loginDao = new LoginDao(pool);
 

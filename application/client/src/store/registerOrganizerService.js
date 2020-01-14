@@ -1,11 +1,15 @@
 import axios from 'axios';
+import {CookieStore} from "./cookieStore";
 const root = require('./axiosConfig').root;
 
 export class RegisterOrganizerService{
 
     static registerOrganizer(username, email, password, callback){
-        let header = {
-            "Content-Type": "application/json"
+        let headers = {
+            header: {
+                "Content-Type": "application/json",
+                "x-access-token": CookieStore.currentToken
+            }
         };
 
         let contactBody = {
@@ -15,14 +19,14 @@ export class RegisterOrganizerService{
         };
 
         console.log("Creating contact at /contact");
-        axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), {headers: header})
+        axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), headers)
             .then(res => {
                 return res.data.insertId;
             })
             .then(contactID => {
-                axios.get("http://localhost:8080/organizer/username/" + username).then(res => {
+                axios.get("http://localhost:8080/organizer/username/" + username, headers).then(res => {
                     if (res.data.length === 0){
-                        axios.get("http://localhost:8080/organizer/by-email/" + email).then(res => {
+                        axios.get("http://localhost:8080/organizer/by-email/" + email, headers).then(res => {
                             if (res.data.length === 0){
                                 let organizerBody = {
                                     "username": username,
@@ -30,7 +34,7 @@ export class RegisterOrganizerService{
                                     "contactID": contactID
                                 };
                                 console.log(JSON.stringify(organizerBody));
-                                return axios.post('http://localhost:8080/organizer', JSON.stringify(organizerBody), {headers: header}).then(res => {
+                                return axios.post('http://localhost:8080/organizer', JSON.stringify(organizerBody), headers).then(res => {
                                     callback(200);
                                 }).catch(() => callback(500));
                             }
