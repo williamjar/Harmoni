@@ -18,26 +18,21 @@ export class LoginService{
                 return res.data;
             })
             .then(loginResponse => {
-                console.log(loginResponse);
                 if (loginResponse.error){
                     CookieStore.currentToken = null;
                     CookieStore.currentUserID = null;
                     console.log("Current token set to null");
                 }
                 else{
-                    console.log("before getting id");
                     axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header})
                         .then(res => {
-                            console.log("transforming to .data");
                             return res.data;
                         })
                         .then(emailResponse => {
-                            console.log(emailResponse);
                             if (!(loginResponse.error)){
                                 console.log("UserID and Token set");
                                 CookieStore.currentUserID = emailResponse[0].organizerID;
                                 CookieStore.currentToken = loginResponse.jwt;
-                                console.log("Token set to " + CookieStore.currentToken);
                                 //The user logs in
                                 callback(loginResponse.status);
                             }
