@@ -31,7 +31,7 @@ export class eventStore{
             "address" : null,
             "town" : null,
             "zipCode" : null,
-            "status" : null,
+            "status" : 0,
             "description" : null,
             "publishDate" : null,
             "publishTime" : null,
