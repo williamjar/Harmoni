@@ -24,7 +24,7 @@ export class ArtistService {
     }
 
     // OrganizerID == innlogget bruker.
-    static createArtist(name, phone, email, genreID, organizerID) {
+    static createArtist(callback, name, phone, email, genreID, organizerID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -36,21 +36,21 @@ export class ArtistService {
             "email": email
         };
 
-        let contactID = 0;
+        axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
 
-        axios.post(axiosConfig.root + '/api/contact', JSON.stringify(contactBody), {headers: header}).then(response => {
-                contactID = response.insertId;
-            }
+                let artistBody = {
+                    "genreID": genreID,
+                    "organizerID": organizerID,
+                    "contactID": response.data.insertId
+                };
+
+                axios.post(axiosConfig.root  + '/api/artist', artistBody, {headers: header}).then(response =>
+                    console.log(response));
+                    callback();
+                }
         );
 
-        let artistBody = {
-            "genreID": genreID,
-            "organizerID": organizerID,
-            "contactID": contactID
-        };
 
-        axios.post('/api/artist', JSON.stringify(artistBody), {headers: header}).then(response =>
-            console.log(response));
 
     }
 
