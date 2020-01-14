@@ -27,9 +27,18 @@ export class OrganizerStore {
 
     // organizerID, name, phone, email, username, pictureLink
 
-    changeUserName() {
+    static changeUsername(organizerID, newUsername) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
 
+
+        return axios.put(axiosConfig.root + `/api/organizer/${organizerID}/change/username`, {
+            username : newUsername,
+        }, {headers: header});
     }
+
 
     static changePassword(organizerID, oldPassword, newPassword) {
         //TODO: Add check for old password to see if password change is allowed

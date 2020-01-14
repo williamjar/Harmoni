@@ -11,8 +11,6 @@ export class UserPage extends React.Component {
             username: '',
             newUsername: '',
             email: '',
-            newEmail: '',
-            confirmNewEmail: '',
             oldPassword: '',
             firstNewPassword: '',
             secondNewPassword: '',
@@ -92,17 +90,6 @@ export class UserPage extends React.Component {
                                             </td>
                                         </tr>
 
-                                        <td>E-postaddresse</td><td>
-                                            <Form.Group>
-                                                <Form.Control type="email" name="newEmail" value={this.state.newEmail} placeholder="Ny e-postaddresse" onChange={this.handleInputChange}/>
-                                            </Form.Group>
-
-                                            <Form.Group>
-                                                <Form.Control type="email" name="confirmNewEmail" value={this.state.confirmNewEmail} placeholder="Gjenta e-postaddressen" onChange={this.handleInputChange}/>
-                                            </Form.Group>
-                                            <Form.Text className={"text-muted"}>Den oppdaterte e-postaddressen må være lik i begge feltene.</Form.Text>
-                                        </td>
-
                                         <tr><td>Telefonnummer</td><td>
                                             <Form.Group>
                                                 <Form.Control maxLength="8" type="number"  name="newPhonenumber" placeholder={this.state.phonenumber} value={this.state.newPhonenumber} onChange={this.handleInputChange}/>
@@ -149,7 +136,6 @@ export class UserPage extends React.Component {
                                     <ListGroup.Item>Endringer:</ListGroup.Item>
                                     <ListGroup.Item disabled hidden={this.validateForm()}>Ingen endringer registrert. Utfør endringer over, eller avbryt.</ListGroup.Item>
                                     <ListGroup.Item className="text-danger" hidden={!this.validateUsername()}>Endre brukernavn til {this.state.newUsername}</ListGroup.Item>
-                                    <ListGroup.Item className="text-danger" hidden={!this.validateEmail()}>Endre e-postaddresse fra {this.state.email} til {this.state.newEmail}</ListGroup.Item>
                                     <ListGroup.Item className="text-danger" hidden={!this.validatePhoneNumber()}>Endre telefonnummer til {this.state.newPhonenumber}</ListGroup.Item>
                                     <ListGroup.Item className="text-danger" hidden={!this.validatePassword()}>Utfør en passordendring</ListGroup.Item>
                                 </ListGroup>
@@ -183,16 +169,12 @@ export class UserPage extends React.Component {
         return (this.state.newPhonenumber !== this.state.phonenumber) && (this.state.newPhonenumber.length === 8);
     }
 
-    validateEmail(){
-        return (this.state.newEmail === this.state.confirmNewEmail) && (this.state.newEmail.length > 0) && (this.state.email !== this.state.newEmail);
-    }
-
     validatePassword(){
         return (this.state.firstNewPassword === this.state.secondNewPassword) && (this.state.firstNewPassword.length > 0);
     }
 
     validateForm(){
-        return this.validateEmail() || this.validatePassword() || this.validatePhoneNumber() || this.validateUsername();
+        return this.validatePassword() || this.validatePhoneNumber() || this.validateUsername();
     }
 
     changeMode() {
@@ -229,9 +211,15 @@ export class UserPage extends React.Component {
 
         this.setState({savingInformation: true});
 
-        if(this.validateUsername()) this.setState({username: this.state.newUsername});
+        if(this.validateUsername()) {
+
+            OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername);
+
+            this.setState({
+            username: this.state.newUsername
+
+        });}
         //Service: update username
-        if(this.validateEmail()) this.setState({email: this.state.newEmail});
         //Service: update email
         if(this.validatePhoneNumber())this.setState({phonenumber: this.state.newPhonenumber});
         //Service: update phone number
@@ -242,7 +230,6 @@ export class UserPage extends React.Component {
         // /api/contact/:contactID
 
         this.setState({newUsername: ''});
-        this.setState({newEmail: ''});
         this.setState({newPhonenumber: ''});
         this.setState({firstNewPassword: ''});
         this.setState({secondNewPassword: ''});
