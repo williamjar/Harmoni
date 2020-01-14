@@ -3,17 +3,11 @@ const bodyParser = require("body-parser");
 const app = express();
 const cors = require("cors");
 const mysql = require("mysql");
+const databaseConfig = require('./databaseConfig').config;
 app.use(bodyParser.json());
 app.use(cors());
 
-const pool = mysql.createPool({
-    connectionLimit: 2,
-    host: "mysql.stud.idi.ntnu.no",
-    user: "joakimad",
-    password: "LQliMP1A",
-    database: "joakimad",
-    debug: false
-});
+const pool = mysql.createPool(databaseConfig);
 
 const artistDaoObj = require('./dao/artistDao.js');
 const bugDaoObj = require('./dao/bugDao.js');

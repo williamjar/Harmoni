@@ -1,6 +1,6 @@
 import axios from "axios";
 import Event from "../classes/event.js";
-import {CookieStore} from "../cookies_client/cookieStore.js";
+import {CookieStore} from "../store/cookieStore.js";
 import {forEach} from "react-bootstrap/esm/ElementChildren";
 
 let axiosConfig = require("./axiosConfig");
@@ -15,17 +15,19 @@ class eventStore{
 
 
     static createEvent(callback, eventName, organizerID){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
         // ^ Unsure if callback is needed for this method ^
         //Call to create an event
 
-        axios.post(axiosConfig.root + "/api/events" ).then(response =>{
+        axios.post(axiosConfig.root + "/api/events" , {headers: header}).then(response =>{
 
             //Create an event from the insertID returned from the query and the organizerID, the rest is null
-            this.currentEvent = new Event(response.insertID, null, null, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
+            this.currentEvent = new Event(response.data.insertId, null, null, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
             callback();
         });
-
-
     }
 
 
@@ -34,7 +36,8 @@ class eventStore{
         //Populates currentEvent
 
         let header = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
 
         return axios.get(axiosConfig.root + "/login", {headers: header}).then(response => {
@@ -50,6 +53,8 @@ class eventStore{
     static postCurrentEvent(){
 
         let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
 
         let body = {
@@ -70,13 +75,14 @@ class eventStore{
             "pictureID" : currentEvent.picture
         };
 
-        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, body.json.stringify());
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, body.json.stringify(), {headers: header});
     }
 
     static storeAllEvents(){
 
         let header = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
 
         axios.get(axiosConfig.root + "/api/events", {headers: header}).then( response => {
@@ -102,7 +108,8 @@ class eventStore{
     static archiveEvent(eventID){
 
         let header = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
 
         return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/3", {headers: header}).then( response => {});
@@ -111,7 +118,8 @@ class eventStore{
     static publishEvent(eventID){
 
         let header = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
 
         return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/2", {headers: header}).then( response => {});
@@ -119,7 +127,12 @@ class eventStore{
 
     static storeAllEventsForOrganizer(organizerID){
 
-        axios.get(axiosConfig.root + "/api/events/organizer/" + organizerID).then( response => {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        axios.get(axiosConfig.root + "/api/events/organizer/" + organizerID, {headers: header}).then( response => {
             this.allEventsForOrganizer = [];
             for (let i = 0; i < response.data.length; i++) {
                 this.allEvents.push(new Event(response.data[i].eventID, response.data[i].eventName,
