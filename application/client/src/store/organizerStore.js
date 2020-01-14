@@ -20,7 +20,6 @@ export class OrganizerStore {
             this.currentOrganizer = new Organizer(response.data[0].organizerID, response.data[0].contactName, response.data[0].phone,
                     response.data[0].email, response.data[0].username, response.data[0].pictureLink);
             callback(200);
-            console.log("Fikk tilbake: " + JSON.stringify(this.currentOrganizer,null,4));
             }
         ).catch(err => callback(500));
 

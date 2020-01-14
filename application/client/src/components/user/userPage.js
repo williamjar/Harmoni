@@ -206,9 +206,7 @@ export class UserPage extends React.Component {
     updateInfo(){
         console.log("currentuserID: " + CookieStore.currentUserID);
        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
-
-
-            /*if (statusCode === 200){
+            if (statusCode === 200){
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
 
                 var databaseUsername = OrganizerStore.currentOrganizer.username;
@@ -220,10 +218,10 @@ export class UserPage extends React.Component {
                     email: dataBbaseEmail,
                     phonenumber: databasePhone
                 }));
-           // }
-            //else{
+            }
+            else{
                 //console.log("We have an error!");
-            / }*/
+            }
         });
     }
 
