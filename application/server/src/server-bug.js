@@ -1,3 +1,5 @@
+import {app,bugDao} from "./server";
+
 //TODO Not working right now
 app.get("/api/bug", (request, response) => {
     console.log("request to get all bugs");

@@ -1,3 +1,5 @@
+import {app,pictureDao} from "./server";
+
 //Insert picture
 app.post("/api/picture/insert", (request, response) => {
     console.log("Request to add a picture link");

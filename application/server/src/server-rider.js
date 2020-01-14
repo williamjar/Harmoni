@@ -1,3 +1,5 @@
+import {app,riderDao} from "./server";
+
 //get a rider element
 app.get("/api/rider/:riderElementID", (require, response) => {
     console.log("Request to get a rider element");

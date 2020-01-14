@@ -1,4 +1,88 @@
+import {app,documentationDao,documentDao,multer,path} from "./server";
+
+let upload = multer({storage: storage});
+
 // TODO Mulige duplikater her.
+
+//----------------- DOCUMENTATION ---------------------
+//Check if a folder exists for user
+function checkIfFolderExist(name, path) {
+    if (name != null) {
+        //Check folder existence
+        if (fs.existsSync(path + name)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+
+function deleteFile(path) {
+    try {
+        fs.unlink(path, function (err) {
+            if (err) throw err;
+            // if no error, file has been deleted successfully
+            console.log('File deleted!');
+        });
+    } catch (e) {
+        console.log("Error, could not delete file:" + e);
+    }
+}
+
+const resource_path = path.join(__dirname, '/../../client/public/resources/');
+var storage = multer.diskStorage({
+    //Declaring destination for file
+    destination: function (req, file, cb) {
+        try {
+            //If user folder exist but not document category folder, create and set destination path
+            if (checkIfFolderExist(req.params.id, resource_path)) {
+                if (!checkIfFolderExist(req.params.folderName, resource_path + req.params.id + "/" + req.params.folderName)) {
+                    try {
+                        fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
+                    } catch (e) {
+                        console.log("Error creating document category folder");
+                    }
+                    cb(null, resource_path + req.params.id + "/" + req.params.folderName);
+                }
+                //User and document category folder exist. Set destination
+                else {
+                    cb(null, resource_path + req.params.id + "/" + req.params.folderName);
+                }
+            }
+            //If neither user folder or document category folder exist. Create both
+            else {
+                try {
+                    fs.mkdirSync(resource_path + req.params.id);
+                    try {
+                        fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
+                        cb(null, resource_path + req.params.id + "/" + req.params.folderName);
+                    } catch (e) {
+                        console.log("Error creating document category folder");
+                    }
+                } catch (e) {
+                    console.log("Error creating user folder");
+                }
+            }
+        } catch (e) {
+            console.log("An error occurred");
+        }
+
+    },
+    //Adding file to destination
+    filename: function (req, file, cb) {
+        //Create file in server. If user upload same file append time for unique name
+        try {
+            if (fs.existsSync(resource_path + req.params.id + '/' + req.params.folderName + "/" + file.originalname)) {
+                cb(null, Date.now() + "--" + file.originalname)
+            } else {
+                cb(null, file.originalname)
+            }
+        } catch (e) {
+            console.log("An error occurred")
+        }
+    }
+});
 
 app.post("/api/document/", (request, response) => {
     console.log("Express: Request to add a document");

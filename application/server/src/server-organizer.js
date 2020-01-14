@@ -1,3 +1,5 @@
+import {app,organizerDao} from "./server";
+
 //get one organizer without api
 app.get("/organizer/:organizerID", (require, response) => {
     console.log("Request to get a organizer");

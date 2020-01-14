@@ -1,3 +1,5 @@
+import {app,crewDao} from "./server";
+
 app.get("/api/crew/:crewID", (request, response) => {
     console.log("request for crew");
     crewDao.getOne((status, data) => {

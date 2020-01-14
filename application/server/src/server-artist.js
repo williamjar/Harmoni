@@ -1,4 +1,4 @@
-const app = express();
+import {app,artistDao} from "./server";
 
 app.get("/api/artist/:artistID", (request, response) => {
     console.log("request for artist");

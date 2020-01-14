@@ -1,3 +1,5 @@
+import {app,eventDao} from "./server";
+
 //Get all events
 app.get("/api/events", (request, response) => {
     console.log("Express: Request for all events");

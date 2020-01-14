@@ -1,3 +1,5 @@
+import {app,loginDao,SECRET} from "./server";
+
 let privateKey = SECRET.privateKey;
 let publicKey = SECRET.publicKey;
 
@@ -7,7 +9,6 @@ let TOKEN_LENGTH = 3600;
 //Handle login and send JWT-token back as JSON
 app.post("/login", (req, res) => {
     console.log("Logging in serverside...");
-    let loginDao = new LoginDao(pool);
     loginDao.checkLogin(req.body.email, req.body.password, (status, data) => {
         console.log(status);
         console.log(data);

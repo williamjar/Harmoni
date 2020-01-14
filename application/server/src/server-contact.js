@@ -1,3 +1,5 @@
+import {app,contactDao} from "./server";
+
 app.get("/api/contact/:contactID", (request, response) => {
     console.log("request to get a contact");
     contactDao.getOne((status, data) => {
