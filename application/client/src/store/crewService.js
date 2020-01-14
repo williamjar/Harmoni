@@ -72,17 +72,31 @@ export class CrewService {
     }
 
     static createCrewMember(name, phone, email, description, organizerID){
-       /* axios.post('/api/contact', {
+        let header = {
+            "Content-Type": "application/json"
+        };
+
+        let contactBody = {
             "contactName": name,
             "phone": phone,
             "email": email
-        }).then((response => response.data),
+        };
 
-       axios.post('/api/crew', {
+        let contactID = 0;
+
+        axios.post(axiosConfig.root + '/api/contact', JSON.stringify(contactBody), {headers: header}).then(response => {
+                contactID = response.insertId;
+            }
+        );
+
+        let crewBody = {
             "description": description,
             "organizerID": organizerID,
             "contactID": contactID
-        }).then(response => response.data); */
+        };
+
+        axios.post('/api/crew', JSON.stringify(crewBody), {headers: header}).then(response =>
+            console.log(response));
     }
 
     static addCategory(categoryName, organizerID){

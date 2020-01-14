@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
@@ -265,6 +263,17 @@ export class AddedCrew extends Component{
 
 
 export class CrewView extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            crewID : null,
+            contactID : null,
+            description : '',
+            organizerID : null
+        }
+    }
+
     render() {
         return(
             <div>
@@ -287,6 +296,7 @@ export class CrewView extends Component {
     returnCrew = () => {
         console.log('hei');
         CrewService.getCrewMember(1);
+        this.setState(this.props)
 
     }
 }
@@ -355,7 +365,8 @@ export class AddCrewMember extends Component{
     }
 
     submitForm = () => {
-        CrewService.createCrewMember(this.state.name, this.state.phone, this.state.email)
+        CrewService.createCrewMember(this.state.name, this.state.phone, this.state.email);
+
 
     }
 
