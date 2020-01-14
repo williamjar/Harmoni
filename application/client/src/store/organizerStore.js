@@ -40,13 +40,18 @@ export class OrganizerStore {
     }
 
 
-    static changePassword(organizerID, oldPassword, newPassword) {
-        //TODO: Add check for old password to see if password change is allowed
+    static changePassword(organizerID, oldPassword,newPassword) {
+        //check old password
 
-        let json = {
-            'password': newPassword
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
         };
-        return axios.put(`/api/organizer/${organizerID}`, json);
+
+
+        return axios.put(axiosConfig.root + `/api/organizer/${organizerID}/change/username`, {
+            newPassword : newPassword,
+        }, {headers: header});
     }
 
     changePhoneNumber() {

@@ -54,8 +54,8 @@ export class UserPage extends React.Component {
                                 <Card.Title>Brukerprofil</Card.Title>
                                 <Table borderless>
                                     <tbody>
-                                    <tr><td>Brukernavn</td><td>{this.state.username}</td></tr>
                                     <tr><td>E-postaddresse</td><td>{this.state.email}</td></tr>
+                                    <tr><td>Brukernavn</td><td>{this.state.username}</td></tr>
                                     <tr><td>Telefonnummer</td><td>{this.state.phonenumber}</td></tr>
                                     <tr>
                                         <td>
@@ -83,6 +83,7 @@ export class UserPage extends React.Component {
                                 <Card.Title>Rediger brukerprofil</Card.Title>
                                     <Table  borderless>
                                         <tbody>
+                                        <tr><td>E-postaddresse</td><td>{this.state.email}</td></tr>
                                         <tr>
                                             <td>Brukernavn</td>
                                             <td>
@@ -139,9 +140,10 @@ export class UserPage extends React.Component {
                                     <ListGroup.Item className="text-danger" hidden={!this.validatePhoneNumber()}>Endre telefonnummer til {this.state.newPhonenumber}</ListGroup.Item>
                                     <ListGroup.Item className="text-danger" hidden={!this.validatePassword()}>Utfør en passordendring</ListGroup.Item>
                                 </ListGroup>
-                                <Form.Group className={"mt-4"}><Button variant="success" type="submit" disabled={!this.validateForm()} hidden={this.state.savingInformation}>Utfør endringer</Button></Form.Group>
-                                <Form.Group><Button variant="success" disabled hidden={!this.state.savingInformation}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Lagrer informasjon</Button></Form.Group>
-
+                                <Form.Group className={"mt-4"}>
+                                    <Button variant="success" type="submit" disabled={!this.validateForm()} hidden={this.state.savingInformation}>Utfør endringer</Button>
+                                    <Button variant="success" disabled hidden={!this.state.savingInformation}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Lagrer informasjon</Button>
+                                </Form.Group>
                                 <Form.Group><Button className="align-right" variant="danger" onClick={() => this.changeMode()}>Avbryt</Button></Form.Group>
                             </Card>
 
@@ -178,12 +180,9 @@ export class UserPage extends React.Component {
     }
 
     changeMode() {
-        this.updateInfo();
         if(this.state.mode===1)this.setState({mode: 2,});
         else this.setState({mode: 1,})
     }
-
-
 
     updateInfo(){
         console.log("currentuserID: " + CookieStore.currentUserID);
@@ -208,34 +207,22 @@ export class UserPage extends React.Component {
     }
 
     submitForm(){
-
         this.setState({savingInformation: true});
 
         if(this.validateUsername()) {
+            OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername).then(r => {
+                    this.setState({savingInformation: false});
+                    this.changeMode();
+                    this.setState({username: this.state.newUsername});
+            });}
 
-            OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername);
 
-            this.setState({
-            username: this.state.newUsername
-
-        });}
-        //Service: update username
-        //Service: update email
         if(this.validatePhoneNumber())this.setState({phonenumber: this.state.newPhonenumber});
         //Service: update phone number
+
         if(this.validatePassword()) {
             OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword);
         }
-
-        // /api/contact/:contactID
-
-        this.setState({newUsername: ''});
-        this.setState({newPhonenumber: ''});
-        this.setState({firstNewPassword: ''});
-        this.setState({secondNewPassword: ''});
-
-        this.changeMode();
-        this.setState({savingInformation: false});
     }
 
     // Database control functions to display the proper error message to the user.
