@@ -9,6 +9,7 @@ const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const LoginDao = require('./dao/loginDao');
 const SECRET = require('./cookieConfig');
+const databaseConfig = require("./databaseConfig").config;
 const fs = require('fs');
 const EventEmitter = require("events").EventEmitter;
 const body = new EventEmitter();
@@ -18,15 +19,7 @@ import {CookieStore} from "../../client/src/store/cookieStore";
 app.use(bodyParser.json());
 app.use(cors());
 
-const pool = mysql.createPool({
-    connectionLimit: 2,
-    host: "mysql.stud.iie.ntnu.no",
-    user: "evengu",
-    password: "O7KhlwWQ",
-    database: "evengu",
-    debug: false,
-    multipleStatements: true
-});
+const pool = mysql.createPool(databaseConfig);
 
 const artistDaoObj = require('./dao/artistDao.js');
 const bugDaoObj = require('./dao/bugDao.js');
@@ -368,6 +361,7 @@ app.post("/token", (req, res) => {
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
     let token;
+    console.log(req.headers);
     if (req.headers["x-access-token"]){
         token = req.headers["x-access-token"];
     }
@@ -431,7 +425,7 @@ app.get("/api/contact/:contactID", (request, response) => {
 app.post("/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
-        request.body.contactName,
+        request.body.username,
         request.body.phone,
         request.body.email
     ];
@@ -573,6 +567,15 @@ app.delete("/api/artist/assign/:eventID/:artistID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.eventID, request.params.artistID)
+});
+
+app.get("/api/artist-genres", (request, response) => {
+    console.log("request to get all genres");
+
+    artistDao.getAllGenres((status, data) => {
+        response.status(status);
+        response.json(data);
+    })
 });
 
 // CREW
@@ -746,7 +749,7 @@ app.post("/api/events", (request, response) => {
     eventDao.createOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.eventTypeID, request.body.pictureID]);
+    }, [request.body.eventName, request.body.startDate, request.body.endDate, request.body.startTime, request.body.endTime, request.body.address, request.body.town, request.body.zipCode, request.body.status, request.body.description, request.body.publishDate, request.body.publishTime, request.body.organizerID, request.body.eventTypeID, request.body.pictureID]);
 });
 
 //Update event
@@ -869,6 +872,9 @@ app.post("/organizer", (request, response) => {
         request.body.password,
         request.body.contactID
     ];
+
+    console.log(request.body);
+
     organizerDao.createOne((status, data) => {
         response.status(status);
         response.json(data);

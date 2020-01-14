@@ -24,6 +24,8 @@ import Button from "react-bootstrap/Button";
 import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "react-icons/all";
 
 
+
+
 export class App extends Component{
 
     constructor(props) {
@@ -32,7 +34,7 @@ export class App extends Component{
         this.state = {
             loggedIn : false,
             mobileView : false,
-        }
+        };
 
         window.addEventListener('resize', () =>{
             if(window.innerWidth > 900){
@@ -43,28 +45,29 @@ export class App extends Component{
 
         });
 
-        this.turnOffMobileView = this.turnOffMobileView.bind(this);
-        this.turnOnMobileView = this.turnOnMobileView.bind(this);
+
     }
 
-    turnOffMobileView(){
+    turnOffMobileView = () => {
         let currentState = this.state;
         currentState.mobileView = false;
         this.setState(currentState);
     }
 
-    turnOnMobileView(){
+    turnOnMobileView = () =>{
         let currentState = this.state;
         currentState.mobileView = true;
         this.setState(currentState);
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         if(window.innerWidth>900){
             this.turnOffMobileView();
         } else {
             this.turnOnMobileView();
         }
+
+        this.handleLogin();
     }
 
     render(){
@@ -92,7 +95,7 @@ export class App extends Component{
 
                             <div className="col-lg-10">
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
-                                <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash/>} />} />
+                                <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash />} />} />
                                 <Route exact path="/artister" component={() => <Content page={<Search/>} />} />
                                 <Route exact path="/personell" component={Content}/>
                                 <Route exact path="/kontrakter" component={Content}/>
@@ -107,9 +110,13 @@ export class App extends Component{
         }
     }
 
-    handleLogin(){
-        this.setState({loggedIn: true,});
+    handleLogin = () => {
+        let currentState = this.state;
+        currentState.loggedIn = sessionStorage.getItem('loggedIn');
+        this.setState(currentState);
     }
+
+
 
 
 }
