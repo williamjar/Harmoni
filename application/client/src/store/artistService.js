@@ -67,9 +67,9 @@ export class ArtistService {
         };
         axios.get(axiosConfig.root + '/api/artist/organizer/' + organizerID, {headers: header}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
-                    allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].organizerID,
-                        response.data[i].contactID, response.data[i].organizerID, response.data[i].contactID,
-                        response.data[i].contactName, response.data[i].phone, response.data[i].email));
+                    allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].contactName,
+                        response.data[i].phone, response.data[i].email, response.data[i].genreID,
+                        response.data[i].organizerID));
                 }
                 callback(allArtistByOrganizer);
             }
