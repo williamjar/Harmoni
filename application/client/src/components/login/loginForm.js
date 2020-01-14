@@ -1,28 +1,28 @@
 import React from 'react';
 import {Form, Button, Card, Spinner} from 'react-bootstrap'
-import {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import {LoginService} from "../../store/loginService";
 import {CookieStore} from "../../store/cookieStore";
-
-const crypto = require('crypto');
 
 export class LoginForm extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            email: '',
-            password: '',
-            loginError: false,
+            email : '',
+            password : '',
+            loginError : false,
             serverError: false,
             loggingIn: false
         };
+
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleInputChange(event) {
+
+    handleInputChange(event){
         this.setState({serverError: false});
         this.setState({loginError: false});
         this.setState({loggingIn: false});
@@ -43,77 +43,71 @@ export class LoginForm extends React.Component {
         return ((this.state.email.length > 0) && (this.state.password.length > 0));
     }
 
-    render() {
+    render(){
         return (
 
             <Card>
                 <div className="card-header"><h2 className="card-title text-center">Logg inn</h2></div>
-                <div className="justify-content-md-center m-5">
-                    <Form onSubmit={this.handleSubmit}>
+                    <div className="justify-content-md-center m-5">
+                        <Form onSubmit={this.handleSubmit}>
 
-                        <Form.Group>
-                            <Form.Control type="email" name="email" placeholder="E-postadresse" value={this.state.email}
-                                          onChange={this.handleInputChange}/>
-                        </Form.Group>
+                            <Form.Group>
+                                <Form.Control type="email" name="email" placeholder="E-postadresse" value={this.state.email} onChange={this.handleInputChange}/>
+                            </Form.Group>
 
-                        <Form.Group>
-                            <Form.Control type="password" maxLength="30" name="password" placeholder="Passord"
-                                          value={this.state.password} onChange={this.handleInputChange}/>
-                        </Form.Group>
+                            <Form.Group>
+                                <Form.Control type="password" maxLength="30" name="password" placeholder="Passord" value={this.state.password} onChange={this.handleInputChange}/>
+                            </Form.Group>
 
-                        <Button variant="btn btn-primary" type="submit" hidden={this.state.loggingIn}
-                                disabled={!this.validateForm()}> Logg inn</Button>
+                            <Button variant="btn btn-primary" type="submit" hidden={this.state.loggingIn} disabled={!this.validateForm()}> Logg inn</Button>
 
-                        <Button variant="btn btn-primary" disabled hidden={!this.state.loggingIn}><Spinner as="span"
-                                                                                                           animation="border"
-                                                                                                           size="sm"
-                                                                                                           aria-hidden="true"/> Logger
-                            inn</Button>
+                            <Button variant="btn btn-primary" disabled hidden={!this.state.loggingIn}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Logger inn</Button>
 
-                        <Form.Text> Ny bruker? <NavLink to="/registrer"> Klikk <span className="NavLink">
+
+                            <Form.Text className="text-danger" hidden={!this.state.loginError}>Feil brukernavn eller passord.</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.state.serverError}>Feil med oppkoblingen, prøv igjen senere.</Form.Text>
+
+                            <Form.Text> Ny bruker? <NavLink to="/registrer"> Klikk <span className="NavLink">
                                 her for registrere deg
                             </span></NavLink></Form.Text>
 
-                        <Form.Text className="text-danger" hidden={!this.state.loginError}>Feil brukernavn eller
-                            passord</Form.Text>
 
-                        <Form.Text className="text-danger" hidden={!this.state.serverError}>Feil med oppkoblingen, prøv
-                            igjen senere</Form.Text>
 
-                    </Form>
-                </div>
+                        </Form>
+                    </div>
             </Card>
         )
     }
 
     submitForm() {
         //The callback has to run in different places in the loginOrganizer() method to make sure synchronicity is complete
-        if (this.dataBaseLogin()) {
-            console.log("login successfull")
-        }
+        this.dataBaseLogin();
     }
 
-    dataBaseLogin() {
+    dataBaseLogin(){
         this.setState({loggingIn: true});
 
         LoginService.loginOrganizer(this.state.email, this.state.password, status => {
-            if (CookieStore.currentToken != null) {
+            if (status===200 && CookieStore.currentToken != null) {
                 sessionStorage.setItem('loggedIn', 'true');
                 this.props.logIn();
                 this.setState({loggingIn: false});
-            } else if (status === 500) {
-                alert("500");
-                this.setState({serverError: true});
+            } else if(status===501){
                 this.setState({loggingIn: false});
-            } else if (status === 200) {
-                alert("200");
                 this.setState({loginError: true});
-                this.setState({loggingIn: false});
             } else {
-                alert(status);
+                this.setState({loggingIn: false});
+                this.setState({serverError: true});
             }
+
+
+
+
         });
+
+
     }
 
     // Database control functions to display the proper error message to the user.
+
 }
