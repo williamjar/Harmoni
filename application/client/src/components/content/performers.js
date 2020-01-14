@@ -81,7 +81,7 @@ export class PerformerCard extends Component{
             performer : this.props.performerSelected,
             riderInput : "",
             numberOfFilesAdded: 0,
-            riders : {},
+            riders : [],
         };
 
         console.log(this.props.performerSelected);
@@ -92,6 +92,7 @@ export class PerformerCard extends Component{
 
     componentDidMount() {
         console.log(riderService.getAllRiderElementsFromArtistAndEvent(eventStore.currentEvent.eventID, this.state.performer.artistID));
+        console.log("lol");
     }
 
     render(){
