@@ -2,6 +2,7 @@ import React from 'react';
 import {Form, Button, Card, Row, Col} from 'react-bootstrap'
 import {RegisterOrganizerService} from "../../store/registerOrganizerService";
 import { createHashHistory } from 'history';
+import {NavLink} from "react-router-dom";
 
 let history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 
@@ -128,6 +129,7 @@ export class RegisterForm extends React.Component {
                         <Form.Text className="text-danger" hidden={!this.databaseUsernameAlreadyExists()}>Brukernavnet finnes allerede</Form.Text>
                         <Form.Text className="text-danger" hidden={!this.databaseConnectionError()}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
 
+                        <Form.Text> Har du allerede en bruker? <NavLink to="/"> Klikk her for å logge inn. <span className="NavLink"></span></NavLink></Form.Text>
                     </Form>
                 </div>
             </Card>
