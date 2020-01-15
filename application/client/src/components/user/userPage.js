@@ -217,6 +217,11 @@ export class UserPage extends React.Component {
         if(this.validatePassword()) {
             OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword).then(r =>{
                 this.setState({savingInformation: false});
+                this.setState({
+                    oldPassword:'',
+                    firstNewPassword: '',
+                    secondNewPassword: ''
+                })
             });
         }
 
