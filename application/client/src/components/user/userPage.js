@@ -248,15 +248,15 @@ export class UserPage extends React.Component {
         }
 
 
-        if(this.validatePassword()) {
-            OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword).then(r =>{
+        if (this.validatePassword()) {
+            OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword, status => {
+                console.log(status);
                 this.setState({savingInformation: false});
                 this.setState({
-                    oldPassword:'',
+                    oldPassword: '',
                     firstNewPassword: '',
                     secondNewPassword: ''
-                })
-                this.setState({showPasswordAlert: true});
+                });
             });
         }
 
