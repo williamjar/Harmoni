@@ -257,6 +257,7 @@ export class UserPage extends React.Component {
                     firstNewPassword: '',
                     secondNewPassword: ''
                 });
+                this.setState({showPasswordAlert: true});
             });
         }
 
