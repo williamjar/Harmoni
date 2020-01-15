@@ -32,8 +32,9 @@ class BugService{
             .catch(error => console.log(error))
     }
 
+
+
 }
 
 export let bugService = new BugService();
-
 

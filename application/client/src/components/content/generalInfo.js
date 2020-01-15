@@ -8,7 +8,7 @@ import lorde from './lorde.jpg';
 import placeholder from './placeholder.jpg'
 import map from './map.jpg';
 import {GetTicket, Ticket, TicketView} from "../ticket";
-import {eventStore} from "../../store/eventStore";
+import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
 
 const history = createHashHistory();
@@ -30,7 +30,7 @@ export class GeneralInfo extends Component{
                     </div>
                     <div className="col-5">
                         <Card.Body>
-                            <Image src={eventStore.currentEvent.picture != null ? lorde : placeholder} alt="event image" fluid className="mb-2"/>
+                            <Image src={EventStore.currentEvent.picture != null ? lorde : placeholder} alt="event image" fluid className="mb-2"/>
                             {this.state.editable ? <Button>Last opp bilde</Button> : null}
                         </Card.Body>
                     </div>
@@ -69,15 +69,15 @@ export class InfoForm extends Component {
 
         this.state = {
             edit: false,
-            eventName: eventStore.currentEvent.eventName,
-            startDate: eventStore.currentEvent.startDate,
-            endDate: eventStore.currentEvent.endDate,
-            startTime: eventStore.currentEvent.startTime,
-            endTime: eventStore.currentEvent.endTime,
-            address: eventStore.currentEvent.address,
-            zipCode: eventStore.currentEvent.zipCode,
-            town: eventStore.currentEvent.town,
-            description: eventStore.currentEvent.description
+            eventName: EventStore.currentEvent.eventName,
+            startDate: EventStore.currentEvent.startDate,
+            endDate: EventStore.currentEvent.endDate,
+            startTime: EventStore.currentEvent.startTime,
+            endTime: EventStore.currentEvent.endTime,
+            address: EventStore.currentEvent.address,
+            zipCode: EventStore.currentEvent.zipCode,
+            town: EventStore.currentEvent.town,
+            description: EventStore.currentEvent.description
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -96,17 +96,17 @@ export class InfoForm extends Component {
     handleChange (event) {
         this.setState({[event.target.name]: event.target.value},
             () => {
-                eventStore.currentEvent.eventName = this.state.eventName;
-                eventStore.currentEvent.startDate = this.formatDate(this.state.startDate);
-                eventStore.currentEvent.endDate   = this.formatDate(this.state.endDate);
-                eventStore.currentEvent.startTime = this.state.startTime;
-                eventStore.currentEvent.endTime   = this.state.endTime;
-                eventStore.currentEvent.address   = this.state.address;
-                eventStore.currentEvent.zipCode   = this.state.zipCode;
-                eventStore.currentEvent.town      = this.state.town;
-                eventStore.currentEvent.description = this.state.description;
-                eventStore.currentEvent.publishDate = null;
-                eventStore.currentEvent.publishTime = null;
+                EventStore.currentEvent.eventName = this.state.eventName;
+                EventStore.currentEvent.startDate = this.formatDate(this.state.startDate);
+                EventStore.currentEvent.endDate   = this.formatDate(this.state.endDate);
+                EventStore.currentEvent.startTime = this.state.startTime;
+                EventStore.currentEvent.endTime   = this.state.endTime;
+                EventStore.currentEvent.address   = this.state.address;
+                EventStore.currentEvent.zipCode   = this.state.zipCode;
+                EventStore.currentEvent.town      = this.state.town;
+                EventStore.currentEvent.description = this.state.description;
+                EventStore.currentEvent.publishDate = null;
+                EventStore.currentEvent.publishTime = null;
             });
     };
 
@@ -261,7 +261,7 @@ export class InfoView extends Component {
                 <Card className="mb-2">
                     <Card.Header>
                         <Row>
-                            <Card.Title>{eventStore.currentEvent.eventName}</Card.Title>
+                            <Card.Title>{EventStore.currentEvent.eventName}</Card.Title>
                         </Row>
                     </Card.Header>
                     <Card.Body>
@@ -274,8 +274,8 @@ export class InfoView extends Component {
                                             <Form.Label>Start</Form.Label>
                                         </Col>
                                     </Row>
-                                    {eventStore.currentEvent.startDate !== null ?
-                                        new Date(eventStore.currentEvent.startDate).toLocaleDateString("no-NO", options) :
+                                    {EventStore.currentEvent.startDate !== null ?
+                                        new Date(EventStore.currentEvent.startDate).toLocaleDateString("no-NO", options) :
                                     null}
                                 </Col>
                                 <Col xs="3">
@@ -285,7 +285,7 @@ export class InfoView extends Component {
                                             <Form.Label>Tid</Form.Label>
                                         </Col>
                                     </Row>
-                                    {eventStore.currentEvent.startTime}
+                                    {EventStore.currentEvent.startTime}
                                 </Col>
                                 <Col>
                                     <Row>
@@ -304,8 +304,8 @@ export class InfoView extends Component {
                                             <Form.Label>Slutt</Form.Label>
                                         </Col>
                                     </Row>
-                                    {eventStore.currentEvent.endDate !== null ?
-                                        new Date(eventStore.currentEvent.endDate).toLocaleDateString("no-NO", options) :
+                                    {EventStore.currentEvent.endDate !== null ?
+                                        new Date(EventStore.currentEvent.endDate).toLocaleDateString("no-NO", options) :
                                         null}
                                 </Col>
                                 <Col xs="3">
@@ -315,7 +315,7 @@ export class InfoView extends Component {
                                             <Form.Label>Tid</Form.Label>
                                         </Col>
                                     </Row>
-                                    {eventStore.currentEvent.endTime}
+                                    {EventStore.currentEvent.endTime}
                                 </Col>
                             </Row>
                             <Row className="mb-4">
@@ -326,7 +326,7 @@ export class InfoView extends Component {
                                             <Form.Label>Adresse</Form.Label>
                                         </Col>
                                     </Row>
-                                    {eventStore.currentEvent.address}
+                                    {EventStore.currentEvent.address}
                                 </Col>
                                 <Col xs="3">
                                     <Row>
@@ -334,7 +334,7 @@ export class InfoView extends Component {
                                             <Form.Label>Postnummer</Form.Label>
                                         </Col>
                                     </Row>
-                                    {eventStore.currentEvent.zipCode}
+                                    {EventStore.currentEvent.zipCode}
                                 </Col>
                                 <Col xs="3">
                                     <Row>
@@ -342,7 +342,7 @@ export class InfoView extends Component {
                                             <Form.Label>Poststed</Form.Label>
                                         </Col>
                                     </Row>
-                                    {eventStore.currentEvent.town}
+                                    {EventStore.currentEvent.town}
                                 </Col>
                             </Row>
                             <Row>
@@ -353,7 +353,7 @@ export class InfoView extends Component {
                                         </Col>
                                     </Row>
                                     <Card.Body>
-                                        {eventStore.currentEvent.description}
+                                        {EventStore.currentEvent.description}
                                     </Card.Body>
                                 </Col>
                             </Row>
