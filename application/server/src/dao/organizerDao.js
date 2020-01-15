@@ -31,6 +31,10 @@ module.exports = class documentDao extends Dao {
         super.query("select organizer.organizerID from organizer join contact c on organizer.contactID = c.contactID where c.email = ?", [email], callback);
     }
 
+    changePicture(pictureID, organizerID, callback){
+        super.query("UPDATE organizer SET pictureID = ? where organizerID = ?", callback);
+    }
+
 
 //TODO: må lages picture dao og endepunker - flytt denne til pictureDao
     changeOrganizerProfilePicture(callback, pictureID, pictureLink){

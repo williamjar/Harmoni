@@ -5,8 +5,8 @@ module.exports = class pictureDao extends Dao {
         super.query('UPDATE picture SET pictureLink = ? WHERE pictureID = ?', [pictureLink, pictureID], callback);
     }
 
-    insertPicture(req, callback) {
-        super.query('insert into picture (pictureLink) VALUES (?)', [req.path], callback);
+    insertPicture(path, callback) {
+        super.query('insert into picture (pictureLink) VALUES (?)', [path], callback);
     }
 
     deleteOne(callback, pictureID) {

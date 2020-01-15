@@ -39,15 +39,8 @@ export class DocumentService {
     }
 
     static addDocument(eventID, category, artistID, crewID, documentCategoryID, file, callback){
-        let serverHeader = {
-            "Content-Type": "multipart/form-data",
-            "x-access-token": CookieStore.currentToken
-        };
 
-        console.log(file);
-
-
-        axios.post('http://localhost:8080/api/file/document/' + eventID + '/' + documentCategoryID, file)
+          axios.post('http://localhost:8080/api/file/document/' + eventID + '/' + documentCategoryID, file)
             .then(response => {
                 let databaseHeader = {
                     "Content-Type": "application/json",
