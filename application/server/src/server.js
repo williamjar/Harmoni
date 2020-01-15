@@ -313,6 +313,15 @@ app.get("/api/:eventID/documents", (req, res) => {
     });
 });
 
+app.get("/api/:eventID/documents/categories", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getAllDocumentCategoriesForEvent(req.params.eventID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
 app.get("/api/:eventID/documents/:documentID", (req, res) => {
     documentationDao.getOneDocument(req.params.eventID, req.params.documentID, (status, data) => {
         res.status(status);
@@ -350,6 +359,7 @@ app.put("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
         res.json(data);
     });
 });
+
 
 // START LOGIN
 let privateKey = SECRET.privateKey;
