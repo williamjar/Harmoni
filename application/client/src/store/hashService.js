@@ -18,44 +18,35 @@ export function generateSalt(length) {
 }
 
 export function getHashedFromEmail(enteredPassword, email, callback) {
-    console.log("hashedfromemail Email: " + email);
     getSaltFromEmail(email, salt => {
-        console.log("SALT: " + salt);
         let hashed = sha512(enteredPassword, salt);
-        console.log("HASHED: " + hashed);
         callback(hashed);
     });
 }
 
-export function verifyPassword(organizerID, enteredPassword) {
+export function verifyPassword(organizerID, enteredPassword, callback) {
     console.log("verify " + organizerID + " " + enteredPassword);
-    let passwordInDB = getPassword(organizerID);
-    console.log("verify " + passwordInDB);
-    let salt = getSaltFromID(organizerID);
-    let enteredPasswordHashed = sha512(enteredPassword, salt);
-    console.log(enteredPasswordHashed + " == " + passwordInDB);
-
-    return (enteredPasswordHashed === passwordInDB);
+    getPassword(organizerID, passwordInDB => {
+        getSaltFromID(organizerID, salt => {
+            let enteredPasswordHashed = sha512(enteredPassword, salt);
+            callback(enteredPasswordHashed === passwordInDB);
+        });
+    });
 }
 
 export function getSaltFromEmail(email, callback) {
-    console.log("getsaltfromemail: " + email);
     getOrganizerID(email, organizerID => {
-        console.log("ORGANIZER ID " + organizerID);
         getPassword(organizerID, passwordInDB => {
-            console.log("PWD in DB " + passwordInDB);
             let saltHash = passwordInDB.split("/");
-            console.log("salthash" + saltHash[0]);
             callback(saltHash[0]);
         })
     });
 }
 
-export function getSaltFromID(organizerID) {
+export function getSaltFromID(organizerID, callback) {
     getPassword(organizerID, passwordInDB => {
-        console.log("getsaltfromID password in db: " + passwordInDB);
         let saltHash = passwordInDB.split("/");
-        return saltHash[0];
+        callback(saltHash[0]);
     });
 }
 
@@ -69,7 +60,6 @@ export function getOrganizerID(email, callback) {
     axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header})
         .then(res => {
             let organizerID = res.data[0].organizerID;
-            console.log("OrganizerID" + organizerID);
             callback(organizerID);
         });
 }
@@ -83,7 +73,6 @@ export function getPassword(organizerID, callback) {
     axios.get(axiosConfig.root + "/organizer/" + organizerID, {headers: header})
         .then(res => {
             let password = res.data[0].password;
-            console.log("getPWd password: " + password);
             callback(password);
         });
 }

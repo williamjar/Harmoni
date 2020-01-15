@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
@@ -8,12 +7,10 @@ import Button from "react-bootstrap/Button";
 import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
-import {ArtistService} from "../../store/artistService";
+import {ArtistService as artistService, ArtistService} from "../../store/artistService";
 import {CookieStore} from "../../store/cookieStore";
-import {riderStore} from "../../store/riderStore";
-import {eventStore} from "../../store/eventStore";
-import {RiderElement} from "../../classes/riderElement";
-
+import {RiderStore} from "../../store/riderStore";
+import {EventStore} from "../../store/eventStore";
 
 export class PerformersTab extends Component{
     /* All the performer content for use in the Performer tab */
@@ -23,6 +20,7 @@ export class PerformersTab extends Component{
 
         this.state = {
             performersAdded : [],
+            currentPerformer : {},
         }
     }
 
@@ -32,22 +30,67 @@ export class PerformersTab extends Component{
                 <div className="row">
 
                     <div className="col-lg-6 col-md-12  border-right">
-                        <PerformerPanel addPerformer={this.addPerformer}/>
+                        <PerformerPanel addPerformer={this.addPerformer} performerSelected={this.state.currentPerformer}/>
                     </div>
 
                     <div className="col-lg-6 col-md-12">
-                        <RegisteredPerformers performersAdded={this.state.performersAdded}/>
+                        <RegisteredPerformers performersAdded={this.state.performersAdded} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
                     </div>
                 </div>
             </div>
         )
     }
 
+    componentDidMount() {
+        ArtistService.getArtistsForEvent((list) => {
+            let currentState = this.state;
+            currentState.performersAdded = list;
+            currentState.currentPerformer = {};
+            this.setState(currentState);
+        }, EventStore.currentEvent.eventID);
+
+    }
+
+    unAssignArtist = (artist) => {
+        ArtistService.unAssignArtist(EventStore.currentEvent.eventID, artist.artistID).then(res => {
+            console.log("data delete");
+            console.log(res);
+            ArtistService.getArtistsForEvent((list) => {
+                let currentState = this.state;
+                currentState.performersAdded = list;
+                currentState.currentPerformer = {};
+                this.setState(currentState);
+            }, EventStore.currentEvent.eventID);
+        });
+    }
+
     addPerformer = (selected) => {
         let currentState = this.state;
-        currentState.performersAdded.push(selected);
+
+        //currentState.performersAdded.push(selected);
+        //assign artist to event
+        ArtistService.assignArtist(EventStore.currentEvent.eventID, selected.artistID).then(res => {
+            ArtistService.getArtistsForEvent((list) => {
+                let currentState = this.state;
+                currentState.performersAdded = list;
+                this.setState(currentState);
+            }, EventStore.currentEvent.eventID);
+
+            }
+
+        )
+
+        currentState.currentPerformer = selected;
         this.setState(currentState);
     }
+
+    changeCurrentPerformer = (performer) => {
+        let currentState = this.state;
+        currentState.currentPerformer = performer;
+        this.setState(currentState);
+    }
+
+
 }
 
 export class PerformerPanel extends Component{
@@ -58,20 +101,56 @@ export class PerformerPanel extends Component{
 
         this.state = {
             performerList : [],
-            showArtistCard: false,
+            showArtistCard: true,
             performerSelected : {},
+            results : [],
+            showRegisterNew : true,
         }
     }
 
     render() {
         return (
             <div>
-                <Search searchHandler={this.searchHandler} registerComponent={<RegisterPerformer/>} addRegisterButton={true} SearchList={this.performerList} />
+                <Search searchHandler={this.searchHandler} toggleRegister={() => this.toggleRegisterNew()} showRegisterNew={this.state.showRegisterNew} registerComponent={<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={() => this.toggleRegisterNew()}/>} addRegisterButton={true} results={this.state.results} />
                 <div className="padding-top-20">
                 {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} />:null}
                 </div>
             </div>
         );
+    }
+
+
+    static getDerivedStateFromProps(props, state) {
+        if(props.performerSelected !== state.performerSelected) {
+            return {
+                performerSelected: props.performerSelected
+            };
+        }
+        return state.performerSelected;
+    }
+
+    componentDidMount() {
+        this.callBackSearchResult();
+    }
+
+    toggleRegisterNew = () => {
+        let currentState = this.state;
+        currentState.showRegisterNew = !currentState.showRegisterNew;
+        this.setState(currentState);
+    }
+
+    submitFunction = () => {
+        alert("submit clicked");
+        this.callBackSearchResult();
+        this.toggleRegisterNew();
+    }
+
+    callBackSearchResult = () => {
+        artistService.getArtistForOrganizer((allArtistByOrganizer) => {
+            let currentState = this.state;
+            currentState.results = allArtistByOrganizer;
+            this.setState(currentState);
+        },CookieStore.currentUserID);
     }
 
     searchHandler = (selected) => {
@@ -99,11 +178,15 @@ export class PerformerCard extends Component{
             numberOfFilesAdded: 0,
             riders : [],
         };
+    }
 
-        console.log(this.props.performerSelected);
-
-
-
+    static getDerivedStateFromProps(props, state) {
+        if(props.performerSelected !== state.performer) {
+            return {
+                performer: props.performerSelected
+            };
+        }
+        return null;
     }
 
     render(){
@@ -145,7 +228,7 @@ export class PerformerCard extends Component{
                             </InputGroup.Append>
                         </InputGroup>
 
-                        {this.state.riders.map(e =>
+                        {this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(e =>
                             <Rider description={e.description} isDone={e.isDone} status={e.status}/>
                         )}
 
@@ -203,33 +286,35 @@ export class PerformerCard extends Component{
             currentState.numberOfFilesAdded = attachment;
             this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
         }
-    }
+    };
 
     addRider = () =>{
         alert(this.state.riderInput);
-        riderStore.createNewRiderElement((newRider) => {
-            riderStore.allRidersForCurrentEvent.push(newRider);
-            console.log(riderStore.allRidersForCurrentEvent);
+        RiderStore.createNewRiderElement((newRider) => {
+            RiderStore.allRidersForCurrentArtistAndEvent.push(newRider);
+            console.log(RiderStore.allRidersForCurrentArtistAndEvent);
 
             let currentState = this.state;
-            currentState.riders = riderStore.allRidersForCurrentEvent;
+            currentState.riders = RiderStore.allRidersForCurrentArtistAndEvent;
             this.setState(currentState);
             console.log(this.state);
-        }, this.state.performer.artistID, eventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
-    }
+        }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
+    };
 
     handleInputRider = (event) =>{
         /* Handles the input for new riders to be added */
         let currentState = this.state;
         currentState.riderInput = event.target.value;
         this.setState(currentState);
-    }
+    };
 
     save = () => {
         /* Gathers the input boxes and puts the information into variables */
         let genre = document.querySelector("#genreSelect").value;
         let signedContract = document.querySelector("#signedContract").checked;
         let payed = document.querySelector("#performerPayed").checked;
+        let performer = this.state.performer;
+
         alert("save clicked");
 
         let json = {
@@ -237,6 +322,8 @@ export class PerformerCard extends Component{
             signedContract : signedContract,
             payedArtist : payed,
         };
+
+        console.log(json);
 
     }
 
@@ -309,7 +396,6 @@ export class RegisterPerformer extends Component{
     render() {
         return(
             <div>
-                <Form>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
@@ -324,7 +410,7 @@ export class RegisterPerformer extends Component{
 
                     <Form.Group controlId="formGridAddress1">
                         <Form.Label>Epost</Form.Label>
-                        <Form.Control type="email" placeholder="" onChange={this.handleEmailChange}/>
+                        <Form.Control type="text" placeholder="" onChange={this.handleEmailChange}/>
                     </Form.Group>
 
                     <Form.Row>
@@ -342,11 +428,9 @@ export class RegisterPerformer extends Component{
                     <Button variant="primary" type="submit" onClick={this.submitForm}>
                         Submit
                     </Button>
-                    <Button variant="secondary" type="cancel" className="margin-left-5">
+                    <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegisterNew}>
                         Cancel
                     </Button>
-
-                </Form>
             </div>
         )
     }
@@ -375,12 +459,27 @@ export class RegisterPerformer extends Component{
         this.setState(currentState);
     }
 
+    cancelRegisterNew = () =>{
+        let currentState = this.state;
+        currentState.name = "";
+        currentState.phone = "";
+        currentState.email = "";
+        currentState.genre = "";
+        this.setState(currentState);
+        this.props.toggleRegister();
+    }
+
     submitForm = () => {
         //Error handling should be inserted here
-        let genreID = 1;
-        alert("submit clicked");
-        ArtistService.createArtist(this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
-        console.log(this.state);
+        if(this.state.name.trim() !== "" && this.state.phone.trim() !== "" && this.state.email.trim() !== ""){
+            /* Should check if valid as email adress, not able to put type to email because it fucked eveything up */
+            let genreID = 1;
+            alert("submit clicked");
+            console.log(this.state.email);
+            ArtistService.createArtist(() => {this.props.submitFunction();}, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
+        } else{
+            alert("Du har ikke fyllt inn alle feltene");
+        }
     }
 }
 
@@ -389,27 +488,31 @@ export class RegisteredPerformers extends Component{
         return(
             <div>
                 <b>Artister som er lagt til</b>
-                <div className="card card-body" onClick={""}>
 
                     {this.props.performersAdded.map(p =>
+                        <div className="card card-body pointer selection">
                         <div className="row">
-                            <div className="col-10">
+                            <div className="col-10" onClick={() => this.showCard(p)}>
                                 {p.contactName}
                             </div>
 
                             <div className="col-2">
-                                <button className="btn-danger rounded">Slett</button>
+                                <button className="btn-danger rounded" onClick={() => this.unAssignArtist(p)}>Slett</button>
                             </div>
                         </div>
-
+                        </div>
                     )}
 
-
-
-
-                </div>
             </div>
         )
+    }
+
+    unAssignArtist = (artist) => {
+        this.props.unAssignArtist(artist);
+    }
+
+    showCard = (performer) => {
+        this.props.changeCard(performer);
     }
 }
 

@@ -1,7 +1,7 @@
 import {Contact} from "../../classes/contact";
 
 test('Contact constructor name', () => {
-    expect(Contact.getTestContacts()[0].contactName).toBe('Organizer One');
+    expect(Contact.getTestContacts()[0].contactName).toBe('organizer One');
 });
 
 test('Contact constructor phone', () =>{

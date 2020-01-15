@@ -1,8 +1,25 @@
 import React from 'react';
-import {Button, Card, Col, Form, Row, Table, Image, Accordion, CardColumns, FormControl, ListGroup, CardDeck, Spinner} from 'react-bootstrap'
+import {
+    Button,
+    Card,
+    Col,
+    Form,
+    Row,
+    Table,
+    Image,
+    Accordion,
+    CardColumns,
+    FormControl,
+    ListGroup,
+    CardDeck,
+    Spinner,
+    Modal
+} from 'react-bootstrap'
 import {CardText} from "react-bootstrap/Card";
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
+import {StandardAlert} from "../widgets/alert";
+import {PictureService} from "../../store/pictureService";
 
 export class UserPage extends React.Component {
     constructor(props) {
@@ -19,6 +36,7 @@ export class UserPage extends React.Component {
             profilePicture: 'http://www.jacqueslacoupe.com/images/sample-user.png',
             newProfilePicture: '',
             savingInformation: false,
+            showPasswordAlert: false,
             mode: 1
         };
 
@@ -29,10 +47,15 @@ export class UserPage extends React.Component {
     handleInputChange(event){
         this.setState({savingInformation:false});
         const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+        if (target.name === 'newProfilePicture'){
+            this.setState({newProfilePicture: target.files[0]});
+        }
+        else{
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
 
-        this.setState({[name]: value,});
+            this.setState({[name]: value,});
+        }
     }
 
     handleSubmit(event) {
@@ -46,24 +69,38 @@ export class UserPage extends React.Component {
 
     // Functions to verify the contents in the form.
     render() {
-            return(
-                <Card className={"border-0"}>
-                    <div className="justify-content-md-center m-5">
+        return(
 
-                        <Row>
-                            <Col>
+
+
+            <Card className={"border-0"}>
+                <Modal show={this.state.showPasswordAlert}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Passordet er endret</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Passordet ditt er endret. Du kan nå logge på med ditt nye passord.</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={() => this.hideModal()}>
+                            Lukk
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <div className="justify-content-md-center m-5">
+
+                    <Row>
+                        <Col>
                             <Card className={"p-2 card border-0"}>
                                 <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} rounded />
 
                                 <Form onSubmit={this.handleSubmit}>
 
-                                <Form.Group>
-                                    <FormControl name="newProfilePicture" type="file" onChange={this.handleInputChange}/>
-                                </Form.Group>
+                                    <Form.Group>
+                                        <FormControl name="newProfilePicture" type="file" onChange={this.handleInputChange}/>
+                                    </Form.Group>
 
-                                <Form.Group>
-                                    <Button variant="secondary" type="submit">Last opp profilbilde</Button>
-                                </Form.Group>
+                                    <Form.Group>
+                                        <Button variant="secondary" type="submit">Last opp profilbilde</Button>
+                                    </Form.Group>
 
 
                                 </Form>
@@ -82,78 +119,78 @@ export class UserPage extends React.Component {
                                 <Card.Title>Innstillinger</Card.Title>
                                 <Accordion>
                                     <Form onSubmit={this.handleSubmit}>
-                                    <Card>
-                                        <Card.Header>
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                                Rediger brukernavn
-                                            </Accordion.Toggle>
-                                        </Card.Header>
-                                        <Accordion.Collapse eventKey="0">
-                                            <Card.Body>
-                                                <Form.Group>
-                                                <Form.Control type="text" name="newUsername" placeholder={this.state.username} value={this.state.newUsername} onChange={this.handleInputChange}/>
-                                                <Form.Text className={"text-danger"} hidden={!(this.state.newUsername.toLowerCase()==="geir")}>Geir er ikke et gydlig brukernavn</Form.Text>
-                                                </Form.Group>
-                                                <Form.Group>
-                                                    <SubmitButton loading={this.state.savingInformation} stop={!this.validateUsername()}/>
-                                                </Form.Group>
-                                            </Card.Body>
-                                        </Accordion.Collapse>
-                                    </Card>
+                                        <Card>
+                                            <Card.Header>
+                                                <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                                                    Rediger brukernavn
+                                                </Accordion.Toggle>
+                                            </Card.Header>
+                                            <Accordion.Collapse eventKey="0">
+                                                <Card.Body>
+                                                    <Form.Group>
+                                                        <Form.Control type="text" name="newUsername" placeholder={this.state.username} value={this.state.newUsername} onChange={this.handleInputChange}/>
+                                                        <Form.Text className={"text-danger"} hidden={!(this.state.newUsername.toLowerCase()==="geir")}>Geir er ikke et gydlig brukernavn</Form.Text>
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <SubmitButton loading={this.state.savingInformation} stop={!this.validateUsername()}/>
+                                                    </Form.Group>
+                                                </Card.Body>
+                                            </Accordion.Collapse>
+                                        </Card>
                                     </Form>
 
                                     <Form onSubmit={this.handleSubmit}>
-                                    <Card>
-                                        <Card.Header>
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                                                Oppdater telefonnummer
-                                            </Accordion.Toggle>
-                                        </Card.Header>
-                                        <Accordion.Collapse eventKey="1">
-                                            <Card.Body>
-                                                <Form.Group>
-                                                    <Form.Control maxLength="8" type="number"  name="newPhonenumber" placeholder={this.state.phonenumber} value={this.state.newPhonenumber} onChange={this.handleInputChange}/>
-                                                </Form.Group>
-                                                <Form.Group>
-                                                    <SubmitButton loading={this.state.savingInformation} stop={!this.validatePhoneNumber()}/>
-                                                </Form.Group>
-                                            </Card.Body>
-                                        </Accordion.Collapse>
-                                    </Card>
+                                        <Card>
+                                            <Card.Header>
+                                                <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                                                    Oppdater telefonnummer
+                                                </Accordion.Toggle>
+                                            </Card.Header>
+                                            <Accordion.Collapse eventKey="1">
+                                                <Card.Body>
+                                                    <Form.Group>
+                                                        <Form.Control maxLength="8" type="number"  name="newPhonenumber" placeholder={this.state.phonenumber} value={this.state.newPhonenumber} onChange={this.handleInputChange}/>
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <SubmitButton loading={this.state.savingInformation} stop={!this.validatePhoneNumber()}/>
+                                                    </Form.Group>
+                                                </Card.Body>
+                                            </Accordion.Collapse>
+                                        </Card>
                                     </Form>
 
                                     <Form onSubmit={this.handleSubmit}>
-                                    <Card>
-                                        <Card.Header>
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="2">
-                                                Endre passord
-                                            </Accordion.Toggle>
-                                        </Card.Header>
-                                        <Accordion.Collapse eventKey="2">
-                                            <Card.Body>
-                                                <Form.Group>
-                                                    <Form.Control type="password" name="oldPassword" placeholder="Gammelt passord" value={this.state.oldPassword} onChange={this.handleInputChange}/>
-                                                </Form.Group>
-                                                <Form.Group>
-                                                    <Form.Control type="password" name="firstNewPassword" placeholder="Nytt passord" value={this.state.firstNewPassword} onChange={this.handleInputChange}/>
-                                                </Form.Group>
-                                                <Form.Group>
-                                                    <Form.Control type="password" name="secondNewPassword" placeholder="Gjenta nytt passord" value={this.state.secondNewPassword} onChange={this.handleInputChange}/>
-                                                </Form.Group>
-                                                <Form.Group>
-                                                    <SubmitButton loading={this.state.savingInformation} stop={!this.validatePassword()}/>
-                                                </Form.Group>
-                                            </Card.Body>
-                                        </Accordion.Collapse>
-                                    </Card>
+                                        <Card>
+                                            <Card.Header>
+                                                <Accordion.Toggle as={Button} variant="link" eventKey="2">
+                                                    Endre passord
+                                                </Accordion.Toggle>
+                                            </Card.Header>
+                                            <Accordion.Collapse eventKey="2">
+                                                <Card.Body>
+                                                    <Form.Group>
+                                                        <Form.Control type="password" name="oldPassword" placeholder="Gammelt passord" value={this.state.oldPassword} onChange={this.handleInputChange}/>
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <Form.Control type="password" name="firstNewPassword" placeholder="Nytt passord" value={this.state.firstNewPassword} onChange={this.handleInputChange}/>
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <Form.Control type="password" name="secondNewPassword" placeholder="Gjenta nytt passord" value={this.state.secondNewPassword} onChange={this.handleInputChange}/>
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <SubmitButton loading={this.state.savingInformation} stop={!this.validatePassword()}/>
+                                                    </Form.Group>
+                                                </Card.Body>
+                                            </Accordion.Collapse>
+                                        </Card>
                                     </Form>
                                 </Accordion>
                             </Card>
-                            </Col>
-                        </Row>
-                    </div>
-                </Card>
-            )}
+                        </Col>
+                    </Row>
+                </div>
+            </Card>
+        )}
 
 
 
@@ -174,7 +211,13 @@ export class UserPage extends React.Component {
         return (this.state.firstNewPassword === this.state.secondNewPassword) && (this.state.firstNewPassword.length > 0) && (this.state.firstNewPassword  !== this.state.oldPassword);
     }
 
-
+    hideModal(){
+        this.setState({showPasswordAlert: false});
+    }
+    validateFile(){
+        console.log(this.state.newProfilePicture);
+        return (/\.(gif|jpeg|jpg|tiff|png)$/i).test(this.state.newProfilePicture.name);
+    }
 
     updateInfo(){
        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
@@ -184,11 +227,21 @@ export class UserPage extends React.Component {
                 var databaseUsername = OrganizerStore.currentOrganizer.username;
                 var dataBbaseEmail = OrganizerStore.currentOrganizer.email;
                 var databasePhone = OrganizerStore.currentOrganizer.phone;
+                let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
+
+                let image = null;
+                if (databaseImage == null){
+                    image = 'http://www.jacqueslacoupe.com/images/sample-user.png'
+                }
+
+                console.log(databaseImage);
+                console.log(image);
 
                 this.setState(this.setState({
                     username: databaseUsername,
                     email: dataBbaseEmail,
-                    phonenumber: databasePhone
+                    phonenumber: databasePhone,
+                    profilePicture: image
                 }));
             }
             else{
@@ -201,8 +254,8 @@ export class UserPage extends React.Component {
         this.setState({savingInformation: true});
         if(this.validateUsername()) {
             OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername).then(r => {
-                    this.setState({savingInformation: false});
-                    this.setState({username: this.state.newUsername});
+                this.setState({savingInformation: false});
+                this.setState({username: this.state.newUsername});
             });}
 
 
@@ -214,17 +267,37 @@ export class UserPage extends React.Component {
         }
 
 
-        if(this.validatePassword()) {
-            OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword).then(r =>{
+        if (this.validatePassword()) {
+            OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword, status => {
+                console.log(status);
                 this.setState({savingInformation: false});
                 this.setState({
-                    oldPassword:'',
+                    oldPassword: '',
                     firstNewPassword: '',
                     secondNewPassword: ''
-                })
+                });
+                this.setState({showPasswordAlert: true});
             });
         }
 
+        // code for submitting profile picture here, you can access it with this.state.newprofilePicture
+        if (this.validateFile()){
+            console.log("Image validated");
+            let formData = new FormData();
+            formData.append('description', this.state.newProfilePicture.name);
+            formData.append('selectedFile', this.state.newProfilePicture);
+            PictureService.insertPicture(OrganizerStore.currentOrganizer.organizerID, formData, (statusCode, link) => {
+                console.log("Image uploaded with status " + statusCode);
+                if (statusCode === 200 && link){
+                    const totalPath = '../../../../server' + link;
+                    console.log(totalPath);
+                    this.state.profilePicture = totalPath;
+                }
+            });
+        }
+        else{
+            console.log("Image not validated");
+        }
 
         // code for submitting profile picture here, you can access it with this.state.new.profilePicture
 
@@ -236,12 +309,12 @@ export class SubmitButton extends React.Component{
         if(this.props.loading){
             return(<Button type="submit" variant="success" disabled>
                 <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-            /> Lagrer</Button>)
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                /> Lagrer</Button>)
         } else{
             return(<Button type="submit" variant="success" disabled={this.props.stop}>Lagre</Button>)
         }
