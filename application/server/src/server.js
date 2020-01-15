@@ -32,6 +32,7 @@ const riderDaoObj = require('./dao/riderDao.js');
 const documentationDaoObj = require("./dao/documentationdao.js");
 const loginDaoObj = require("./dao/loginDao");
 const pictureDaoObj = require("./dao/pictureDao");
+const ticketDaoObj = require("./dao/ticketDao.js");
 let artistDao = new artistDaoObj(pool);
 let bugDao = new bugDaoObj(pool);
 let contactDao = new contactDaoObj(pool);
@@ -43,6 +44,7 @@ let organizerDao = new organizerDaoObj(pool);
 let riderDao = new riderDaoObj(pool);
 let loginDao = new loginDaoObj(pool);
 let pictureDao = new pictureDaoObj(pool);
+let ticketDao = new ticketDaoObj(pool);
 
 const public_path = path.join(__dirname, '/../../client/public');
 app.use(express.static(public_path));
@@ -1097,6 +1099,50 @@ app.get("/api/picture/:pictureID", (require, response) => {
         response.json(data);
     }, require.params.pictureID);
 });
+
+//Ticket
+//Get one ticket
+app.get("/ticket/:ticketTypeID", (require, response) => {
+    console.log("Request to get a ticketType");
+    ticketDao.getOneTicket((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.ticketTypeID);
+});
+
+//Get all tickets for an event
+app.get("/ticket/allTickets/:eventID", (require, response) => {
+    console.log("Request to get a rider element");
+    ticketDao.getAllTicketsForEvent((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.eventID);
+});
+
+//add one ticket
+app.post("/ticket/insert", (request, response) => {
+    console.log("Request to add a ticket");
+
+    let val =[
+        request.body.eventID,
+        request.body.ticketTypeName,
+        request.body.price,
+        request.body.amount,
+        request.body.releaseDate,
+        request.body.releaseTime,
+        request.body.hasEndDate,
+        request.body.endDate,
+        request.body.endTime,
+        request.body.description
+    ];
+
+    ticketDao.addTicket((status, data)=>{
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+
 
 
 const server = app.listen(8080);
