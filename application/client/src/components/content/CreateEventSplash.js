@@ -29,6 +29,7 @@ export class CreateEventSplash extends Component{
     render() {
         return (
             <div className="splashCreateEvent w-75 center">
+
                     <Form.Label column={6}>
                         <h1>Navn på arrangement:</h1>
                     </Form.Label>
@@ -46,6 +47,7 @@ export class CreateEventSplash extends Component{
                             Submit
                         </Button>
                     </div>
+
             </div>
         );
     }

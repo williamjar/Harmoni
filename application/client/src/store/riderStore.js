@@ -1,11 +1,14 @@
 import axios from "axios";
 
-const axiosConfig = require("./axiosConfig");
-import RiderElement from "../classes/riderElement"
+
+import {RiderElement} from "../classes/riderElement"
 import {CookieStore} from "./cookieStore";
+const axiosConfig = require("./axiosConfig");
 
 
-export class Rider {
+export class RiderStore {
+    allRidersForCurrentEvent = [];
+
     //get a rider element
     getRider(riderID) {
 
@@ -65,36 +68,38 @@ export class Rider {
     }
 
     //get all riders for an event
-    getAllRidersForEvent(eventID){
-        let allRidersForEvent = [];
+    storeAllRidersForEvent(eventID){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/rider', {headers: header})
             .then(response => {
+                this.allRidersForCurrentEvent = [];
                 for(let i = 0; i < response.data.length; i++){
-                    allRidersForEvent.push(new RiderElement(response.data[0].riderID, response.data[0].artistID,
+                    this.allRidersForCurrentEvent.push(new RiderElement(response.data[0].riderID, response.data[0].artistID,
                         response.data[0].eventID, response.data[0].status, response.data[0].isDone,
                         response.data[0].description))
                 }
             })
             .catch(error => console.log(error));
-        return allRidersForEvent;
     }
 
+
     //create a new rider element.
-    createNewRiderElement(artistID, eventID, description){
+    createNewRiderElement(callback, artistID, eventID, description){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
+
         axios.post(axiosConfig.root + '/api/rider', {
             artistID: artistID,
             eventID: eventID,
             description: description
-        }, {headers: header})
-            .catch(error => console.log(error));
+        }, {headers: header}).then(response =>{
+            callback(new RiderElement(response.data.insertId, artistID, "", false, description));
+        }).catch(error => console.log(error));
     }
 
     //update a rider element
@@ -125,6 +130,6 @@ export class Rider {
     }
 }
 
-export let riderService = sharedComponentData(new riderService());
+export let riderStore = new RiderStore();
 
 

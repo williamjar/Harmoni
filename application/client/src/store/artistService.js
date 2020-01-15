@@ -25,33 +25,30 @@ export class ArtistService {
 
     // OrganizerID == innlogget bruker.
     static createArtist(name, phone, email, genreID, organizerID) {
+        console.log("artist clickkekkkkaekrakwrkwrk");
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
         let contactBody = {
-            "contactName": name,
+            "username": name,
             "phone": phone,
             "email": email
         };
 
-        let contactID = 0;
+        axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
 
-        axios.post(axiosConfig.root + '/api/contact', JSON.stringify(contactBody), {headers: header}).then(response => {
-                contactID = response.insertId;
-            }
+                let artistBody = {
+                    "genreID": genreID,
+                    "organizerID": organizerID,
+                    "contactID": response.data.insertId
+                };
+
+                axios.post(axiosConfig.root  + '/api/artist', artistBody, {headers: header}).then(response =>
+                    console.log(response));
+                }
         );
-
-        let artistBody = {
-            "genreID": genreID,
-            "organizerID": organizerID,
-            "contactID": contactID
-        };
-
-        axios.post('/api/artist', JSON.stringify(artistBody), {headers: header}).then(response =>
-            console.log(response));
-
     }
 
     static deleteArtist(artistID) {
@@ -62,7 +59,7 @@ export class ArtistService {
         return axios.delete('/api/artist/organizer/' + artistID, {headers: header}).then(response => response.data);
     }
 
-    static getArtistForOrganizer(organizerID) {
+    static getArtistForOrganizer(callback, organizerID) {
         let allArtistByOrganizer = [];
         let header = {
             "Content-Type": "application/json",
@@ -70,13 +67,14 @@ export class ArtistService {
         };
         axios.get(axiosConfig.root + '/api/artist/organizer/' + organizerID, {headers: header}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
-                    allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].organizerID,
-                        response.data[i].contactID, response.data[i].organizerID, response.data[i].contactID,
-                        response.data[i].contactName, response.data[i].phone, response.data[i].email));
+                    allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].contactName,
+                        response.data[i].phone, response.data[i].email, response.data[i].genreID,
+                        response.data[i].organizerID));
                 }
+                callback(allArtistByOrganizer);
             }
         );
-        return allArtistByOrganizer;
+
     }
 
     static getArtistForEvent(eventID) {

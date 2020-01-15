@@ -8,6 +8,7 @@ import {FaSearch} from "react-icons/all";
 import Form from "react-bootstrap/Form";
 import {Row, Col} from 'react-bootstrap';
 import {ArtistService as artistService} from "../../store/artistService";
+import {CookieStore} from "../../store/cookieStore";
 
 
 export class Search extends Component{
@@ -57,9 +58,9 @@ export class Search extends Component{
 
                         <div className="card-text margin-top-5 ma">
                             {this.state.showRegisterNew === false && this.state.showSearchResults?
-                                this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf(e.contactName.toLowerCase()) >= 0).map(show =>
-                                <div className="card-title card-header search" onClick={() => this.searchHandler(show.input)}>{show.input}</div>
-                            ):null}
+                                this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf(e.contactName.toLowerCase()) > -1).map(show =>
+                                <div className="card-title card-header search" onClick={() => this.searchHandler(show)}>{show.contactName}</div>
+                                ):null}
 
                             {this.state.showRegisterNew?
                                 <div className="card card-body">
@@ -75,9 +76,13 @@ export class Search extends Component{
 
     callBackSearchResult = () => {
         let currentState = this.state;
-        //currentState.results = artistService.getArtistForOrganizer(1);
-        this.setState(currentState);
-        console.log(this.state.results);
+
+        artistService.getArtistForOrganizer((allArtistByOrganizer) => {
+            currentState.results = allArtistByOrganizer;
+            console.log(allArtistByOrganizer);
+            this.setState(currentState);
+            console.log(this.state);
+        },CookieStore.currentUserID);
     }
 
     searchHandler(input){
