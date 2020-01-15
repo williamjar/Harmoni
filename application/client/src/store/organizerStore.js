@@ -33,7 +33,7 @@ export class OrganizerStore {
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.put(axiosConfig.root + '/api/organizer/'+organizerID+'/change/username', {
+        return axios.put(axiosConfig.root + '/api/organizer/' + organizerID + '/change/username', {
             username: newUsername,
         }, {headers: header});
     }
@@ -65,15 +65,8 @@ export class OrganizerStore {
         }
     }
 
-    changePhoneNumber(newPhoneNumber) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
+    changePhoneNumber() {
 
-        return axios.put(axiosConfig.root + '/api/organizer/${organizerID}/change/username', {
-            "phone": newPhoneNumber,
-        }, {headers: header});
     }
 
     changeUserImage() {
