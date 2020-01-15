@@ -78,7 +78,7 @@ export class ArtistService {
 
     }
 
-    static getArtistForEvent(eventID) {
+    static getArtistsForEvent(callback, eventID) {
         let allArtistByEvent = [];
         let header = {
             "Content-Type": "application/json",
@@ -86,13 +86,14 @@ export class ArtistService {
         };
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
-                    allArtistByEvent.push(new Artist(response.data[i].artistID, response.data[i].organizerID,
-                        response.data[i].contactID, response.data[i].organizerID, response.data[i].contactID,
-                        response.data[i].contactName, response.data[i].phone, response.data[i].email));
+                    allArtistByEvent.push(new Artist(response.data[i].artistID, response.data[i].contactName,
+                        response.data[i].phone, response.data[i].email, response.data[i].genreID,
+                        response.data[i].organizerID));
                 }
+            callback(allArtistByEvent);
             }
         );
-        return allArtistByEvent;
+
     }
 
     static addDocumentToArtist(eventID, name, link, artistID, categoryID) {

@@ -46,7 +46,22 @@ export class PerformersTab extends Component{
 
     addPerformer = (selected) => {
         let currentState = this.state;
-        currentState.performersAdded.push(selected);
+
+        //currentState.performersAdded.push(selected);
+        //assign artist to event
+        ArtistService.assignArtist(EventStore.currentEvent.eventID, selected.artistID).then(res => {
+            ArtistService.getArtistsForEvent((list) => {
+                let currentState = this.state;
+                currentState.performersAdded = list;
+                console.log("artist assigned:");
+                console.log(list);
+                this.setState(currentState);
+            }, EventStore.currentEvent.eventID);
+
+            }
+
+        )
+
         currentState.currentPerformer = selected;
         this.setState(currentState);
     }
@@ -282,6 +297,8 @@ export class PerformerCard extends Component{
         let genre = document.querySelector("#genreSelect").value;
         let signedContract = document.querySelector("#signedContract").checked;
         let payed = document.querySelector("#performerPayed").checked;
+        let performer = this.state.performer;
+
         alert("save clicked");
 
         let json = {
