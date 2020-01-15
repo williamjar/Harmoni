@@ -193,11 +193,9 @@ export class UserPage extends React.Component {
 
     submitForm(){
         this.setState({savingInformation: true});
-
         if(this.validateUsername()) {
             OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername).then(r => {
                     this.setState({savingInformation: false});
-                    this.changeMode();
                     this.setState({username: this.state.newUsername});
             });} else {
 
@@ -206,15 +204,16 @@ export class UserPage extends React.Component {
 
 
         if(this.validatePhoneNumber()){
-            this.changeMode();
-            this.setState({phonenumber: this.state.newPhonenumber});
+            OrganizerStore.changePhoneNumber(this.state.newPhonenumber).then(r =>{
+                this.setState({savingInformation: false});
+                this.setState({phonenumber: this.state.newPhonenumber});
+            });
         }
 
 
         if(this.validatePassword()) {
             OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword).then(r =>{
                 this.setState({savingInformation: false});
-                this.changeMode();
                 this.setState({username: this.state.newUsername});
             });
         } else {
