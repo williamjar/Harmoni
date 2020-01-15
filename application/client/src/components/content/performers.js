@@ -10,8 +10,8 @@ import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {ArtistService} from "../../store/artistService";
 import {CookieStore} from "../../store/cookieStore";
-import {riderStore} from "../../store/riderStore";
-import {eventStore} from "../../store/eventStore";
+import {RiderStore} from "../../store/riderStore";
+import {EventStore} from "../../store/eventStore";
 import {RiderElement} from "../../classes/riderElement";
 
 
@@ -207,15 +207,15 @@ export class PerformerCard extends Component{
 
     addRider = () =>{
         alert(this.state.riderInput);
-        riderStore.createNewRiderElement((newRider) => {
-            riderStore.allRidersForCurrentEvent.push(newRider);
-            console.log(riderStore.allRidersForCurrentEvent);
+        RiderStore.createNewRiderElement((newRider) => {
+            RiderStore.allRidersForCurrentEvent.push(newRider);
+            console.log(RiderStore.allRidersForCurrentEvent);
 
             let currentState = this.state;
-            currentState.riders = riderStore.allRidersForCurrentEvent;
+            currentState.riders = RiderStore.allRidersForCurrentEvent;
             this.setState(currentState);
             console.log(this.state);
-        }, this.state.performer.artistID, eventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
+        }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
     }
 
     handleInputRider = (event) =>{

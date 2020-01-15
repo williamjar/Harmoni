@@ -17,6 +17,7 @@ import {
 import {CardText} from "react-bootstrap/Card";
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
+import {PictureService} from "../../store/pictureService";
 
 export class UserPage extends React.Component {
     constructor(props) {
@@ -43,10 +44,15 @@ export class UserPage extends React.Component {
     handleInputChange(event) {
         this.setState({savingInformation: false});
         const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+        if (target.name === 'newProfilePicture'){
+            this.setState({newProfilePicture: target.files[0]});
+        }
+        else{
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
 
-        this.setState({[name]: value,});
+            this.setState({[name]: value,});
+        }
     }
 
     handleSubmit(event) {
@@ -219,20 +225,26 @@ export class UserPage extends React.Component {
         return (this.state.firstNewPassword === this.state.secondNewPassword) && (this.state.firstNewPassword.length > 0) && (this.state.firstNewPassword !== this.state.oldPassword);
     }
 
+    validateFile(){
+        console.log(this.state.newProfilePicture);
+        return (/\.(gif|jpeg|jpg|tiff|png)$/i).test(this.state.newProfilePicture.name);
+    }
 
-    updateInfo() {
-        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
-            if (statusCode === 200) {
+    updateInfo(){
+       OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
+            if (statusCode === 200){
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
 
                 var databaseUsername = OrganizerStore.currentOrganizer.username;
                 var dataBbaseEmail = OrganizerStore.currentOrganizer.email;
                 var databasePhone = OrganizerStore.currentOrganizer.phone;
+                let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
 
                 this.setState(this.setState({
                     username: databaseUsername,
                     email: dataBbaseEmail,
-                    phonenumber: databasePhone
+                    phonenumber: databasePhone,
+                    profilePicture: databaseImage
                 }));
             } else {
                 //console.log("We have an error!");
@@ -241,6 +253,7 @@ export class UserPage extends React.Component {
     }
 
     submitForm() {
+        console.log("Submitting...");
         this.setState({savingInformation: true});
         if (this.validateUsername()) {
             OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername).then(r => {
@@ -270,8 +283,25 @@ export class UserPage extends React.Component {
             });
         }
 
+        // code for submitting profile picture here, you can access it with this.state.newprofilePicture
+        if (this.validateFile()){
+            console.log("Image validated");
+            let formData = new FormData();
+            formData.append('description', this.state.newProfilePicture.name);
+            formData.append('selectedFile', this.state.newProfilePicture);
+            PictureService.insertPicture(OrganizerStore.currentOrganizer.organizerID, formData, (statusCode, link) => {
+                console.log("Image uploaded with status " + statusCode);
+                if (statusCode === 200 && link){
+                    const totalPath = '../../../../server' + link;
+                    console.log(totalPath);
+                    this.state.profilePicture = totalPath;
+                }
+            });
+        }
+        else{
+            console.log("Image not validated");
+        }
 
-        // code for submitting profile picture here, you can access it with this.state.new.profilePicture
 
     }
 }
