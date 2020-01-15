@@ -39,7 +39,7 @@ module.exports = class crewDao extends Dao {
     }
 
     getAllCategoriesForEvent(callback, eventID){
-        super.query('SELECT crewCategoryName FROM crewCategory JOIN event_crewCategory_crew on crewCategory.crewCategoryID = event_crewCategory_crew.crewCategoryID WHERE crewID = ? AND eventID = ? ', [crewID, eventID], callback)
+        super.query('SELECT * FROM crewCategory JOIN event_crewCategory_crew on crewCategory.crewCategoryID = event_crewCategory_crew.crewCategoryID WHERE eventID = ? ', [eventID], callback)
     }
 
     getAllCategories(callback, organizerID) {

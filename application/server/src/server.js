@@ -621,7 +621,7 @@ app.get("/api/crew/event/:eventID/categories/:crewID", (request, response) => {
     }, request.params.crewID, request.params.eventID);
 });
 
-app.get("/api/crew/event/:eventID/categories/", (request, response) => {
+app.get("/crew/event/:eventID/categories/", (request, response) => {
     console.log("request for all crew categories for an event");
     crewDao.getAllCategoriesForEvent((status,data) => {
         response.status(status);

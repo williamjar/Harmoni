@@ -7,7 +7,6 @@ export class CrewMember extends Contact{
         super(contactName, phone, email);
         this.crewID = crewID;
         this.description = description;
-        this.crewCategories = [];
     }
 
     addCrewCategory(category){

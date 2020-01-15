@@ -1,12 +1,19 @@
 import axios from "axios";
 import {CrewMember} from "../classes/crewMember.js"
 import {CookieStore} from "./cookieStore";
+import createWithBsPrefix from "react-bootstrap/esm/createWithBsPrefix";
+import {forEach} from "react-bootstrap/esm/ElementChildren";
+import {CrewCategory} from "../classes/crewCategory";
 
 let axiosConfig = require("./axiosConfig");
 
 export class CrewStore {
-    allCrewMembersByEvent = [];
-    allCrewMembersByOrganizer = [];
+
+    //static allCrewMembersByEvent = [];
+    static allCrewMembersForOrganizer = [];
+    static allCrewCategories = [];
+    static allCrewCategoryEvent = [];
+
 
     //get a crew member
     static getCrewMember(crewID, callback){
@@ -20,6 +27,8 @@ export class CrewStore {
             callback(crew);
         });
     }
+
+
 
     //get all crew members for an organizer
     static getAllCrewMembersForOrganizer(callback, organizerID) {
@@ -38,14 +47,14 @@ export class CrewStore {
     }
 
     static storeAllCrewMembersForOrganizer(organizerID){
-        this.allCrewMembersByOrganizer = [];
+        this.allCrewMembersForOrganizer = [];
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
         axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
-                this.allCrewMembersByOrganizer.push(new CrewMember(response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description,
+                this.allCrewMembersForOrganizer.push(new CrewMember(response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description,
                     response.data[i].crewCategory));
             }
         });
@@ -68,13 +77,13 @@ export class CrewStore {
     }
 
     //get all crew members for an event
-    static getAllCrewMembersForEvent(callback, eventID){
+    static postAllCrewMembersForEvent(callback, eventID){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        let allCrewMembersForEvent = [];
+        this.allCrewCategoryEvent = [];
 
         axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response =>  {
 
@@ -82,15 +91,25 @@ export class CrewStore {
 
                 allCrewMembersForEvent.push(new CrewMember(response.data[i].contactName,
                     response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description));
-
             }
-            axios.get(axiosConfig.root + 'api/crew/event/' + eventID + '/categories/' + response.data[i].crewID, {headers: header}).then(response => {
-                for (let i = 0; i < response.data.length; i++) {
-                    this.addCategory(response.response.data[i].crewCategory);
+
+            axios.get(axiosConfig.root + 'api/crew/event/' + eventID + '/categories/', {headers: header}).then(response => {
+
+                for (let i = 0; i < allCrewMembersForEvent.length; i++) {
+                    let responseList = response.data.filter((category) => {
+                        category.crewID === crewMember.crewID;
+                    });
+
+                    //Ikke riktig
+                    for (let j = 0; j < responseList.length; j++) {
+                        allCrewMembersForEvent[i].push( new CrewCategory(responseList.crewCategoryID, responseList.crewCategoryName, responseList.eventID, responseList.isResponsible === 1));
+                    }
                 }
+
+                callback();
             });
         });
-        callback(allCrewMembersForEvent);
+
     }
 
     static storeAllCrewMembersForEvent(eventID){
@@ -98,10 +117,10 @@ export class CrewStore {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        this.allCrewMembersForEvent = [];
+        this.allCrewCategoryEvent = [];
         axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
-                this.allCrewMembersForEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
+                this.allCrewCategoryEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
                     response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
             }
         });
