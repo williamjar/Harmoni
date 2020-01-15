@@ -13,6 +13,7 @@ export class CrewStore {
     static allCrewMembersForOrganizer = [];
     static allCrewCategories = [];
     static allCrewCategoryEvent = [];
+    static allCrewForCurrentEvent = [];
 
 
     //get a crew member
@@ -57,6 +58,23 @@ export class CrewStore {
                 this.allCrewMembersForOrganizer.push(new CrewMember(response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description,
                     response.data[i].crewCategory));
             }
+        });
+    }
+
+    static storeAllCrewMembersForEvent(callback, eventID) {
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        this.allCrewForCurrentEvent = [];
+        axios.get(axiosConfig.root + '/api/crew/' + eventID, {headers: header}).then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+                this.allCrewForCurrentEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
+                    response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].isResponsible));
+            }
+            callback();
         });
     }
 
@@ -110,20 +128,6 @@ export class CrewStore {
             });
         });
 
-    }
-
-    static storeAllCrewMembersForEvent(eventID){
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        this.allCrewCategoryEvent = [];
-        axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response =>  {
-            for (let i = 0; i < response.data.length; i++) {
-                this.allCrewCategoryEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
-                    response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
-            }
-        });
     }
 
     //register a new crew member

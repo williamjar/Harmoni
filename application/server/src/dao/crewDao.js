@@ -22,9 +22,9 @@ module.exports = class crewDao extends Dao {
         super.query('SELECT * FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE organizerID = ? AND crew.contactID = contact.contactID', [organizerID], callback);
     }
 
-    getAllForEvent(callback, eventID) {
+    /*getAllForEvent(callback, eventID) {
         super.query('SELECT contactName, phone, email, crew.crewID, description FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE eventID = ?', [eventID], callback);
-    }
+    }*/
 
     addDocument(callback, list) {
         super.query('INSERT INTO document (eventID,documentName,documentLink,crewID,documentCategoryID) VALUES (?, ?, ?, ?, ?)', list, callback);
@@ -46,8 +46,8 @@ module.exports = class crewDao extends Dao {
         super.query('SELECT * FROM crewCategory WHERE organizerID = ?', organizerID, callback);
     }
 
-    getAllCrewForCategoryForEventAndCategory(callback, list) {
-        super.query('SELECT * FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE crewCategory.crewCategoryID = ? AND event_crewCategory_crew.eventid = ?', list, callback);
+    getAllForEvent(callback, list) {
+        super.query('SELECT * FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE event_crewCategory_crew.eventid = ?', list, callback);
     }
 
     createOneCategory(callback, list) {
