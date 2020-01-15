@@ -45,9 +45,9 @@ export class ArtistService {
                     "contactID": response.data.insertId
                 };
 
-                axios.post(axiosConfig.root  + '/api/artist', artistBody, {headers: header}).then(response =>
+                axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(response =>
                     console.log(response));
-                }
+            }
         );
     }
 
@@ -134,7 +134,7 @@ export class ArtistService {
         }, {headers: header}).then(response => response.data);
     }
 
-    static getAllGenres(callback){
+    static getAllGenres(callback) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
