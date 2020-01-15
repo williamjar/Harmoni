@@ -28,68 +28,12 @@ export class PerformersTab extends Component{
     render(){
         return(
             <div>
-                <div className="row">
-
-                    <div className="col-lg-6 col-md-12  border-right">
-                        <PerformerPanel addPerformer={this.addPerformer} performerSelected={this.state.currentPerformer}/>
-                    </div>
-
-                    <div className="col-lg-6 col-md-12">
-                        <RegisteredPerformers performersAdded={this.state.performersAdded} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
-                    </div>
-                </div>
+                <PerformerPanel/>
             </div>
         )
     }
 
-    componentDidMount() {
-        ArtistService.getArtistsForEvent((list) => {
-            let currentState = this.state;
-            currentState.performersAdded = list;
-            currentState.currentPerformer = {};
-            this.setState(currentState);
-        }, EventStore.currentEvent.eventID);
 
-    }
-
-    unAssignArtist = (artist) => {
-        ArtistService.unAssignArtist(EventStore.currentEvent.eventID, artist.artistID).then(res => {
-            console.log("data delete");
-            console.log(res);
-            ArtistService.getArtistsForEvent((list) => {
-                let currentState = this.state;
-                currentState.performersAdded = list;
-                currentState.currentPerformer = {};
-                this.setState(currentState);
-            }, EventStore.currentEvent.eventID);
-        });
-    }
-
-    addPerformer = (selected) => {
-        let currentState = this.state;
-
-        //currentState.performersAdded.push(selected);
-        //assign artist to event
-        ArtistService.assignArtist(EventStore.currentEvent.eventID, selected.artistID).then(res => {
-            ArtistService.getArtistsForEvent((list) => {
-                let currentState = this.state;
-                currentState.performersAdded = list;
-                this.setState(currentState);
-            }, EventStore.currentEvent.eventID);
-
-            }
-
-        )
-
-        currentState.currentPerformer = selected;
-        this.setState(currentState);
-    }
-
-    changeCurrentPerformer = (performer) => {
-        let currentState = this.state;
-        currentState.currentPerformer = performer;
-        this.setState(currentState);
-    }
 
 
 }
@@ -112,35 +56,73 @@ export class PerformerPanel extends Component{
     render() {
         return (
             <div>
-            <div className="row">
-                <div className="col-8">
-                <Search searchHandler={this.searchHandler} results={this.state.results} />
-                </div>
-                <div className="col-4">
-                    <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny</button>
-                </div>
-            </div>
+                <div className="row">
 
-                <div className="padding-top-20">
-                    {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
-                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
+                    <div className="col-lg-6 col-md-12  border-right">
+                        <div className="row">
+                            <div className="col-8">
+                                <Search searchHandler={this.searchHandler} results={this.state.results} />
+                            </div>
+                            <div className="col-4">
+                                <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny</button>
+                            </div>
+                        </div>
+
+                        <div className="padding-top-20">
+                            {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
+                            {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
+                        </div>
+                    </div>
+
+                    <div className="col-lg-6 col-md-12">
+                        <RegisteredPerformers performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
+                    </div>
                 </div>
             </div>
         );
     }
 
 
-    static getDerivedStateFromProps(props, state) {
-        if(props.performerSelected !== state.performerSelected) {
-            return {
-                performerSelected: props.performerSelected
-            };
-        }
-        return state.performerSelected;
-    }
+    unAssignArtist = (artist) => {
+        ArtistService.unAssignArtist(EventStore.currentEvent.eventID, artist.artistID).then(res => {
+            ArtistService.getArtistsForEvent((list) => {
+                let currentState = this.state;
+                currentState.performerList = list;
+                currentState.performerSelected = {};
+                this.setState(currentState);
+            }, EventStore.currentEvent.eventID);
+        });
+    };
+
+    addPerformer = (selected) => {
+        let currentState = this.state;
+        ArtistService.assignArtist(EventStore.currentEvent.eventID, selected.artistID).then(res => {
+                ArtistService.getArtistsForEvent((list) => {
+                    let currentState = this.state;
+                    currentState.performerList = list;
+                    this.setState(currentState);
+                }, EventStore.currentEvent.eventID);
+            }
+        );
+        currentState.performerSelected = selected;
+        this.setState(currentState);
+    };
+
+    changeCurrentPerformer = (performer) => {
+        let currentState = this.state;
+        currentState.performerSelected = performer;
+        currentState.showArtistCard = true;
+        this.setState(currentState);
+    };
 
     componentDidMount() {
         this.callBackSearchResult();
+        ArtistService.getArtistsForEvent((list) => {
+            let currentState = this.state;
+            currentState.performerList = list;
+            currentState.performerSelected = {};
+            this.setState(currentState);
+        }, EventStore.currentEvent.eventID);
     };
 
     toggleRegisterNew = () => {
@@ -184,7 +166,7 @@ export class PerformerPanel extends Component{
         let currentState = this.state;
         currentState.performerSelected = selected;
         currentState.showArtistCard = true;
-        this.props.addPerformer(selected);
+        this.addPerformer(selected);
         this.setState(currentState);
     };
 
@@ -545,11 +527,11 @@ export class RegisteredPerformers extends Component{
 
     unAssignArtist = (artist) => {
         this.props.unAssignArtist(artist);
-    }
+    };
 
     showCard = (performer) => {
         this.props.changeCard(performer);
-    }
+    };
 }
 
 export class PerformersView extends Component {
