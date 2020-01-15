@@ -60,7 +60,7 @@ export class RegisterForm extends React.Component {
     }
     validateUsername(){
         let  illegalCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-        return !(illegalCharacters.test(this.state.username));
+        return !(illegalCharacters.test(this.state.username)) && this.state.username.toLowerCase()==="geir";
     }
 
     validateForm() {
