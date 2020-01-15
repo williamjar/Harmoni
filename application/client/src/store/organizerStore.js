@@ -1,6 +1,7 @@
 import axios from "axios";
 import {Organizer} from "../classes/organizer.js"
 import {CookieStore} from "./cookieStore";
+import {sha512} from "./hashService";
 
 const hash = require('./hashService');
 const axiosConfig = require("./axiosConfig");
@@ -38,8 +39,16 @@ export class OrganizerStore {
     }
 
     static changePassword(organizerID, oldPassword, newPassword) {
-        //check old password
-        if (hash.verifyPassword(organizerID, oldPassword, newPassword)) {
+
+        console.log("verify " + organizerID + " " + oldPassword);
+        let passwordInDB = hash.getPassword(organizerID);
+        let salt = hash.getSaltFromID(organizerID);
+        let enteredPasswordHashed = sha512(oldPassword, salt);
+        console.log(enteredPasswordHashed + " == " + passwordInDB);
+
+        let correctPassword = (enteredPasswordHashed === passwordInDB);
+
+        if (correctPassword) {
 
             let newHashed = hash.sha512(newPassword, hash.generateSalt(16));
 

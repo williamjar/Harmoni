@@ -1,5 +1,6 @@
 import axios from "axios";
 import {CookieStore} from './cookieStore';
+import {verifyPassword} from "./hashService";
 
 const crypto = require('crypto');
 const hash = require('./hashService');
@@ -10,7 +11,6 @@ export class LoginService {
 
         hash.getHashedFromEmail(enteredPassword, email, hashedPassword => {
 
-            console.log("hashedpWD"+hashedPassword);
             let header = {
                 "Content-Type": "application/json",
             };
