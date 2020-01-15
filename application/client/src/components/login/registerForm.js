@@ -60,11 +60,11 @@ export class RegisterForm extends React.Component {
     }
     validateUsername(){
         let  illegalCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-        return !(illegalCharacters.test(this.state.username)) && this.state.username.toLowerCase()==="geir";
+        return !(illegalCharacters.test(this.state.username));
     }
 
     validateForm() {
-        return (this.validateEmail() && (this.validatePassword())) && (this.validatePasswordLength()) && (this.validateUsername()) && (this.validateEmailLength()) && this.validatePasswordLength();
+        return (this.validateEmail() && (this.validatePassword())) && (this.validatePasswordLength()) && (this.validateUsername()) && (this.validateEmailLength()) && this.validatePasswordLength() && !(this.state.username.toLowerCase()==="geir");
     }
 
     render() {
@@ -124,6 +124,8 @@ export class RegisterForm extends React.Component {
 
                         <Form.Text className="text-danger" hidden={this.validatePassword()}>Passordene må være like</Form.Text>
                         <Form.Text className="text-danger" hidden={this.validatePasswordLength()}>Passordet ditt må være på minst 8 tegn</Form.Text>
+
+                        <Form.Text className="text-danger" hidden={!(this.state.username.toLowerCase()==="geir")}>Brukernavn kan ikke være Geir.</Form.Text>
 
                         <Form.Text className="text-danger" hidden={!this.databaseAlreadyRegistered()}>Det er allerede registrert en bruker med denne e-postaddressen</Form.Text>
                         <Form.Text className="text-danger" hidden={!this.databaseUsernameAlreadyExists()}>Brukernavnet finnes allerede</Form.Text>
