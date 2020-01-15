@@ -1,11 +1,13 @@
 import axios from "axios";
-import {sharedComponentData} from "react-simplified";
-import Document from ".classes/document.js"
+import {Document} from "../classes/document.js"
 import {CookieStore} from "./cookieStore";
+import {DocumentCategory} from "../classes/documentCategory";
 
 const axiosConfig = require("./axiosConfig");
 
-class DocumentService {
+export class DocumentService {
+
+
 
     getAllDocumentsForOrganizer(organizerID) {
         let header = {
@@ -38,16 +40,16 @@ class DocumentService {
         return allDocumentsByEvent;
     }
 
-    addDocument(eventID, documentLink, artistID, documentCategoryID){
+    static addDocument(eventID, category, artistID, crewID, documentCategoryID, files){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        axios.post(axiosConfig.root + '/api/document/', {
-            "eventID": eventID,
-            "documentLink": documentLink,
+        axios.post(axiosConfig.root + '/api/document/' + eventID + "/" + category, {
+            "documentCategoryID" : documentCategoryID,
             "artistID": artistID,
-            "documentCategoryID" : documentCategoryID
+            "crewID": crewID,
+            "files": files
     }, {headers: header}).then(response => response.data);
     }
 
@@ -73,6 +75,36 @@ class DocumentService {
             "x-access-token": CookieStore.currentToken
         };
         return axios.delete(axiosConfig.root + '/api/document/' + id, {headers: header}).then(response => response.data);
+    }
+
+
+    insertDocumentArtist(eventID, folderName, documentCategoryID, artistID){
+        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/artist/' + artistID)
+            .then(res => console.log(res.data))
+            .catch(err => console.error(err));
+    }
+
+    insertDocumentCrew(eventID, folderName, documentCategoryID, crewID){
+        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/crew/' + crewID)
+            .then(res => console.log(res.data))
+            .catch(err => console.error(err));
+    }
+
+    static getAllDocumentCategoriesForEvent(eventID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let currentCategories = [];
+
+        axios.get(axiosConfig.root + '/api/' + eventID + '/documents/categories', {headers: header}).then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+                currentCategories.push(new DocumentCategory(response.data[i].documentCategoryID,
+                    response.data[i].documentCategoryName));
+            }
+            callback(currentCategories);
+        });
     }
 
 }

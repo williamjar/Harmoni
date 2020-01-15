@@ -91,6 +91,18 @@ function deleteFile(path) {
     }
 }
 
+function deleteAllFilesInFolder(path, callback) {
+    fs.readdir(path, (err, files) => {
+        if (err) console.log(err);
+        for (const file of files) {
+            fs.unlink(path + '/' + file, err => {
+            if (err) console.log(err);
+            });
+        }
+    });
+    callback();
+}
+
 const resource_path = path.join(__dirname, '/../../client/public/resources/');
 var storage = multer.diskStorage({
     //Declaring destination for file
@@ -135,9 +147,9 @@ var storage = multer.diskStorage({
         //Create file in server. If user upload same file append time for unique name
         try {
             if (fs.existsSync(resource_path + req.params.id + '/' + req.params.folderName + "/" + file.originalname)) {
-                cb(null, Date.now() + "--" + file.originalname)
+                cb(null, Date.now() + "--" + file.originalname);
             } else {
-                cb(null, file.originalname)
+                cb(null, file.originalname);
             }
         } catch (e) {
             console.log("An error occurred")
@@ -201,6 +213,15 @@ app.get("/api/:eventID/documents/category", (req, res) => {
 app.get("/api/:eventID/documents", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getAllDocuments(req.params.eventID, (status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.get("/api/:eventID/documents/categories", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getAllDocumentCategoriesForEvent(req.params.eventID, (status, data) => {
+        console.log(data);
         res.status(status);
         res.json(data);
     });
@@ -422,7 +443,7 @@ app.get("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID);
 });
 
-app.post("/api/contact", (request, response) => {
+app.post("/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
         request.body.username,
@@ -472,6 +493,7 @@ app.put("/contact/:contactID/change/phonenumber/", (request, response) => {
         response.json(data);
     }, val);
 });
+
 
 // ARTIST
 app.get("/api/artist/:artistID", (request, response) => {
@@ -1113,3 +1135,10 @@ app.get("/api/picture/:pictureID", (require, response) => {
 
 
 const server = app.listen(8080);
+
+
+
+
+
+
+

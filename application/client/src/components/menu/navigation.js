@@ -39,7 +39,7 @@ export class Menu extends Component{
                      aria-orientation="vertical">
 
                     <NavLink className="nav-link" to="/" exact={true}>
-                        <FaCalendarAlt/> Dine arrangement
+                        <FaCalendarAlt/> Mine arrangementer
                     </NavLink>
 
                     <NavLink className="nav-link" to="/opprett">
@@ -54,8 +54,8 @@ export class Menu extends Component{
                         <FaUsers/> Personell
                     </NavLink>
 
-                    <NavLink className="nav-link" to="/kontrakter">
-                        <FaFileSignature/> Kontrakter
+                    <NavLink className="nav-link" to="/dokumenter">
+                        <FaFileSignature/> Mine dokumenter
                     </NavLink>
                 </div>
 
