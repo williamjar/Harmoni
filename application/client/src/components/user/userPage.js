@@ -17,6 +17,7 @@ import {
 import {CardText} from "react-bootstrap/Card";
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
+import {PictureService} from "../../store/pictureService";
 
 export class UserPage extends React.Component {
     constructor(props) {
@@ -226,7 +227,7 @@ export class UserPage extends React.Component {
 
     validateFile(){
         console.log(this.state.newProfilePicture);
-        return (/\.(gif|jp?g|tiff|png)$/i).test(this.state.newProfilePicture.name);
+        return (/\.(gif|jpeg|jpg|tiff|png)$/i).test(this.state.newProfilePicture.name);
     }
 
     updateInfo(){
@@ -252,6 +253,7 @@ export class UserPage extends React.Component {
     }
 
     submitForm() {
+        console.log("Submitting...");
         this.setState({savingInformation: true});
         if (this.validateUsername()) {
             OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername).then(r => {
@@ -293,6 +295,9 @@ export class UserPage extends React.Component {
                     this.state.profilePicture = totalPath;
                 }
             });
+        }
+        else{
+            console.log("Image not validated");
         }
 
 
