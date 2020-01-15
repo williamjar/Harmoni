@@ -614,6 +614,19 @@ app.get("/api/crew/categories/:organizerID", (request, response) => {
     }, request.params.organizerID);
 });
 
+app.get("/api/crew/:category/:event", (request, response) => {
+    console.log("request for all crew categories attached to event and specific category");
+    let val = [
+        request.params.category,
+        request.params.event
+    ];
+
+    crewDao.getAllCrewForCategoryForEventAndCategory((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
 app.post("/api/crew", (request, response) => {
     console.log("request to add crew");
     let val = [
