@@ -10,15 +10,23 @@ import {DocumentationTab} from "../documentationTab";
 import {DocList} from "../docView";
 import {riderStore} from "../../store/riderStore";
 import {EventStore} from "../../store/eventStore";
+import {createHashHistory} from "history";
+
+const history = createHashHistory();
 
 
 
 export class EventForm extends Component{
 
-    state = {
-        activeTab: 0,
-        edit: false,
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            activeTab: 0,
+            edit: false,
+        };
+
+    }
 
     // Handles when the user clicks "neste"
     editClicked = () => {
@@ -26,7 +34,8 @@ export class EventForm extends Component{
     };
 
     saveClicked = () => {
-        this.setState({edit: false})
+        this.setState({edit: false});
+        eventStore.postCurrentEvent().then(history.push("/"));
     };
 
     componentDidMount() {

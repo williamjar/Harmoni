@@ -42,9 +42,9 @@ export class EventStore{
 
         axios.post(axiosConfig.root + "/api/events" , body, {headers: header}).then(response =>{
             //Create an event from the insertID returned from the query and the organizerID, the rest is null
-            this.currentEvent = new Event(response.data.insertId, null, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
-        }).then(callback)
-            .catch(console.log("Error in eventStore"));
+            this.currentEvent = new Event(response.data.insertId, eventName, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
+            callback();
+        }).catch(console.log("Error in eventStore"));
 
     }
 
@@ -80,7 +80,7 @@ export class EventStore{
             "eventName" : this.currentEvent.eventName,
             "startDate" : this.currentEvent.startDate,
             "endDate" : this.currentEvent.endDate,
-            "startTime" : this.currentEvent.startDate,
+            "startTime" : this.currentEvent.startTime,
             "endTime" : this.currentEvent.endTime,
             "address" : this.currentEvent.address,
             "town" : this.currentEvent.town,
@@ -93,7 +93,7 @@ export class EventStore{
             "pictureID" : this.currentEvent.picture
         };
 
-        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, body.json.stringify(), {headers: header});
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, body, {headers: header});
     }
 
     static storeAllEvents(){

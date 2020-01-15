@@ -24,7 +24,7 @@ export class EventView extends React.Component {
         console.log(this.state.events);
 
         return(
-            <Table striped>
+            <Table responsive>
                 <tbody>
                 {this.state.events.map(event => (
                     <EventCard event={event}/>
