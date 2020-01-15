@@ -128,6 +128,7 @@ export class AddToCrew extends Component{
 
                     </div>
 
+
                     <div className="col-4">
                         <input className="form-check-input" type="checkbox" value="" id="mainResponsible"/>
                         <label className="form-check-label" htmlFor="mainResponsible">
@@ -135,6 +136,14 @@ export class AddToCrew extends Component{
                         </label>
                     </div>
                 </div>
+
+                {this.state.showRegisterCrewType?
+                    <div className="row padding-top-20">
+                        <div className="col-12">
+                            <AddCrewType cancelButton={this.cancelCrewTypeAdd} submit={this.addNew}/>
+                        </div>
+                    </div>
+                    :null}
 
                 <div className="row padding-top-20">
                     <div className="col-12">
@@ -147,17 +156,12 @@ export class AddToCrew extends Component{
                         <Search searchHandler={this.searchHandler}  />
                     </div>
                     <div className="col-lg-4 col-md-4">
-                        <button className="btn btn-success" onClick={this.showRegisterCrewTypeForm}>Registrer ny</button>
+                        <button className="btn btn-success" onClick={this.showRegisterCrewMemberForm}>Registrer ny</button>
                     </div>
                 </div>
 
-                {this.state.showRegisterCrewType?
-                    <div className="row padding-top-20">
-                        <div className="col-12">
-                            <AddCrewType cancelButton={this.cancelCrewTypeAdd} submit={this.addNew}/>
-                        </div>
-                    </div>
-                    :null}
+                {this.state.showRegisterCrewMember?<AddCrewMember toggleRegisterCrewMember={this.showRegisterCrewMemberForm} />:null}
+
 
                 <div className="row padding-top-20">
                     <div className="col-12">
@@ -199,6 +203,12 @@ export class AddToCrew extends Component{
             let currentState = this.state;
             currentState.showRegisterCrewType = !currentState.showRegisterCrewType;
             this.setState(currentState);
+    };
+
+    showRegisterCrewMemberForm= (event) => {
+        let currentState = this.state;
+        currentState.showRegisterCrewMember = !currentState.showRegisterCrewMember;
+        this.setState(currentState);
     };
 
     searchHandler = () => {
@@ -357,7 +367,7 @@ export class AddCrewMember extends Component{
 
     render() {
         return(
-            <div>
+            <div className="card card-body">
                 <Form>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
@@ -408,14 +418,12 @@ export class AddCrewMember extends Component{
 
     submitForm = () => {
         CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
-
-
-
-    }
+        this.props.toggleRegisterCrewMember();
+    };
 
     cancelRegister = () => {
-
-    }
+        this.props.toggleRegisterCrewMember();
+    };
 
 
 }
