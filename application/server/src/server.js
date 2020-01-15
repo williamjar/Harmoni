@@ -400,6 +400,22 @@ app.get("/api/bug/:bugID", (request, response) => {
 });
 
 // CONTACT
+
+//TODO: potensielt sikkerhetshull
+app.post("/contact", (request, response) => {
+    console.log("request to add contact");
+    let val = [
+        request.body.username,
+        request.body.phone,
+        request.body.email
+    ];
+
+    contactDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
 app.get("/api/contact/:contactID", (request, response) => {
     console.log("request to get a contact");
     contactDao.getOne((status, data) => {
