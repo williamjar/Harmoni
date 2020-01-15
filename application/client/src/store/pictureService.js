@@ -1,12 +1,12 @@
 import axios from "axios";
-
-const axiosConfig = require("./axiosConfig");
-import PictureElement from "../classes/pictureElement";
+import {PictureElement} from "../classes/pictureElement";
 import {CookieStore} from "./cookieStore";
 import {EventStore} from "./eventStore";
 import {OrganizerStore} from "./organizerStore";
 
-export class Picture {
+const axiosConfig = require("./axiosConfig");
+
+export class PictureService {
 
     //Get picture
     getPicture(pictureID){
@@ -33,8 +33,13 @@ export class Picture {
     }
 
     //Insert picture
-    insertPicture(organizerID, pictureLink, file, callback){
-        axios.post('http://localhost:8080/api/file/picture', file)
+    static insertPicture(organizerID, fileForm, callback){
+        console.log("File form: ");
+        console.log(fileForm);
+        for(let pair of fileForm.entries()){
+            console.log(pair);
+        }
+        axios.post('http://localhost:8080/api/file/picture', fileForm)
             .then(response => {
                 let databaseHeader = {
                     "Content-Type": "application/json",
@@ -42,8 +47,6 @@ export class Picture {
                 };
 
                 const path = response.data.path;
-                const name = OrganizerStore.currentOrganizer.contactName;
-                const filename = response.data.name;
 
                 let body = {
                     path: path
@@ -59,7 +62,7 @@ export class Picture {
                         axios.put('http://localhost:8080/api/organizer/picture/' + OrganizerStore.currentOrganizer.organizerID, JSON.stringify(organizerPictureBody), {headers: databaseHeader})
                             .then(response => {
                                 if (response.status === 200){
-                                    callback(200);
+                                    callback(200, path);
                                 }
                             });
                     });

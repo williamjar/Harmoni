@@ -31,7 +31,7 @@ module.exports = class documentDao extends Dao {
     }
 
     changePicture(pictureID, organizerID, callback){
-        super.query("UPDATE organizer SET pictureID = ? where organizerID = ?", callback);
+        super.query("UPDATE organizer SET pictureID = ? where organizerID = ?", [pictureID, organizerID], callback);
     }
 
 

@@ -166,22 +166,24 @@ const pictureStorage = multer.diskStorage({
 //init upload
 const uploadUserPicture = multer({
     storage: pictureStorage,
-    limits: {fileSize: 50000000},
+    limits: {fileSize: 5000000000},
     fileFilter: (req, file, cb) => {
+        console.log("Checking file filter");
         if (file.mimetype === "image/png" || file.mimetype === "image/jpg" ||
             file.mimetype === "image/jpeg" || file.mimetype === "image/gif") {
             cb(null, true);
         } else {
-            cb(null, false);
             return cb(new Error('Allowed only .png, .jpg, .jpeg and .gif'));
         }
     }
 });
 
+const fileUpload = multer({storage: fileStorage});
+
 // PICTURE
 
 //Save picture to server
-app.post("/api/file/picture",  uploadUserPicture.single('file'), (req, res) => {
+app.post("/api/file/picture",  uploadUserPicture.single('selectedFile'), (req, res) => {
     try {
         res.send({name: req.file.filename, path: req.file.path});
     } catch (err) {
@@ -226,14 +228,12 @@ app.put("/api/organizer/picture/:organizerID", (request, response) => {
 
 //Get one picture
 app.get("/api/organizer/picture/:pictureID", (require, response) => {
-    console.log("Request to get a rider element");
+    console.log("Request to get the picture of an organizer");
     pictureDao.getPicture((status, data) => {
         response.status(status);
         response.json(data);
     }, require.params.pictureID);
 });
-
-const fileUpload = multer({storage: fileStorage});
 
 app.post("/api/file/document/:eventID/:documentCategoryID", fileUpload.single('selectedFile'), (req, res) => {
     console.log("Request to create document");

@@ -7,7 +7,7 @@ const axiosConfig = require("./axiosConfig");
 
 
 export class RiderStore {
-    allRidersForCurrentEvent = [];
+    static allRidersForCurrentEvent = [];
 
     //get a rider element
     getRider(riderID) {
