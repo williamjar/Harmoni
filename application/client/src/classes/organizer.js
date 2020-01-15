@@ -37,7 +37,7 @@ export class Organizer extends Contact{
         organizer.addContact(super.getTestContacts()[1]);
         organizer.addContact(super.getTestContacts()[2]);
         organizer.addContact(super.getTestContacts()[3]);
-        organizer.addCrewCategory(CrewLeader.getTestCrewLeader()[0].crewCategory);
+        //organizer.addCrewCategory(CrewLeader.getTestCrewLeader()[0].crewCategory);
 
         //organizer.addEvent(Event.getTestEvents()[0]);
 

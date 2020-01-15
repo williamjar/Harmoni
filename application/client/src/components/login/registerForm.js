@@ -2,6 +2,7 @@ import React from 'react';
 import {Form, Button, Card, Row, Col} from 'react-bootstrap'
 import {RegisterOrganizerService} from "../../store/registerOrganizerService";
 import { createHashHistory } from 'history';
+import {NavLink} from "react-router-dom";
 
 let history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 
@@ -14,7 +15,8 @@ export class RegisterForm extends React.Component {
             firstEmail: '',
             secondEmail: '',
             firstPassword : '',
-            secondPassword: ''
+            secondPassword: '',
+            phonenumber: ''
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -73,11 +75,17 @@ export class RegisterForm extends React.Component {
 
                 <div className="justify-content-md-center m-5">
                     <Form onSubmit={this.handleSubmit}>
+
                         <Form.Group>
                             <Form.Control maxLength="25" type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
                         </Form.Group>
 
-                        <Row>
+                        <Form.Group>
+                            <Form.Control maxLength="8" type="number" name="phonenumber" placeholder="Telefonnummer" value={this.state.phonenumvber} onChange={this.handleInputChange}/>
+                        </Form.Group>
+
+
+                            <Row>
                             <Col>
                                 <Form.Group>
                                     <Form.Control type="email" maxLength="320" name="firstEmail" placeholder="E-postadresse" value={this.state.firstEmail} onChange={this.handleInputChange}/>
@@ -121,8 +129,7 @@ export class RegisterForm extends React.Component {
                         <Form.Text className="text-danger" hidden={!this.databaseUsernameAlreadyExists()}>Brukernavnet finnes allerede</Form.Text>
                         <Form.Text className="text-danger" hidden={!this.databaseConnectionError()}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
 
-
-
+                        <Form.Text> Har du allerede en bruker? <NavLink to="/"> Klikk her for å logge inn. <span className="NavLink"></span></NavLink></Form.Text>
                     </Form>
                 </div>
             </Card>

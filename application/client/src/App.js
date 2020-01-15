@@ -22,9 +22,9 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "react-icons/all";
-
-
-
+import {CookieStore} from "./store/cookieStore";
+import { createHashHistory } from 'history';
+let history = createHashHistory();
 
 export class App extends Component{
 
@@ -32,7 +32,7 @@ export class App extends Component{
         super(props);
 
         this.state = {
-            loggedIn : false,
+            loggedIn : CookieStore.validateToken(),
             mobileView : false,
         };
 
@@ -52,13 +52,13 @@ export class App extends Component{
         let currentState = this.state;
         currentState.mobileView = false;
         this.setState(currentState);
-    }
+    };
 
     turnOnMobileView = () =>{
         let currentState = this.state;
         currentState.mobileView = true;
         this.setState(currentState);
-    }
+    };
 
     componentDidMount = () => {
         if(window.innerWidth>900){
@@ -68,21 +68,11 @@ export class App extends Component{
         }
 
         this.handleLogin();
-    }
+    };
 
     render(){
-
-        if(!this.state.loggedIn){
-            return(
-                <div className="Login-Container">
-                    <HashRouter>
-                        <Route exact path="/" component={() => <LoginForm logIn={() => this.handleLogin()}/>} />
-                        <Route exact path="/registrer" component={() => <RegisterForm />} />
-                    </HashRouter>
-                </div>
-            )
-        } else {
-              return (
+        if (this.state.loggedIn){
+            return (
                 <div className="App">
                     <HashRouter>
                         <div className="row no-gutters">
@@ -106,18 +96,43 @@ export class App extends Component{
                         </div>
                     </HashRouter>
                 </div>
-              );
+            );
+        }
+        else {
+            return(
+                <div className="Login-Container">
+                    <HashRouter>
+                        <Route exact path="/" component={() => <LoginForm logIn={() => this.handleLogin()}/>} />
+                        <Route exact path="/registrer" component={() => <RegisterForm />} />
+                    </HashRouter>
+                </div>
+            )
         }
     }
 
     handleLogin = () => {
         let currentState = this.state;
-        currentState.loggedIn = sessionStorage.getItem('loggedIn');
+
+
+        let validate = CookieStore.validateToken();
+
+        if (!validate){
+            sessionStorage.removeItem('loggedIn');
+            history.push("/");
+        }
+        else{
+            sessionStorage.setItem('loggedIn', 'true');
+        }
+
+        if (sessionStorage.getItem('loggedIn')){
+            currentState.loggedIn = true;
+        }
+        else{
+            currentState.loggedIn = false;
+        }
+
         this.setState(currentState);
     }
-
-
-
 
 }
 
