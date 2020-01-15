@@ -6,7 +6,7 @@ import {FaAngleDown} from "react-icons/fa";
 import {EventView} from "./eventView";
 import {Event} from "../../../classes/event";
 import {Search} from "../search";
-import {eventStore} from "../../../store/eventStore";
+import {EventStore} from "../../../store/eventStore";
 import {CookieStore} from "../../../store/cookieStore";
 
 // Component displaying all of the users events
@@ -39,7 +39,7 @@ export class Dashboard extends React.Component {
     };
 
     componentDidMount() {
-        eventStore.storeAllEventsForOrganizer(() => {this.setState({events: eventStore.allEventsForOrganizer})}, CookieStore.currentUserID);
+        EventStore.storeAllEventsForOrganizer(() => {this.setState({events: EventStore.allEventsForOrganizer})}, CookieStore.currentUserID);
     }
 
     render() {
@@ -71,7 +71,7 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            {console.log(eventStore.allEventsForOrganizer)}
+                            {console.log(EventStore.allEventsForOrganizer)}
                             <EventView events={this.state.events.filter(event => event.status === 1)}/>
                         </Row>
                     </Accordion.Collapse>

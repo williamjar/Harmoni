@@ -9,7 +9,7 @@ import {CrewTab, CrewView} from "./crew";
 import {DocumentationTab} from "../documentationTab";
 import {DocList} from "../docView";
 import {riderStore} from "../../store/riderStore";
-import {eventStore} from "../../store/eventStore";
+import {EventStore} from "../../store/eventStore";
 
 
 

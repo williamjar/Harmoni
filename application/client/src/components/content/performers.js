@@ -11,7 +11,7 @@ import {Col} from "react-bootstrap";
 import {ArtistService} from "../../store/artistService";
 import {CookieStore} from "../../store/cookieStore";
 import {riderStore} from "../../store/riderStore";
-import {eventStore} from "../../store/eventStore";
+import {EventStore} from "../../store/eventStore";
 import {RiderElement} from "../../classes/riderElement";
 
 
@@ -215,7 +215,7 @@ export class PerformerCard extends Component{
             currentState.riders = riderStore.allRidersForCurrentEvent;
             this.setState(currentState);
             console.log(this.state);
-        }, this.state.performer.artistID, eventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
+        }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
     }
 
     handleInputRider = (event) =>{
