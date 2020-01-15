@@ -20,6 +20,7 @@ import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {StandardAlert} from "../widgets/alert";
 
+
 export class UserPage extends React.Component {
     constructor(props) {
         super(props);
