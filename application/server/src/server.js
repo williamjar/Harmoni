@@ -86,7 +86,7 @@ function deleteAllFilesInFolder(path, callback) {
         if (err) console.log(err);
         for (const file of files) {
             fs.unlink(path + '/' + file, err => {
-            if (err) console.log(err);
+                if (err) console.log(err);
             });
         }
     });
@@ -189,22 +189,6 @@ app.post("/api/file/picture",  uploadUserPicture.single('file'), (req, res) => {
     }
 });
 
-/*
-app.post("/api/document", (request, response) => {
-    console.log("Express: Request to add a document");
-    documentationDao.insertDocument(request.body.eventID,
-                                    request.body.documentName,
-                                    request.body.documentLink,
-                                    request.body.artistID,
-                                    request.body.crewID,
-                                    request.body.documentCategoryID,
-        (status, data) => {
-        response.status(status);
-        response.json(data);
-    });
-});
- */
-
 app.post("/api/organizer/picture", (request, response) => {
     console.log("Request to add a picture");
     pictureDao.insertPicture(request.body.path, (status, data) => {
@@ -249,9 +233,9 @@ app.get("/api/organizer/picture/:pictureID", (require, response) => {
     }, require.params.pictureID);
 });
 
-const upload = multer({storage: fileStorage});
+const fileUpload = multer({storage: fileStorage});
 
-app.post("/api/file/document/:eventID/:documentCategoryID", upload.single('selectedFile'), (req, res) => {
+app.post("/api/file/document/:eventID/:documentCategoryID", fileUpload.single('selectedFile'), (req, res) => {
     console.log("Request to create document");
     console.log(req.file);
     res.send({name: req.file.filename, path: req.file.path});
@@ -308,6 +292,27 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
 
 app.put("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     documentationDao.changeDocumentCategory(req.params.eventID, req.params.documentCategoryID, req.body, (status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.post("/api/:eventID/documents/create", (req, res) => {
+    documentationDao.insertDocument(req.params.eventID, req.body, (status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.post("/api/:eventID/documents/create/artist", (req, res) => {
+    documentationDao.insertDocumentArtist(req.params.eventID, req.body, (status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.post("/api/:eventID/documents/create/crew", (req, res) => {
+    documentationDao.insertDocumentCrew(req.params.eventID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });
@@ -397,12 +402,11 @@ app.use('/api', (req, res, next) => {
     let token;
     if (req.headers["x-access-token"]){
         token = req.headers["x-access-token"];
-    }
-    else{
+    } else {
         token = CookieStore.currentToken;
     }
     console.log("Token in /api " + token);
-    try{
+    try {
         jwt.verify(token, publicKey);
         let email = jwt.decode(token, publicKey).email;
         console.log('Token OK for: ' + email);
@@ -415,8 +419,7 @@ app.use('/api', (req, res, next) => {
             });
         console.log("Token after /api " + CookieStore.currentToken);
         next();
-    }
-    catch (e) {
+    } catch (e) {
         console.log('Token not OK');
         res.status(401);
         res.json({error: e});
@@ -456,6 +459,7 @@ app.get("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID);
 });
 
+//TODO: potensielt sikkerhetshull
 app.post("/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
@@ -497,10 +501,15 @@ app.delete("/api/contact/:contactID", (request, response) => {
 app.put("/api/contact/:contactID/change/phoneNumber", (request, response) => {
     console.log("Request to change password for organizer");
 
+    let val = [
+        request.body.phone,
+        request.params.contactID
+    ];
+
     contactDao.changePhoneNumber((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.body.phone ,request.params.contactID);
+    }, val);
 });
 
 
@@ -643,6 +652,19 @@ app.get("/api/crew/categories/:organizerID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.organizerID);
+});
+
+app.get("/api/crew/:category/:event", (request, response) => {
+    console.log("request for all crew categories attached to event and specific category");
+    let val = [
+        request.params.category,
+        request.params.event
+    ];
+
+    crewDao.getAllCrewForCategoryForEventAndCategory((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
 });
 
 app.post("/api/crew", (request, response) => {
@@ -957,6 +979,18 @@ app.put("/api/organizer/:organizerID/change/username", (request, response) => {
     });
 });
 
+app.put("/organizer/:organizerID/change/picture", (request, response) => {
+    console.log("Request to change profile picture for organizer");
+    let val = [
+        request.body.pictureID,
+        request.params.organizerID
+    ];
+    organizerDao.changeOrganizerProfilePicture((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
 
 //RIDER
 
@@ -1043,15 +1077,15 @@ app.delete("/api/event/:eventID/artist/:artistID/rider/:riderElementID", (reques
 app.post("/api/document", (request, response) => {
     console.log("Express: Request to add a document");
     documentationDao.insertDocument(request.body.eventID,
-                                    request.body.documentName,
-                                    request.body.documentLink,
-                                    request.body.artistID,
-                                    request.body.crewID,
-                                    request.body.documentCategoryID,
+        request.body.documentName,
+        request.body.documentLink,
+        request.body.artistID,
+        request.body.crewID,
+        request.body.documentCategoryID,
         (status, data) => {
-        response.status(status);
-        response.json(data);
-    });
+            response.status(status);
+            response.json(data);
+        });
 });
 
 app.put("/api/document/:documentID", (request, response) => {

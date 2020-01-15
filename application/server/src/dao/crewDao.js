@@ -38,6 +38,10 @@ module.exports = class crewDao extends Dao {
         super.query('SELECT * FROM crewCategory WHERE organizerID = ?', organizerID, callback);
     }
 
+    getAllCrewForCategoryForEventAndCategory(callback, list) {
+        super.query('SELECT * FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE crewCategory.crewCategoryID = ? AND event_crewCategory_crew.eventid = ?', list, callback);
+    }
+
     createOneCategory(callback, list) {
         super.query('INSERT INTO crewCategory VALUES (DEFAULT, ?, ?)', list, callback);
     }
@@ -53,5 +57,6 @@ module.exports = class crewDao extends Dao {
     unAssignOne(callback, eventID, crewCategoryID, crewID) {
         super.query('DELETE FROM event_crewCategory_crew where eventID = ? AND crewCategoryID = ? AND crewID = ?', [eventID, crewCategoryID, crewID], callback);
     }
+
 
 };

@@ -60,6 +60,23 @@ export class CrewService {
             "x-access-token": CookieStore.currentToken
         };
 
+        let allCrewMembersForEventAndCategory = [];
+        axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response =>  {
+            for (let i = 0; i < response.data.length; i++) {
+                allCrewMembersForEventAndCategory.push(new CrewMember(response.data[i].crewID, response.data[i].description,
+                    response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
+            }
+        });
+        return allCrewMembersForEventAndCategory;
+    }
+
+    static getAllCrewMembersForEventAndCategory(eventID,crewCategoryID){
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
         let allCrewMembersForEvent = [];
         axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
@@ -69,6 +86,7 @@ export class CrewService {
         });
         return allCrewMembersForEvent;
     }
+
 
     static createCrewMember(name, phone, email, description, organizerID, callback){
 

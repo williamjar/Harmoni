@@ -1,6 +1,7 @@
 export class RiderElement{
-    constructor(riderID, status, isDone, description){
+    constructor(riderID, artistID, status, isDone, description){
         this.riderID = riderID;
+        this.artistID = artistID;
         this.status = status;
         this.isDone = isDone;
         this.description = description;

@@ -9,6 +9,10 @@ module.exports = class pictureDao extends Dao {
         super.query('insert into picture (pictureLink) VALUES (?)', [path], callback);
     }
 
+    createOne(callback, link) {
+        super.query('insert into picture (pictureLink) VALUES (?)', link, callback);
+    }
+
     deleteOne(callback, pictureID) {
         super.query('delete from picture where pictureID = ?', pictureID, callback);
     }

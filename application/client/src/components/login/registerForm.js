@@ -1,10 +1,10 @@
 import React from 'react';
-import {Form, Button, Card, Row, Col} from 'react-bootstrap'
+import {Form, Button, Card, Row, Col, Spinner} from 'react-bootstrap'
 import {RegisterOrganizerService} from "../../store/registerOrganizerService";
 import { createHashHistory } from 'history';
 import {NavLink} from "react-router-dom";
 
-let history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
+let history = createHashHistory();
 
 export class RegisterForm extends React.Component {
 
@@ -16,7 +16,11 @@ export class RegisterForm extends React.Component {
             secondEmail: '',
             firstPassword : '',
             secondPassword: '',
-            phonenumber: ''
+            phonenumber: '',
+            usernameAlreadyExist: false,
+            emailAlreadyExist: false,
+            databaseConnectionError: false,
+            loggingIn: false
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -27,7 +31,6 @@ export class RegisterForm extends React.Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        console.log(name + " verdi: " + value);
 
         this.setState({[name]: value,});
     }
@@ -64,27 +67,30 @@ export class RegisterForm extends React.Component {
     }
 
     validateForm() {
-        return (this.validateEmail() && (this.validatePassword())) && (this.validatePasswordLength()) && (this.validateUsername()) && (this.validateEmailLength()) && this.validatePasswordLength();
+        return (this.validateEmail() && (this.validatePassword())) && (this.validatePasswordLength()) && (this.validateUsername()) && (this.validateEmailLength()) && this.validatePasswordLength() && !(this.state.username.toLowerCase()==="geir");
     }
 
     render() {
 
         return (
             <Card>
-                <div className="card-header"><h2 className="card-title text-center">Registrer ny bruker</h2></div>
-
+                <Card.Body className={"m-4"}>
+                    <Card.Title className="ml-5">Registrer bruker</Card.Title>
                 <div className="justify-content-md-center m-5">
                     <Form onSubmit={this.handleSubmit}>
 
+                        <Form.Text className="text-danger" hidden={!this.state.usernameAlreadyExist}>Brukernavnet finnes allerede</Form.Text>
                         <Form.Group>
                             <Form.Control maxLength="25" type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
                         </Form.Group>
+
 
                         <Form.Group>
                             <Form.Control maxLength="8" type="number" name="phonenumber" placeholder="Telefonnummer" value={this.state.phonenumvber} onChange={this.handleInputChange}/>
                         </Form.Group>
 
 
+                        <Form.Text className="text-danger" hidden={!this.state.emailAlreadyExist}>Det er allerede registrert en bruker med denne e-postaddressen</Form.Text>
                             <Row>
                             <Col>
                                 <Form.Group>
@@ -98,6 +104,7 @@ export class RegisterForm extends React.Component {
                                 </Form.Group>
                             </Col>
                         </Row>
+
 
                         <Row>
                             <Col>
@@ -113,7 +120,8 @@ export class RegisterForm extends React.Component {
                             </Col>
                         </Row>
 
-                        <Button variant="btn btn-primary" type="submit" disabled={!this.validateForm()}> Registrer bruker </Button>
+                        <Button variant="btn btn-primary" type="submit" hidden={this.state.loggingIn} disabled={!this.validateForm()}> Registrer bruker </Button>
+                        <Button variant="btn btn-primary" disabled hidden={!this.state.loggingIn}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Registrerer bruker</Button>
 
 
                         <Form.Text className="text-danger" hidden={this.validateUsername()}>Brukernavnet kan kun inneholde tall og bokstaver</Form.Text>
@@ -125,19 +133,25 @@ export class RegisterForm extends React.Component {
                         <Form.Text className="text-danger" hidden={this.validatePassword()}>Passordene må være like</Form.Text>
                         <Form.Text className="text-danger" hidden={this.validatePasswordLength()}>Passordet ditt må være på minst 8 tegn</Form.Text>
 
-                        <Form.Text className="text-danger" hidden={!this.databaseAlreadyRegistered()}>Det er allerede registrert en bruker med denne e-postaddressen</Form.Text>
-                        <Form.Text className="text-danger" hidden={!this.databaseUsernameAlreadyExists()}>Brukernavnet finnes allerede</Form.Text>
-                        <Form.Text className="text-danger" hidden={!this.databaseConnectionError()}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
+                        <Form.Text className="text-danger" hidden={!(this.state.username.toLowerCase()==="geir")}>"Geir er ikke et gyldig brukernavn"</Form.Text>
+
+                        <Form.Text className="text-danger" hidden={!this.state.databaseConnectionError}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
+
+
 
                         <Form.Text> Har du allerede en bruker? <NavLink to="/"> Klikk her for å logge inn. <span className="NavLink"></span></NavLink></Form.Text>
                     </Form>
                 </div>
+                </Card.Body>
             </Card>
         )
     }
 
 
     submitForm(){
+        this.setState({loggingIn: true});
+        this.setState({emailAlreadyExist: false});
+        this.setState({usernameAlreadyExist: false});
         /*
         *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.firstEmail" and "this.state.firstPassword";
         *   It can be assumed that the emails are identical and that the passwords are identical.
@@ -149,41 +163,19 @@ export class RegisterForm extends React.Component {
                 history.push('/');
             }
             else if (statusCode === 501){
-                console.log("email already registered");
+                this.setState({emailAlreadyExist: true})
+                this.setState({loggingIn: false});
             }
             else if (statusCode === 502){
-                console.log("name already registered");
+                this.setState({usernameAlreadyExist: true})
+                this.setState({loggingIn: false});
             }
             else if (statusCode === 500){
                 console.log("database error, please try again");
+                this.setState({loggingIn: false});
             }
         });
     }
-
-    // Database control functions to display the proper error message to the user.
-
-    databaseAlreadyRegistered(){
-        return false;
-        /*
-         * return true if the user is already registered.
-         */
-    }
-
-    databaseUsernameAlreadyExists(){
-        return false;
-        /*
-         * return true if the user is already registered.
-         */
-    }
-
-
-    databaseConnectionError() {
-        return false;
-        /*
-         * return true if there is a database connection error
-         */
-    }
-
 
 
 
