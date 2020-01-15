@@ -127,6 +127,14 @@ body{
     align-items: center;
 }
 
+.ml-2:hover {
+    color: #005CBF;
+}
+
+.ml-2 {
+    color: #007BFF;
+}
+
 /* Event registration */
 .tabContent {
     padding-top: 25px;

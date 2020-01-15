@@ -6,8 +6,11 @@ import {FaAngleDown} from "react-icons/fa";
 import {EventView} from "./eventView";
 import {Event} from "../../../classes/event";
 import {Search} from "../search";
-import {EventStore} from "../../../store/eventStore";
+import {eventStore} from "../../../store/eventStore";
 import {CookieStore} from "../../../store/cookieStore";
+import {createHashHistory} from "history";
+
+const history = createHashHistory();
 
 
 // Component displaying all of the users events
@@ -39,8 +42,12 @@ export class Dashboard extends React.Component {
         }
     };
 
+    addEventClicked = () => {
+        history.push("/opprett")
+    };
+
     componentDidMount() {
-        EventStore.storeAllEventsForOrganizer(() => {this.setState({events: EventStore.allEventsForOrganizer})}, CookieStore.currentUserID);
+        eventStore.storeAllEventsForOrganizer(() => {this.setState({events: eventStore.allEventsForOrganizer})}, CookieStore.currentUserID);
     }
 
     render() {
@@ -74,7 +81,9 @@ export class Dashboard extends React.Component {
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
                             {console.log(EventStore.allEventsForOrganizer)}
-                            <EventView events={this.state.events.filter(event => event.status === 1)}/>
+                            {this.state.events.filter(e => e.status === 1).length > 0 ?
+                                <EventView events={this.state.events.filter(event => event.status === 1)}/> :
+                                <NoEvents message="Du har ingen planlagte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
@@ -86,22 +95,33 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            <EventView events={this.state.events.filter(event => event.status === 0)}/>
+                            {this.state.events.filter(e => e.status === 0).length > 0 ?
+                                <EventView events={this.state.events.filter(event => event.status === 0)}/> :
+                                <NoEvents message="Du har ingen arrangement under planlegging"/>}
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
 
-                <Accordion defaultActiveKey="0">
+                <Accordion defaultActiveKey="1">
                     <Row className="no-gutters">
                         <p>Arkiverte</p>
                         <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            <EventView events={this.state.events.filter(event => event.status === 2)}/>
+                            {this.state.events.filter(e => e.status === 2).length > 0 ?
+                                <EventView events={this.state.events.filter(event => event.status === 2)}/> :
+                                <NoEvents message="Du har ingen arkiverte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
+                <Row>
+                   <Col className="pull-right" size={12}>
+                       <div onClick={this.addEventClicked} align="right">
+                           <FaPlusCircle className="ml-2" size={60}/>
+                       </div>
+                   </Col>
+                </Row>
             </Card>
         )
     }

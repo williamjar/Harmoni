@@ -3,6 +3,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button} from "react-bootstrap";
 import { createHashHistory } from 'history';
+import {eventStore} from "../../../store/eventStore";
 
 const history = createHashHistory();
 
@@ -15,6 +16,7 @@ export class EventCard extends React.Component {
 
     // Handles when the user
     viewEvent = () => {
+        eventStore.currentEvent = this.props.event;
         history.push("/arrangementEdit/" + this.props.event.eventID);
     };
 
@@ -22,7 +24,7 @@ export class EventCard extends React.Component {
 
         return(
             <tr align='center'>
-                <td>{this.state.date}</td>
+                <td align="left">{this.state.date}</td>
                 <td>{this.props.event.eventName} - {this.props.event.town}</td>
                 <td align="right"><Button variant="outline-secondary" onClick={this.viewEvent}>Vis </Button></td>
             </tr>
