@@ -30,6 +30,7 @@ export function getHashedFromEmail(enteredPassword, email, callback) {
 export function verifyPassword(organizerID, enteredPassword) {
     console.log("verify " + organizerID + " " + enteredPassword);
     let passwordInDB = getPassword(organizerID);
+    console.log("verify " + passwordInDB);
     let salt = getSaltFromID(organizerID);
     let enteredPasswordHashed = sha512(enteredPassword, salt);
     console.log(enteredPasswordHashed + " == " + passwordInDB);
@@ -75,13 +76,14 @@ export function getOrganizerID(email, callback) {
 
 /** Uses organizerID to find the organizers password */
 export function getPassword(organizerID, callback) {
-    console.log('OrganizerID: ' + organizerID);
+    console.log('getPWd OrganizerID: ' + organizerID);
     let header = {
         "Content-Type": "application/json",
     };
     axios.get(axiosConfig.root + "/organizer/" + organizerID, {headers: header})
         .then(res => {
             let password = res.data[0].password;
+            console.log("getPWd password: " + password);
             callback(password);
         });
 }
