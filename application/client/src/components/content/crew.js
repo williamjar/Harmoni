@@ -12,7 +12,7 @@ import {CookieStore} from "../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
-import {eventStore} from "../../store/eventStore";
+import {eventStore as EventStore, eventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
 
 
@@ -24,7 +24,7 @@ export class CrewTab extends Component{
     render(){
         return(
             <div>
-                {this.state.editable ? <div><AddToCrew/><AddedCrew/></div> : <CrewView/>}
+                {this.state.editable ? <div><AddToCrew/><CrewView/></div> : <CrewView/>}
             </div>
         )
     }
@@ -290,7 +290,12 @@ export class CrewView extends Component {
             console.log(this.state.crewList);
             return(
                 <Card.Body>
-                        <ListGroup>
+                    <div className="row padding-top-20">
+                        <div className="col-12">
+                            Personell som er lagt til:
+                        </div>
+                    </div>
+                    <ListGroup>
                             {this.state.crewList.map(e => (
                                 <ListGroup.Item>
                                     <Row>
@@ -320,11 +325,11 @@ export class CrewView extends Component {
     };
 
     returnCrew = () => {
-        CrewStore.getAllCrewMembersForEvent(data => {
-            console.log("return crew members" + data);
+        CrewStore.storeAllCrewMembersForEvent(() => {
+            console.log("return crew members" + CrewStore.allCrewForCurrentEvent);
             this.setState(
-                { crewList : data })
-        }, 1);
+                { crewList : CrewStore.allCrewForCurrentEvent })
+        }, EventStore.currentEvent);
         console.log(this.state);
     };
 
@@ -344,6 +349,7 @@ export class AddCrewMember extends Component{
             name : "",
             phone : "",
             email : "",
+            crewCategoryID : 1
         };
     }
 
@@ -368,7 +374,7 @@ export class AddCrewMember extends Component{
                         <Form.Control type="email" placeholder="" onChange={this.handleEmailChange} />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit" onClick={this.submitForm}>
+                    <Button variant="primary" type="button" onClick={this.submitForm}>
                         Submit
                     </Button>
                     <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
@@ -399,7 +405,7 @@ export class AddCrewMember extends Component{
     }
 
     submitForm = () => {
-        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '',  CookieStore.currentUserID, () => {});
+        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
 
 
 
