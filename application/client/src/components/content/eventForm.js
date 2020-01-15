@@ -8,6 +8,7 @@ import {PerformerCard, PerformersTab} from "./performers";
 import {CrewTab, CrewView} from "./crew";
 import {DocumentationTab} from "../documentationTab";
 import {DocList} from "../docView";
+import {riderStore} from "../../store/riderStore";
 import {eventStore} from "../../store/eventStore";
 
 
@@ -32,6 +33,9 @@ export class EventForm extends Component{
     saveClicked = () => {
         this.setState({edit: false})
     };
+
+    componentDidMount() {
+    }
 
     render(){
         return(

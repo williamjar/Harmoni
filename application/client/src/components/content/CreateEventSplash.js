@@ -1,16 +1,13 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from "react-bootstrap/Form";
-import {InputGroup} from "react-bootstrap";
+import {InputGroup, FormControl} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import { NavLink } from 'react-router-dom';
 import { createHashHistory } from 'history';
 import {CookieStore} from "../../store/cookieStore";
 import {eventStore} from "../../store/eventStore";
 let history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
-
-
-
 
 export class CreateEventSplash extends Component{
     emptyMessage = "Navn kan ikke være tomt";
@@ -32,25 +29,26 @@ export class CreateEventSplash extends Component{
     render() {
         return (
             <div className="splashCreateEvent w-75 center">
-                <Form>
-                    <Form.Label column={6}>
-                        <h1>Navn på arrangement:</h1>
-                    </Form.Label>
 
                     <div className = "padding-top-20">
-                        <Form.Control type="text" placeholder="" onChange={this.inputHandler}/>
+
+                        <InputGroup className="mb-3 " size="lg">
+                            <FormControl
+                                onChange={this.inputHandler}
+                                placeholder="Navn på arrangementet"
+                                aria-label="Navn på arrangementet"
+                                aria-describedby="basic-addon2"
+                            />
+                            <InputGroup.Append>
+                                <Button onClick={this.create} variant="success">Opprett</Button>
+                            </InputGroup.Append>
+                        </InputGroup>
+
                     </div>
 
                     {this.state.emptyMessage?<div className="text-red">{this.emptyMessage}</div>:null}
 
 
-
-                    <div className = "padding-top-20">
-                        <Button variant="success" type="submit" onClick={this.create}>
-                            Submit
-                        </Button>
-                    </div>
-                </Form>
             </div>
         );
     }
@@ -66,9 +64,10 @@ export class CreateEventSplash extends Component{
             state.emptyMessage = true;
             this.setState(state);
         } else{
-            eventStore.createEvent(() => {history.push('/arrangementEdit')}, this.state.inputName,CookieStore.currentUserID);
-
-
+            eventStore.createEvent(() => {
+                history.push("/arrangementEdit");
+                console.log(history.location);
+            }, this.state.inputName, CookieStore.currentUserID);
         }
     }
 }
