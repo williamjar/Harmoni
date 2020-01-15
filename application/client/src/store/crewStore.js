@@ -84,7 +84,11 @@ export class CrewStore {
                     response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description));
 
             }
-
+            axios.get(axiosConfig.root + 'api/crew/event/' + eventID + '/categories/' + response.data[i].crewID, {headers: header}).then(response => {
+                for (let i = 0; i < response.data.length; i++) {
+                    this.addCategory(response.response.data[i].crewCategory);
+                }
+            });
         });
         callback(allCrewMembersForEvent);
     }
