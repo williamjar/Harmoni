@@ -35,7 +35,7 @@ export class EventForm extends Component{
 
     saveClicked = () => {
         this.setState({edit: false});
-        eventStore.postCurrentEvent().then(history.push("/"));
+        EventStore.postCurrentEvent().then(history.push("/"));
     };
 
     componentDidMount() {

@@ -91,7 +91,7 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            {console.log(eventStore.allEventsForOrganizer)}
+                            {console.log(EventStore.allEventsForOrganizer)}
                             {this.state.events.filter(e => e.status === 1).length > 0 ?
                                 <EventView events={this.state.events.filter(event => event.status === 1)}/> :
                                 <NoEvents message="Du har ingen planlagte arrangement"/>}
