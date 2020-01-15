@@ -83,6 +83,8 @@ export class LoginService {
                     let saltHash = passwordInDB.split("/");
                     let salt = saltHash[0];
 
+                    console.log(passwordInDB);
+
                     function sha512(password, salt) {
                         let hash = crypto.createHmac('sha512', salt);
                         /** Hashing algorithm sha512 */
@@ -92,6 +94,7 @@ export class LoginService {
                     }
 
                     let hashed = sha512(enteredPassword, salt);
+                    console.log(hashed);
                     callback(hashed);
                 })
             });

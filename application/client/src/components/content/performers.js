@@ -9,18 +9,21 @@ import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {ArtistService} from "../../store/artistService";
+import {CookieStore} from "../../store/cookieStore";
+import {riderStore} from "../../store/riderStore";
+import {eventStore} from "../../store/eventStore";
+import {RiderElement} from "../../classes/riderElement";
 
 
 export class PerformersTab extends Component{
+    /* All the performer content for use in the Performer tab */
 
     constructor(props){
         super(props);
 
         this.state = {
-            showArtistCard: false,
-        };
-
-        this.searchHandler = this.searchHandler.bind(this);
+            performersAdded : [],
+        }
     }
 
     render(){
@@ -29,63 +32,75 @@ export class PerformersTab extends Component{
                 <div className="row">
 
                     <div className="col-lg-6 col-md-12  border-right">
-                        <PerformerPanel searchHandler={this.searchHandler} showCard={this.state.showArtistCard}/>
+                        <PerformerPanel addPerformer={this.addPerformer}/>
                     </div>
 
                     <div className="col-lg-6 col-md-12">
-                        <RegisteredPerformers />
+                        <RegisteredPerformers performersAdded={this.state.performersAdded}/>
                     </div>
                 </div>
             </div>
         )
     }
 
-    searchHandler(selected){
-        let personSelected = selected;
+    addPerformer = (selected) => {
         let currentState = this.state;
-        currentState.showArtistCard = true;
+        currentState.performersAdded.push(selected);
         this.setState(currentState);
     }
 }
 
 export class PerformerPanel extends Component{
+    /* Performerpanel is the left side in the PerformerTab, it is combined, because of the search and performercard. */
 
     constructor(props){
         super(props);
 
         this.state = {
             performerList : [],
+            showArtistCard: false,
+            performerSelected : {},
         }
     }
 
     render() {
         return (
             <div>
-                <Search searchHandler={this.props.searchHandler} registerComponent={<RegisterPerformer/>} addRegisterButton={true} SearchList={this.performerList} />
+                <Search searchHandler={this.searchHandler} registerComponent={<RegisterPerformer/>} addRegisterButton={true} SearchList={this.performerList} />
                 <div className="padding-top-20">
-                {this.props.showCard?<PerformerCard />:null}
+                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} />:null}
                 </div>
             </div>
         );
     }
 
-    componentDidMount = () => {
-        //let currentState = this.state;
-        //currentState.performerList = ArtistService.getArtistForOrganizer(1);
-        //this.setState(currentState);
+    searchHandler = (selected) => {
+        /* This searchhandler is called when search result is selected
+        * It then shows the performer card for that performer.
+        * */
+        let currentState = this.state;
+        currentState.performerSelected = selected;
+        currentState.showArtistCard = true;
+        this.props.addPerformer(selected);
+        this.setState(currentState);
     }
 
 }
 
 export class PerformerCard extends Component{
+    /* Performer card that shows information about artist and riders connected to it */
 
     constructor(props){
         super(props);
 
         this.state = {
+            performer : this.props.performerSelected,
             riderInput : "",
             numberOfFilesAdded: 0,
+            riders : [],
         };
+
+        console.log(this.props.performerSelected);
 
 
 
@@ -100,8 +115,8 @@ export class PerformerCard extends Component{
                     </div>
 
                     <div className="col-7">
-                        Lorde<br/>
-                        artist@hotmail.com
+                        {this.state.performer.contactName}<br/>
+                        {this.state.performer.email}
                     </div>
 
                     <div className="col-3">
@@ -130,8 +145,10 @@ export class PerformerCard extends Component{
                             </InputGroup.Append>
                         </InputGroup>
 
-                        <Rider />
-                        <Rider />
+                        {this.state.riders.map(e =>
+                            <Rider description={e.description} isDone={e.isDone} status={e.status}/>
+                        )}
+
 
                     </div>
                 </div>
@@ -168,10 +185,6 @@ export class PerformerCard extends Component{
 
                    </div>
 
-
-
-
-
                    <div className="col-4 offset-4 text-right">
                        <button className="btn-success rounded" onClick={() => this.save()}>Lagre</button>
                    </div>
@@ -191,12 +204,25 @@ export class PerformerCard extends Component{
             this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
         }
     }
+
     addRider = () =>{
         alert(this.state.riderInput);
+        riderStore.createNewRiderElement((newRider) => {
+            riderStore.allRidersForCurrentEvent.push(newRider);
+            console.log(riderStore.allRidersForCurrentEvent);
+
+            let currentState = this.state;
+            currentState.riders = riderStore.allRidersForCurrentEvent;
+            this.setState(currentState);
+            console.log(this.state);
+        }, this.state.performer.artistID, eventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
     }
 
     handleInputRider = (event) =>{
-        this.setState({riderInput: event.target.value});
+        /* Handles the input for new riders to be added */
+        let currentState = this.state;
+        currentState.riderInput = event.target.value;
+        this.setState(currentState);
     }
 
     save = () => {
@@ -213,6 +239,8 @@ export class PerformerCard extends Component{
         };
 
     }
+
+
 }
 
 export class Rider extends Component{
@@ -223,9 +251,6 @@ export class Rider extends Component{
             taskDone: false,
             status : "",
         };
-
-        this.handleInput = this.handleInput.bind(this);
-
     }
 
     render(){
@@ -234,12 +259,12 @@ export class Rider extends Component{
                 <div className="row align-items-center">
 
                     <div className="col-5">
-                        Knekkebrød med ost
+                        {this.props.description}
                     </div>
 
                     <div className="col-3">
                         <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value="" id="riderCompleted" onChange={this.handleInput}/>
+                            <input className="form-check-input" type="checkbox" value={this.props.isDone} id="riderCompleted" onChange={this.handleInput}/>
                                 <label className="form-check-label" htmlFor="riderCompleted">
                                     Utført
                                 </label>
@@ -247,7 +272,7 @@ export class Rider extends Component{
                     </div>
 
                     <div className="col-4">
-                        <input type="text" className="form-control" placeholder="Status" id="statusRider" onChange={this.handleInput}/>
+                        <input type="text" className="form-control" placeholder="Status" id="statusRider" value={this.props.status} onChange={this.handleInput}/>
                     </div>
 
                 </div>
@@ -255,7 +280,7 @@ export class Rider extends Component{
         )
     }
 
-    handleInput(event){
+    handleInput = (event) =>{
         /* Gets the input from the status and checkbox */
         let completedTask = document.querySelector("#riderCompleted").checked;
         let status = document.querySelector("#statusRider").value;
@@ -353,29 +378,35 @@ export class RegisterPerformer extends Component{
     submitForm = () => {
         //Error handling should be inserted here
         let genreID = 1;
-        let organizerID = 1;
-
-        ArtistService.createArtist(this.state.name, this.state.phone, this.state.email, genreID, organizerID );
+        alert("submit clicked");
+        ArtistService.createArtist(this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
         console.log(this.state);
     }
 }
-
 
 export class RegisteredPerformers extends Component{
     render(){
         return(
             <div>
                 <b>Artister som er lagt til</b>
-                <div className="card card-body">
-                    <div className="row">
-                        <div className="col-10">
-                    Lorde
+                <div className="card card-body" onClick={""}>
+
+                    {this.props.performersAdded.map(p =>
+                        <div className="row">
+                            <div className="col-10">
+                                {p.contactName}
+                            </div>
+
+                            <div className="col-2">
+                                <button className="btn-danger rounded">Slett</button>
+                            </div>
                         </div>
 
-                        <div className="col-2">
-                            <button className="btn-danger rounded">Slett</button>
-                        </div>
-                    </div>
+                    )}
+
+
+
+
                 </div>
             </div>
         )
