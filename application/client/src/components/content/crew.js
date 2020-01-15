@@ -273,11 +273,6 @@ export class CrewView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            contactName : "",
-            phone : "",
-            email : "",
-            description : "",
-            crewCategory: "",
             crewList: []
         }
     }
@@ -297,16 +292,13 @@ export class CrewView extends Component {
     returnCrew = () => {
         CrewStore.getCrewMember(1, (data) => {
             this.setState(
-                { contactName : data.contactName,
-                    phone : data.phone,
-                    email : data.email,
-                    description: data.description,})
+                { crewList: data})
         })
         console.log(this.state);
     }
 
     returnCrewMembers  = () => {
-        CrewStore.getAllCrewMembersForEvent(data => {
+        CrewStore.getAllCrewMembersForEvent((data) => {
             this.setState(
                 { crewList: data })
         }, 1);

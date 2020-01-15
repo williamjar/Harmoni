@@ -30,8 +30,8 @@ export class CrewStore {
         };
         axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
-                allCrewMembersByOrganizer.push(new CrewMember(response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description,
-                    response.data[i].crewCategory));
+                allCrewMembersByOrganizer.push(new CrewMember(response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description));
+                this.addCategory(response.data[i].crewCategory);
             }
         });
         callback(allCrewMembersByOrganizer);
@@ -59,8 +59,9 @@ export class CrewStore {
             "x-access-token": CookieStore.currentToken
         };
         axios.get(axiosConfig.root + '/api/crew/categories/' +  organizerID, {headers: header}).then(response =>  {
+            let categories = new CrewMember;
             for (let i = 0; i < response.data.length; i++) {
-                allCrewCategoriesByOrganizer.push(new CrewMember(response.data[i].crewCategory));
+                allCrewCategoriesByOrganizer.push(categories.addCrewCategory(response.data[i].crewCategory));
             }
         });
         return callback(allCrewCategoriesByOrganizer);
@@ -75,8 +76,8 @@ export class CrewStore {
         let allCrewMembersForEvent = [];
         axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
-                allCrewMembersForEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
-                    response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
+                allCrewMembersForEvent.push(new CrewMember(response.data[i].contactName,
+                    response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description));
             }
         });
         callback(allCrewMembersForEvent);
