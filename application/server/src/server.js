@@ -6,6 +6,8 @@ const mysql = require("mysql");
 
 const path = require('path');
 const multer = require('multer');
+const uuidv4 = require('uuid/v4');
+
 const jwt = require('jsonwebtoken');
 const LoginDao = require('./dao/loginDao');
 const SECRET = require('./cookieConfig');
@@ -65,18 +67,6 @@ app.post('/api/bug/register/:organizerID', (req, res) => {
 });
 
 //----------------- DOCUMENTATION ---------------------
-//Check if a folder exists for user
-function checkIfFolderExist(name, path) {
-    if (name != null) {
-        //Check folder existence
-        if (fs.existsSync(path + name)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    return false;
-}
 
 
 function deleteFile(path) {
@@ -102,7 +92,7 @@ function deleteAllFilesInFolder(path, callback) {
     });
     callback();
 }
-
+/*
 const resource_path = path.join(__dirname, '/../../client/public/resources/');
 var storage = multer.diskStorage({
     //Declaring destination for file
@@ -112,14 +102,17 @@ var storage = multer.diskStorage({
             if (checkIfFolderExist(req.params.id, resource_path)) {
                 if (!checkIfFolderExist(req.params.folderName, resource_path + req.params.id + "/" + req.params.folderName)) {
                     try {
+                        console.log("Creating folder " + req.params.folderName);
                         fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
                     } catch (e) {
                         console.log("Error creating document category folder");
                     }
+                    console.log("Set destination to " + resource_path + req.params.id + "/" + req.params.folderName);
                     cb(null, resource_path + req.params.id + "/" + req.params.folderName);
                 }
                 //User and document category folder exist. Set destination
                 else {
+                    console.log("Set destination to " + resource_path + req.params.id + "/" + req.params.folderName);
                     cb(null, resource_path + req.params.id + "/" + req.params.folderName);
                 }
             }
@@ -128,7 +121,9 @@ var storage = multer.diskStorage({
                 try {
                     fs.mkdirSync(resource_path + req.params.id);
                     try {
+                        console.log("Creating folder " + req.params.folderName);
                         fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
+                        console.log("Set destination to " + resource_path + req.params.id + "/" + req.params.folderName);
                         cb(null, resource_path + req.params.id + "/" + req.params.folderName);
                     } catch (e) {
                         console.log("Error creating document category folder");
@@ -138,7 +133,7 @@ var storage = multer.diskStorage({
                 }
             }
         } catch (e) {
-            console.log("An error occurred");
+            console.log("An error occurred setting file destination");
         }
 
     },
@@ -147,17 +142,68 @@ var storage = multer.diskStorage({
         //Create file in server. If user upload same file append time for unique name
         try {
             if (fs.existsSync(resource_path + req.params.id + '/' + req.params.folderName + "/" + file.originalname)) {
-                cb(null, Date.now() + "--" + file.originalname);
+                console.log("Set filename to " + Date.now() + "--" + path.extname(file.originalname))
+                cb(null, Date.now() + "--" + path.extname(file.originalname));
             } else {
-                cb(null, file.originalname);
+                console.log("Set filename to " + path.extname(file.originalname))
+                cb(null, path.extname(file.originalname));
             }
         } catch (e) {
             console.log("An error occurred")
         }
     }
 });
+*/
 
+function ensureFolderExists(path, mask, callback){
+    if (typeof mask == 'function'){
+        callback = mask;
+        mask = 0o777;
+    }
+    fs.mkdir(path, mask, function(err){
+        if (err){
+            if(err.code === 'EEXIST'){
+                callback(null);
+            }
+            else{
+                callback(err);
+            }
+        }
+        else{
+            callback(err);
+        }
+    })
+}
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const eventID = req.params.eventID;
+        const documentCategoryID = req.params.documentCategoryID;
+
+        ensureFolderExists('./resources/' + eventID, 0o744, err => {
+            if (err){
+                console.log("Could not create folder for event " + eventID);
+            }
+            else{
+                ensureFolderExists('./resources/' + eventID + '/' + documentCategoryID, 0o744, err => {
+                    if (err){
+                        console.log("Could not create folder for event " + eventID + " - category " + documentCategoryID);
+                    }
+                    else{
+                        console.log("Destination set for ./resources/" + eventID + "/" + documentCategoryID)
+                        cb(null, './resources/' + eventID + '/' + documentCategoryID);
+                    }
+                })
+            }
+        });
+    },
+
+    filename: (req, file, cb) => {
+        const newFilename = uuidv4(path.extname(file.originalname)) + "_" + file.originalname;
+        console.log("Creating new file " + newFilename);
+        cb(null, newFilename);
+    }
+});
 
 //Add profile picture to server filesystem
 const user_path = path.join(__dirname, '/../../client/public/resources/users/');
@@ -251,48 +297,27 @@ app.get("/api/organizer/picture/:pictureID", (require, response) => {
 
 
 
-var upload = multer({storage: storage,  limits: {fileSize: 10000000000},});
+/*var upload = multer({storage: storage,  limits: {fileSize: 10000000000},});
 
-app.post("/document/upload/:id/:folderName",  upload.array('file', 10), (req, res) => {
+//Upload document to server
+app.post("/document/:id/:folderName",  upload.single('file', 10), (req, res) => {
+    console.log("Request to create a document");
     try {
-        res.send(req.body.files);
-        for(let i = 0; i < req.body.files.length; i++){
-            console.log(req.body.files[i].originalname);
-            documentationDao.insertDocument(req.params.id, req.body.documentCategoryID, req.body.artistID, req.body.crewID, req.body.files[i], (status, data) => {
-                res.status(status);
-            });
-        }
-    } catch (err) {
-        res.send(400);
-    }
-});
-
-app.post("/api/documents/upload/:id/:folderName/:categoryID/artist/:artistID",  upload.array('file', 10), (req, res) => {
-    try {
+        console.log(req.file);
         res.send(req.files);
-        for(let i = 0; i < req.files.length; i++){
-            console.log(req.files[i].originalname);
-            documentationDao.insertDocumentArtist(req.params.id, req.params.categoryID, req.files[i], req.params.artistID, (status, data) => {
-                res.status(status);
-            });
-        }
     } catch (err) {
-        res.send(400);
+        console.log(err);
+        res.send({error: err});
+        res.status(400);
     }
-});
+});*/
 
-app.post("/api/documents/upload/:id/:folderName/:categoryID/crew/:crewID",  upload.array('file', 10), (req, res) => {
-    try {
-        res.send(req.files);
-        for(let i = 0; i < req.files.length; i++){
-            console.log(req.files[i].originalname);
-            documentationDao.insertDocumentCrew(req.params.id, req.params.categoryID, req.files[i], req.params.crewID, (status, data) => {
-                res.status(status);
-            });
-        }
-    } catch (err) {
-        res.send(400);
-    }
+const upload = multer({storage});
+
+app.post("/api/file/document/:eventID/:documentCategoryID", upload.single('selectedFile'), (req, res) => {
+    console.log("Request to create document");
+    console.log(req.file);
+    res.send({name: req.file.filename, path: req.file.path});
 });
 
 
@@ -1078,20 +1103,18 @@ app.delete("/api/event/:eventID/artist/:artistID/rider/:riderElementID", (reques
 
 //DOCUMENT
 
-app.post("/api/document/", (request, response) => {
+app.post("/api/document", (request, response) => {
     console.log("Express: Request to add a document");
-    let val = [
-        request.body.eventID,
-        request.body.documentName,
-        request.body.documentLink,
-        request.body.artistID,
-        request.body.crewID,
-        request.body.documentCategoryID
-    ];
-    documentDao.createOne((status, data) => {
+    documentationDao.insertDocument(request.body.eventID,
+                                    request.body.documentName,
+                                    request.body.documentLink,
+                                    request.body.artistID,
+                                    request.body.crewID,
+                                    request.body.documentCategoryID,
+        (status, data) => {
         response.status(status);
         response.json(data);
-    }, val);
+    });
 });
 
 app.put("/api/document/:documentID", (request, response) => {
