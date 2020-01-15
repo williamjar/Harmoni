@@ -69,7 +69,7 @@ export class CrewStore {
         };
 
         this.allCrewForCurrentEvent = [];
-        axios.get(axiosConfig.root + '/api/crew/' + eventID, {headers: header}).then(response => {
+        axios.get(axiosConfig.root + '/api/crew/event/' + eventID, {headers: header}).then(response => {
             for (let i = 0; i < response.data.length; i++) {
                 this.allCrewForCurrentEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
                     response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].isResponsible));
