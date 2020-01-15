@@ -41,6 +41,16 @@ export class PerformersTab extends Component{
         )
     }
 
+    componentDidMount() {
+        ArtistService.getArtistsForEvent((list) => {
+            let currentState = this.state;
+            currentState.performersAdded = list;
+            currentState.currentPerformer = {};
+            this.setState(currentState);
+        }, EventStore.currentEvent.eventID);
+
+    }
+
     unAssignArtist = (artist) => {
         ArtistService.unAssignArtist(EventStore.currentEvent.eventID, artist.artistID).then(res => {
             console.log("data delete");
@@ -91,7 +101,7 @@ export class PerformerPanel extends Component{
 
         this.state = {
             performerList : [],
-            showArtistCard: false,
+            showArtistCard: true,
             performerSelected : {},
             results : [],
             showRegisterNew : true,
