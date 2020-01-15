@@ -70,9 +70,11 @@ export class CrewStore {
 
         this.allCrewForCurrentEvent = [];
         axios.get(axiosConfig.root + '/api/crew/event/' + eventID, {headers: header}).then(response => {
+            console.log("response");
+            console.log(response);
             for (let i = 0; i < response.data.length; i++) {
                 this.allCrewForCurrentEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
-                    response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].isResponsible));
+                    response.data[i].crewCategoryID, response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].isResponsible));
             }
             callback();
         });
@@ -95,7 +97,7 @@ export class CrewStore {
     }
 
     //get all crew members for an event
-    static postAllCrewMembersForEvent(callback, eventID){
+  /*  static postAllCrewMembersForEvent(callback, eventID){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -129,9 +131,10 @@ export class CrewStore {
         });
 
     }
-
+*/
     //register a new crew member
-    static createCrewMember(name, phone, email, description, organizerID){
+    static createCrewMember(name, phone, email, description, crewCategoryID, eventID, organizerID){
+        //TODO: Needs a Callback
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -151,10 +154,23 @@ export class CrewStore {
                 "contactID": response.data.insertId
             };
 
-            axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>
-                console.log(response));
-            //callback();
-        })
+            axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>{
+                    console.log(response);
+
+                    //TODO: update this body, needs isResponsible, and crewCategory needs to exist
+                    let assignBody = {
+                        "eventID": eventID,
+                        "crewCategoryID": crewCategoryID,
+                        "crewID": response.data.insertId,
+                        "isResponsible": false
+                    };
+
+                    axios.post(axiosConfig.root + '/api/crew/assign', assignBody,{headers: header}).then(response =>{
+                    console.log(response);
+                    //callback();
+                    });
+            });
+        });
     }
 
     //add a new category
