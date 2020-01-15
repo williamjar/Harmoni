@@ -10,7 +10,7 @@ import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {ArtistService as artistService, ArtistService} from "../../store/artistService";
 import {CookieStore} from "../../store/cookieStore";
-import {riderStore} from "../../store/riderStore";
+import {RiderStore} from "../../store/riderStore";
 import {EventStore} from "../../store/eventStore";
 import {RiderElement} from "../../classes/riderElement";
 
@@ -71,14 +71,14 @@ export class PerformerPanel extends Component{
             showArtistCard: false,
             performerSelected : {},
             results : [],
-            hideRegisterNew : false,
+            showRegisterNew : true,
         }
     }
 
     render() {
         return (
             <div>
-                <Search searchHandler={this.searchHandler} closeRegister={this.state.hideRegisterNew} registerComponent={<RegisterPerformer submitFunction={this.submitFunction}/>} addRegisterButton={true} results={this.state.results} />
+                <Search searchHandler={this.searchHandler} toggleRegister={() => this.toggleRegisterNew()} showRegisterNew={this.state.showRegisterNew} registerComponent={<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={() => this.toggleRegisterNew()}/>} addRegisterButton={true} results={this.state.results} />
                 <div className="padding-top-20">
                 {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} />:null}
                 </div>
@@ -100,12 +100,16 @@ export class PerformerPanel extends Component{
         this.callBackSearchResult();
     }
 
+    toggleRegisterNew = () => {
+        let currentState = this.state;
+        currentState.showRegisterNew = !currentState.showRegisterNew;
+        this.setState(currentState);
+    }
+
     submitFunction = () => {
         alert("submit clicked");
         this.callBackSearchResult();
-        let curState = this.state;
-        curState.hideRegisterNew = true;
-        this.setState(curState);
+        this.toggleRegisterNew();
     }
 
     callBackSearchResult = () => {
@@ -255,12 +259,12 @@ export class PerformerCard extends Component{
 
     addRider = () =>{
         alert(this.state.riderInput);
-        riderStore.createNewRiderElement((newRider) => {
-            riderStore.allRidersForCurrentEvent.push(newRider);
-            console.log(riderStore.allRidersForCurrentEvent);
+        RiderStore.createNewRiderElement((newRider) => {
+            RiderStore.allRidersForCurrentEvent.push(newRider);
+            console.log(RiderStore.allRidersForCurrentEvent);
 
             let currentState = this.state;
-            currentState.riders = riderStore.allRidersForCurrentEvent;
+            currentState.riders = RiderStore.allRidersForCurrentEvent;
             this.setState(currentState);
             console.log(this.state);
         }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
@@ -389,7 +393,7 @@ export class RegisterPerformer extends Component{
                     <Button variant="primary" type="submit" onClick={this.submitForm}>
                         Submit
                     </Button>
-                    <Button variant="secondary" type="cancel" className="margin-left-5">
+                    <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegisterNew}>
                         Cancel
                     </Button>
             </div>
@@ -420,14 +424,27 @@ export class RegisterPerformer extends Component{
         this.setState(currentState);
     }
 
+    cancelRegisterNew = () =>{
+        let currentState = this.state;
+        currentState.name = "";
+        currentState.phone = "";
+        currentState.email = "";
+        currentState.genre = "";
+        this.setState(currentState);
+        this.props.toggleRegister();
+    }
+
     submitForm = () => {
         //Error handling should be inserted here
-
-        /* Should check if valid as email adress, not able to put type to email because it fucked eveything up */
-        let genreID = 1;
-        alert("submit clicked");
-        console.log(this.state.email);
-        ArtistService.createArtist(() => {this.props.submitFunction();}, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
+        if(this.state.name.trim() !== "" && this.state.phone.trim() !== "" && this.state.email.trim() !== ""){
+            /* Should check if valid as email adress, not able to put type to email because it fucked eveything up */
+            let genreID = 1;
+            alert("submit clicked");
+            console.log(this.state.email);
+            ArtistService.createArtist(() => {this.props.submitFunction();}, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
+        } else{
+            alert("Du har ikke fyllt inn alle feltene");
+        }
     }
 }
 
@@ -436,7 +453,6 @@ export class RegisteredPerformers extends Component{
         return(
             <div>
                 <b>Artister som er lagt til</b>
-
 
                     {this.props.performersAdded.map(p =>
                         <div className="card card-body pointer selection" onClick={() => this.showCard(p)}>

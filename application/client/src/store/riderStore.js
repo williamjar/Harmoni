@@ -53,18 +53,20 @@ export class RiderStore {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        let allRiderElementsFromArtistAndEvent = [];
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider', {headers: header})
             .then(response => {
-                    for (let i = 0; i < response.data.length; i++) {
+                let allRiderElementsFromArtistAndEvent = [];
+
+                for (let i = 0; i < response.data.length; i++) {
                         allRiderElementsFromArtistAndEvent.push(new RiderElement(response.data[0].riderID, response.data[0].artistID,
                             response.data[0].eventID, response.data[0].status, response.data[0].isDone,
                             response.data[0].description));
                     }
+               return allRiderElementsFromArtistAndEvent;
                 }
             )
             .catch(error => console.log(error));
-        allRiderElementsFromArtistAndEvent;
+
     }
 
     //get all riders for an event

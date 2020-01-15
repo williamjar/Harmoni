@@ -59,7 +59,7 @@ export class Search extends Component{
                                 <div className="card-title card-header search" onClick={() => this.searchHandler(show)}>{show.contactName}</div>
                                 ):null}
 
-                            {this.state.showRegisterNew?
+                            {!this.props.showRegisterNew?
                                 <div className="card card-body">
                                     {this.props.registerComponent}
                                 </div>:null}
@@ -73,7 +73,6 @@ export class Search extends Component{
     componentDidMount() {
         let currentState = this.state;
         currentState.results = this.props.results;
-        currentState.showRegisterNew = this.props.closeRegister;
         this.setState(currentState);
     }
 
@@ -100,11 +99,9 @@ export class Search extends Component{
     }
 
     registerNew(){
-        let currentState = this.state;
-        currentState.showRegisterNew = !currentState.showRegisterNew;
-        currentState.showSearchResults = false;
-        this.setState(currentState);
+       this.props.toggleRegister();
     }
+
 
     handleSearchInput(event){
         let currentState = this.state;
