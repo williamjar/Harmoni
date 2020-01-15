@@ -171,18 +171,10 @@ export class UserPage extends React.Component {
     }
 
     validatePassword(){
-        return (this.state.firstNewPassword === this.state.secondNewPassword) && (this.state.firstNewPassword.length > 0);
+        return (this.state.firstNewPassword === this.state.secondNewPassword) && (this.state.firstNewPassword.length > 0) && (this.state.firstNewPassword  !== this.state.oldPassword);
     }
 
-    validateForm(){
-        return this.validatePassword() || this.validatePhoneNumber() || this.validateUsername();
-    }
 
-    changeMode() {
-        this.setState({savingInformation: false});
-        if(this.state.mode===1)this.setState({mode: 2,});
-        else this.setState({mode: 1,})
-    }
 
     updateInfo(){
        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
@@ -211,10 +203,7 @@ export class UserPage extends React.Component {
             OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername).then(r => {
                     this.setState({savingInformation: false});
                     this.setState({username: this.state.newUsername});
-            });} else {
-
-            //this.setState({savingInformation: false});
-        }
+            });}
 
 
         if(this.validatePhoneNumber()){
@@ -228,7 +217,6 @@ export class UserPage extends React.Component {
         if(this.validatePassword()) {
             OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword).then(r =>{
                 this.setState({savingInformation: false});
-                this.setState({username: this.state.newUsername});
             });
         }
 
@@ -236,25 +224,9 @@ export class UserPage extends React.Component {
         // code for submitting profile picture here, you can access it with this.state.new.profilePicture
 
     }
-
-
-
-}
-
-
-export class LoadingButton extends React.Component{
-    render(){
-        return(
-
-            <Button type="submit" variant="success">
-
-        </Button>)
-
-    }
 }
 
 export class SubmitButton extends React.Component{
-
     render(){
         if(this.props.loading){
             return(<Button type="submit" variant="success" disabled>
@@ -273,22 +245,3 @@ export class SubmitButton extends React.Component{
 
 }
 
-export class UploadButton extends React.Component{
-
-    render(){
-        if(this.props.loading){
-            return(<Button type="submit" variant="success" disabled>
-                <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                /> Lagrer</Button>)
-        } else{
-            return(<Button type="submit" variant="success" disabled={this.props.stop}>Lagre</Button>)
-        }
-
-    }
-
-}
