@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
@@ -12,8 +11,6 @@ import {ArtistService as artistService, ArtistService} from "../../store/artistS
 import {CookieStore} from "../../store/cookieStore";
 import {RiderStore} from "../../store/riderStore";
 import {EventStore} from "../../store/eventStore";
-import {RiderElement} from "../../classes/riderElement";
-
 
 export class PerformersTab extends Component{
     /* All the performer content for use in the Performer tab */
@@ -270,27 +267,27 @@ export class PerformerCard extends Component{
             currentState.numberOfFilesAdded = attachment;
             this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
         }
-    }
+    };
 
     addRider = () =>{
         alert(this.state.riderInput);
         RiderStore.createNewRiderElement((newRider) => {
-            RiderStore.allRidersForCurrentEvent.push(newRider);
-            console.log(RiderStore.allRidersForCurrentEvent);
+            RiderStore.allRidersForCurrentArtistAndEvent.push(newRider);
+            console.log(RiderStore.allRidersForCurrentArtistAndEvent);
 
             let currentState = this.state;
-            currentState.riders = RiderStore.allRidersForCurrentEvent;
+            currentState.riders = RiderStore.allRidersForCurrentArtistAndEvent;
             this.setState(currentState);
             console.log(this.state);
         }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
-    }
+    };
 
     handleInputRider = (event) =>{
         /* Handles the input for new riders to be added */
         let currentState = this.state;
         currentState.riderInput = event.target.value;
         this.setState(currentState);
-    }
+    };
 
     save = () => {
         /* Gathers the input boxes and puts the information into variables */
