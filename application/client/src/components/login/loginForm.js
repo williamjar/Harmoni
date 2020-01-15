@@ -48,7 +48,6 @@ export class LoginForm extends React.Component {
         return (
 
             <Card >
-                <UserPage/>
                 <Card.Body className={"m-4"}>
                     <Card.Title className="ml-5">Logg inn</Card.Title>
                     <div className="justify-content-md-center m-5">

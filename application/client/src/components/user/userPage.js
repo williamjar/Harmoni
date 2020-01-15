@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Card, Col, Form, Row, Table, Image, Accordion, CardColumns, ListGroup, CardDeck, Spinner} from 'react-bootstrap'
+import {Button, Card, Col, Form, Row, Table, Image, Accordion, CardColumns, FormControl, ListGroup, CardDeck, Spinner} from 'react-bootstrap'
 import {CardText} from "react-bootstrap/Card";
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
@@ -17,6 +17,7 @@ export class UserPage extends React.Component {
             phonenumber : '',
             newPhonenumber: '',
             profilePicture: 'http://www.jacqueslacoupe.com/images/sample-user.png',
+            newProfilePicture: '',
             savingInformation: false,
             mode: 1
         };
@@ -53,7 +54,19 @@ export class UserPage extends React.Component {
                             <Col>
                             <Card className={"p-2 card border-0"}>
                                 <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} rounded />
-                                <Form.Group><Button variant="secondary">Last opp profilbilde</Button></Form.Group>
+
+                                <Form onSubmit={this.handleSubmit}>
+
+                                <Form.Group>
+                                    <FormControl name="newProfilePicture" type="file" onChange={this.handleInputChange}/>
+                                </Form.Group>
+
+                                <Form.Group>
+                                    <Button variant="secondary" type="submit">Last opp profilbilde</Button>
+                                </Form.Group>
+
+
+                                </Form>
                                 <Card.Title>Brukerprofil</Card.Title>
                                 <Table borderless>
                                     <tbody>
@@ -66,6 +79,7 @@ export class UserPage extends React.Component {
                             </Col>
                             <Col>
                             <Card className={"p-2 card border-0"}>
+                                <Card.Title>Innstillinger</Card.Title>
                                 <Accordion>
                                     <Form onSubmit={this.handleSubmit}>
                                     <Card>
@@ -199,7 +213,7 @@ export class UserPage extends React.Component {
                     this.setState({username: this.state.newUsername});
             });} else {
 
-            this.setState({savingInformation: false});
+            //this.setState({savingInformation: false});
         }
 
 
@@ -216,10 +230,10 @@ export class UserPage extends React.Component {
                 this.setState({savingInformation: false});
                 this.setState({username: this.state.newUsername});
             });
-        } else {
-
-            this.setState({savingInformation: false});
         }
+
+
+        // code for submitting profile picture here, you can access it with this.state.new.profilePicture
 
     }
 
@@ -251,6 +265,26 @@ export class SubmitButton extends React.Component{
                 role="status"
                 aria-hidden="true"
             /> Lagrer</Button>)
+        } else{
+            return(<Button type="submit" variant="success" disabled={this.props.stop}>Lagre</Button>)
+        }
+
+    }
+
+}
+
+export class UploadButton extends React.Component{
+
+    render(){
+        if(this.props.loading){
+            return(<Button type="submit" variant="success" disabled>
+                <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                /> Lagrer</Button>)
         } else{
             return(<Button type="submit" variant="success" disabled={this.props.stop}>Lagre</Button>)
         }
