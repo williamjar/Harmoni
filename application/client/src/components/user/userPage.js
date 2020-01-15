@@ -1,8 +1,24 @@
 import React from 'react';
-import {Button, Card, Col, Form, Row, Table, Image, Accordion, CardColumns, FormControl, ListGroup, CardDeck, Spinner} from 'react-bootstrap'
+import {
+    Button,
+    Card,
+    Col,
+    Form,
+    Row,
+    Table,
+    Image,
+    Accordion,
+    CardColumns,
+    FormControl,
+    ListGroup,
+    CardDeck,
+    Spinner,
+    Modal
+} from 'react-bootstrap'
 import {CardText} from "react-bootstrap/Card";
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
+import {StandardAlert} from "../widgets/alert";
 
 export class UserPage extends React.Component {
     constructor(props) {
@@ -19,6 +35,7 @@ export class UserPage extends React.Component {
             profilePicture: 'http://www.jacqueslacoupe.com/images/sample-user.png',
             newProfilePicture: '',
             savingInformation: false,
+            showPasswordAlert: false,
             mode: 1
         };
 
@@ -46,24 +63,38 @@ export class UserPage extends React.Component {
 
     // Functions to verify the contents in the form.
     render() {
-            return(
-                <Card className={"border-0"}>
-                    <div className="justify-content-md-center m-5">
+        return(
 
-                        <Row>
-                            <Col>
+
+
+            <Card className={"border-0"}>
+                <Modal show={this.state.showPasswordAlert}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Passordet er endret</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Passordet ditt er endret. Du kan nå logge på med ditt nye passord.</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={() => this.hideModal()}>
+                            Lukk
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <div className="justify-content-md-center m-5">
+
+                    <Row>
+                        <Col>
                             <Card className={"p-2 card border-0"}>
                                 <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} rounded />
 
                                 <Form onSubmit={this.handleSubmit}>
 
-                                <Form.Group>
-                                    <FormControl name="newProfilePicture" type="file" onChange={this.handleInputChange}/>
-                                </Form.Group>
+                                    <Form.Group>
+                                        <FormControl name="newProfilePicture" type="file" onChange={this.handleInputChange}/>
+                                    </Form.Group>
 
-                                <Form.Group>
-                                    <Button variant="secondary" type="submit">Last opp profilbilde</Button>
-                                </Form.Group>
+                                    <Form.Group>
+                                        <Button variant="secondary" type="submit">Last opp profilbilde</Button>
+                                    </Form.Group>
 
 
                                 </Form>
@@ -76,84 +107,84 @@ export class UserPage extends React.Component {
                                     </tbody>
                                 </Table>
                             </Card>
-                            </Col>
-                            <Col>
+                        </Col>
+                        <Col>
                             <Card className={"p-2 card border-0"}>
                                 <Card.Title>Innstillinger</Card.Title>
                                 <Accordion>
                                     <Form onSubmit={this.handleSubmit}>
-                                    <Card>
-                                        <Card.Header>
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                                Rediger brukernavn
-                                            </Accordion.Toggle>
-                                        </Card.Header>
-                                        <Accordion.Collapse eventKey="0">
-                                            <Card.Body>
-                                                <Form.Group>
-                                                <Form.Control type="text" name="newUsername" placeholder={this.state.username} value={this.state.newUsername} onChange={this.handleInputChange}/>
-                                                <Form.Text className={"text-danger"} hidden={!(this.state.newUsername.toLowerCase()==="geir")}>Geir er ikke et gydlig brukernavn</Form.Text>
-                                                </Form.Group>
-                                                <Form.Group>
-                                                    <SubmitButton loading={this.state.savingInformation} stop={!this.validateUsername()}/>
-                                                </Form.Group>
-                                            </Card.Body>
-                                        </Accordion.Collapse>
-                                    </Card>
+                                        <Card>
+                                            <Card.Header>
+                                                <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                                                    Rediger brukernavn
+                                                </Accordion.Toggle>
+                                            </Card.Header>
+                                            <Accordion.Collapse eventKey="0">
+                                                <Card.Body>
+                                                    <Form.Group>
+                                                        <Form.Control type="text" name="newUsername" placeholder={this.state.username} value={this.state.newUsername} onChange={this.handleInputChange}/>
+                                                        <Form.Text className={"text-danger"} hidden={!(this.state.newUsername.toLowerCase()==="geir")}>Geir er ikke et gydlig brukernavn</Form.Text>
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <SubmitButton loading={this.state.savingInformation} stop={!this.validateUsername()}/>
+                                                    </Form.Group>
+                                                </Card.Body>
+                                            </Accordion.Collapse>
+                                        </Card>
                                     </Form>
 
                                     <Form onSubmit={this.handleSubmit}>
-                                    <Card>
-                                        <Card.Header>
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                                                Oppdater telefonnummer
-                                            </Accordion.Toggle>
-                                        </Card.Header>
-                                        <Accordion.Collapse eventKey="1">
-                                            <Card.Body>
-                                                <Form.Group>
-                                                    <Form.Control maxLength="8" type="number"  name="newPhonenumber" placeholder={this.state.phonenumber} value={this.state.newPhonenumber} onChange={this.handleInputChange}/>
-                                                </Form.Group>
-                                                <Form.Group>
-                                                    <SubmitButton loading={this.state.savingInformation} stop={!this.validatePhoneNumber()}/>
-                                                </Form.Group>
-                                            </Card.Body>
-                                        </Accordion.Collapse>
-                                    </Card>
+                                        <Card>
+                                            <Card.Header>
+                                                <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                                                    Oppdater telefonnummer
+                                                </Accordion.Toggle>
+                                            </Card.Header>
+                                            <Accordion.Collapse eventKey="1">
+                                                <Card.Body>
+                                                    <Form.Group>
+                                                        <Form.Control maxLength="8" type="number"  name="newPhonenumber" placeholder={this.state.phonenumber} value={this.state.newPhonenumber} onChange={this.handleInputChange}/>
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <SubmitButton loading={this.state.savingInformation} stop={!this.validatePhoneNumber()}/>
+                                                    </Form.Group>
+                                                </Card.Body>
+                                            </Accordion.Collapse>
+                                        </Card>
                                     </Form>
 
                                     <Form onSubmit={this.handleSubmit}>
-                                    <Card>
-                                        <Card.Header>
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="2">
-                                                Endre passord
-                                            </Accordion.Toggle>
-                                        </Card.Header>
-                                        <Accordion.Collapse eventKey="2">
-                                            <Card.Body>
-                                                <Form.Group>
-                                                    <Form.Control type="password" name="oldPassword" placeholder="Gammelt passord" value={this.state.oldPassword} onChange={this.handleInputChange}/>
-                                                </Form.Group>
-                                                <Form.Group>
-                                                    <Form.Control type="password" name="firstNewPassword" placeholder="Nytt passord" value={this.state.firstNewPassword} onChange={this.handleInputChange}/>
-                                                </Form.Group>
-                                                <Form.Group>
-                                                    <Form.Control type="password" name="secondNewPassword" placeholder="Gjenta nytt passord" value={this.state.secondNewPassword} onChange={this.handleInputChange}/>
-                                                </Form.Group>
-                                                <Form.Group>
-                                                    <SubmitButton loading={this.state.savingInformation} stop={!this.validatePassword()}/>
-                                                </Form.Group>
-                                            </Card.Body>
-                                        </Accordion.Collapse>
-                                    </Card>
+                                        <Card>
+                                            <Card.Header>
+                                                <Accordion.Toggle as={Button} variant="link" eventKey="2">
+                                                    Endre passord
+                                                </Accordion.Toggle>
+                                            </Card.Header>
+                                            <Accordion.Collapse eventKey="2">
+                                                <Card.Body>
+                                                    <Form.Group>
+                                                        <Form.Control type="password" name="oldPassword" placeholder="Gammelt passord" value={this.state.oldPassword} onChange={this.handleInputChange}/>
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <Form.Control type="password" name="firstNewPassword" placeholder="Nytt passord" value={this.state.firstNewPassword} onChange={this.handleInputChange}/>
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <Form.Control type="password" name="secondNewPassword" placeholder="Gjenta nytt passord" value={this.state.secondNewPassword} onChange={this.handleInputChange}/>
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <SubmitButton loading={this.state.savingInformation} stop={!this.validatePassword()}/>
+                                                    </Form.Group>
+                                                </Card.Body>
+                                            </Accordion.Collapse>
+                                        </Card>
                                     </Form>
                                 </Accordion>
                             </Card>
-                            </Col>
-                        </Row>
-                    </div>
-                </Card>
-            )}
+                        </Col>
+                    </Row>
+                </div>
+            </Card>
+        )}
 
 
 
@@ -174,10 +205,13 @@ export class UserPage extends React.Component {
         return (this.state.firstNewPassword === this.state.secondNewPassword) && (this.state.firstNewPassword.length > 0) && (this.state.firstNewPassword  !== this.state.oldPassword);
     }
 
+    hideModal(){
+        this.setState({showPasswordAlert: false});
+    }
 
 
     updateInfo(){
-       OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
+        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
             if (statusCode === 200){
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
 
@@ -201,8 +235,8 @@ export class UserPage extends React.Component {
         this.setState({savingInformation: true});
         if(this.validateUsername()) {
             OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername).then(r => {
-                    this.setState({savingInformation: false});
-                    this.setState({username: this.state.newUsername});
+                this.setState({savingInformation: false});
+                this.setState({username: this.state.newUsername});
             });}
 
 
@@ -222,6 +256,7 @@ export class UserPage extends React.Component {
                     firstNewPassword: '',
                     secondNewPassword: ''
                 })
+                this.setState({showPasswordAlert: true});
             });
         }
 
@@ -236,12 +271,12 @@ export class SubmitButton extends React.Component{
         if(this.props.loading){
             return(<Button type="submit" variant="success" disabled>
                 <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-            /> Lagrer</Button>)
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                /> Lagrer</Button>)
         } else{
             return(<Button type="submit" variant="success" disabled={this.props.stop}>Lagre</Button>)
         }
