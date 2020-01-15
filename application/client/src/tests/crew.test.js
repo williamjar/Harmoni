@@ -1,5 +1,5 @@
 import runSQLFile from '../../../runsqlfile';
-import {CrewService} from "../store/crewService.js";
+import {CrewService} from "../store/crewStore.js";
 import {CrewMember} from "../classes/crewMember";
 import {ArtistService} from "../store/artistService";
 
