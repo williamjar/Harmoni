@@ -19,10 +19,10 @@ export class Search extends Component{
         this.state = {
             registerNewButtonAdded : this.props.addRegisterButton,
             searchInput : "",
-            results : [],
             showRegisterNew : false,
             showSearchResults: true,
             showPerformerCard: false,
+            results : [this.props.results],
         };
 
 
@@ -31,9 +31,6 @@ export class Search extends Component{
         this.searchHandler = this.searchHandler.bind(this);
     }
 
-    componentDidMount() {
-        this.callBackSearchResult();
-    }
 
     render() {
         return(
@@ -57,7 +54,7 @@ export class Search extends Component{
                         </InputGroup>
 
                         <div className="card-text margin-top-5 ma">
-                            {this.state.showRegisterNew === false && this.state.showSearchResults?
+                            {this.state.showRegisterNew === false && this.state.showSearchResults && this.state.results != undefined?
                                 this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf(e.contactName.toLowerCase()) > -1).map(show =>
                                 <div className="card-title card-header search" onClick={() => this.searchHandler(show)}>{show.contactName}</div>
                                 ):null}
@@ -73,17 +70,21 @@ export class Search extends Component{
             </div>
         )
     }
-
-    callBackSearchResult = () => {
+    componentDidMount() {
         let currentState = this.state;
-
-        artistService.getArtistForOrganizer((allArtistByOrganizer) => {
-            currentState.results = allArtistByOrganizer;
-            console.log(allArtistByOrganizer);
-            this.setState(currentState);
-            console.log(this.state);
-        },CookieStore.currentUserID);
+        currentState.results = this.props.results;
+        this.setState(currentState);
     }
+
+    static getDerivedStateFromProps(props, state) {
+        if(props.results !== state.results) {
+            return {
+                results: props.results
+            };
+        }
+        return null;
+    }
+
 
     searchHandler(input){
         let currentState = this.state;
@@ -92,6 +93,7 @@ export class Search extends Component{
         currentState.showPerformerCard = true;
         this.setState(currentState);
 
+
         this.props.searchHandler(input);
     }
 
@@ -99,9 +101,7 @@ export class Search extends Component{
         let currentState = this.state;
         currentState.showRegisterNew = !currentState.showRegisterNew;
         currentState.showSearchResults = false;
-
         this.setState(currentState);
-
     }
 
     handleSearchInput(event){

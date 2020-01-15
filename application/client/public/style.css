@@ -51,6 +51,14 @@ body{
     color:red;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
+.selection:hover{
+    background:#e9ecef;
+}
+
 /* Navigation */
 .logoImg img{
     width: 75px !important;

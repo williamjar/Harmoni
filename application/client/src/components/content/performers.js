@@ -8,7 +8,7 @@ import Button from "react-bootstrap/Button";
 import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
-import {ArtistService} from "../../store/artistService";
+import {ArtistService as artistService, ArtistService} from "../../store/artistService";
 import {CookieStore} from "../../store/cookieStore";
 import {riderStore} from "../../store/riderStore";
 import {EventStore} from "../../store/eventStore";
@@ -60,18 +60,36 @@ export class PerformerPanel extends Component{
             performerList : [],
             showArtistCard: false,
             performerSelected : {},
+            results : [],
         }
     }
 
     render() {
         return (
             <div>
-                <Search searchHandler={this.searchHandler} registerComponent={<RegisterPerformer/>} addRegisterButton={true} SearchList={this.performerList} />
+                <Search searchHandler={this.searchHandler} registerComponent={<RegisterPerformer submitFunction={this.submitFunction}/>} addRegisterButton={true} results={this.state.results} />
                 <div className="padding-top-20">
                 {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} />:null}
                 </div>
             </div>
         );
+    }
+
+    componentDidMount() {
+        this.callBackSearchResult();
+    }
+
+    submitFunction = () => {
+        alert("submit clicked");
+        this.callBackSearchResult();
+    }
+
+    callBackSearchResult = () => {
+        artistService.getArtistForOrganizer((allArtistByOrganizer) => {
+            let currentState = this.state;
+            currentState.results = allArtistByOrganizer;
+            this.setState(currentState);
+        },CookieStore.currentUserID);
     }
 
     searchHandler = (selected) => {
@@ -102,8 +120,15 @@ export class PerformerCard extends Component{
 
         console.log(this.props.performerSelected);
 
+    }
 
-
+    static getDerivedStateFromProps(props, state) {
+        if(props.performerSelected !== state.performer) {
+            return {
+                performer: props.performerSelected
+            };
+        }
+        return null;
     }
 
     render(){
@@ -309,7 +334,6 @@ export class RegisterPerformer extends Component{
     render() {
         return(
             <div>
-                <Form>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
@@ -324,7 +348,7 @@ export class RegisterPerformer extends Component{
 
                     <Form.Group controlId="formGridAddress1">
                         <Form.Label>Epost</Form.Label>
-                        <Form.Control type="email" placeholder="" onChange={this.handleEmailChange}/>
+                        <Form.Control type="text" placeholder="" onChange={this.handleEmailChange}/>
                     </Form.Group>
 
                     <Form.Row>
@@ -345,8 +369,6 @@ export class RegisterPerformer extends Component{
                     <Button variant="secondary" type="cancel" className="margin-left-5">
                         Cancel
                     </Button>
-
-                </Form>
             </div>
         )
     }
@@ -377,10 +399,12 @@ export class RegisterPerformer extends Component{
 
     submitForm = () => {
         //Error handling should be inserted here
+
+        /* Should check if valid as email adress, not able to put type to email because it fucked eveything up */
         let genreID = 1;
         alert("submit clicked");
-        ArtistService.createArtist(this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
-        console.log(this.state);
+        console.log(this.state.email);
+        ArtistService.createArtist(() => {this.props.submitFunction();}, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
     }
 }
 
@@ -389,9 +413,10 @@ export class RegisteredPerformers extends Component{
         return(
             <div>
                 <b>Artister som er lagt til</b>
-                <div className="card card-body" onClick={""}>
+
 
                     {this.props.performersAdded.map(p =>
+                        <div className="card card-body pointer selection" onClick={this.showCard}>
                         <div className="row">
                             <div className="col-10">
                                 {p.contactName}
@@ -401,15 +426,15 @@ export class RegisteredPerformers extends Component{
                                 <button className="btn-danger rounded">Slett</button>
                             </div>
                         </div>
-
+                        </div>
                     )}
 
-
-
-
-                </div>
             </div>
         )
+    }
+
+    showCard = () => {
+        alert("showCard");
     }
 }
 
