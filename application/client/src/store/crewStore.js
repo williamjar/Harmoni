@@ -73,12 +73,18 @@ export class CrewStore {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
+
         let allCrewMembersForEvent = [];
+
         axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response =>  {
+
             for (let i = 0; i < response.data.length; i++) {
+
                 allCrewMembersForEvent.push(new CrewMember(response.data[i].contactName,
                     response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description));
+
             }
+
         });
         callback(allCrewMembersForEvent);
     }
