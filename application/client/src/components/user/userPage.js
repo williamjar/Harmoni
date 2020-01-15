@@ -16,7 +16,7 @@ export class UserPage extends React.Component {
             secondNewPassword: '',
             phonenumber : '',
             newPhonenumber: '',
-            profilePicture: '',
+            profilePicture: 'http://www.jacqueslacoupe.com/images/sample-user.png',
             savingInformation: false,
             mode: 1
         };
@@ -88,6 +88,8 @@ export class UserPage extends React.Component {
                                             <td>Brukernavn</td>
                                             <td>
                                                 <Form.Control type="text" name="newUsername" placeholder={this.state.username} value={this.state.newUsername} onChange={this.handleInputChange}/>
+                                                <Form.Text className={"text-danger"} hidden={!(this.state.newUsername.toLowerCase()==="geir")}>Geir er ikke et gydlig brukernavn</Form.Text>
+
                                             </td>
                                         </tr>
 
@@ -136,9 +138,9 @@ export class UserPage extends React.Component {
                                 <ListGroup>
                                     <ListGroup.Item>Endringer:</ListGroup.Item>
                                     <ListGroup.Item disabled hidden={this.validateForm()}>Ingen endringer registrert. Utfør endringer over, eller avbryt.</ListGroup.Item>
-                                    <ListGroup.Item className="text-danger" hidden={!this.validateUsername()}>Endre brukernavn til {this.state.newUsername}</ListGroup.Item>
-                                    <ListGroup.Item className="text-danger" hidden={!this.validatePhoneNumber()}>Endre telefonnummer til {this.state.newPhonenumber}</ListGroup.Item>
-                                    <ListGroup.Item className="text-danger" hidden={!this.validatePassword()}>Utfør en passordendring</ListGroup.Item>
+                                    <ListGroup.Item className="text-success" hidden={!this.validateUsername()}>Endre brukernavn til {this.state.newUsername}</ListGroup.Item>
+                                    <ListGroup.Item className="text-success" hidden={!this.validatePhoneNumber()}>Endre telefonnummer til {this.state.newPhonenumber}</ListGroup.Item>
+                                    <ListGroup.Item className="text-success" hidden={!this.validatePassword()}>Utfør en passordendring</ListGroup.Item>
                                 </ListGroup>
                                 <Form.Group className={"mt-4"}>
                                     <Button variant="success" type="submit" disabled={!this.validateForm()} hidden={this.state.savingInformation}>Utfør endringer</Button>
@@ -163,7 +165,7 @@ export class UserPage extends React.Component {
         if(illegalCharacters.test(this.state.newUsername)){
             return false;
         }else{
-            return (this.state.username !== this.state.newUsername) && (this.state.newUsername.length > 0);
+            return (this.state.username !== this.state.newUsername) && (this.state.newUsername.length > 0) && !(this.state.newUsername.toLowerCase()==="geir");
         }
     }
 
@@ -180,6 +182,7 @@ export class UserPage extends React.Component {
     }
 
     changeMode() {
+        this.setState({savingInformation: false});
         if(this.state.mode===1)this.setState({mode: 2,});
         else this.setState({mode: 1,})
     }
@@ -217,21 +220,23 @@ export class UserPage extends React.Component {
             });}
 
 
-        if(this.validatePhoneNumber())this.setState({phonenumber: this.state.newPhonenumber});
-        //Service: update phone number
+        if(this.validatePhoneNumber()){
+            this.changeMode();
+            this.setState({phonenumber: this.state.newPhonenumber});
+        }
+
 
         if(this.validatePassword()) {
-            OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword);
+            OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword).then(r =>{
+                this.setState({savingInformation: false});
+                this.changeMode();
+                this.setState({username: this.state.newUsername});
+            });
         }
+
     }
 
-    // Database control functions to display the proper error message to the user.
 
-    databaseConnectionError() {
-        return false;
-        /*
-         * return true if there is a database connection error
-         */
-    }
+
 }
 

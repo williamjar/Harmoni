@@ -170,7 +170,7 @@ ADD FOREIGN KEY (pictureID) REFERENCES picture(pictureID);
 
 ALTER TABLE organizer
 ADD FOREIGN KEY (pictureID) REFERENCES picture(pictureID),
-ADD FOREIGN KEY (contactID) REFERENCES contact(contactID);
+ADD FOREIGN KEY (contactID) REFERENCES contact(contactID) ON DELETE CASCADE;
 
 ALTER TABLE ticketType ADD FOREIGN KEY (eventID) REFERENCES event(eventID);
 

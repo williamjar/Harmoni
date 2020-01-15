@@ -1,13 +1,15 @@
 import axios from "axios";
 import {CookieStore} from './cookieStore';
+import {verifyPassword} from "./hashService";
 
 const crypto = require('crypto');
+const hash = require('./hashService');
 
 export class LoginService {
 
     static loginOrganizer(email, enteredPassword, callback) {
 
-        getHashedPassword(enteredPassword, email, hashedPassword => {
+        hash.getHashedFromEmail(enteredPassword, email, hashedPassword => {
 
             let header = {
                 "Content-Type": "application/json",
@@ -51,55 +53,6 @@ export class LoginService {
                     }
                 }).catch(error => callback(501));
         });
-
-        /** Uses email to find the organizers organizerID */
-        function getOrganizerID(email, callback) {
-            let header = {
-                "Content-Type": "application/json",
-            };
-            return axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header})
-                .then(res => {
-                    let organizerID = res.data[0].organizerID;
-                    callback(organizerID);
-                });
-        }
-
-        /** Uses organizerID to find the organizers password */
-        function getPassword(organizerID, callback) {
-            console.log('OrganizerID: ' + organizerID);
-            let header = {
-                "Content-Type": "application/json",
-            };
-            return axios.get("http://localhost:8080/organizer/" + organizerID, {headers: header})
-                .then(res => {
-                    let password = res.data[0].password;
-                    callback(password);
-                });
-        }
-
-        function getHashedPassword(enteredPassword, email, callback) {
-            getOrganizerID(email, organizerID => {
-                getPassword(organizerID, passwordInDB => {
-                    let saltHash = passwordInDB.split("/");
-                    let salt = saltHash[0];
-
-                    console.log(passwordInDB);
-
-                    function sha512(password, salt) {
-                        let hash = crypto.createHmac('sha512', salt);
-                        /** Hashing algorithm sha512 */
-                        hash.update(password);
-                        let value = hash.digest('hex');
-                        return salt + '/' + value;
-                    }
-
-                    let hashed = sha512(enteredPassword, salt);
-                    console.log(hashed);
-                    callback(hashed);
-                })
-            });
-
-        }
     }
 }
 
