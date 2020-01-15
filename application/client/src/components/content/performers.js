@@ -189,6 +189,12 @@ export class PerformerCard extends Component{
         return null;
     }
 
+    componentDidMount() {
+        let currentState = this.state;
+        currentState.riders = RiderStore.allRidersForCurrentArtistAndEvent;
+        this.setState(currentState);
+    }
+
     render(){
         return(
             <div className="card card-body">
