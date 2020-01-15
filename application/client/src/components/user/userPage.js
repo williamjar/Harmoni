@@ -229,7 +229,13 @@ export class UserPage extends React.Component {
                 var databasePhone = OrganizerStore.currentOrganizer.phone;
                 let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
 
-                let image = databaseImage == null ? databaseImage : 'http://www.jacqueslacoupe.com/images/sample-user.png';
+                let image = null;
+                if (databaseImage == null){
+                    image = 'http://www.jacqueslacoupe.com/images/sample-user.png'
+                }
+
+                console.log(databaseImage);
+                console.log(image);
 
                 this.setState(this.setState({
                     username: databaseUsername,
