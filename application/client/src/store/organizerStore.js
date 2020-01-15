@@ -35,7 +35,7 @@ export class OrganizerStore {
 
         return axios.put(axiosConfig.root + '/api/organizer/' + organizerID + '/change/username', {
             username: newUsername,
-        }, {headers: header});
+        }, {headers: header}).catch(error => console.log(error));
     }
 
     static changePassword(organizerID, oldPassword, newPassword) {
@@ -59,20 +59,40 @@ export class OrganizerStore {
 
             return axios.put(axiosConfig.root + '/api/organizer/' + organizerID + '/change/password', {
                 "password": newHashed
-            }, {headers: header});
+            }, {headers: header}).catch(error => console.log(error));
         } else {
             console.log("Password verification failed");
         }
     }
 
-    changePhoneNumber() {
+    static changePhoneNumber(newPhoneNumber) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
 
+        let contactID = this.currentOrganizer.contactID;
+
+        return axios.put(axiosConfig.root + '/api/contact/' + contactID + '/change/phonenumber', {
+            "phone": newPhoneNumber
+        }, {headers: header}).catch(error => console.log(error));
     }
 
-    changeUserImage() {
+    static changeUserImage(pictureLink) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
 
+        axios.put(axiosConfig.root + '/api/picture/insert/', {
+            pictureLink: pictureLink
+        }, {headers: header}).then(res => {
+            let pictureID = res.data[0].insertId;
+            return axios.put(axiosConfig.root + '/api/organizer/' + this.currentOrganizer.organizerID + '/change/picture', {
+                "pictureID": pictureID
+            }, {headers: header});
+        }).catch(error => console.log(error));
     }
-
 
     getAllEvents(organizerId) {
         let header = {

@@ -347,14 +347,13 @@ app.post("/token", (req, res) => {
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
     let token;
-    if (req.headers["x-access-token"]){
+    if (req.headers["x-access-token"]) {
         token = req.headers["x-access-token"];
-    }
-    else{
+    } else {
         token = CookieStore.currentToken;
     }
     console.log("Token in /api " + token);
-    try{
+    try {
         jwt.verify(token, publicKey);
         let email = jwt.decode(token, publicKey).email;
         console.log('Token OK for: ' + email);
@@ -367,8 +366,7 @@ app.use('/api', (req, res, next) => {
             });
         console.log("Token after /api " + CookieStore.currentToken);
         next();
-    }
-    catch (e) {
+    } catch (e) {
         console.log('Token not OK');
         res.status(401);
         res.json({error: e});
@@ -461,13 +459,18 @@ app.delete("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID)
 });
 
-app.put("/contact/:contactID/change/phonenumber", (request, response) => {
+app.put("/contact/:contactID/change/phonenumber/", (request, response) => {
     console.log("Request to change phone number for a contact");
+
+    let val = [
+        request.body.phone,
+        request.params.contactID
+    ];
 
     contactDao.changePhoneNumber((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.body.phone ,request.params.contactID);
+    }, val);
 });
 
 // ARTIST
@@ -917,10 +920,22 @@ app.put("/api/organizer/:organizerID/change/username", (request, response) => {
         request.body.username,
         request.params.organizerID
     ];
-    organizerDao.changeUsername(val,(status, data) => {
+    organizerDao.changeUsername(val, (status, data) => {
         response.status(status);
         response.json(data);
     });
+});
+
+app.put("/organizer/:organizerID/change/picture", (request, response) => {
+    console.log("Request to change profile picture for organizer");
+    let val = [
+        request.body.pictureID,
+        request.params.organizerID
+    ];
+    organizerDao.changeOrganizerProfilePicture((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
 });
 
 
