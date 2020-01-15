@@ -227,6 +227,7 @@ export class UserPage extends React.Component {
                 var databaseUsername = OrganizerStore.currentOrganizer.username;
                 var dataBbaseEmail = OrganizerStore.currentOrganizer.email;
                 var databasePhone = OrganizerStore.currentOrganizer.phone;
+                let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
 
                 this.setState(this.setState({
                     username: databaseUsername,
