@@ -23,6 +23,7 @@ export class PerformersTab extends Component{
 
         this.state = {
             performersAdded : [],
+            currentPerformer : {},
         }
     }
 
@@ -32,11 +33,11 @@ export class PerformersTab extends Component{
                 <div className="row">
 
                     <div className="col-lg-6 col-md-12  border-right">
-                        <PerformerPanel addPerformer={this.addPerformer}/>
+                        <PerformerPanel addPerformer={this.addPerformer} performerSelected={this.state.currentPerformer}/>
                     </div>
 
                     <div className="col-lg-6 col-md-12">
-                        <RegisteredPerformers performersAdded={this.state.performersAdded}/>
+                        <RegisteredPerformers performersAdded={this.state.performersAdded} changeCard={this.changeCurrentPerformer}/>
                     </div>
                 </div>
             </div>
@@ -46,8 +47,17 @@ export class PerformersTab extends Component{
     addPerformer = (selected) => {
         let currentState = this.state;
         currentState.performersAdded.push(selected);
+        currentState.currentPerformer = selected;
         this.setState(currentState);
     }
+
+    changeCurrentPerformer = (performer) => {
+        let currentState = this.state;
+        currentState.currentPerformer = performer;
+        this.setState(currentState);
+    }
+
+
 }
 
 export class PerformerPanel extends Component{
@@ -61,18 +71,29 @@ export class PerformerPanel extends Component{
             showArtistCard: false,
             performerSelected : {},
             results : [],
+            hideRegisterNew : false,
         }
     }
 
     render() {
         return (
             <div>
-                <Search searchHandler={this.searchHandler} registerComponent={<RegisterPerformer submitFunction={this.submitFunction}/>} addRegisterButton={true} results={this.state.results} />
+                <Search searchHandler={this.searchHandler} closeRegister={this.state.hideRegisterNew} registerComponent={<RegisterPerformer submitFunction={this.submitFunction}/>} addRegisterButton={true} results={this.state.results} />
                 <div className="padding-top-20">
                 {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} />:null}
                 </div>
             </div>
         );
+    }
+
+
+    static getDerivedStateFromProps(props, state) {
+        if(props.performerSelected !== state.performerSelected) {
+            return {
+                performerSelected: props.performerSelected
+            };
+        }
+        return state.performerSelected;
     }
 
     componentDidMount() {
@@ -82,6 +103,9 @@ export class PerformerPanel extends Component{
     submitFunction = () => {
         alert("submit clicked");
         this.callBackSearchResult();
+        let curState = this.state;
+        curState.hideRegisterNew = true;
+        this.setState(curState);
     }
 
     callBackSearchResult = () => {
@@ -118,8 +142,7 @@ export class PerformerCard extends Component{
             riders : [],
         };
 
-        console.log(this.props.performerSelected);
-
+        console.log(this.state);
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -170,7 +193,7 @@ export class PerformerCard extends Component{
                             </InputGroup.Append>
                         </InputGroup>
 
-                        {this.state.riders.map(e =>
+                        {this.state.riders.filter(filter => filter.artistID === this.state.currentPerformer.artistID).map(e =>
                             <Rider description={e.description} isDone={e.isDone} status={e.status}/>
                         )}
 
@@ -416,7 +439,7 @@ export class RegisteredPerformers extends Component{
 
 
                     {this.props.performersAdded.map(p =>
-                        <div className="card card-body pointer selection" onClick={this.showCard}>
+                        <div className="card card-body pointer selection" onClick={() => this.showCard(p)}>
                         <div className="row">
                             <div className="col-10">
                                 {p.contactName}
@@ -433,8 +456,8 @@ export class RegisteredPerformers extends Component{
         )
     }
 
-    showCard = () => {
-        alert("showCard");
+    showCard = (performer) => {
+        this.props.changeCard(performer);
     }
 }
 

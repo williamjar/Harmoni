@@ -73,8 +73,10 @@ export class Search extends Component{
     componentDidMount() {
         let currentState = this.state;
         currentState.results = this.props.results;
+        currentState.showRegisterNew = this.props.closeRegister;
         this.setState(currentState);
     }
+
 
     static getDerivedStateFromProps(props, state) {
         if(props.results !== state.results) {
