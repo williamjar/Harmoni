@@ -16,4 +16,5 @@ module.exports = class pictureDao extends Dao {
     getPicture(callback, pictureID) {
         super.query('select * from picture where pictureID = ?', pictureID, callback);
     }
+
 };

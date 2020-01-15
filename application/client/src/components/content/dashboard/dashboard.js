@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {
     Accordion,
     Button,
-    ButtonGroup,
+    Card,ButtonGroup,
     Col,
     Dropdown,
     DropdownButton,
@@ -22,6 +22,7 @@ import {CookieStore} from "../../../store/cookieStore";
 import {createHashHistory} from "history";
 
 const history = createHashHistory();
+
 
 // Component displaying all of the users events
 export class Dashboard extends React.Component {
@@ -63,25 +64,26 @@ export class Dashboard extends React.Component {
     render() {
 
         return(
-            <div>
+            <Card className={"border-0 justify-content-md-center m-4"}>
+                <h3 className={"mt-4 mb-4"}>Arrangementer</h3>
                 <Search searchHandler={this.searchHandler}/>
-                <h3>Arrangementer</h3>
-                    <Row className="filterMenu">
+                <Row className="filterMenu">
                         <Col>
-                            <ButtonGroup size="md">
+                            <ButtonGroup size="sm">
                                 <Button name="all" variant="secondary" active={this.state.active === "all"} onClick={this.filterEvents}>Alle</Button>
                                 <Button name="planned" variant="secondary" active={this.state.active === "planned"} onClick={this.filterEvents}>Planlagte</Button>
                                 <Button name="planning" variant="secondary" active={this.state.active === "planning"} onClick={this.filterEvents}>Under planlegging</Button>
                                 <Button name="archived" variant="secondary" active={this.state.active === "archived"} onClick={this.filterEvents}>Arkiverte</Button>
                             </ButtonGroup>
-                        </Col>
-                        <Col>
-                            <DropdownButton title="Sorter etter..">
+
+                            <DropdownButton size="sm" variant="info" title="Sorter etter..">
                                 <Dropdown.Item as="button">Dato</Dropdown.Item>
                                 <Dropdown.Item as="button">Pris</Dropdown.Item>
                             </DropdownButton>
                         </Col>
+
                     </Row>
+
                 <Accordion id="plannedEvents" defaultActiveKey="0">
                     <Row className="no-gutters">
                         <p>Planlagte arrangement</p>
@@ -131,7 +133,7 @@ export class Dashboard extends React.Component {
                        </div>
                    </Col>
                 </Row>
-            </div>
+            </Card>
         )
     }
 

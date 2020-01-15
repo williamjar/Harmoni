@@ -7,7 +7,7 @@ let axiosConfig = require("./axiosConfig");
 
 export class CrewService {
 
-    static getCrewMember(crewID){
+    static getCrewMember(crewID) {
 
         let header = {
             "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export class CrewService {
         };
 
         let allCrewMembersByOrganizer = [];
-        axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response =>  {
+        axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response => {
             for (let i = 0; i < response.data.length; i++) {
                 allCrewMembersByOrganizer.push(new CrewMember(response.data[i].crewID, response.data[i].description,
                     response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
@@ -37,7 +37,7 @@ export class CrewService {
         return allCrewMembersByOrganizer;
     }
 
-    static getAllCrewCategoriesForOrganizer(organizerID){
+    static getAllCrewCategoriesForOrganizer(organizerID) {
 
         let header = {
             "Content-Type": "application/json",
@@ -45,7 +45,7 @@ export class CrewService {
         };
 
         let allCrewCategoriesByOrganizer = [];
-        axios.get(axiosConfig.root + '/api/crew/categories/' +  organizerID, {headers: header}).then(response =>  {
+        axios.get(axiosConfig.root + '/api/crew/categories/' + organizerID, {headers: header}).then(response => {
             for (let i = 0; i < response.data.length; i++) {
                 allCrewCategoriesByOrganizer.push(new CrewMember(response.data[i].crewCategory));
             }
@@ -53,7 +53,24 @@ export class CrewService {
         return allCrewCategoriesByOrganizer;
     }
 
-    static getAllCrewMembersForEvent(eventID){
+    static getAllCrewMembersForEvent(eventID) {
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let allCrewMembersForEventAndCategory = [];
+        axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+                allCrewMembersForEventAndCategory.push(new CrewMember(response.data[i].crewID, response.data[i].description,
+                    response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
+            }
+        });
+        return allCrewMembersForEventAndCategory;
+    }
+
+    static getAllCrewMembersForEventAndCategory(eventID, crewCategoryID) {
 
         let header = {
             "Content-Type": "application/json",
@@ -61,7 +78,7 @@ export class CrewService {
         };
 
         let allCrewMembersForEvent = [];
-        axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response =>  {
+        axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response => {
             for (let i = 0; i < response.data.length; i++) {
                 allCrewMembersForEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
                     response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
@@ -70,7 +87,8 @@ export class CrewService {
         return allCrewMembersForEvent;
     }
 
-    static createCrewMember(name, phone, email, description, organizerID, callback){
+
+    static createCrewMember(name, phone, email, description, organizerID, callback) {
 
         console.log("Inside createCrewMember");
         let header = {
@@ -85,7 +103,6 @@ export class CrewService {
         };
 
 
-
         axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
             console.log("Axios post then");
             let crewBody = {
@@ -96,7 +113,7 @@ export class CrewService {
 
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>
                 console.log(response));
-                callback();
+            callback();
 
         })
 
@@ -104,9 +121,7 @@ export class CrewService {
     }
 
 
-
-
-    static addCategory(categoryName, organizerID){
+    static addCategory(categoryName, organizerID) {
 
         let header = {
             "Content-Type": "application/json",
@@ -119,7 +134,7 @@ export class CrewService {
         }, {headers: header}).then(response => response.data);
     }
 
-    static assignCrewMemberToEvent(eventID, categoryID, crewID, isResponsible){
+    static assignCrewMemberToEvent(eventID, categoryID, crewID, isResponsible) {
 
         let header = {
             "Content-Type": "application/json",
@@ -134,20 +149,20 @@ export class CrewService {
         }, {headers: header}).then(response => response.data);
     }
 
-    static addDocumentToCrewMember(eventID, name, link, crewID, categoryID){
+    static addDocumentToCrewMember(eventID, name, link, crewID, categoryID) {
 
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.post(axiosConfig.root + '/api/document/crew',{
+        return axios.post(axiosConfig.root + '/api/document/crew', {
             "eventID": eventID,
             "documentName": name,
             "documentLink": link,
             "crewID": crewID,
             "documentCategoryID": categoryID
-        }, {headers:header}).then(response => response.data);
+        }, {headers: header}).then(response => response.data);
     }
 
     static updateCrewMember(description, id) {
@@ -194,7 +209,7 @@ export class CrewService {
         return axios.delete(axiosConfig.root + '/api/crew-category/' + crewCategoryID, {headers: header}).then(response => console.log(response));
     }
 
-    static unassignCrewMember(crewCategoryID, crewID){
+    static unassignCrewMember(crewCategoryID, crewID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken

@@ -22,19 +22,15 @@ module.exports = class documentDao extends Dao {
         super.query('SELECT * FROM organizer JOIN event ON organizer.organizerID = event.organizerID WHERE organizer.organizerID = ?', [organizerID], callback);
     }
 
-
-    changeUsername(list, callback){
-        super.query('UPDATE organizer SET username = ? WHERE organizerID = ?', list ,callback)
+    changeUsername(list, callback) {
+        super.query('UPDATE organizer SET username = ? WHERE organizerID = ?', list, callback)
     }
 
-    getOrganizerFromEmail(email, callback){
+    getOrganizerFromEmail(email, callback) {
         super.query("select organizer.organizerID from organizer join contact c on organizer.contactID = c.contactID where c.email = ?", [email], callback);
     }
 
-
-//TODO: må lages picture dao og endepunker - flytt denne til pictureDao
-    changeOrganizerProfilePicture(callback, pictureID, pictureLink){
-        super.query('update picture set pictureLink = ? where pictureID = ?', [pictureLink, pictureID], callback)
+    changeOrganizerProfilePicture(callback, list) {
+        super.query('update organizer set pictureID = ? WHERE organizerID = ?', list, callback)
     }
-
 };
