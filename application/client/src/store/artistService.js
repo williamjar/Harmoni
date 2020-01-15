@@ -24,7 +24,7 @@ export class ArtistService {
     }
 
     // OrganizerID == innlogget bruker.
-    static createArtist(name, phone, email, genreID, organizerID) {
+    static createArtist(callback, name, phone, email, genreID, organizerID) {
         console.log("artist clickkekkkkaekrakwrkwrk");
         let header = {
             "Content-Type": "application/json",
@@ -47,7 +47,8 @@ export class ArtistService {
 
                 axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(response =>
                     console.log(response));
-            }
+                    callback();
+                }
         );
     }
 
@@ -77,7 +78,7 @@ export class ArtistService {
 
     }
 
-    static getArtistForEvent(eventID) {
+    static getArtistsForEvent(callback, eventID) {
         let allArtistByEvent = [];
         let header = {
             "Content-Type": "application/json",
@@ -85,13 +86,14 @@ export class ArtistService {
         };
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
-                    allArtistByEvent.push(new Artist(response.data[i].artistID, response.data[i].organizerID,
-                        response.data[i].contactID, response.data[i].organizerID, response.data[i].contactID,
-                        response.data[i].contactName, response.data[i].phone, response.data[i].email));
+                    allArtistByEvent.push(new Artist(response.data[i].artistID, response.data[i].contactName,
+                        response.data[i].phone, response.data[i].email, response.data[i].genreID,
+                        response.data[i].organizerID));
                 }
+            callback(allArtistByEvent);
             }
         );
-        return allArtistByEvent;
+
     }
 
     static addDocumentToArtist(eventID, name, link, artistID, categoryID) {
@@ -128,10 +130,7 @@ export class ArtistService {
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.delete(axiosConfig.root + '/api/artist/unassign/' + eventID + '/' + artistID, {
-            "eventID": eventID,
-            "artistID": artistID
-        }, {headers: header}).then(response => response.data);
+        return axios.delete(axiosConfig.root + '/api/artist/assign/' + eventID + '/' + artistID, {headers: header}).then(response => response.data);
     }
 
     static getAllGenres(callback) {

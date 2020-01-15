@@ -3,7 +3,7 @@ const Dao = require('./dao.js');
 module.exports = class crewDao extends Dao {
 
     getOne(callback, list) {
-        super.query('SELECT contactName,phone,email,organizerID,description,crewCategoryName FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON crewCategory.crewCategoryID = event_crewCategory_crew.crewCategoryID WHERE crewID = ?', list, callback);
+        super.query('SELECT contactName,phone,email,crewID,description FROM crew JOIN contact ON crew.contactID = contact.contactID WHERE crewID = ?', list, callback);
     }
 
     createOne(callback, list) {
@@ -22,9 +22,9 @@ module.exports = class crewDao extends Dao {
         super.query('SELECT * FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE organizerID = ? AND crew.contactID = contact.contactID', [organizerID], callback);
     }
 
-    getAllForEvent(callback, eventID) {
-        super.query('SELECT * FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE eventID = ?', [eventID], callback);
-    }
+    /*getAllForEvent(callback, eventID) {
+        super.query('SELECT contactName, phone, email, crew.crewID, description FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE eventID = ?', [eventID], callback);
+    }*/
 
     addDocument(callback, list) {
         super.query('INSERT INTO document (eventID,documentName,documentLink,crewID,documentCategoryID) VALUES (?, ?, ?, ?, ?)', list, callback);
@@ -34,8 +34,20 @@ module.exports = class crewDao extends Dao {
         super.query('UPDATE event_crewCategory_crew SET isResponsible = ? WHERE eventID = ? AND crewCategoryID = ? AND crewID = ?', list, callback);
     }
 
+    getAllCategoriesForOneForEvent(callback, crewID, eventID){
+        super.query('SELECT crewCategoryName FROM crewCategory JOIN event_crewCategory_crew on crewCategory.crewCategoryID = event_crewCategory_crew.crewCategoryID WHERE crewID = ? AND eventID = ? ', [crewID, eventID], callback)
+    }
+
+    getAllCategoriesForEvent(callback, eventID){
+        super.query('SELECT * FROM crewCategory JOIN event_crewCategory_crew on crewCategory.crewCategoryID = event_crewCategory_crew.crewCategoryID WHERE eventID = ? ', [eventID], callback)
+    }
+
     getAllCategories(callback, organizerID) {
         super.query('SELECT * FROM crewCategory WHERE organizerID = ?', organizerID, callback);
+    }
+
+    getAllForEvent(callback, list) {
+        super.query('SELECT * FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE event_crewCategory_crew.eventID = ?', list, callback);
     }
 
     createOneCategory(callback, list) {
@@ -53,5 +65,6 @@ module.exports = class crewDao extends Dao {
     unAssignOne(callback, eventID, crewCategoryID, crewID) {
         super.query('DELETE FROM event_crewCategory_crew where eventID = ? AND crewCategoryID = ? AND crewID = ?', [eventID, crewCategoryID, crewID], callback);
     }
+
 
 };

@@ -7,8 +7,13 @@ import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {TicketType} from "../../classes/ticketType";
-import {CrewStore} from "../../store/crewService";
+import {CrewStore} from "../../store/crewStore";
 import {CookieStore} from "../../store/cookieStore";
+import Accordion from "react-bootstrap/Accordion";
+import Card from "react-bootstrap/Card";
+import ListGroup from "react-bootstrap/ListGroup";
+import {eventStore as EventStore, eventStore} from "../../store/eventStore";
+import Row from "react-bootstrap/Row";
 
 
 export class CrewTab extends Component{
@@ -19,7 +24,7 @@ export class CrewTab extends Component{
     render(){
         return(
             <div>
-                {this.state.editable ? <div><AddToCrew/><AddedCrew/></div> : <CrewView/>}
+                {this.state.editable ? <div><AddToCrew/><CrewView/></div> : <CrewView/>}
             </div>
         )
     }
@@ -113,11 +118,11 @@ export class AddToCrew extends Component{
 
                     <div className="col-4">
 
-                    <select className="form-control" id="crewCategory" onChange={this.showRegisterCrewTypeForm}>
-                        <option>Lydperson</option>
-                        <option>Lysperson</option>
-                        <option>Legg til ny..</option>
-                    </select>
+                        <select className="form-control" id="crewCategory" onChange={this.showRegisterCrewTypeForm}>
+                            <option>Lydperson</option>
+                            <option>Lysperson</option>
+                            <option>Legg til ny..</option>
+                        </select>
 
                     </div>
 
@@ -152,8 +157,8 @@ export class AddToCrew extends Component{
                 <div className="row padding-top-20">
 
                     <div className="col-12">
-                    <label htmlFor="descriptionCrew">Beskrivelse</label>
-                    <textarea className="form-control" id="descriptionCrew" rows="4"></textarea>
+                        <label htmlFor="descriptionCrew">Beskrivelse</label>
+                        <textarea className="form-control" id="descriptionCrew" rows="4"></textarea>
                     </div>
 
                 </div>
@@ -269,36 +274,68 @@ export class CrewView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            crewID : null,
-            contactID : null,
-            description : '',
-            organizerID : null
+            contactName : "",
+            phone : "",
+            email : "",
+            description : "",
+            crewCategory: "",
+            crewList: []
         }
     }
 
     render() {
-        return(
-            <div>
-                <b>Personell lagt til</b>
-                <div className="card card-body">
-                    <div className="row">
-                        <div className="col-10">
-                            Lydman
-                        </div>
-
-                        <div className="col-2">
-                            <button className="btn-primary rounded mr-2" onClick={this.returnCrew}>Vis personell</button>
+        if (this.state.crewList === null){
+            return null;
+        } else {
+            console.log(this.state.crewList);
+            return(
+                <Card.Body>
+                    <div className="row padding-top-20">
+                        <div className="col-12">
+                            Personell som er lagt til:
                         </div>
                     </div>
-                </div>
-            </div>
-        )
+                    <ListGroup>
+                            {this.state.crewList.map(e => (
+                                <ListGroup.Item>
+                                    <Row>
+                                        <Col>Navn: {e.contactName}</Col>
+                                        <Col>Mobil: {e.phone}</Col>
+                                        <Col>E-post: {e.email}</Col>
+                                        <Col>Beskrivelse: {e.description}</Col>
+                                    </Row>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+                </Card.Body>
+            )
+        }
     }
 
+    returnOneCrewMember = () => {
+        console.log('runs returnCrew');
+        CrewStore.getCrewMember(1, (data) => {
+            this.setState(
+                { contactName : data.contactName,
+                        phone : data.phone,
+                        email : data.email,
+                        description: data.description})
+        });
+        console.log(this.state);
+    };
+
     returnCrew = () => {
-        console.log('hei');
-        CrewStore.getCrewMember(1);
-        this.setState(this.props)
+        CrewStore.storeAllCrewMembersForEvent(() => {
+            console.log("return crew members" + CrewStore.allCrewForCurrentEvent);
+            this.setState(
+                { crewList : CrewStore.allCrewForCurrentEvent })
+        }, EventStore.currentEvent);
+        console.log(this.state);
+    };
+
+    componentDidMount() {
+        this.returnOneCrewMember();
+        this.returnCrew();
 
     }
 }
@@ -312,6 +349,7 @@ export class AddCrewMember extends Component{
             name : "",
             phone : "",
             email : "",
+            crewCategoryID : 1
         };
     }
 
@@ -336,7 +374,7 @@ export class AddCrewMember extends Component{
                         <Form.Control type="email" placeholder="" onChange={this.handleEmailChange} />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit" onClick={this.submitForm}>
+                    <Button variant="primary" type="button" onClick={this.submitForm}>
                         Submit
                     </Button>
                     <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
@@ -367,7 +405,7 @@ export class AddCrewMember extends Component{
     }
 
     submitForm = () => {
-        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '',  CookieStore.currentUserID, () => {});
+        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
 
 
 

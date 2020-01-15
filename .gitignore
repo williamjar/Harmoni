@@ -77,3 +77,5 @@ fabric.properties
 /application/client/package-lock.json
 nodemodules/
 /application/server/node_modules/
+/application/server/resources/
+
