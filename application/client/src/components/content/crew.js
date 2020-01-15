@@ -200,9 +200,11 @@ export class AddToCrew extends Component{
 
 
     showRegisterCrewTypeForm = (event) => {
+        if(event.target.value.trim() === "Legg til ny.."){
             let currentState = this.state;
             currentState.showRegisterCrewType = !currentState.showRegisterCrewType;
             this.setState(currentState);
+        }
     };
 
     showRegisterCrewMemberForm= (event) => {
@@ -402,19 +404,19 @@ export class AddCrewMember extends Component{
         let currentState = this.state;
         currentState.name = event.target.value;
         this.setState(currentState);
-    }
+    };
 
     handlePhoneChange = (event) => {
         let currentState = this.state;
         currentState.phone = event.target.value;
         this.setState(currentState);
-    }
+    };
 
     handleEmailChange = (event) => {
         let currentState = this.state;
         currentState.email = event.target.value;
         this.setState(currentState);
-    }
+    };
 
     submitForm = () => {
         CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
