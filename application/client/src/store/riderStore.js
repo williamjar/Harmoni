@@ -1,16 +1,16 @@
 import axios from "axios";
 
-
 import {RiderElement} from "../classes/riderElement"
 import {CookieStore} from "./cookieStore";
+
 const axiosConfig = require("./axiosConfig");
 
-
 export class RiderStore {
-    allRidersForCurrentEvent = [];
+    static allRidersForCurrentEvent = [];
+    static allRidersForCurrentArtistAndEvent = [];
 
     //get a rider element
-    getRider(riderID) {
+    static getRider(riderID) {
 
         let header = {
             "Content-Type": "application/json",
@@ -19,16 +19,16 @@ export class RiderStore {
 
         axios.get(axiosConfig.root + '/api/rider/' + riderID, {headers: header})
             .then(response => {
-                return new RiderElement(response.data[0].riderID, response.data[0].artistID,
-                    response.data[0].eventID, response.data[0].status, response.data[0].isDone,
-                    response.data[0].description);
-            }
-        )
+                    return new RiderElement(response.data[0].riderID, response.data[0].artistID,
+                        response.data[0].eventID, response.data[0].status, response.data[0].isDone,
+                        response.data[0].description);
+                }
+            )
             .catch(error => console.log(error));
     }
 
     //get all rider elements for an artist
-    getAllRiderElementsFromArtist(artistID) {
+    static getAllRiderElementsFromArtist(artistID) {
         let allRiderElementsFromArtist = [];
         let header = {
             "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export class RiderStore {
     }
 
     //get all rider elements for an artist for an event
-    getAllRiderElementsFromArtistAndEvent(eventID, artistID){
+    static getAllRiderElementsFromArtistAndEvent(eventID, artistID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -56,19 +56,19 @@ export class RiderStore {
         let allRiderElementsFromArtistAndEvent = [];
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider', {headers: header})
             .then(response => {
-                for(let i = 0; i < response.data.length; i++){
-                    allRiderElementsFromArtistAndEvent.push(new RiderElement(response.data[0].riderID, response.data[0].artistID,
-                        response.data[0].eventID, response.data[0].status, response.data[0].isDone,
-                        response.data[0].description));
+                    for (let i = 0; i < response.data.length; i++) {
+                        allRiderElementsFromArtistAndEvent.push(new RiderElement(response.data[0].riderID, response.data[0].artistID,
+                            response.data[0].eventID, response.data[0].status, response.data[0].isDone,
+                            response.data[0].description));
+                    }
                 }
-            }
-       )
+            )
             .catch(error => console.log(error));
-        return allRiderElementsFromArtistAndEvent;
+        allRiderElementsFromArtistAndEvent;
     }
 
     //get all riders for an event
-    storeAllRidersForEvent(eventID){
+    static storeAllRidersForEvent(eventID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -76,7 +76,7 @@ export class RiderStore {
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/rider', {headers: header})
             .then(response => {
                 this.allRidersForCurrentEvent = [];
-                for(let i = 0; i < response.data.length; i++){
+                for (let i = 0; i < response.data.length; i++) {
                     this.allRidersForCurrentEvent.push(new RiderElement(response.data[0].riderID, response.data[0].artistID,
                         response.data[0].eventID, response.data[0].status, response.data[0].isDone,
                         response.data[0].description))
@@ -87,7 +87,7 @@ export class RiderStore {
 
 
     //create a new rider element.
-    createNewRiderElement(callback, artistID, eventID, description){
+    static createNewRiderElement(callback, artistID, eventID, description) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -97,13 +97,13 @@ export class RiderStore {
             artistID: artistID,
             eventID: eventID,
             description: description
-        }, {headers: header}).then(response =>{
+        }, {headers: header}).then(response => {
             callback(new RiderElement(response.data.insertId, artistID, "", false, description));
         }).catch(error => console.log(error));
     }
 
     //update a rider element
-    updateRider(riderElementID, artistID, eventID, status, isDone, description){
+    static updateRider(riderElementID, artistID, eventID, status, isDone, description) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -120,7 +120,7 @@ export class RiderStore {
     }
 
     //delete a rider element
-    deleteRider(eventID, artistID, riderID){
+    static deleteRider(eventID, artistID, riderID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -129,7 +129,5 @@ export class RiderStore {
             .catch(error => console.log(error));
     }
 }
-
-export let riderStore = new RiderStore();
 
 
