@@ -3,6 +3,7 @@ import {Form, Button, Card, Spinner} from 'react-bootstrap'
 import { NavLink } from 'react-router-dom';
 import {LoginService} from "../../store/loginService";
 import {CookieStore} from "../../store/cookieStore";
+import {UserPage} from "../user/userPage";
 
 export class LoginForm extends React.Component {
 
@@ -47,6 +48,7 @@ export class LoginForm extends React.Component {
         return (
 
             <Card >
+                <UserPage/>
                 <Card.Body className={"m-4"}>
                     <Card.Title className="ml-5">Logg inn</Card.Title>
                     <div className="justify-content-md-center m-5">
