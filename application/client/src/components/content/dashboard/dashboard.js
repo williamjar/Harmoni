@@ -1,19 +1,8 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-    Accordion,
-    Button,
-    Card,ButtonGroup,
-    Col,
-    Dropdown,
-    DropdownButton,
-    ListGroup,
-    Row,
-    Tab,
-    Table
-} from "react-bootstrap";
-import {FaAngleDown, FaPlusCircle} from "react-icons/fa";
+import {Accordion, Button, Card,ButtonGroup, Col, Dropdown, DropdownButton, ListGroup, Row, Tab} from "react-bootstrap";
+import {FaAngleDown} from "react-icons/fa";
 import {EventView} from "./eventView";
 import {Event} from "../../../classes/event";
 import {Search} from "../search";
@@ -139,19 +128,5 @@ export class Dashboard extends React.Component {
 
     searchHandler(){
 
-    }
-}
-
-export class NoEvents extends Component {
-    render() {
-        return (
-            <Table className="mb-4" striped>
-                <tbody>
-                <tr>
-                    <td>{this.props.message}</td>
-                </tr>
-                </tbody>
-            </Table>
-        )
     }
 }
