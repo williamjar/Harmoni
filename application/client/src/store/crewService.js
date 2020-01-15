@@ -1,78 +1,111 @@
 import axios from "axios";
 import {CrewMember} from "../classes/crewMember.js"
-import {CrewLeader} from "../classes/crewLeader.js"
 import {CookieStore} from "./cookieStore";
 
 let axiosConfig = require("./axiosConfig");
 
-export class CrewService {
+export class CrewStore {
+    allCrewMembersByEvent = [];
+    allCrewMembersByOrganizer = [];
 
-    static getCrewMember(crewID){
-
+    //get a crew member
+    static getCrewMember(crewID, callback){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-
-        axios.get(axiosConfig.root + '/api/crew/' + crewID, {headers: header}).then(response => {
-            return new CrewMember(response.data[0].description, response.data[0].contactName,
-                response.data[0].phone, response.data[0].email);
+        axios.get(axiosConfig.root + '/api/crew/' + crewID,  {headers: header}).then(response => {
+            let crew =  new CrewMember(response.data[0].contactName,
+                response.data[0].phone, response.data[0].email, response.data[0].crewID, response.data[0].description);
+            callback(crew);
         });
     }
 
-    static getAllCrewMembersForOrganizer(organizerID) {
-
+    //get all crew members for an organizer
+    static getAllCrewMembersForOrganizer(callback, organizerID) {
+        let allCrewMembersByOrganizer = [];
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-
-        let allCrewMembersByOrganizer = [];
         axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
-                allCrewMembersByOrganizer.push(new CrewMember(response.data[i].crewID, response.data[i].description,
-                    response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
+                allCrewMembersByOrganizer.push(new CrewMember(response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description));
+                this.addCategory(response.data[i].crewCategory);
             }
+            callback(allCrewMembersByOrganizer);
         });
-        return allCrewMembersByOrganizer;
+
     }
 
-    static getAllCrewCategoriesForOrganizer(organizerID){
-
+    static storeAllCrewMembersForOrganizer(organizerID){
+        this.allCrewMembersByOrganizer = [];
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-
-        let allCrewCategoriesByOrganizer = [];
-        axios.get(axiosConfig.root + '/api/crew/categories/' +  organizerID, {headers: header}).then(response =>  {
+        axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
-                allCrewCategoriesByOrganizer.push(new CrewMember(response.data[i].crewCategory));
+                this.allCrewMembersByOrganizer.push(new CrewMember(response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description,
+                    response.data[i].crewCategory));
             }
         });
-        return allCrewCategoriesByOrganizer;
     }
 
-    static getAllCrewMembersForEvent(eventID){
+    // get all crew categories for an organizer
+    static getAllCrewCategoriesForOrganizer(callback, organizerID){
+        let allCrewCategoriesByOrganizer = [];
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        axios.get(axiosConfig.root + '/api/crew/categories/' +  organizerID, {headers: header}).then(response =>  {
+            let categories = new CrewMember;
+            for (let i = 0; i < response.data.length; i++) {
+                allCrewCategoriesByOrganizer.push(categories.addCrewCategory(response.data[i].crewCategory));
+            }
+        });
+        return callback(allCrewCategoriesByOrganizer);
+    }
 
+    //get all crew members for an event
+    static getAllCrewMembersForEvent(callback, eventID){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
         let allCrewMembersForEvent = [];
+
+        axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response =>  {
+
+            for (let i = 0; i < response.data.length; i++) {
+
+                allCrewMembersForEvent.push(new CrewMember(response.data[i].contactName,
+                    response.data[i].phone, response.data[i].email, response.data[i].crewID, response.data[i].description));
+
+            }
+            callback(allCrewMembersForEvent);
+        });
+
+    }
+
+    static storeAllCrewMembersForEvent(eventID){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        this.allCrewMembersForEvent = [];
         axios.get(axiosConfig.root + '/api/event/crew/' + eventID, {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
-                allCrewMembersForEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
+                this.allCrewMembersForEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
                     response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
             }
         });
-        return allCrewMembersForEvent;
     }
 
-    static createCrewMember(name, phone, email, description, organizerID, callback){
-
-        console.log("Inside createCrewMember");
+    //register a new crew member
+    static createCrewMember(name, phone, email, description, organizerID){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -84,8 +117,6 @@ export class CrewService {
             "email": email
         };
 
-
-
         axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
             console.log("Axios post then");
             let crewBody = {
@@ -96,17 +127,12 @@ export class CrewService {
 
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>
                 console.log(response));
-                callback();
-
+            //callback();
         })
-
-
     }
 
-
-
-
-    static addCategory(categoryName, organizerID){
+    //add a new category
+    static addCategory(callback ,categoryName, organizerID){
 
         let header = {
             "Content-Type": "application/json",
@@ -116,11 +142,11 @@ export class CrewService {
         axios.post(axiosConfig.root + '/api/crew-category', {
             "crewCategoryName": categoryName,
             "organizerID": organizerID
-        }, {headers: header}).then(response => response.data);
+        },  {headers: header}).then(response => callback(response.json().status));
     }
 
-    static assignCrewMemberToEvent(eventID, categoryID, crewID, isResponsible){
-
+    //assign a crew member to an event
+    static assignCrewMemberToEvent(callback, eventID, categoryID, crewID, isResponsible){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -131,11 +157,11 @@ export class CrewService {
             "crewCategoryID": categoryID,
             "crewID": crewID,
             "isResponsible": isResponsible
-        }, {headers: header}).then(response => response.data);
+        },  {headers: header}).then(response => callback(response.json().status));
     }
 
-    static addDocumentToCrewMember(eventID, name, link, crewID, categoryID){
-
+    //add a document to a crew member
+    static addDocumentToCrewMember(callback, eventID, name, link, crewID, categoryID){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -147,11 +173,11 @@ export class CrewService {
             "documentLink": link,
             "crewID": crewID,
             "documentCategoryID": categoryID
-        }, {headers:header}).then(response => response.data);
+        },  {headers: header}).then(response => callback(response.json().status));
     }
 
-    static updateCrewMember(description, id) {
-
+    //update a crew member
+    static updateCrewMember(callback, description, id) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -160,11 +186,12 @@ export class CrewService {
         return axios.put(axiosConfig.root + '/api/crew/' + id, {
             "description": description,
             "crewID": id
-        }, {headers: header}).then(response => response.data);
+        },  {headers: header}).then(response => callback(response.json().status));
     }
 
-    static updateCrewMemberAsLeader(isResponsible, eventID, categoryID, crewID) {
-
+    //update crew member as leader in a category for an event.
+    //it is possible for a crew member to be a leader for more than one category
+    static updateCrewMemberAsLeader(callback, isResponsible, eventID, categoryID, crewID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -175,25 +202,43 @@ export class CrewService {
             "eventID": eventID,
             "crewCategoryID": categoryID,
             "crewID": crewID
-        }, {headers: header}).then(response => response.data);
+        },  {headers: header}).then(response => callback(response.json().status));
     }
 
-    static deleteCrewMember(crewID) {
+    //delete crew member
+    static deleteCrewMember(callback, crewID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete(axiosConfig.root + '/api/crew/' + crewID, {headers: header}).then(response => console.log(response));
+
+        return axios.delete(axiosConfig.root + '/api/crew/' + crewID,  {headers: header})
+            .then(response => callback(response.json().status));
     }
 
-    static deleteCrewCategory(crewCategoryID) {
+    //delete crew category
+    static deleteCrewCategory(callback, crewCategoryID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete(axiosConfig.root + '/api/crew-category/' + crewCategoryID, {headers: header}).then(response => console.log(response));
+
+        return axios.delete(axiosConfig.root + '/api/crew-category/' + crewCategoryID,  {headers: header})
+            .then(response => callback(response.json().status));
     }
 
+    //remove crew member from event
+    static unassignCrewMemberFromEvent(callback, eventID, crewCategoryID, crewID){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        return axios.delete(axiosConfig.root + '/api/crew/assign/' + eventID + '/' + crewCategoryID + '/' + crewID,  {headers: header})
+            .then(response => callback(response.json().status));
+    }
+
+    //delete crew member
     static unassignCrewMember(crewCategoryID, crewID){
         let header = {
             "Content-Type": "application/json",

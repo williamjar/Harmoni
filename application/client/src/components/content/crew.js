@@ -7,7 +7,7 @@ import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {TicketType} from "../../classes/ticketType";
-import {CrewService} from "../../store/crewService";
+import {CrewStore} from "../../store/crewService";
 import {CookieStore} from "../../store/cookieStore";
 
 
@@ -297,7 +297,7 @@ export class CrewView extends Component {
 
     returnCrew = () => {
         console.log('hei');
-        CrewService.getCrewMember(1);
+        CrewStore.getCrewMember(1);
         this.setState(this.props)
 
     }
@@ -367,7 +367,7 @@ export class AddCrewMember extends Component{
     }
 
     submitForm = () => {
-        CrewService.createCrewMember(this.state.name, this.state.phone, this.state.email, '',  CookieStore.currentUserID, () => {});
+        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '',  CookieStore.currentUserID, () => {});
 
 
 
