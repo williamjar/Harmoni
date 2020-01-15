@@ -38,7 +38,7 @@ export class OrganizerStore {
         }, {headers: header}).catch(error => console.log(error));
     }
 
-    static changePassword(organizerID, oldPassword, newPassword) {
+    static changePassword(organizerID, oldPassword, newPassword, callback) {
 
         return hash.verifyPassword(organizerID, oldPassword, rightPassword => {
             console.log("Right password " + rightPassword);
@@ -51,11 +51,13 @@ export class OrganizerStore {
                     "x-access-token": CookieStore.currentToken
                 };
 
-                return axios.put(axiosConfig.root + '/api/organizer/' + organizerID + '/change/password', {
+                axios.put(axiosConfig.root + '/api/organizer/' + organizerID + '/change/password', {
                     "password": newHashed
                 }, {headers: header}).catch(error => console.log(error));
+                callback(200);
             } else {
                 console.log("Password verification failed");
+                callback(500);
             }
         });
     }
