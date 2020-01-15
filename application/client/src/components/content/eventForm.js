@@ -10,6 +10,9 @@ import {DocumentationTab} from "../documentationTab";
 import {DocList} from "../docView";
 import {riderStore} from "../../store/riderStore";
 import {eventStore} from "../../store/eventStore";
+import {createHashHistory} from "history";
+
+const history = createHashHistory();
 
 
 
@@ -31,7 +34,8 @@ export class EventForm extends Component{
     };
 
     saveClicked = () => {
-        this.setState({edit: false})
+        this.setState({edit: false});
+        eventStore.postCurrentEvent().then(history.push("/"));
     };
 
     componentDidMount() {
