@@ -16,15 +16,6 @@ import Row from "react-bootstrap/Row";
 export class PerformersTab extends Component{
     /* All the performer content for use in the Performer tab */
 
-    constructor(props){
-        super(props);
-
-        this.state = {
-            performersAdded : [],
-            currentPerformer : {},
-        }
-    }
-
     render(){
         return(
             <div>
@@ -69,7 +60,7 @@ export class PerformerPanel extends Component{
                         </div>
 
                         <div className="padding-top-20">
-                            {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
+                            {this.state.showRegisterNew?<RegisterPerformer submitFunction={() => this.submitFunction()} toggleRegister={this.toggleRegisterNew} />:null}
                             {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
                         </div>
                     </div>
@@ -457,25 +448,25 @@ export class RegisterPerformer extends Component{
             let currentState = this.state;
             currentState.name = event.target.value;
             this.setState(currentState);
-    }
+    };
 
     handlePhoneChange = (event) => {
         let currentState = this.state;
         currentState.phone = event.target.value;
         this.setState(currentState);
-    }
+    };
 
     handleEmailChange = (event) => {
         let currentState = this.state;
         currentState.email = event.target.value;
         this.setState(currentState);
-    }
+    };
 
     handleGenreChange = (event) => {
         let currentState = this.state;
         currentState.genre = event.target.value;
         this.setState(currentState);
-    }
+    };
 
     cancelRegisterNew = () =>{
         let currentState = this.state;
@@ -485,7 +476,7 @@ export class RegisterPerformer extends Component{
         currentState.genre = "";
         this.setState(currentState);
         this.props.toggleRegister();
-    }
+    };
 
     submitForm = () => {
         //Error handling should be inserted here
@@ -494,11 +485,13 @@ export class RegisterPerformer extends Component{
             let genreID = 1;
             alert("submit clicked");
             console.log(this.state.email);
-            ArtistService.createArtist(() => {this.props.submitFunction()}, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
+            ArtistService.createArtist(() => {
+                this.props.submitFunction()
+                }, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
         } else{
             alert("Du har ikke fyllt inn alle feltene");
         }
-    }
+    };
 }
 
 export class RegisteredPerformers extends Component{
