@@ -463,7 +463,7 @@ app.delete("/api/contact/:contactID", (request, response) => {
 
 
 app.put("/api/contact/:contactID/change/phoneNumber", (request, response) => {
-    console.log("Request to change password for organizer");
+    console.log("Request to change phone number for organizer");
 
     contactDao.changePhoneNumber((status, data) => {
         response.status(status);
