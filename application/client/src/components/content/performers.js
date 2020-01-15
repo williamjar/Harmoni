@@ -228,7 +228,7 @@ export class PerformerCard extends Component{
                             </InputGroup.Append>
                         </InputGroup>
 
-                        {this.state.riders.map(e =>
+                        {this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(e =>
                             <Rider description={e.description} isDone={e.isDone} status={e.status}/>
                         )}
 
