@@ -40,7 +40,7 @@ export class CreateEventSplash extends Component{
                                 aria-describedby="basic-addon2"
                             />
                             <InputGroup.Append>
-                                <Button onClick={this.create} variant="outline-success">Opprett</Button>
+                                <Button onClick={this.create} variant="success">Opprett</Button>
                             </InputGroup.Append>
                         </InputGroup>
 
