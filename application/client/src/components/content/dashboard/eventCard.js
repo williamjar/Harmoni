@@ -24,7 +24,7 @@ export class EventCard extends React.Component {
 
         return(
             <tr align='center'>
-                <td>{this.state.date}</td>
+                <td align="left">{this.state.date}</td>
                 <td>{this.props.event.eventName} - {this.props.event.town}</td>
                 <td align="right"><Button onClick={this.viewEvent}>Vis arrangement</Button></td>
             </tr>

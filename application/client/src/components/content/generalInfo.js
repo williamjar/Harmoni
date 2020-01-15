@@ -82,6 +82,26 @@ export class InfoForm extends Component {
     };
 
     render() {
+
+        // Formatted date to fit into default value of datepicker
+
+        let startDate = new Date(eventStore.currentEvent.startDate);
+        let endDate = new Date(eventStore.currentEvent.endDate);
+        let startMonth = "";
+        let endMonth = "";
+
+        if(startDate.getMonth() <= 8) {
+            startMonth = "0" + (startDate.getMonth() + 1);
+        } else {
+            startMonth = startDate.getMonth() + 1;
+        }
+
+        if(endDate.getMonth() <= 8) {
+            endMonth = "0" + (endDate.getMonth() + 1);
+        } else {
+            endMonth = startDate.getMonth() + 1;
+        }
+
         return(
             <div>
                 <Card className="mb-2">
@@ -89,7 +109,7 @@ export class InfoForm extends Component {
                         <Row>
                             <Col xs="4">
                                 {this.state.edit === false ? <Card.Title>
-                                    {this.state.name}
+                                    {eventStore.currentEvent.eventName}
                                 </Card.Title> : <Form.Control type="text" value={this.state.name} onChange={this.handleChange}/>}
                             </Col>
                             <Col>
@@ -104,12 +124,12 @@ export class InfoForm extends Component {
                                 <Col xs="5">
                                     <FaCalendarAlt className="mr-1"/>
                                     <Form.Label>Start</Form.Label>
-                                    <Form.Control type="date"/>
+                                    <Form.Control type="date" value={startDate.getFullYear() + "-" + startMonth + "-" + startDate.getDate()}/>
                                 </Col>
                                 <Col xs="3">
                                     <FaClock className="mr-1"/>
                                     <Form.Label>Tid</Form.Label>
-                                    <Form.Control type="time"/>
+                                    <Form.Control type="time" value={eventStore.currentEvent.startTime}/>
                                 </Col>
                                 <Col>
                                     <Form.Label>Type arrangement</Form.Label>
@@ -124,33 +144,33 @@ export class InfoForm extends Component {
                                 <Col xs="5">
                                     <FaCalendarAlt className="mr-1"/>
                                     <Form.Label>Slutt</Form.Label>
-                                    <Form.Control type="date"/>
+                                    <Form.Control type="date" value={endDate.getFullYear() + "-" + endMonth + "-" + endDate.getDate()}/>
                                 </Col>
                                 <Col xs="3">
                                     <FaClock className="mr-1"/>
                                     <Form.Label>Tid</Form.Label>
-                                    <Form.Control type="time"/>
+                                    <Form.Control type="time" value={eventStore.currentEvent.endTime}/>
                                 </Col>
                             </Row>
                             <Row className="mb-4">
                                 <Col xs="5">
                                     <FaHouseDamage className="mr-1"/>
                                     <Form.Label>Adresse</Form.Label>
-                                    <Form.Control type="text"/>
+                                    <Form.Control type="text" value={eventStore.currentEvent.address}/>
                                 </Col>
                                 <Col xs="3">
                                     <Form.Label>Postnummer</Form.Label>
-                                    <Form.Control type="text"/>
+                                    <Form.Control type="text" value={eventStore.currentEvent.zipCode}/>
                                 </Col>
                                 <Col xs="3">
                                     <Form.Label>Poststed</Form.Label>
-                                    <Form.Control type="text"/>
+                                    <Form.Control type="text" value={eventStore.currentEvent.town}/>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col>
                                     <Form.Label>Beskrivelse</Form.Label>
-                                    <Form.Control as="textarea" rows="3"/>
+                                    <Form.Control as="textarea" rows="3" value={eventStore.currentEvent.description}/>
                                 </Col>
                             </Row>
                         </Form.Group>
