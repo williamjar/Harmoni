@@ -3,7 +3,7 @@ const Dao = require('./dao.js');
 module.exports = class crewDao extends Dao {
 
     getOne(callback, list) {
-        super.query('SELECT contactName,phone,email,crewID,description,organizerID FROM crew JOIN contact ON crew.contactID = contact.contactID WHERE crewID = ?', list, callback);
+        super.query('SELECT contactName,phone,email,crewID,description FROM crew JOIN contact ON crew.contactID = contact.contactID WHERE crewID = ?', list, callback);
     }
 
     createOne(callback, list) {
