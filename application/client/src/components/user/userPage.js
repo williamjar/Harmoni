@@ -107,8 +107,8 @@ export class UserPage extends React.Component {
                                     </tbody>
                                 </Table>
                             </Card>
-                        </Col>
-                        <Col>
+                            </Col>
+                            <Col>
                             <Card className={"p-2 card border-0"}>
                                 <Card.Title>Innstillinger</Card.Title>
                                 <Accordion>
@@ -209,10 +209,9 @@ export class UserPage extends React.Component {
         this.setState({showPasswordAlert: false});
     }
 
-
-    updateInfo(){
+    updateInfo() {
         OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
-            if (statusCode === 200){
+            if (statusCode === 200) {
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
 
                 var databaseUsername = OrganizerStore.currentOrganizer.username;
