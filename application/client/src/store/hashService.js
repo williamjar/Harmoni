@@ -27,15 +27,16 @@ export function getHashedFromEmail(enteredPassword, email, callback) {
     });
 }
 
-export function verifyPassword(organizerID, enteredPassword) {
+export function verifyPassword(organizerID, enteredPassword, callback) {
     console.log("verify " + organizerID + " " + enteredPassword);
-    let passwordInDB = getPassword(organizerID);
-    console.log("verify " + passwordInDB);
-    let salt = getSaltFromID(organizerID);
-    let enteredPasswordHashed = sha512(enteredPassword, salt);
-    console.log(enteredPasswordHashed + " == " + passwordInDB);
-
-    return (enteredPasswordHashed === passwordInDB);
+    getPassword(organizerID, passwordInDB => {
+        getSaltFromID(organizerID, salt => {
+            console.log("verify " + passwordInDB);
+            let enteredPasswordHashed = sha512(enteredPassword, salt);
+            console.log(enteredPasswordHashed + " == " + passwordInDB);
+            callback (enteredPasswordHashed === passwordInDB);
+        });
+    });
 }
 
 export function getSaltFromEmail(email, callback) {
@@ -51,11 +52,11 @@ export function getSaltFromEmail(email, callback) {
     });
 }
 
-export function getSaltFromID(organizerID) {
+export function getSaltFromID(organizerID, callback) {
     getPassword(organizerID, passwordInDB => {
         console.log("getsaltfromID password in db: " + passwordInDB);
         let saltHash = passwordInDB.split("/");
-        return saltHash[0];
+        callback(saltHash[0]);
     });
 }
 

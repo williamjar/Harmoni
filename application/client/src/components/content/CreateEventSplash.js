@@ -39,7 +39,7 @@ export class CreateEventSplash extends Component{
             <div className="splashCreateEvent w-75 center">
 
                     <div className = "padding-top-20">
-
+                    <Form onSubmit={this.create}>
                         <InputGroup className="mb-3 " size="lg">
                             <FormControl
                                 onChange={this.inputHandler}
@@ -48,9 +48,10 @@ export class CreateEventSplash extends Component{
                                 aria-describedby="basic-addon2"
                             />
                             <InputGroup.Append>
-                                <Button onClick={this.create} variant="success">Opprett</Button>
+                                <Button type="submit" variant="success">Opprett</Button>
                             </InputGroup.Append>
                         </InputGroup>
+                    </Form>
                     </div>
 
                     {this.state.emptyMessage?<div className="text-red">{this.emptyMessage}</div>:null}
