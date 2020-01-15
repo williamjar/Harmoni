@@ -290,6 +290,8 @@ export class PerformerCard extends Component{
             payedArtist : payed,
         };
 
+        console.log(json);
+
     }
 
 
