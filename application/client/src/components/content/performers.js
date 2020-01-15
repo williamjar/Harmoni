@@ -11,6 +11,7 @@ import {ArtistService as artistService, ArtistService} from "../../store/artistS
 import {CookieStore} from "../../store/cookieStore";
 import {RiderStore} from "../../store/riderStore";
 import {EventStore} from "../../store/eventStore";
+import Row from "react-bootstrap/Row";
 
 export class PerformersTab extends Component{
     /* All the performer content for use in the Performer tab */
@@ -453,12 +454,19 @@ export class RegisterPerformer extends Component{
 
 
                     <div className="padding-top-20"></div>
+
+                    <Row className="no-gutter">
+                        <Col className="col-2">
                     <Button variant="primary" type="submit" onClick={this.submitForm}>
                         Submit
                     </Button>
+                        </Col>
+                        <Col className="col-2">
                     <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegisterNew}>
                         Cancel
                     </Button>
+                        </Col>
+                    </Row>
             </div>
         )
     }
