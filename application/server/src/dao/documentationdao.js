@@ -10,10 +10,10 @@ module.exports = class documentationDao extends Dao {
         );
     }
 
-    insertDocument(eventID, category, req, callback){
-        var val = [eventID, req.originalname, req.path, category];
+    insertDocument(eventID, categoryID, file, artistID, crewID, callback){
+        var val = [eventID, file.originalname, file.path, artistID, crewID, categoryID];
         super.query(
-            "INSERT INTO document (eventID,documentName,documentLink,documentCategoryID) VALUES (?,?,?,?)",
+            "INSERT INTO document (eventID,documentName,documentLink, artistID, crewID, documentCategoryID) VALUES (?,?,?,?,?,?)",
             val, callback
         );
     }

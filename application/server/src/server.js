@@ -222,7 +222,7 @@ app.post("/api/organizer/picture/:organizerID",  uploadUserPicture.single('file'
 });
 
 //Delete picture
-app.delete("/api/organizer/picture/:pictureID", (request, response) => {
+app.delete("/api/organizer/picture/delete/:pictureID", (request, response) => {
     console.log("Request to delete a picture");
     pictureDao.deleteOne((status, data) => {
         response.status(status);
@@ -231,7 +231,7 @@ app.delete("/api/organizer/picture/:pictureID", (request, response) => {
 });
 
 //Update picture
-app.put("/api/organizer/picture/:pictureID", (request, response) => {
+app.put("/api/organizer/picture/update/:pictureID", (request, response) => {
     console.log("Request to update a picture");
     pictureDao.updateOne((status, data) => {
         response.status(status);
@@ -241,20 +241,11 @@ app.put("/api/organizer/picture/:pictureID", (request, response) => {
 
 //Get one picture
 app.get("/api/organizer/picture/:pictureID", (require, response) => {
-    console.log("Request to get a organizer profile picture");
+    console.log("Request to get a rider element");
     pictureDao.getPicture((status, data) => {
         response.status(status);
         response.json(data);
     }, require.params.pictureID);
-});
-
-//Does picture exist?
-app.get("/api/organizer/picture/:organizerID", (require, response) => {
-    console.log("Request to check if organizer has profile picture");
-    pictureDao.checkIfOrganizerPictureExists((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, require.params.organizerID);
 });
 
 
@@ -262,12 +253,12 @@ app.get("/api/organizer/picture/:organizerID", (require, response) => {
 
 var upload = multer({storage: storage,  limits: {fileSize: 10000000000},});
 
-app.post("/api/documents/upload/:id/:folderName/:categoryID",  upload.array('file', 10), (req, res) => {
+app.post("/document/upload/:id/:folderName",  upload.array('file', 10), (req, res) => {
     try {
-        res.send(req.files);
-        for(let i = 0; i < req.files.length; i++){
-            console.log(req.files[i].originalname);
-            documentationDao.insertDocument(req.params.id, req.params.categoryID, req.files[i], (status, data) => {
+        res.send(req.body.files);
+        for(let i = 0; i < req.body.files.length; i++){
+            console.log(req.body.files[i].originalname);
+            documentationDao.insertDocument(req.params.id, req.body.documentCategoryID, req.body.artistID, req.body.crewID, req.body.files[i], (status, data) => {
                 res.status(status);
             });
         }

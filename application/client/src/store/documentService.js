@@ -38,16 +38,16 @@ class DocumentService {
         return allDocumentsByEvent;
     }
 
-    addDocument(eventID, documentLink, artistID, documentCategoryID){
+    addDocument(eventID, category, artistID, crewID, documentCategoryID, files){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        axios.post(axiosConfig.root + '/api/document/', {
-            "eventID": eventID,
-            "documentLink": documentLink,
+        axios.post(axiosConfig.root + '/api/document/' + eventID + "/" + category, {
+            "documentCategoryID" : documentCategoryID,
             "artistID": artistID,
-            "documentCategoryID" : documentCategoryID
+            "crewID": crewID,
+            "files": files
     }, {headers: header}).then(response => response.data);
     }
 
