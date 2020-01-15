@@ -1,4 +1,4 @@
-import {app,loginDao,SECRET,jwt} from "./server";
+import {app, loginDao, SECRET, jwt} from "./server";
 
 let privateKey = SECRET.privateKey;
 let publicKey = SECRET.publicKey;

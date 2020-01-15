@@ -74,6 +74,7 @@ app.put("/api/organizer/:organizerID/change/username", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.username,
+
         request.params.organizerID
     ];
     organizerDao.changeUsername(val, (status, data) => {
