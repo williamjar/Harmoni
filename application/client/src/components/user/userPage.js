@@ -211,6 +211,7 @@ export class UserPage extends React.Component {
 
     submitForm(){
         this.setState({savingInformation: true});
+
         if(this.validateUsername()) {
             OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername).then(r => {
                     this.setState({savingInformation: false});
