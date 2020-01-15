@@ -1,11 +1,10 @@
 import axios from "axios";
-import {sharedComponentData} from "react-simplified";
-import Document from ".classes/document.js"
+import {Document} from "../classes/document.js"
 import {CookieStore} from "./cookieStore";
 
 const axiosConfig = require("./axiosConfig");
 
-class DocumentService {
+export class DocumentService {
 
     getAllDocumentsForOrganizer(organizerID) {
         let header = {
@@ -38,7 +37,7 @@ class DocumentService {
         return allDocumentsByEvent;
     }
 
-    addDocument(eventID, category, artistID, crewID, documentCategoryID, files){
+    static addDocument(eventID, category, artistID, crewID, documentCategoryID, files){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -75,11 +74,6 @@ class DocumentService {
         return axios.delete(axiosConfig.root + '/api/document/' + id, {headers: header}).then(response => response.data);
     }
 
-    insertDocument(eventID, folderName, documentCategoryID){
-        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID, formdata, {})
-            .then(res => console.log(res.data))
-            .catch(err => console.error(err));
-    }
 
     insertDocumentArtist(eventID, folderName, documentCategoryID, artistID){
         axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/artist/' + artistID)
