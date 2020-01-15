@@ -598,7 +598,7 @@ app.get("/api/crew/organizer/:organizerID", (request, response) => {
 });
 
 app.get("/api/event/crew/:eventID", (request, response) => {
-    console.log("request for all crew attached to en event");
+    console.log("request for all crew attached to an event");
     crewDao.getAllForEvent((status, data) => {
         response.status(status);
         response.json(data);
@@ -611,6 +611,14 @@ app.get("/api/crew/categories/:organizerID", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.organizerID);
+});
+
+app.get("/api/crew/event/:eventID/categories/:crewID", (request, response) => {
+    console.log("request for all crew categories attached to a crew member for an event");
+    crewDao.getAllCategoriesForOneForEvent((status,data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.crewID, request.params.eventID);
 });
 
 app.post("/api/crew", (request, response) => {
