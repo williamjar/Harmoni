@@ -130,10 +130,7 @@ export class ArtistService {
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.delete(axiosConfig.root + '/api/artist/unassign/' + eventID + '/' + artistID, {
-            "eventID": eventID,
-            "artistID": artistID
-        }, {headers: header}).then(response => response.data);
+        return axios.delete(axiosConfig.root + '/api/artist/assign/' + eventID + '/' + artistID, {headers: header}).then(response => response.data);
     }
 
     static getAllGenres(callback) {

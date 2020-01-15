@@ -34,11 +34,24 @@ export class PerformersTab extends Component{
                     </div>
 
                     <div className="col-lg-6 col-md-12">
-                        <RegisteredPerformers performersAdded={this.state.performersAdded} changeCard={this.changeCurrentPerformer}/>
+                        <RegisteredPerformers performersAdded={this.state.performersAdded} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
                     </div>
                 </div>
             </div>
         )
+    }
+
+    unAssignArtist = (artist) => {
+        ArtistService.unAssignArtist(EventStore.currentEvent.eventID, artist.artistID).then(res => {
+            console.log("data delete");
+            console.log(res);
+            ArtistService.getArtistsForEvent((list) => {
+                let currentState = this.state;
+                currentState.performersAdded = list;
+                currentState.currentPerformer = {};
+                this.setState(currentState);
+            }, EventStore.currentEvent.eventID);
+        });
     }
 
     addPerformer = (selected) => {
@@ -50,8 +63,6 @@ export class PerformersTab extends Component{
             ArtistService.getArtistsForEvent((list) => {
                 let currentState = this.state;
                 currentState.performersAdded = list;
-                console.log("artist assigned:");
-                console.log(list);
                 this.setState(currentState);
             }, EventStore.currentEvent.eventID);
 
@@ -157,8 +168,6 @@ export class PerformerCard extends Component{
             numberOfFilesAdded: 0,
             riders : [],
         };
-
-        console.log(this.state);
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -471,14 +480,14 @@ export class RegisteredPerformers extends Component{
                 <b>Artister som er lagt til</b>
 
                     {this.props.performersAdded.map(p =>
-                        <div className="card card-body pointer selection" onClick={() => this.showCard(p)}>
+                        <div className="card card-body pointer selection">
                         <div className="row">
-                            <div className="col-10">
+                            <div className="col-10" onClick={() => this.showCard(p)}>
                                 {p.contactName}
                             </div>
 
                             <div className="col-2">
-                                <button className="btn-danger rounded">Slett</button>
+                                <button className="btn-danger rounded" onClick={() => this.unAssignArtist(p)}>Slett</button>
                             </div>
                         </div>
                         </div>
@@ -486,6 +495,10 @@ export class RegisteredPerformers extends Component{
 
             </div>
         )
+    }
+
+    unAssignArtist = (artist) => {
+        this.props.unAssignArtist(artist);
     }
 
     showCard = (performer) => {

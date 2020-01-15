@@ -569,7 +569,7 @@ app.delete("/api/artist/assign/:eventID/:artistID", (request, response) => {
     artistDao.unAssignOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.eventID, request.params.artistID)
+    }, [request.params.eventID, request.params.artistID])
 });
 
 app.get("/api/artist-genres", (request, response) => {
