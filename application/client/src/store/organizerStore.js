@@ -33,7 +33,7 @@ export class OrganizerStore {
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.put(axiosConfig.root + '/api/organizer/${organizerID}/change/username', {
+        return axios.put(axiosConfig.root + '/api/organizer/' + organizerID + '/change/username', {
             username: newUsername,
         }, {headers: header});
     }
