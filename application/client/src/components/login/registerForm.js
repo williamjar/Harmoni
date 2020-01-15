@@ -16,7 +16,9 @@ export class RegisterForm extends React.Component {
             secondEmail: '',
             firstPassword : '',
             secondPassword: '',
-            phonenumber: ''
+            phonenumber: '',
+            usernameAlreadyExist:'',
+            emailAlreadyExist: ''
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
