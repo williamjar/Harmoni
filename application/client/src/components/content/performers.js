@@ -101,19 +101,28 @@ export class PerformerPanel extends Component{
 
         this.state = {
             performerList : [],
-            showArtistCard: true,
+            showArtistCard: false,
             performerSelected : {},
             results : [],
-            showRegisterNew : true,
+            showRegisterNew : false,
         }
     }
 
     render() {
         return (
             <div>
-                <Search searchHandler={this.searchHandler} toggleRegister={() => this.toggleRegisterNew()} showRegisterNew={this.state.showRegisterNew} registerComponent={<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={() => this.toggleRegisterNew()}/>} addRegisterButton={true} results={this.state.results} />
+            <div className="row">
+                <div className="col-8">
+                <Search searchHandler={this.searchHandler} results={this.state.results} />
+                </div>
+                <div className="col-4">
+                    <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny</button>
+                </div>
+            </div>
+
                 <div className="padding-top-20">
-                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} />:null}
+                    {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
+                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
                 </div>
             </div>
         );
@@ -131,19 +140,33 @@ export class PerformerPanel extends Component{
 
     componentDidMount() {
         this.callBackSearchResult();
-    }
+    };
 
     toggleRegisterNew = () => {
         let currentState = this.state;
         currentState.showRegisterNew = !currentState.showRegisterNew;
         this.setState(currentState);
-    }
+        this.hideCard();
+    };
+
+    hideCard = () => {
+        let currentState = this.state;
+        currentState.showArtistCard = false;
+        this.setState(currentState);
+    };
+
+    toggleShowCard = () => {
+        let currentState = this.state;
+        currentState.showArtistCard = !currentState.showArtistCard;
+        this.setState(currentState);
+    };
 
     submitFunction = () => {
         alert("submit clicked");
         this.callBackSearchResult();
         this.toggleRegisterNew();
-    }
+
+    };
 
     callBackSearchResult = () => {
         artistService.getArtistForOrganizer((allArtistByOrganizer) => {
@@ -151,7 +174,7 @@ export class PerformerPanel extends Component{
             currentState.results = allArtistByOrganizer;
             this.setState(currentState);
         },CookieStore.currentUserID);
-    }
+    };
 
     searchHandler = (selected) => {
         /* This searchhandler is called when search result is selected
@@ -162,7 +185,7 @@ export class PerformerPanel extends Component{
         currentState.showArtistCard = true;
         this.props.addPerformer(selected);
         this.setState(currentState);
-    }
+    };
 
 }
 
@@ -390,7 +413,6 @@ export class RegisterPerformer extends Component{
 
 
         this.state = {
-          addCategory : false,
           name : "",
           phone : "",
           email : "",
@@ -401,7 +423,7 @@ export class RegisterPerformer extends Component{
 
     render() {
         return(
-            <div>
+            <div className="card card-body">
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
@@ -482,7 +504,7 @@ export class RegisterPerformer extends Component{
             let genreID = 1;
             alert("submit clicked");
             console.log(this.state.email);
-            ArtistService.createArtist(() => {this.props.submitFunction();}, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
+            ArtistService.createArtist(() => {this.props.submitFunction()}, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
         } else{
             alert("Du har ikke fyllt inn alle feltene");
         }

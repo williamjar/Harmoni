@@ -53,7 +53,6 @@ export class AddCrewType extends Component{
     render(){
         return(
             <div className="card card-body">
-                <Form>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Personell type</Form.Label>
@@ -61,15 +60,18 @@ export class AddCrewType extends Component{
                         </Form.Group>
                     </Form.Row>
 
-
+                    <Row className="no-gutter">
+                        <Col className="col-1">
                     <Button variant="primary" type="submit" onClick={this.submitForm}>
                         Submit
                     </Button>
+                        </Col>
+                        <Col className="col-1">
                     <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.props.cancelButton}>
                         Cancel
                     </Button>
-
-                </Form>
+                        </Col>
+                    </Row>
             </div>
         )
     }
@@ -86,7 +88,7 @@ export class AddCrewType extends Component{
             alert("Du kan ikke ha en blank kategori");
         } else{
             alert(this.state.crewType);
-            this.props.cancelButton();
+            this.props.submit();
         }
     }
 }
@@ -134,14 +136,6 @@ export class AddToCrew extends Component{
                     </div>
                 </div>
 
-                {this.state.showRegisterCrewType?
-                    <div className="row padding-top-20">
-                        <div className="col-12">
-                            <AddCrewType cancelButton={this.cancelCrewTypeAdd}/>
-                        </div>
-                    </div>
-                    :null}
-
                 <div className="row padding-top-20">
                     <div className="col-12">
                         Legg til personell
@@ -149,13 +143,23 @@ export class AddToCrew extends Component{
                 </div>
 
                 <div className="row padding-top-20">
-                    <div className="col-lg-6 col-md-12">
-                        <Search addRegisterButton={true} searchHandler={this.searchHandler} registerComponent={<AddCrewMember />} />
+                    <div className="col-lg-8 col-md-8">
+                        <Search searchHandler={this.searchHandler}  />
+                    </div>
+                    <div className="col-lg-4 col-md-4">
+                        <button className="btn btn-success" onClick={this.showRegisterCrewTypeForm}>Registrer ny</button>
                     </div>
                 </div>
 
-                <div className="row padding-top-20">
+                {this.state.showRegisterCrewType?
+                    <div className="row padding-top-20">
+                        <div className="col-12">
+                            <AddCrewType cancelButton={this.cancelCrewTypeAdd} submit={this.addNew}/>
+                        </div>
+                    </div>
+                    :null}
 
+                <div className="row padding-top-20">
                     <div className="col-12">
                         <label htmlFor="descriptionCrew">Beskrivelse</label>
                         <textarea className="form-control" id="descriptionCrew" rows="4"></textarea>
@@ -188,20 +192,18 @@ export class AddToCrew extends Component{
         let currentState = this.state;
         currentState.showRegisterCrewType = false;
         this.setState(currentState);
-    }
+    };
 
 
     showRegisterCrewTypeForm = (event) => {
-        if(event.target.value === "Legg til ny..".trim()){
             let currentState = this.state;
-            currentState.showRegisterCrewType = true;
+            currentState.showRegisterCrewType = !currentState.showRegisterCrewType;
             this.setState(currentState);
-        }
-    }
+    };
 
     searchHandler = () => {
 
-    }
+    };
 
     addFile = () =>{
         /*For adding attachments to crew */
@@ -212,7 +214,7 @@ export class AddToCrew extends Component{
             currentState.numberOfFilesAdded = attachment;
             this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
         }
-    }
+    };
 
     addNew = () => {
         /* Fetches the information from the forms to be used with database */
@@ -230,7 +232,7 @@ export class AddToCrew extends Component{
             attachments : attachment,
         }
 
-    }
+    };
 }
 
 export class AddedCrew extends Component{
