@@ -461,16 +461,14 @@ app.delete("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID)
 });
 
-
-app.put("/api/contact/:contactID/change/phoneNumber", (request, response) => {
-    console.log("Request to change phone number for organizer");
+app.put("/contact/:contactID/change/phonenumber", (request, response) => {
+    console.log("Request to change phone number for a contact");
 
     contactDao.changePhoneNumber((status, data) => {
         response.status(status);
         response.json(data);
     }, request.body.phone ,request.params.contactID);
 });
-
 
 // ARTIST
 app.get("/api/artist/:artistID", (request, response) => {
