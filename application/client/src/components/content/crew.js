@@ -13,6 +13,7 @@ import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import {eventStore} from "../../store/eventStore";
+import Row from "react-bootstrap/Row";
 
 
 export class CrewTab extends Component{
@@ -273,47 +274,66 @@ export class CrewView extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            contactName : "",
+            phone : "",
+            email : "",
+            description : "",
+            crewCategory: "",
             crewList: []
         }
     }
 
     render() {
-        return(
-            <Card.Body>
+        if (this.state.crewList === null){
+            return null;
+        } else {
+            console.log(this.state.crewList);
+            return(
                 <Card.Body>
-                    <button onClick={this.returnCrew}></button>
+                        <ListGroup>
+                            {this.state.crewList.map(e => (
+                                <ListGroup.Item>
+                                    <Row>
+                                        <Col>Navn: {e.contactName}</Col>
+                                        <Col>Mobil: {e.phone}</Col>
+                                        <Col>E-post: {e.email}</Col>
+                                        <Col>Beskrivelse: {e.description}</Col>
+                                    </Row>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
                 </Card.Body>
-
-                <button onClick={this.returnCrewMembers}></button>
-            </Card.Body>
-        )
+            )
+        }
     }
 
-    returnCrew = () => {
+    returnOneCrewMember = () => {
+        console.log('runs returnCrew');
         CrewStore.getCrewMember(1, (data) => {
             this.setState(
-                { crewList: data})
-        })
+                { contactName : data.contactName,
+                        phone : data.phone,
+                        email : data.email,
+                        description: data.description})
+        });
         console.log(this.state);
-    }
+    };
 
-    returnCrewMembers  = () => {
-        CrewStore.getAllCrewMembersForEvent((data) => {
+    returnCrew = () => {
+        CrewStore.getAllCrewMembersForEvent(data => {
+            console.log("return crew members" + data);
             this.setState(
-                { crewList: data })
+                { crewList : data })
         }, 1);
         console.log(this.state);
+    };
+
+    componentDidMount() {
+        this.returnOneCrewMember();
+        this.returnCrew();
+
     }
 }
-
-/*
-    componentDidMount() {
-        let c = CrewService.getCrewMember(1, () => {
-            this.setState({crewMember : c })
-        })
-
-    } */
-
 
 export class AddCrewMember extends Component{
 
