@@ -8,17 +8,12 @@ import {
     Table,
     Image,
     Accordion,
-    CardColumns,
     FormControl,
-    ListGroup,
-    CardDeck,
     Spinner,
     Modal
 } from 'react-bootstrap'
-import {CardText} from "react-bootstrap/Card";
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
-import {StandardAlert} from "../widgets/alert";
 import {PictureService} from "../../store/pictureService";
 
 export class UserPage extends React.Component {
