@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from "react-bootstrap/Form";
-import {InputGroup} from "react-bootstrap";
+import {InputGroup, FormControl, Spinner} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import { NavLink } from 'react-router-dom';
 import { createHashHistory } from 'history';
@@ -19,6 +19,7 @@ export class CreateEventSplash extends Component{
         this.state = {
             inputName : "",
             emptyMessage: false,
+            isLoading: false,
         };
 
         this.inputHandler = this.inputHandler.bind(this);
@@ -27,27 +28,37 @@ export class CreateEventSplash extends Component{
     }
 
     render() {
+        if(this.state.isLoading){
+            return(
+                <div className="splashCreateEvent w-75 center">
+                <Spinner animation="border" />
+                </div>
+            )
+        } else {
         return (
             <div className="splashCreateEvent w-75 center">
-                    <Form.Label column={6}>
-                        <h1>Navn på arrangement:</h1>
-                    </Form.Label>
 
                     <div className = "padding-top-20">
-                        <Form.Control type="text" placeholder="" onChange={this.inputHandler}/>
+                    <Form onSubmit={this.create}>
+                        <InputGroup className="mb-3 " size="lg">
+                            <FormControl
+                                onChange={this.inputHandler}
+                                placeholder="Navn på arrangementet"
+                                aria-label="Navn på arrangementet"
+                                aria-describedby="basic-addon2"
+                            />
+                            <InputGroup.Append>
+                                <Button type="submit" variant="success">Opprett</Button>
+                            </InputGroup.Append>
+                        </InputGroup>
+                    </Form>
                     </div>
 
                     {this.state.emptyMessage?<div className="text-red">{this.emptyMessage}</div>:null}
 
 
-
-                    <div className = "padding-top-20">
-                        <Button variant="success" type="submit" onClick={this.create}>
-                            Submit
-                        </Button>
-                    </div>
             </div>
-        );
+        );}
     }
 
     inputHandler(event){
@@ -55,6 +66,7 @@ export class CreateEventSplash extends Component{
     }
 
     create(){
+        this.setState({isLoading: true});
         let eventName = this.state.inputName;
         if(this.state.inputName.trim() === ""){
             let state = this.state;
@@ -63,7 +75,7 @@ export class CreateEventSplash extends Component{
         } else{
             EventStore.createEvent(() => {
                 history.push("/arrangementEdit");
-                console.log(history.location);
+                this.setState({isLoading: false});
             }, this.state.inputName, CookieStore.currentUserID);
         }
     }

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {CookieStore} from "./cookieStore";
 const crypto = require('crypto');
-
+const hash = require('./hashService');
 const root = require('./axiosConfig').root;
 
 export class RegisterOrganizerService {
@@ -17,7 +17,7 @@ export class RegisterOrganizerService {
             "email": email
         };
 
-        let hashedPassword = saltHashPassword(password);
+        let hashedPassword = hash.sha512(password,hash.generateSalt(16));
 
         axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), {headers: header})
             .then(res => {
@@ -47,20 +47,4 @@ export class RegisterOrganizerService {
     }
 }
 
-function saltHashPassword(enteredPassword) {
-    function genRandomString(length) {
-        return crypto.randomBytes(Math.ceil(length / 2))
-            .toString('hex').slice(0, length);
-    }
-
-    function sha512(password, salt) {
-        let hash = crypto.createHmac('sha512', salt);
-        /** Hashing algorithm sha512 */
-        hash.update(password);
-        let value = hash.digest('hex');
-        return salt + '/' + value;
-    }
-    let salt = genRandomString(16);
-    return sha512(enteredPassword, salt);
-}
 

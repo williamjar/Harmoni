@@ -24,34 +24,34 @@ export class ArtistService {
     }
 
     // OrganizerID == innlogget bruker.
-    static createArtist(name, phone, email, genreID, organizerID) {
+    static createArtist(callback, name, phone, email, genreID, organizerID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
         let contactBody = {
-            "contactName": name,
+            "username": name,
             "phone": phone,
             "email": email
         };
 
-        let contactID = 0;
+        axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
 
-        axios.post(axiosConfig.root + '/api/contact', JSON.stringify(contactBody), {headers: header}).then(response => {
-                contactID = response.insertId;
-            }
-        );
+            let artistBody = {
+                "genreID": genreID,
+                "organizerID": organizerID,
+                "contactID": response.data.insertId
+            };
+            console.log("post contact");
+            console.log(response);
 
-        let artistBody = {
-            "genreID": genreID,
-            "organizerID": organizerID,
-            "contactID": contactID
-        };
-
-        axios.post('/api/artist', JSON.stringify(artistBody), {headers: header}).then(response =>
-            console.log(response));
-
+            axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(res => {
+                console.log("artist");
+                console.log(res);
+                callback();
+            });
+        });
     }
 
     static deleteArtist(artistID) {
@@ -62,7 +62,7 @@ export class ArtistService {
         return axios.delete('/api/artist/organizer/' + artistID, {headers: header}).then(response => response.data);
     }
 
-    static getArtistForOrganizer(organizerID) {
+    static getArtistForOrganizer(callback, organizerID) {
         let allArtistByOrganizer = [];
         let header = {
             "Content-Type": "application/json",
@@ -70,16 +70,17 @@ export class ArtistService {
         };
         axios.get(axiosConfig.root + '/api/artist/organizer/' + organizerID, {headers: header}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
-                    allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].organizerID,
-                        response.data[i].contactID, response.data[i].organizerID, response.data[i].contactID,
-                        response.data[i].contactName, response.data[i].phone, response.data[i].email));
+                    allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].contactName,
+                        response.data[i].phone, response.data[i].email, response.data[i].genreID,
+                        response.data[i].organizerID));
                 }
+                callback(allArtistByOrganizer);
             }
         );
-        return allArtistByOrganizer;
+
     }
 
-    static getArtistForEvent(eventID) {
+    static getArtistsForEvent(callback, eventID) {
         let allArtistByEvent = [];
         let header = {
             "Content-Type": "application/json",
@@ -87,13 +88,14 @@ export class ArtistService {
         };
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
-                    allArtistByEvent.push(new Artist(response.data[i].artistID, response.data[i].organizerID,
-                        response.data[i].contactID, response.data[i].organizerID, response.data[i].contactID,
-                        response.data[i].contactName, response.data[i].phone, response.data[i].email));
+                    allArtistByEvent.push(new Artist(response.data[i].artistID, response.data[i].contactName,
+                        response.data[i].phone, response.data[i].email, response.data[i].genreID,
+                        response.data[i].organizerID));
                 }
+            callback(allArtistByEvent);
             }
         );
-        return allArtistByEvent;
+
     }
 
     static addDocumentToArtist(eventID, name, link, artistID, categoryID) {
@@ -130,13 +132,10 @@ export class ArtistService {
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.delete(axiosConfig.root + '/api/artist/unassign/' + eventID + '/' + artistID, {
-            "eventID": eventID,
-            "artistID": artistID
-        }, {headers: header}).then(response => response.data);
+        return axios.delete(axiosConfig.root + '/api/artist/assign/' + eventID + '/' + artistID, {headers: header}).then(response => response.data);
     }
 
-    static getAllGenres(callback){
+    static getAllGenres(callback) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken

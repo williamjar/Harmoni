@@ -3,6 +3,7 @@ import {Form, Button, Card, Spinner} from 'react-bootstrap'
 import { NavLink } from 'react-router-dom';
 import {LoginService} from "../../store/loginService";
 import {CookieStore} from "../../store/cookieStore";
+import {UserPage} from "../user/userPage";
 
 export class LoginForm extends React.Component {
 
@@ -46,11 +47,11 @@ export class LoginForm extends React.Component {
     render(){
         return (
 
-            <Card>
-                <div className="card-header"><h2 className="card-title text-center">Logg inn</h2></div>
+            <Card >
+                <Card.Body className={"m-4"}>
+                    <Card.Title className="ml-5">Logg inn</Card.Title>
                     <div className="justify-content-md-center m-5">
                         <Form onSubmit={this.handleSubmit}>
-
                             <Form.Group>
                                 <Form.Control type="email" name="email" placeholder="E-postadresse" value={this.state.email} onChange={this.handleInputChange}/>
                             </Form.Group>
@@ -75,6 +76,7 @@ export class LoginForm extends React.Component {
 
                         </Form>
                     </div>
+                </Card.Body>
             </Card>
         )
     }
@@ -88,7 +90,8 @@ export class LoginForm extends React.Component {
         this.setState({loggingIn: true});
 
         LoginService.loginOrganizer(this.state.email, this.state.password, status => {
-            if (status===200 && CookieStore.currentToken != null) {
+            console.log(status);
+            if (status===200) {
                 sessionStorage.setItem('loggedIn', 'true');
                 this.props.logIn();
                 this.setState({loggingIn: false});
@@ -99,9 +102,6 @@ export class LoginForm extends React.Component {
                 this.setState({loggingIn: false});
                 this.setState({serverError: true});
             }
-
-
-
 
         });
 

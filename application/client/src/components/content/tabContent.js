@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button, Card, Col, Row} from "react-bootstrap";
+import {Button, Col, Row} from "react-bootstrap";
 
-
-
+// Container-component for the different tabs in EventForm
+// Renders differently when editing events
 export class TabContent extends Component {
 
     state = {
@@ -36,6 +36,7 @@ export class TabContent extends Component {
         )
     }
 
+    // Updates the state when the received props from parent changes
     static getDerivedStateFromProps(props, state) {
 
         if(props.editable !== state.editable) {

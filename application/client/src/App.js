@@ -95,7 +95,7 @@ export class App extends Component{
                                 <Route exact path="/dokumenter/:eventID/:documentID" render={(props) => <Content page ={<File{...props} />}/>}/>
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage/>} />} />
                                 <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
-
+                                <Route exact path="/arrangementEdit/:id"  component={() => <Content page={<EventForm/>} />} />
                             </div>
                         </div>
                     </HashRouter>

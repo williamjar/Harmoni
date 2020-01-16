@@ -2,6 +2,7 @@ import axios from "axios";
 import {Document} from "../classes/document.js"
 import {CookieStore} from "./cookieStore";
 import {DocumentCategory} from "../classes/documentCategory";
+import {EventStore} from "./eventStore";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -40,17 +41,41 @@ export class DocumentService {
         return allDocumentsByEvent;
     }
 
-    static addDocument(eventID, category, artistID, crewID, documentCategoryID, files){
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        axios.post(axiosConfig.root + '/api/document/' + eventID + "/" + category, {
-            "documentCategoryID" : documentCategoryID,
-            "artistID": artistID,
-            "crewID": crewID,
-            "files": files
-    }, {headers: header}).then(response => response.data);
+    static addDocument(eventID, category, artistID, crewID, documentCategoryID, file, callback){
+
+          axios.post('http://localhost:8080/api/file/document/' + eventID + '/' + documentCategoryID, file)
+            .then(response => {
+                let databaseHeader = {
+                    "Content-Type": "application/json",
+                    "x-access-token": CookieStore.currentToken
+                };
+
+                const path = response.data.path;
+                const name = response.data.name.split("_")[1];
+
+                //eventID, documentName, link, artistID, crewID, categoryID
+                let body = {
+                    eventID: eventID,
+                    documentName: name,
+                    documentLink: path,
+                    artistID: artistID,
+                    crewID: crewID,
+                    documentCategoryID: documentCategoryID
+                };
+
+                console.log(body);
+
+                axios.post('http://localhost:8080/api/document', JSON.stringify(body), {headers: databaseHeader}).then(() => {
+                    console.log(response.status);
+                    console.log(response.data);
+                    if (response.status === 200 && response.data.name){
+                        callback(200);
+                    }
+                    else{
+                        callback(501);
+                    }
+                });
+        });
     }
 
 

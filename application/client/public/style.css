@@ -55,6 +55,14 @@ body{
     color:red;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
+.selection:hover{
+    background:#e9ecef;
+}
+
 /* Navigation */
 .logoImg img{
     width: 75px !important;
@@ -129,6 +137,14 @@ body{
 .filterMenu {
     margin: 20px;
     align-items: center;
+}
+
+.ml-2:hover {
+    color: #005CBF;
+}
+
+.ml-2 {
+    color: #007BFF;
 }
 
 /* Event registration */

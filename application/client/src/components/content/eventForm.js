@@ -2,29 +2,40 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
-import {PerformersView} from "./performers";
+import {PerformerPanel, PerformersView} from "./performers";
 import {GeneralInfo} from "./generalInfo";
-import {PerformerCard, PerformersTab} from "./performers";
-import {CrewTab, CrewView} from "./crew";
+import {CrewTab} from "./crew";
 import {DocumentationTab} from "../documentationTab";
 import {DocList} from "../docView";
+import {EventStore} from "../../store/eventStore";
+import {createHashHistory} from "history";
 
+const history = createHashHistory();
 
-
+// Parent component for editing and viewing all info about an event, divides information into tabs.
 export class EventForm extends Component{
 
-    state = {
-        activeTab: 0,
-        edit: false,
-    };
+    constructor(props) {
+        super(props);
 
-    // Handles when the user clicks "neste"
+        this.state = {
+            activeTab: 0,
+            edit: false,
+        };
+
+    }
+
+    //TODO: Implement tab shifting with button click
+
+    // Handles when the user wants to edit the event
     editClicked = () => {
         this.setState({edit: true})
     };
 
+    // Handles when the user saves the event
     saveClicked = () => {
-        this.setState({edit: false})
+        this.setState({edit: false});
+        EventStore.postCurrentEvent().then(history.push("/"));
     };
 
     render(){
@@ -40,7 +51,7 @@ export class EventForm extends Component{
                 <Tab eventKey="1" title="Artister">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
                         <div className="padding-bottom-20">
-                            {this.state.edit ? <PerformersTab editable={this.state.edit}/> : <PerformersView/>}
+                            {this.state.edit ? <PerformerPanel editable={this.state.edit}/> : <PerformersView/>}
                         </div>
                     </TabContent>
                 </Tab>
