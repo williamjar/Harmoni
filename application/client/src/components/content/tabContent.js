@@ -18,7 +18,7 @@ export class TabContent extends Component {
                 </div>
                 <Row>
                     <Col xs={8}>
-                        {this.state.editable ? <Button variant="danger">Slett arrangement</Button> :
+                        {this.state.editable ? <Button className="mr-1" variant="secondary" onClick={this.props.saveClicked}>Lagre og lukk</Button> :
                             <Button onClick={this.props.editClicked}>Rediger</Button>}
                     </Col>
                     <Col xs={6} md={3}>
@@ -26,7 +26,8 @@ export class TabContent extends Component {
                             this.state.editable ?
                                 <div>
                                     <Button className="mr-1" onClick={this.props.onClick}>Neste</Button>
-                                    <Button className="mr-1" variant="secondary" onClick={this.props.saveClicked}>Lagre og lukk</Button>
+
+                                    <Button variant="danger">Slett arrangement</Button>
                                     <Button  className="mr-1" disabled variant="success">Publiser</Button>
                                 </div> : null
                         }

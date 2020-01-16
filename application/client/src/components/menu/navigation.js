@@ -95,6 +95,8 @@ export class UserProfileButton extends Component{
 
                             </div>
                         </Col>
+                        <Col/>
+                        <Col/>
                     </Row>
                 </div>
             </NavLink>

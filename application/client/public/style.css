@@ -1,10 +1,12 @@
 /* Global settings */
+
+
 *{
     font-family: Roboto !important;
 }
 
 body{
-    background: lightslategrey !important;
+    background: #314b57 !important;
 }
 
 .padding-top-20{
@@ -89,7 +91,7 @@ body{
 }
 
 .Nav-Menu .user-nav:hover{
-   background: lightgreen;
+    background: #567d99;
     border-radius: 5px;
 }
 
@@ -107,9 +109,7 @@ body{
 
 /* Content */
 .Login-Container{
-    margin: 0 auto;
-    width: 50%;
-    margin-top: 20vh;
+
 }
 
 .content{
@@ -136,11 +136,11 @@ body{
 }
 
 .ml-2:hover {
-    color: #005CBF;
+    color: #003E51;
 }
 
 .ml-2 {
-    color: #007BFF;
+    color: #003E51;
 }
 
 /* Event registration */

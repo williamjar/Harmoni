@@ -35,7 +35,7 @@ export class EventForm extends Component{
     // Handles when the user saves the event
     saveClicked = () => {
         this.setState({edit: false});
-        EventStore.postCurrentEvent().then(history.push("/"));
+        EventStore.postCurrentEvent().then(console.log("Lagret"));
     };
 
     render(){
