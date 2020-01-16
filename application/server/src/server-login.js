@@ -1,4 +1,5 @@
-import {app, loginDao, SECRET, jwt} from "./server";
+import {app, loginDao,organizerDao, SECRET, jwt} from "./server";
+import {CookieStore} from "../../client/src/store/cookieStore";
 
 let privateKey = SECRET.privateKey;
 let publicKey = SECRET.publicKey;
@@ -40,6 +41,21 @@ app.post("/login", (req, res) => {
     });
 });
 
+app.get("/organizer/username/:username", (req, res) => {
+    loginDao.checkUserExists(req.params.username, (status, data) => {
+        res.status(status);
+        res.json(data);
+    })
+});
+
+//Returns organizerID by email. Needed for login, thus not part of /api/
+app.get("/organizer/by-email/:email", (req, res) => {
+    organizerDao.getOrganizerFromEmail(req.params.email, (status, data) => {
+        res.status(status);
+        res.json(data);
+    })
+});
+
 //Update the token on the server, and "returns" it in the res.json().jwt
 app.post("/token", (req, res) => {
     let token = req.headers['x-access-token'];
@@ -65,7 +81,7 @@ app.post("/token", (req, res) => {
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
     let token;
-    if (req.headers["x-access-token"]) {
+    if (req.headers["x-access-token"]){
         token = req.headers["x-access-token"];
     } else {
         token = CookieStore.currentToken;

@@ -5,6 +5,7 @@ export const cors = require("cors");
 export const mysql = require("mysql");
 export const path = require('path');
 export const multer = require('multer');
+export const uuidv4 = require('uuid/v4');
 export const jwt = require('jsonwebtoken');
 export const SECRET = require('./cookieConfig');
 export const databaseConfig = require("./databaseConfig").config;
@@ -36,25 +37,25 @@ export let riderDao = new riderDaoObj(pool);
 export let loginDao = new loginDaoObj(pool);
 export let pictureDao = new pictureDaoObj(pool);
 
-const a = require('./server-artist.js');
-const b = require('./server-bug.js');
-const c = require('./server-contact.js');
-const d = require('./server-crew.js');
-const e = require('./server-document.js');
-const f = require('./server-event.js');
-const g = require('./server-login.js');
-const h = require('./server-organizer.js');
-const i = require('./server-picture.js');
-const j = require('./server-rider.js');
+app.use(bodyParser.json());
+app.use(cors());
 
 const public_path = path.join(__dirname, '/../../client/public');
-
-app.use(cors);
-app.use(bodyParser.json());
 app.use(express.static(public_path));
 
-app.get('/products/:id', function (req, res, next) {
+app.get('/products/:id', function (req, res) {
     res.json({msg: 'This is CORS-enabled for all origins!'})
 });
 
-const server = app.listen(8080);
+require('./server-artist.js');
+require('./server-bug.js');
+require('./server-contact.js');
+require('./server-crew.js');
+require('./server-document.js');
+require('./server-event.js');
+require('./server-login.js');
+require('./server-organizer.js');
+require('./server-picture.js');
+require('./server-rider.js');
+
+app.listen(8080);
