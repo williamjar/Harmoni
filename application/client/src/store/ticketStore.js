@@ -38,22 +38,5 @@ export class TicketStore {
             }
         );
     }
-/*
-    static getArtist(artistID, callback) {
-
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        axios.get(axiosConfig.root + '/api/artist/' + artistID, {headers: header}).then(response => {
-                let artist = new Artist(response.data[0].artistID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
-                callback(artist);
-            }
-        );
-    }
-
- */
-
     //reteurn all tickets in a event
 }
