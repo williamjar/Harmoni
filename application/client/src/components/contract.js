@@ -7,6 +7,8 @@ import { createHashHistory } from 'history';
 import {DocumentService as documentService} from "../store/documentService";
 import {DocumentCategory} from "../classes/documentCategory";
 import {OrganizerStore as organizerStore} from "../store/organizerStore";
+import {EventStore as eventStore} from "../store/eventStore";
+
 
 const history = createHashHistory();
 
@@ -19,13 +21,11 @@ export class FolderItem extends Component{
         }
     }
 
-    handleClick(){
-        console.log("Clicked")
-    }
+
 
     render(){
         return(
-            <div className={"card"} onClick={() => this.handleClick()}>
+            <div className={"card"}>
                 <div className={"card-body"}>
                     <FaFolderOpen/> {this.props.name}
                 </div>
@@ -34,47 +34,24 @@ export class FolderItem extends Component{
     }
 }
 
-/*
 
-export class FileItem extends Component{
-    constructor(props){
-        super(props);
-        this.state= {
-        }
-    }
 
-    handleClick(){
-        console.log("Clicked")
-    }
 
-    componentDidMount() {
-        this.checkFileType(this.props.fileName)
-    }
 
-    checkFileType(file){
-        //Velg hvilket icon
-    }
-
+export class Documents extends Component{
 
     render(){
         return(
-            <div className={"card"} onClick={() => this.handleClick()}>
-                <div className={"card-header text-center"}>{this.props.fileName}</div>
-                <div className={"card-body"}>
-                    <p className={"card-text text-center"}>
-                        <FaFolderOpen size = {100}/>
-                    </p>
-                </div>
+            <div>
+                <FolderEvent>
+                </FolderEvent>
             </div>
         )
     }
 }
 
- */
-
-
 //---------------- Events ------------------
-export class FoldersEvents extends Component{
+export class FolderEvent extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -83,8 +60,11 @@ export class FoldersEvents extends Component{
     }
 
     componentDidMount() {
-        organizerStore.getAllEvents(organizerStore.currentOrganizer)
-            .then(event => this.setState({events: event}));
+        this.setState({events: eventStore.allEventsForOrganizer});
+    }
+
+    handleClick(eventID){
+        history.push("/dokumenter/" + eventID);
     }
 
     render() {
@@ -93,7 +73,7 @@ export class FoldersEvents extends Component{
             <Row>
                 {this.state.events.map((item) => {
                     return (
-                        <Col className = {"col-4"}>
+                        <Col className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.eventID)}>
                             <FolderItem name = {item.eventName}/>
                         </Col>
                     );
@@ -104,9 +84,8 @@ export class FoldersEvents extends Component{
 
 }
 
-
 //------- Categories -------------
-export class Folders extends Component {
+export class FolderCategory extends Component {
     constructor(props){
         super(props);
         this.state= {
@@ -115,24 +94,22 @@ export class Folders extends Component {
     }
 
     componentDidMount() {
-        console.log("EventID " + this.props.eventID);
-        documentService.getAllDocumentCategoriesForEvent(this.props.eventID, (list) => {
+        documentService.getAllDocumentCategoriesForEvent(this.props.match.params.eventID, (list) => {
             this.setState({folderSpecs: list});
         });
     }
 
-    // Handles when the user
-    viewEvent = () => {
-        //history.push("/kontrakter/" + this.props.id");
-        history.push("/kontrakter");
-    };
+
+    handleClick(documentID){
+        history.push("/dokumenter/" + this.props.match.params.eventID + "/" + documentID);
+    }
 
     render() {
         return (
             <Row>
                 {this.state.folderSpecs.map((item) => {
                     return (
-                        <Col className = {"col-4"}>
+                        <Col className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.documentID)}>
                             <FolderItem name = {item.documentCategoryName}/>
                         </Col>
                     );
@@ -142,20 +119,41 @@ export class Folders extends Component {
     }
 }
 
+export class File extends Component{
+    constructor(props){
+        super(props);
+        this.state= {
+        }
+    }
 
+    handleClick(){
+        console.log("Clicked")
+    }
 
-export class Documents extends Component{
+    componentDidMount() {
+
+    }
+
 
     render(){
         return(
-            <div>
-                <Folders eventID = {45}>
-
-                </Folders>
-                <FoldersEvents>
-
-                </FoldersEvents>
+            <div className={"card"} onClick={() => this.handleClick()}>
+                <div className={"card-header text-center"}></div>
+                <div className={"card-body"}>
+                    <p className={"card-text text-center"}>
+                        <FaFolderOpen size = {100}/>
+                    </p>
+                </div>
             </div>
         )
     }
 }
+
+
+
+
+
+
+
+
+

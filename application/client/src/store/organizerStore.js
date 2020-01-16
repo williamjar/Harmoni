@@ -1,6 +1,7 @@
 import axios from "axios";
 import {Organizer} from "../classes/organizer.js"
 import {CookieStore} from "./cookieStore";
+import {DocumentCategory} from "../classes/documentCategory";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -62,7 +63,7 @@ export class OrganizerStore {
 
     }
 
-    /*
+
         static getAllEvents(organizerId) {
         let header = {
             "Content-Type": "application/json",
@@ -70,15 +71,7 @@ export class OrganizerStore {
         };
         return axios.get(`/organizer/${organizerId}/events`, {headers: header});
     }
-     */
 
-    static getAllEvents(organizerId) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        return axios.get(`/organizer/${organizerId}/events`, {headers: header});
-    }
 
 
 
