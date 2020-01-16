@@ -355,7 +355,8 @@ export class CrewView extends Component {
             console.log("return crew members" + CrewStore.allCrewForCurrentEvent);
             this.setState(
                 { crewList : CrewStore.allCrewForCurrentEvent })
-        }, 2);
+        }, EventStore.currentEvent.eventID);
+        console.log("current eventID:" + EventStore.currentEvent.eventID);
         console.log(this.state);
     };
 
@@ -431,7 +432,7 @@ export class AddCrewMember extends Component{
     };
 
     submitForm = () => {
-        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, 2, CookieStore.currentUserID, () => {});
+        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
         this.props.toggleRegisterCrewMember();
         this.props.submit();
     };
