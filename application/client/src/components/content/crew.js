@@ -14,7 +14,6 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
-import {CrewService} from "../../store/crewService";
 
 
 export class CrewTab extends Component{
