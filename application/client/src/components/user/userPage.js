@@ -142,6 +142,7 @@ export class UserPage extends React.Component {
                                                 <Card.Body>
                                                     <Form.Group>
                                                         <Form.Control maxLength="8" type="number"  name="newPhonenumber" placeholder={this.state.phonenumber} value={this.state.newPhonenumber} onChange={this.handleInputChange}/>
+                                                        <Form.Text className={"text-danger"} hidden={this.validatePhoneNumberLength()}>Telefonnummeret må være 8 siffer</Form.Text>
                                                     </Form.Group>
                                                     <Form.Group>
                                                         <SubmitButton loading={this.state.savingInformation} stop={!this.validatePhoneNumber()}/>
@@ -195,8 +196,11 @@ export class UserPage extends React.Component {
         }
     }
 
+    validatePhoneNumberLength(){
+        return (this.state.newPhonenumber.length === 8)
+    }
     validatePhoneNumber(){
-        return (this.state.newPhonenumber !== this.state.phonenumber) && (this.state.newPhonenumber.length === 8);
+        return (this.state.newPhonenumber !== this.state.phonenumber) && this.validatePhoneNumberLength();
     }
 
     validatePassword(){
