@@ -1,10 +1,12 @@
 import axios from "axios";
+import {PictureElement} from "../classes/pictureElement";
+import {CookieStore} from "./cookieStore";
+import {EventStore} from "./eventStore";
+import {OrganizerStore} from "./organizerStore";
 
 const axiosConfig = require("./axiosConfig");
-import PictureElement from "../classes/pictureElement";
-import {CookieStore} from "./cookieStore";
 
-export class Picture {
+export class PictureService {
 
     //Get picture
     getPicture(pictureID){
@@ -31,35 +33,41 @@ export class Picture {
     }
 
     //Insert picture
-    insertPicture(organizerID, pictureLink){
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
+    static insertPicture(organizerID, fileForm, callback){
+        console.log("File form: ");
+        console.log(fileForm);
+        for(let pair of fileForm.entries()){
+            console.log(pair);
+        }
+        axios.post('http://localhost:8080/api/file/picture', fileForm)
+            .then(response => {
+                let databaseHeader = {
+                    "Content-Type": "application/json",
+                    "x-access-token": CookieStore.currentToken
+                };
 
-        axios.get(axiosConfig.root + "/api/organizer/picture/" + organizerID, {headers: header}).then(response => {
-           if (response.status === 500 || response.data.length === 0){
-               //Picture doesn't exist -> Create
-               let body = {
-                    pictureLink: pictureLink
-               };
-               axios.post(axiosConfig.root + "/api/organizer/picture/" + organizerID)
-           }
-           else{
-               //Picture does exist -> Update
-               let updateBody = {
-                   pictureLink: pictureLink
-               };
-               axios.put("/api/organizer/picture/" + response.data.pictureID, JSON.stringify(updateBody), {headers: header}).then(response => {
-                   console.log("Picture link updated in DB");
-               });
-           }
-        });
+                const path = response.data.path;
 
-        axios.post(axiosConfig.root + '/api/organizer/picture/upload/' + organizerID, {
+                let body = {
+                    path: path
+                };
+                axios.post('http://localhost:8080/api/organizer/picture', JSON.stringify(body), {headers: databaseHeader})
+                    .then(response => {
+                        console.log("Response.data: ");
+                        console.log(response.data);
+                        let organizerPictureBody = {
+                            pictureID: response.data.insertId
+                        };
 
-        }, {headers: header})
-            .catch(error => console.log(error));
+                        axios.put('http://localhost:8080/api/organizer/picture/' + OrganizerStore.currentOrganizer.organizerID, JSON.stringify(organizerPictureBody), {headers: databaseHeader})
+                            .then(response => {
+                                if (response.status === 200){
+                                    callback(200, path);
+                                }
+                            });
+                    });
+            })
+            .catch(err => callback(500));
     }
 
 

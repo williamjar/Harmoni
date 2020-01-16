@@ -93,7 +93,7 @@ export class App extends Component{
                                 <Route exact path="/dokumenter" component={() => <Content page ={<Documents/>}/>}/>
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage/>} />} />
                                 <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
-
+                                <Route exact path="/arrangementEdit/:id"  component={() => <Content page={<EventForm/>} />} />
                             </div>
                         </div>
                     </HashRouter>

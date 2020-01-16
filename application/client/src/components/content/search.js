@@ -3,37 +3,31 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
-import {FaSearch} from "react-icons/all";
-import Form from "react-bootstrap/Form";
-import {Row, Col} from 'react-bootstrap';
-import {ArtistService as artistService} from "../../store/artistService";
-import {CookieStore} from "../../store/cookieStore";
 
 
 export class Search extends Component{
+    /* Search component is a universal search bar component that displays matching search results
+    Takes in props:
+    this.props.results : array that should be searched against
+    this.props.searchHandler : a parent method that receives an object of the person or event that was selected.
+
+    This searchbar checks against .contactName
+     */
 
     constructor(props){
         super(props);
 
         this.state = {
-            registerNewButtonAdded : this.props.addRegisterButton,
             searchInput : "",
-            results : [],
-            showRegisterNew : false,
-            showSearchResults: true,
-            showPerformerCard: false,
+            showSearchResults: false,
+            results : [this.props.results],
         };
 
 
         this.handleSearchInput = this.handleSearchInput.bind(this);
-        this.registerNew = this.registerNew.bind(this);
         this.searchHandler = this.searchHandler.bind(this);
     }
 
-    componentDidMount() {
-        this.callBackSearchResult();
-    }
 
     render() {
         return(
@@ -48,24 +42,13 @@ export class Search extends Component{
                                 onChange={this.handleSearchInput}
                                 className="rounded-pill"
                             />
-                            <InputGroup.Append>
-                                <div className="searchButtons">
-                                    {this.state.registerNewButtonAdded? <FaSearch/>:<div className="padding-top-5"> <FaSearch/></div> }
-                                    {this.state.registerNewButtonAdded?<Button variant="outline-secondary rounded" onClick={this.registerNew}>Registrer ny</Button>:null}
-                                </div>
-                            </InputGroup.Append>
                         </InputGroup>
 
                         <div className="card-text margin-top-5 ma">
-                            {this.state.showRegisterNew === false && this.state.showSearchResults?
+                            {this.state.showSearchResults && this.state.results != undefined?
                                 this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf(e.contactName.toLowerCase()) > -1).map(show =>
                                 <div className="card-title card-header search" onClick={() => this.searchHandler(show)}>{show.contactName}</div>
                                 ):null}
-
-                            {this.state.showRegisterNew?
-                                <div className="card card-body">
-                                    {this.props.registerComponent}
-                                </div>:null}
 
                         </div>
                     </div>
@@ -73,46 +56,36 @@ export class Search extends Component{
             </div>
         )
     }
-
-    callBackSearchResult = () => {
+    componentDidMount() {
         let currentState = this.state;
-
-        artistService.getArtistForOrganizer((allArtistByOrganizer) => {
-            currentState.results = allArtistByOrganizer;
-            console.log(allArtistByOrganizer);
-            this.setState(currentState);
-            console.log(this.state);
-        },CookieStore.currentUserID);
+        currentState.results = this.props.results; // Load results on mount
+        this.setState(currentState);
     }
+
+
+    static getDerivedStateFromProps(props, state) {
+        /* Updates props according to parent state change*/
+        if(props.results !== state.results) {
+            return {
+                results: props.results
+            };
+        }
+        return null;
+    }
+
 
     searchHandler(input){
         let currentState = this.state;
-        currentState.showSearchResults = false;
-        currentState.showRegisterNew = false;
-        currentState.showPerformerCard = true;
+        currentState.showSearchResults = false; //Hide search results after selection
         this.setState(currentState);
-
-        this.props.searchHandler(input);
-    }
-
-    registerNew(){
-        let currentState = this.state;
-        currentState.showRegisterNew = !currentState.showRegisterNew;
-        currentState.showSearchResults = false;
-
-        this.setState(currentState);
-
+        this.props.searchHandler(input); // Sends object of selection to parent method.
     }
 
     handleSearchInput(event){
         let currentState = this.state;
-        currentState.showSearchResults = true;
-        currentState.showRegisterNew = false;
+        currentState.showSearchResults = true; //Show matching search results
         currentState.searchInput = event.target.value;
         this.setState(currentState);
-
-
-
     }
 }
 

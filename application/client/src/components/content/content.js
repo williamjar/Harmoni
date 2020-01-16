@@ -7,6 +7,7 @@ import {UserPage} from "../user/userPage";
 
 
 export class Content extends Component{
+
     render(){
         return(
             <div className="content">
