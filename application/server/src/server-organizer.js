@@ -20,19 +20,24 @@ app.get("/api/organizer/:organizerID", (require, response) => {
     console.log(require.params.organizerID);
 });
 
-app.get("/organizer/username/:username", (req, res) => {
-    loginDao.checkUserExists(req.params.username, (status, data) => {
-        res.status(status);
-        res.json(data);
-    })
+//ORGANIZER
+
+// get all events for organizer
+app.get("/api/organizer/:organizerID/events", (require, response) => {
+    console.log("Request to get all events for a organizer");
+    organizerDao.getAllEvents((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.organizerID);
 });
 
-//Returns organizerID by email. Needed for login, thus not part of /api/
-app.get("/organizer/by-email/:email", (req, res) => {
-    organizerDao.getOrganizerFromEmail(req.params.email, (status, data) => {
-        res.status(status);
-        res.json(data);
-    })
+// get all documents for organizer
+app.get("/api/organizer/:organizerID/documents", (require, response) => {
+    console.log("Request to get all documents for a organizer");
+    organizerDao.getAllDocuments((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.organizerID);
 });
 
 // post new organizer
@@ -74,29 +79,23 @@ app.put("/api/organizer/:organizerID/change/username", (request, response) => {
     console.log("Request to change password for organizer");
     let val = [
         request.body.username,
-
         request.params.organizerID
     ];
-    organizerDao.changeUsername(val, (status, data) => {
+    organizerDao.changeUsername(val,(status, data) => {
         response.status(status);
         response.json(data);
     });
 });
 
-// get all events for organizer
-app.get("/api/organizer/:organizerID/events", (require, response) => {
-    console.log("Request to get all events for a organizer");
-    organizerDao.getAllEvents((status, data) => {
+app.put("/organizer/:organizerID/change/picture", (request, response) => {
+    console.log("Request to change profile picture for organizer");
+    let val = [
+        request.body.pictureID,
+        request.params.organizerID
+    ];
+    organizerDao.changeOrganizerProfilePicture((status, data) => {
         response.status(status);
         response.json(data);
-    }, require.params.organizerID);
+    }, val);
 });
 
-// get all documents for organizer
-app.get("/api/organizer/:organizerID/documents", (require, response) => {
-    console.log("Request to get all documents for a organizer");
-    organizerDao.getAllDocuments((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, require.params.organizerID);
-});

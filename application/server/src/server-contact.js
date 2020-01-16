@@ -8,6 +8,7 @@ app.get("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID);
 });
 
+//TODO: potensielt sikkerhetshull
 app.post("/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
@@ -45,11 +46,18 @@ app.delete("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID)
 });
 
+
 app.put("/api/contact/:contactID/change/phoneNumber", (request, response) => {
     console.log("Request to change password for organizer");
+
+    let val = [
+        request.body.phone,
+        request.params.contactID
+    ];
 
     contactDao.changePhoneNumber((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.body.phone ,request.params.contactID);
+    }, val);
 });
+

@@ -1,4 +1,5 @@
 import {app,eventDao} from "./server";
+import {CookieStore} from "../../client/src/store/cookieStore";
 
 //Get all events
 app.get("/api/events", (request, response) => {

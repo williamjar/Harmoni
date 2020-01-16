@@ -1,5 +1,6 @@
 import {app,crewDao} from "./server";
 
+// CREW
 app.get("/api/crew/:crewID", (request, response) => {
     console.log("request for crew");
     crewDao.getOne((status, data) => {
@@ -16,20 +17,41 @@ app.get("/api/crew/organizer/:organizerID", (request, response) => {
     }, request.params.organizerID);
 });
 
-app.get("/api/event/crew/:eventID", (request, response) => {
-    console.log("request for all crew attached to en event");
-    crewDao.getAllForEvent((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.eventID);
-});
-
 app.get("/api/crew/categories/:organizerID", (request, response) => {
     console.log("request for all crew categories attached to organizer");
     crewDao.getAllCategories((status, data) => {
         response.status(status);
         response.json(data);
     }, request.params.organizerID);
+});
+
+app.get("/api/crew/event/:eventID", (request, response) => {
+    console.log("Express: request for all crew  attached to event");
+
+    let val = [
+        request.params.eventID
+    ];
+
+    crewDao.getAllForEvent((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+app.get("/api/crew/event/:eventID/categories/:crewID", (request, response) => {
+    console.log("request for all crew categories attached to a crew member for an event");
+    crewDao.getAllCategoriesForOneForEvent((status,data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.crewID, request.params.eventID);
+});
+
+app.get("/crew/event/:eventID/categories/", (request, response) => {
+    console.log("request for all crew categories for an event");
+    crewDao.getAllCategoriesForEvent((status,data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID);
 });
 
 app.post("/api/crew", (request, response) => {
