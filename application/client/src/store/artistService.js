@@ -25,7 +25,6 @@ export class ArtistService {
 
     // OrganizerID == innlogget bruker.
     static createArtist(callback, name, phone, email, genreID, organizerID) {
-        console.log("artist clickkekkkkaekrakwrkwrk");
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
