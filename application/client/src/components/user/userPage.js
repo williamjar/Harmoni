@@ -70,9 +70,6 @@ export class UserPage extends React.Component {
     // Functions to verify the contents in the form.
     render() {
         return(
-
-
-
             <Card className={"border-0"}>
                 <Modal show={this.state.showPasswordAlert}>
                     <Modal.Header closeButton>
@@ -233,6 +230,9 @@ export class UserPage extends React.Component {
                 if (databaseImage == null){
                     image = 'http://www.jacqueslacoupe.com/images/sample-user.png'
                 }
+                else{
+                    image = databaseImage;
+                }
 
                 console.log(databaseImage);
                 console.log(image);
@@ -289,8 +289,7 @@ export class UserPage extends React.Component {
             PictureService.insertPicture(OrganizerStore.currentOrganizer.organizerID, formData, (statusCode, link) => {
                 console.log("Image uploaded with status " + statusCode);
                 if (statusCode === 200 && link){
-                    const totalPath = '../../../../server' + link;
-                    console.log(totalPath);
+                    const totalPath = __dirname + '../../../../server/' + link;
                     this.state.profilePicture = totalPath;
                 }
             });
