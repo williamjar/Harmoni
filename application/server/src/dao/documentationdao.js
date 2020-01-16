@@ -90,4 +90,11 @@ module.exports = class documentationDao extends Dao {
     }
 
 
+    getAllDocumentsByCategoryForEvent(eventID,documentCategoryID, callback){
+        var val = [eventID, documentCategoryID];
+        super.query("SELECT * from document where eventID = ? and documentCategoryID = ?",
+            val, callback);
+    }
+
+
 };

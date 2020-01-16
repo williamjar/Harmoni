@@ -1,5 +1,8 @@
 import {app, documentationDao, pictureDao, documentDao, organizerDao, multer, path, fs, uuidv4} from "./server";
 
+
+
+
 function deleteFile(path) {
     try {
         fs.unlink(path, function (err) {
@@ -115,6 +118,7 @@ const uploadUserPicture = multer({
 const fileUpload = multer({storage: fileStorage});
 
 // PICTURE
+
 
 //Save picture to server
 app.post("/api/file/picture", uploadUserPicture.single('selectedFile'), (req, res) => {
@@ -247,6 +251,26 @@ app.post("/api/:eventID/documents/create/artist", (req, res) => {
 
 app.post("/api/:eventID/documents/create/crew", (req, res) => {
     documentationDao.insertDocumentCrew(req.params.eventID, req.body, (status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+
+app.get("/api/:eventID/documents/categories", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getAllDocumentCategoriesForEvent(req.params.eventID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
+//SELECT * from document where eventID = 45 and documentCategoryID = 1
+app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getAllDocumentsByCategoryForEvent(req.params.eventID,req.params.documentCategoryID, (status, data) => {
+        console.log(data);
         res.status(status);
         res.json(data);
     });

@@ -138,7 +138,7 @@ export class File extends Component{
     render(){
         return(
             <div className={"card"} onClick={() => this.handleClick()}>
-                <div className={"card-header text-center"}></div>
+                <div className={"card-header text-center"}>TEST.txt</div>
                 <div className={"card-body"}>
                     <p className={"card-text text-center"}>
                         <FaFolderOpen size = {100}/>

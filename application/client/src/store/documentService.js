@@ -9,7 +9,25 @@ const axiosConfig = require("./axiosConfig");
 export class DocumentService {
 
 
+    static getAllDocumentsByCategoryForEvent(eventID, documentCategoryID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
 
+        let documentsByCategoryForEvent = [];
+
+        axios.get(axiosConfig.root + '/api/' + eventID + '/documents/category/' + documentCategoryID, {headers: header}).then(response => {
+            //TODO endre document klasse -- se DB
+            for (let i = 0; i < response.data.length; i++) {
+                currentCategories.push(new Document(response.data[i].documentID, response.data[i].documentLink,
+                    response.data[i].documentCategory));
+            }
+            callback(documentsByCategoryForEvent);
+        });
+    }
+
+//TODO: Delete? change Document params if not
     getAllDocumentsForOrganizer(organizerID) {
         let header = {
             "Content-Type": "application/json",
@@ -25,7 +43,7 @@ export class DocumentService {
         return allDocumentsByOrganizer;
     }
 
-
+//TODO: Delete? change Document params if not
     getAllDocumentsForEvent(eventID){
         let allDocumentsByEvent = [];
         let header = {
@@ -78,7 +96,7 @@ export class DocumentService {
         });
     }
 
-
+//TODO: Delete? change Document params if not
     updateDocument(documentID, eventID, name, link, artistID, crewID, categoryID) {
         let header = {
             "Content-Type": "application/json",
@@ -94,6 +112,7 @@ export class DocumentService {
         }, {headers: header}).then(response => response.data);
     }
 
+//TODO: Delete? change Document params if not
     deleteDocument(id) {
         let header = {
             "Content-Type": "application/json",
@@ -102,13 +121,14 @@ export class DocumentService {
         return axios.delete(axiosConfig.root + '/api/document/' + id, {headers: header}).then(response => response.data);
     }
 
-
+//TODO: Delete? change Document params if not
     insertDocumentArtist(eventID, folderName, documentCategoryID, artistID){
         axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/artist/' + artistID)
             .then(res => console.log(res.data))
             .catch(err => console.error(err));
     }
 
+    //TODO: Delete? change Document params if not
     insertDocumentCrew(eventID, folderName, documentCategoryID, crewID){
         axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/crew/' + crewID)
             .then(res => console.log(res.data))
