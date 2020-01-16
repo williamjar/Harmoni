@@ -17,17 +17,13 @@ export class Search extends Component{
         super(props);
 
         this.state = {
-            registerNewButtonAdded : this.props.addRegisterButton,
             searchInput : "",
-            showRegisterNew : false,
-            showSearchResults: true,
-            showPerformerCard: false,
+            showSearchResults: false,
             results : [this.props.results],
         };
 
 
         this.handleSearchInput = this.handleSearchInput.bind(this);
-        this.registerNew = this.registerNew.bind(this);
         this.searchHandler = this.searchHandler.bind(this);
     }
 
@@ -45,24 +41,13 @@ export class Search extends Component{
                                 onChange={this.handleSearchInput}
                                 className="rounded-pill"
                             />
-                            <InputGroup.Append>
-                                <div className="searchButtons">
-                                    {this.state.registerNewButtonAdded? <FaSearch/>:<div className="padding-top-5"> <FaSearch/></div> }
-                                    {this.state.registerNewButtonAdded?<Button variant="outline-secondary rounded" onClick={this.registerNew}>Registrer ny</Button>:null}
-                                </div>
-                            </InputGroup.Append>
                         </InputGroup>
 
                         <div className="card-text margin-top-5 ma">
-                            {this.state.showRegisterNew === false && this.state.showSearchResults && this.state.results != undefined?
+                            {this.state.showSearchResults && this.state.results != undefined?
                                 this.state.results.filter(e => this.state.searchInput.toLowerCase().indexOf(e.contactName.toLowerCase()) > -1).map(show =>
                                 <div className="card-title card-header search" onClick={() => this.searchHandler(show)}>{show.contactName}</div>
                                 ):null}
-
-                            {!this.props.showRegisterNew?
-                                <div className="card card-body">
-                                    {this.props.registerComponent}
-                                </div>:null}
 
                         </div>
                     </div>
@@ -90,23 +75,13 @@ export class Search extends Component{
     searchHandler(input){
         let currentState = this.state;
         currentState.showSearchResults = false;
-        currentState.showRegisterNew = false;
-        currentState.showPerformerCard = true;
         this.setState(currentState);
-
-
         this.props.searchHandler(input);
     }
-
-    registerNew(){
-       this.props.toggleRegister();
-    }
-
 
     handleSearchInput(event){
         let currentState = this.state;
         currentState.showSearchResults = true;
-        currentState.showRegisterNew = false;
         currentState.searchInput = event.target.value;
         this.setState(currentState);
 

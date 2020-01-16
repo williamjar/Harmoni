@@ -20,21 +20,23 @@ export class CrewService {
         });
     }
 
-    static getAllCrewMembersForOrganizer(organizerID) {
+    static getAllCrewMembersForOrganizer(callback, organizerID) {
 
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        let allCrewMembersByOrganizer = [];
+
         axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response => {
+            let allCrewMembersByOrganizer = [];
+
             for (let i = 0; i < response.data.length; i++) {
                 allCrewMembersByOrganizer.push(new CrewMember(response.data[i].crewID, response.data[i].description,
                     response.data[i].crewCategory, response.data[i].contactName, response.data[i].phone, response.data[i].email));
             }
+            callback(allCrewMembersByOrganizer);
         });
-        return allCrewMembersByOrganizer;
     }
 
     static getAllCrewCategoriesForOrganizer(organizerID) {
