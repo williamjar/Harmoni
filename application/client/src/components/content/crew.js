@@ -7,7 +7,7 @@ import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {TicketType} from "../../classes/ticketType";
-import {CrewStore as CrewService, CrewStore} from "../../store/crewStore";
+import {CrewStore} from "../../store/crewStore";
 import {CookieStore} from "../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
@@ -205,7 +205,7 @@ export class AddToCrew extends Component{
 
     updateCrewSearch = () => {
         console.log("update crew search");
-        CrewStore.getAllCrewMembersForOrganizer((list) => {
+        CrewStore.storeAllCrewMembersForOrganizer((list) => {
             let currentState = this.state;
             currentState.results = list;
             this.setState(currentState);
@@ -375,6 +375,8 @@ export class AddCrewMember extends Component{
             name : "",
             phone : "",
             email : "",
+            description: "",
+            isResponsible: false,
             crewCategoryID : 1
         };
     }
@@ -399,7 +401,10 @@ export class AddCrewMember extends Component{
                         <Form.Label>Epost</Form.Label>
                         <Form.Control type="email" placeholder="" onChange={this.handleEmailChange} />
                     </Form.Group>
-
+                    <Form.Group controlId="formGridDescription">
+                        <Form.Label>Beskrivelse</Form.Label>
+                        <Form.Control type="text" placeholder="" onChange={this.handleDescriptionChange} />
+                    </Form.Group>
                     <Button variant="primary" type="button" onClick={this.submitForm}>
                         Submit
                     </Button>
@@ -430,8 +435,15 @@ export class AddCrewMember extends Component{
         this.setState(currentState);
     };
 
+    handleDescriptionChange = (event) =>{
+        let currentState = this.state;
+        currentState.description = event.target.value;
+        this.setState(currentState);
+    };
+
+
     submitForm = () => {
-        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
+        CrewStore.createCrewMemberForEvent(this.state.name, this.state.phone, this.state.email, this.state.description, this.state.crewCategoryID, this.state.isResponsible, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
         this.props.toggleRegisterCrewMember();
         this.props.submit();
     };
