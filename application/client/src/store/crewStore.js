@@ -13,7 +13,7 @@ export class CrewStore {
     static allCrewMembersForOrganizer = [];
     static allCrewCategories = [];
     static allCrewCategoryEvent = [];
-    static allCrewForCurrentEvent = [];
+    allCrewForCurrentEvent = [];
 
 
     //get a crew member
@@ -76,6 +76,7 @@ export class CrewStore {
                 this.allCrewForCurrentEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
                     response.data[i].crewCategoryID, response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].isResponsible));
             }
+            console.log(this.allCrewForCurrentEvent);
             callback();
         });
     }
