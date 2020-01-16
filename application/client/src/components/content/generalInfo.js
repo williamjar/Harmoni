@@ -13,7 +13,8 @@ import {createHashHistory} from "history";
 
 const history = createHashHistory();
 
-// Component for viewing general information about an event
+// Component for viewing or editing the general info about an event
+// The component changes if the event is in "edit mode" or not
 export class GeneralInfo extends Component{
 
     state = {
@@ -47,6 +48,7 @@ export class GeneralInfo extends Component{
         )
     }
 
+    // Updates the state if the received props from the parent is changed
     static getDerivedStateFromProps(props, state) {
 
         if(props.editable !== state.editable) {
@@ -84,15 +86,18 @@ export class InfoForm extends Component {
 
     }
 
+    // Handles when the user wants to edit the event name,
+    // when edit = true, the name label is changed to an input field
     editClicked = () => {
         this.setState({edit: true})
     };
 
+    // Handles when the user saves the new name
     saveClicked = (e) => {
         this.setState({edit: false})
     };
 
-
+    // Updates the state and the event store object when form input is changed
     handleChange (event) {
         this.setState({[event.target.name]: event.target.value},
             () => {
