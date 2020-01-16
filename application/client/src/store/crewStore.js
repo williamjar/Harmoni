@@ -11,7 +11,7 @@ export class CrewStore {
 
     //static allCrewMembersByEvent = [];
     static allCrewMembersForOrganizer = [];
-    static allCrewCategories = [];
+    static allCrewCategoriesForOrganizer = [];
     static allCrewCategoryEvent = [];
     allCrewForCurrentEvent = [];
 
@@ -38,10 +38,14 @@ export class CrewStore {
             "x-access-token": CookieStore.currentToken
         };
         axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response =>  {
-            for (let i = 0; i < response.data.length; i++) {
-                this.allCrewMembersForOrganizer.push(new CrewMember(response.data[i].crewID, response.data[i].description,
-                    response.data[i].crewCategoryID, response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].isResponsible));
-            }
+
+            response.data.map(data => {
+
+                this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.description,
+                    data.crewCategoryID, data.contactName, data.phone, data.email, data.isResponsible));
+
+            });
+
             callback();
         });
     }
@@ -57,10 +61,14 @@ export class CrewStore {
         axios.get(axiosConfig.root + '/api/crew/event/' + eventID, {headers: header}).then(response => {
             console.log("response");
             console.log(response);
-            for (let i = 0; i < response.data.length; i++) {
-                this.allCrewForCurrentEvent.push(new CrewMember(response.data[i].crewID, response.data[i].description,
-                    response.data[i].crewCategoryID, response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].isResponsible));
-            }
+
+            response.data.map(data => {
+
+                this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.description,
+                    data.crewCategoryID, data.contactName, data.phone, data.email, data.isResponsible));
+
+            });
+
             console.log("all crew for current event: " + this.allCrewForCurrentEvent);
             callback();
         });
@@ -68,15 +76,22 @@ export class CrewStore {
 
     // store/get all crew categories for an organizer
     static storeAllCrewCategoriesForOrganizer(callback, organizerID){
-        let allCrewCategoriesByOrganizer = [];
+
+        this.allCrewCategoriesForOrganizer = [];
+
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
+
         axios.get(axiosConfig.root + '/api/crew/categories/' +  organizerID, {headers: header}).then(response =>  {
-            for (let i = 0; i < response.data.length; i++) {
-                allCrewCategoriesByOrganizer.push(new CrewCategory (response.data[i].crewCategoryID, response.data[i].crewCategory));
-            }
+
+            response.data.map(data => {
+
+                this.allCrewCategoriesForOrganizer.push(new CrewCategory (response.data[i].crewCategoryID, response.data[i].crewCategory));
+
+            });
+
             console.log("all categories for organizer: " + allCrewCategoriesByOrganizer);
             callback();
         });
