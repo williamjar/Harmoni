@@ -10,9 +10,13 @@ import { FaCalendar } from 'react-icons/fa';
 import ListGroup from "react-bootstrap/ListGroup";
 import {Row, Table} from "react-bootstrap";
 import {FaAngleDown} from "react-icons/all";
+import {TicketStore} from "../store/ticketStore";
+import {EventStore} from "../store/eventStore";
 
 
-
+/*
+    Component to share all the ticket components
+*/
 export class Ticket extends Component{
     render(){
         return(
@@ -21,7 +25,7 @@ export class Ticket extends Component{
                     <ListTickets/>
                 </Form>
                 <Form>
-                    <GetTicket/>
+                    <AddTicket/>
                 </Form>
 
             </Card>
@@ -30,9 +34,10 @@ export class Ticket extends Component{
     }
 }
 
-/*Component to retrive tickets from the database*/
-
-export class GetTicket extends Component{
+/*
+    Component to add new tickets to an event.
+ */
+export class AddTicket extends Component{
 
     constructor(props) {
         super(props);
@@ -49,23 +54,6 @@ export class GetTicket extends Component{
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-
-    handleSubmit(event){
-        event.preventDefault();
-        console.log('Ticket Saved' + ' ' + 'this: ' + this.state.price);
-
-    };
-
-    handleInputChange(event) {
-        console.log(this.state.ticketTypeName);
-        let target = event.target;
-        let value = target.type === 'checkbox' ? target.checked : target.value;
-        let name = target.name;
-        console.log(name + " verdi: " + value);
-        this.setState({[name]: value,});
-
-    }
-
 
     render() {
         return(
@@ -163,9 +151,35 @@ export class GetTicket extends Component{
                 </Card.Body>
         );
     }
+
+    handleSubmit(event){
+        event.preventDefault();
+        TicketStore.addTicket(EventStore.currentEvent.eventID,
+                                    this.state.ticketTypeName, this.state.price, this.state.amount,
+                                    this.state.releaseDate, this.state.releaseTime, this.state.endDate,
+                                    this.state.endTime, this.state.description);
+        console.log('Ticket Saved' + ' ' + 'this: ' + this.state.price);
+
+    };
+
+    handleInputChange(event) {
+        console.log(this.state.ticketTypeName);
+        let target = event.target;
+        let value = target.type === 'checkbox' ? target.checked : target.value;
+        let name = target.name;
+        console.log(name + " verdi: " + value);
+        this.setState({[name]: value,});
+
+    }
+
+    addTicket = (event) => {
+
+    }
 }
 
-/* Component to add tickets to the concert*/
+/*
+    Component to list all tickets in an event.
+*/
 export class ListTickets extends Component{
 
     tickets = TicketType.getTestTicketTypes();
@@ -241,9 +255,12 @@ export class ListTickets extends Component{
                 </Card.Body>
         );
     }
+
 }
 
-// Component for viewing all types of tickets associated with the event
+/*
+    Component for viewing all types of tickets associated with the event.
+ */
 export class TicketView extends Component {
 
     state = {

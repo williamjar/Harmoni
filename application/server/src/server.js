@@ -1131,7 +1131,7 @@ const server = app.listen(8080);
 
 //Ticket
 //Get one ticket
-app.get("/ticket/:ticketTypeID", (require, response) => {
+app.get("/api/ticket/:ticketTypeID", (require, response) => {
     console.log("Request to get a ticketType");
     ticketDao.getOneTicket((status, data) => {
         response.status(status);
@@ -1140,7 +1140,7 @@ app.get("/ticket/:ticketTypeID", (require, response) => {
 });
 
 //Get all tickets for an event
-app.get("/ticket/allTickets/:eventID", (require, response) => {
+app.get("/api/ticket/allTickets/:eventID", (require, response) => {
     console.log("Request to get a rider element");
     ticketDao.getAllTicketsForEvent((status, data) => {
         response.status(status);
@@ -1149,7 +1149,7 @@ app.get("/ticket/allTickets/:eventID", (require, response) => {
 });
 
 //add one ticket
-app.post("/ticket/insert", (request, response) => {
+app.post("/api/ticket/insert", (request, response) => {
     console.log("Request to add a ticket");
 
     let val =[

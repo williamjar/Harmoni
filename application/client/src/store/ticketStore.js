@@ -1,18 +1,32 @@
-import {Ticket} from "../.js"
 import {CookieStore} from "./cookieStore";
 import {Genre} from "../classes/genre";
 import axios from "axios";
-import {Artist} from "../classes/artist";
 import {TicketType} from "../classes/ticketType";
+
+const axiosConfig = require("./axiosConfig");
 
 export class TicketStore {
 
     //Adds ticket
-    static addTicket(callback, list) {
+    static addTicket(eventID, name, price, amount, releaseDate, releaseTime,  endDate, endTime, description ) {
 
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
+        };
+
+        let list = {
+            "eventID" : eventID,
+            "ticketTypeName" : name,
+            "price" : price,
+            "amount" : amount,
+            "releaseDate" : releaseDate,
+            "releaseTime" : releaseTime,
+            "hasEndDate" : 1,
+            "endDate" : endDate,
+            "endTime" : endTime,
+            "description" : description
+
         };
 
 
