@@ -23,7 +23,7 @@ app.post("/contact", (request, response) => {
     }, val);
 });
 
-app.post("api/contact", (request, response) => {
+app.post("/api/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
         request.body.username,
