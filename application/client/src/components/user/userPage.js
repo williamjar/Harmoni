@@ -216,7 +216,7 @@ export class UserPage extends React.Component {
     }
     validateFile(){
         console.log(this.state.newProfilePicture);
-        return (/\.(gif|jpeg|jpg|tiff|png)$/i).test(this.state.newProfilePicture.name);
+        return (/\.(gif|jpeg|jpg|png)$/i).test(this.state.newProfilePicture.name);
     }
 
     updateInfo(){
