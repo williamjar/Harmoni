@@ -7,14 +7,13 @@ import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {TicketType} from "../../classes/ticketType";
-import {CrewStore} from "../../store/crewStore";
+import {CrewStore as CrewService, CrewStore} from "../../store/crewStore";
 import {CookieStore} from "../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
-import {CrewService} from "../../store/crewService";
 
 
 export class CrewTab extends Component{
@@ -206,7 +205,7 @@ export class AddToCrew extends Component{
 
     updateCrewSearch = () => {
         console.log("update crew search");
-        CrewService.getAllCrewMembersForOrganizer((list) => {
+        CrewStore.getAllCrewMembersForOrganizer((list) => {
             let currentState = this.state;
             currentState.results = list;
             this.setState(currentState);

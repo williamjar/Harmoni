@@ -460,7 +460,7 @@ app.get("/api/contact/:contactID", (request, response) => {
 });
 
 //TODO: potensielt sikkerhetshull
-app.post("/api/contact", (request, response) => {
+app.post("/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
         request.body.username,
