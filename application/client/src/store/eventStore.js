@@ -5,7 +5,7 @@ import {forEach} from "react-bootstrap/esm/ElementChildren";
 
 let axiosConfig = require("./axiosConfig");
 
-export class eventStore{
+export class EventStore{
 
     static currentEvent = null;
 

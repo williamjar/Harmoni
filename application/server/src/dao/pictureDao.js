@@ -5,6 +5,10 @@ module.exports = class pictureDao extends Dao {
         super.query('UPDATE picture SET pictureLink = ? WHERE pictureID = ?', [pictureLink, pictureID], callback);
     }
 
+    insertPicture(path, callback) {
+        super.query('insert into picture (pictureLink) VALUES (?)', [path], callback);
+    }
+
     createOne(callback, link) {
         super.query('insert into picture (pictureLink) VALUES (?)', link, callback);
     }
@@ -17,4 +21,7 @@ module.exports = class pictureDao extends Dao {
         super.query('select * from picture where pictureID = ?', pictureID, callback);
     }
 
+    checkIfOrganizerPictureExists(callback, organizerID){
+        super.query('select pictureID from organizer where organizerID = ?', [organizerID], callback);
+    }
 };

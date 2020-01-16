@@ -1,11 +1,11 @@
 import axios from "axios";
-import {sharedComponentData} from "react-simplified";
-import Document from ".classes/document.js"
+import {Document} from "../classes/document.js"
 import {CookieStore} from "./cookieStore";
+import {EventStore} from "./eventStore";
 
 const axiosConfig = require("./axiosConfig");
 
-class DocumentService {
+export class DocumentService {
 
     getAllDocumentsForOrganizer(organizerID) {
         let header = {
@@ -38,17 +38,41 @@ class DocumentService {
         return allDocumentsByEvent;
     }
 
-    addDocument(eventID, documentLink, artistID, documentCategoryID){
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        axios.post(axiosConfig.root + '/api/document/', {
-            "eventID": eventID,
-            "documentLink": documentLink,
-            "artistID": artistID,
-            "documentCategoryID" : documentCategoryID
-    }, {headers: header}).then(response => response.data);
+    static addDocument(eventID, category, artistID, crewID, documentCategoryID, file, callback){
+
+          axios.post('http://localhost:8080/api/file/document/' + eventID + '/' + documentCategoryID, file)
+            .then(response => {
+                let databaseHeader = {
+                    "Content-Type": "application/json",
+                    "x-access-token": CookieStore.currentToken
+                };
+
+                const path = response.data.path;
+                const name = response.data.name.split("_")[1];
+
+                //eventID, documentName, link, artistID, crewID, categoryID
+                let body = {
+                    eventID: eventID,
+                    documentName: name,
+                    documentLink: path,
+                    artistID: artistID,
+                    crewID: crewID,
+                    documentCategoryID: documentCategoryID
+                };
+
+                console.log(body);
+
+                axios.post('http://localhost:8080/api/document', JSON.stringify(body), {headers: databaseHeader}).then(() => {
+                    console.log(response.status);
+                    console.log(response.data);
+                    if (response.status === 200 && response.data.name){
+                        callback(200);
+                    }
+                    else{
+                        callback(501);
+                    }
+                });
+        });
     }
 
 
@@ -73,6 +97,19 @@ class DocumentService {
             "x-access-token": CookieStore.currentToken
         };
         return axios.delete(axiosConfig.root + '/api/document/' + id, {headers: header}).then(response => response.data);
+    }
+
+
+    insertDocumentArtist(eventID, folderName, documentCategoryID, artistID){
+        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/artist/' + artistID)
+            .then(res => console.log(res.data))
+            .catch(err => console.error(err));
+    }
+
+    insertDocumentCrew(eventID, folderName, documentCategoryID, crewID){
+        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/crew/' + crewID)
+            .then(res => console.log(res.data))
+            .catch(err => console.error(err));
     }
 
 }
