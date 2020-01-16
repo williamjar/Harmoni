@@ -23,6 +23,19 @@ app.post("/contact", (request, response) => {
     }, val);
 });
 
+app.post("api/contact", (request, response) => {
+    console.log("request to add contact");
+    let val = [
+        request.body.username,
+        request.body.phone,
+        request.body.email
+    ];
+    contactDao.createOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
 app.put("/api/contact/:contactID", (request, response) => {
     console.log("request to update contact");
     let val = [
