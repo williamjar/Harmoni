@@ -1102,7 +1102,6 @@ app.put("/api/document/:documentID", (request, response) => {
         request.body.eventID,
         request.body.documentName,
         request.body.documentLink,
-        request.body.artistID,
         request.body.crewID,
         request.body.documentCategoryID
     ];
