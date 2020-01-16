@@ -14,6 +14,7 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
+import {CrewService} from "../../store/crewService";
 
 
 export class CrewTab extends Component{
@@ -101,8 +102,13 @@ export class AddToCrew extends Component{
             numberOfFilesAdded: 0,
             showRegisterCrewType:false,
             showRegisterCrewMember : false,
+            results : [],
         };
 
+    }
+
+    componentDidMount() {
+        this.updateCrewSearch();
     }
 
     render() {
@@ -153,14 +159,14 @@ export class AddToCrew extends Component{
 
                 <div className="row padding-top-20">
                     <div className="col-lg-8 col-md-8">
-                        <Search searchHandler={this.searchHandler}  />
+                        <Search searchHandler={this.searchHandler} results={this.state.results}  />
                     </div>
                     <div className="col-lg-4 col-md-4">
                         <button className="btn btn-success" onClick={this.showRegisterCrewMemberForm}>Registrer ny</button>
                     </div>
                 </div>
 
-                {this.state.showRegisterCrewMember?<AddCrewMember toggleRegisterCrewMember={this.showRegisterCrewMemberForm} />:null}
+                {this.state.showRegisterCrewMember?<AddCrewMember toggleRegisterCrewMember={this.showRegisterCrewMemberForm} submit={this.searchHandler} />:null}
 
 
                 <div className="row padding-top-20">
@@ -198,6 +204,17 @@ export class AddToCrew extends Component{
         this.setState(currentState);
     };
 
+    updateCrewSearch = () => {
+        console.log("update crew search");
+        CrewService.getAllCrewMembersForOrganizer((list) => {
+            let currentState = this.state;
+            currentState.results = list;
+            this.setState(currentState);
+            console.log("Searchable crew");
+            console.log(this.state);
+        }, CookieStore.currentUserID);
+    };
+
 
     showRegisterCrewTypeForm = (event) => {
         if(event.target.value.trim() === "Legg til ny.."){
@@ -214,7 +231,7 @@ export class AddToCrew extends Component{
     };
 
     searchHandler = () => {
-
+        this.updateCrewSearch();
     };
 
     addFile = () =>{
@@ -342,8 +359,8 @@ export class CrewView extends Component {
         CrewStore.storeAllCrewMembersForEvent(() => {
             console.log("return crew members" + CrewStore.allCrewForCurrentEvent);
             this.setState(
-                { crewList : CrewStore.allCrewForCurrentEvent })
-        }, EventStore.currentEvent);
+                { results : CrewStore.allCrewForCurrentEvent })
+        }, EventStore.currentEvent.eventID);
         console.log(this.state);
     };
 
@@ -421,6 +438,7 @@ export class AddCrewMember extends Component{
     submitForm = () => {
         CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
         this.props.toggleRegisterCrewMember();
+        this.props.submit();
     };
 
     cancelRegister = () => {
