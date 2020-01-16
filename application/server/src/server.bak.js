@@ -6,6 +6,8 @@ const mysql = require("mysql");
 
 const path = require('path');
 const multer = require('multer');
+const uuidv4 = require('uuid/v4');
+
 const jwt = require('jsonwebtoken');
 const LoginDao = require('./dao/loginDao');
 const SECRET = require('./cookieConfig');
@@ -65,18 +67,6 @@ app.post('/api/bug/register/:organizerID', (req, res) => {
 });
 
 //----------------- DOCUMENTATION ---------------------
-//Check if a folder exists for user
-function checkIfFolderExist(name, path) {
-    if (name != null) {
-        //Check folder existence
-        if (fs.existsSync(path + name)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    return false;
-}
 
 
 function deleteFile(path) {
@@ -91,103 +81,166 @@ function deleteFile(path) {
     }
 }
 
-const resource_path = path.join(__dirname, '/../../client/public/resources/');
-var storage = multer.diskStorage({
-    //Declaring destination for file
-    destination: function (req, file, cb) {
-        try {
-            //If user folder exist but not document category folder, create and set destination path
-            if (checkIfFolderExist(req.params.id, resource_path)) {
-                if (!checkIfFolderExist(req.params.folderName, resource_path + req.params.id + "/" + req.params.folderName)) {
-                    try {
-                        fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
-                    } catch (e) {
-                        console.log("Error creating document category folder");
-                    }
-                    cb(null, resource_path + req.params.id + "/" + req.params.folderName);
-                }
-                //User and document category folder exist. Set destination
-                else {
-                    cb(null, resource_path + req.params.id + "/" + req.params.folderName);
-                }
-            }
-            //If neither user folder or document category folder exist. Create both
-            else {
-                try {
-                    fs.mkdirSync(resource_path + req.params.id);
-                    try {
-                        fs.mkdirSync(resource_path + req.params.id + "/" + req.params.folderName);
-                        cb(null, resource_path + req.params.id + "/" + req.params.folderName);
-                    } catch (e) {
-                        console.log("Error creating document category folder");
-                    }
-                } catch (e) {
-                    console.log("Error creating user folder");
-                }
-            }
-        } catch (e) {
-            console.log("An error occurred");
+function deleteAllFilesInFolder(path, callback) {
+    fs.readdir(path, (err, files) => {
+        if (err) console.log(err);
+        for (const file of files) {
+            fs.unlink(path + '/' + file, err => {
+                if (err) console.log(err);
+            });
         }
+    });
+    callback();
+}
 
-    },
-    //Adding file to destination
-    filename: function (req, file, cb) {
-        //Create file in server. If user upload same file append time for unique name
-        try {
-            if (fs.existsSync(resource_path + req.params.id + '/' + req.params.folderName + "/" + file.originalname)) {
-                cb(null, Date.now() + "--" + file.originalname)
-            } else {
-                cb(null, file.originalname)
+function ensureFolderExists(path, mask, callback){
+    if (typeof mask == 'function'){
+        callback = mask;
+        mask = 0o777;
+    }
+    fs.mkdir(path, mask, function(err){
+        if (err){
+            if(err.code === 'EEXIST'){
+                callback(null);
             }
-        } catch (e) {
-            console.log("An error occurred")
+            else{
+                callback(err);
+            }
         }
+        else{
+            callback(err);
+        }
+    })
+}
+
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const eventID = req.params.eventID;
+        const documentCategoryID = req.params.documentCategoryID;
+
+        ensureFolderExists('./resources/' + eventID, 0o744, err => {
+            if (err){
+                console.log("Could not create folder for event " + eventID);
+            }
+            else{
+                ensureFolderExists('./resources/' + eventID + '/' + documentCategoryID, 0o744, err => {
+                    if (err){
+                        console.log("Could not create folder for event " + eventID + " - category " + documentCategoryID);
+                    }
+                    else{
+                        console.log("Destination set for ./resources/" + eventID + "/" + documentCategoryID);
+                        cb(null, './resources/' + eventID + '/' + documentCategoryID);
+                    }
+                })
+            }
+        });
+    },
+
+    filename: (req, file, cb) => {
+        const newFilename = uuidv4(path.extname(file.originalname)) + "_" + file.originalname;
+        console.log("Creating new file " + newFilename);
+        cb(null, newFilename);
+    }
+});
+
+const pictureStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        ensureFolderExists('./resources/profilePictures', 0o744, err => {
+            if (err){
+                console.log("Could not create folder for profile pictures");
+            }
+            else{
+                console.log("Destination set for ./resources/profilePictures");
+                cb(null, './resources/profilePictures');
+            }
+        });
+    },
+    filename: (req, file, cb) => {
+        const newFilename = uuidv4(path.extname(file.originalname)) + "_" + file.originalname;
+        console.log("Creating new file " + newFilename);
+        cb(null, newFilename);
     }
 });
 
 
-//Create one directory for user with id as name
-/*
-const resource_path = path.join(__dirname, '/../../client/public/resources/');
-var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        try{
-            if (fs.existsSync(resource_path + req.params.id)) {
-                console.log('The folder exists.');
-            } else {
-                fs.mkdirSync( resource_path + req.params.id );
-            }
-        } catch (e) {
-            console.log("An error occurred");
-        }
-        cb(null, resource_path + req.params.id );
-
-    },
-    filename: function (req, file, cb) {
-        try{
-            if (fs.existsSync(resource_path + req.params.id + '/' + file.originalname)) {
-                 cb(null, Date.now() + "--" + file.originalname)
-            } else {
-                cb(null, file.originalname)
-            }
-        } catch (e) {
-            console.log("An error occurred")
+//init upload
+const uploadUserPicture = multer({
+    storage: pictureStorage,
+    limits: {fileSize: 5000000000},
+    fileFilter: (req, file, cb) => {
+        console.log("Checking file filter");
+        if (file.mimetype === "image/png" || file.mimetype === "image/jpg" ||
+            file.mimetype === "image/jpeg" || file.mimetype === "image/gif") {
+            cb(null, true);
+        } else {
+            return cb(new Error('Allowed only .png, .jpg, .jpeg and .gif'));
         }
     }
-});*/
+});
 
+const fileUpload = multer({storage: fileStorage});
 
-var upload = multer({storage: storage});
+// PICTURE
 
-
-//Post request for uploading multiple files
-app.post('/upload/:id/:folderName', upload.array('file', 10), (req, res) => {
+//Save picture to server
+app.post("/api/file/picture",  uploadUserPicture.single('selectedFile'), (req, res) => {
     try {
-        res.send(req.files);
+        res.send({name: req.file.filename, path: req.file.path});
     } catch (err) {
         res.send(400);
     }
 });
+
+app.post("/api/organizer/picture", (request, response) => {
+    console.log("Request to add a picture");
+    pictureDao.insertPicture(request.body.path, (status, data) => {
+        response.status(status);
+        response.json(data);
+    });
+});
+
+//Delete picture
+app.delete("/api/organizer/picture/delete/:pictureID", (request, response) => {
+    console.log("Request to delete a picture");
+    pictureDao.deleteOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.pictureID);
+});
+
+//Update picture
+app.put("/api/organizer/picture/update/:pictureID", (request, response) => {
+    console.log("Request to update a picture");
+    pictureDao.updateOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.body.pictureLink, request.params.pictureID);
+});
+
+//Update the picture on the organizer
+app.put("/api/organizer/picture/:organizerID", (request, response) => {
+    console.log("Request to update a picture for an organizer");
+    organizerDao.changePicture(request.body.pictureID, request.params.organizerID, (status, data) => {
+        response.status(status);
+        response.json(data);
+    });
+});
+
+//Get one picture
+app.get("/api/organizer/picture/:pictureID", (require, response) => {
+    console.log("Request to get the picture of an organizer");
+    pictureDao.getPicture((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, require.params.pictureID);
+});
+
+app.post("/api/file/document/:eventID/:documentCategoryID", fileUpload.single('selectedFile'), (req, res) => {
+    console.log("Request to create document");
+    console.log(req.file);
+    res.send({name: req.file.filename, path: req.file.path});
+});
+
 
 app.get("/api/:eventID/documents/category", (req, res) => {
     console.log("/doc: fikk request fra klient");
@@ -347,7 +400,7 @@ app.post("/token", (req, res) => {
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
     let token;
-    if (req.headers["x-access-token"]) {
+    if (req.headers["x-access-token"]){
         token = req.headers["x-access-token"];
     } else {
         token = CookieStore.currentToken;
@@ -398,22 +451,6 @@ app.get("/api/bug/:bugID", (request, response) => {
 });
 
 // CONTACT
-
-//TODO: potensielt sikkerhetshull
-app.post("/contact", (request, response) => {
-    console.log("request to add contact");
-    let val = [
-        request.body.username,
-        request.body.phone,
-        request.body.email
-    ];
-
-    contactDao.createOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, val);
-});
-
 app.get("/api/contact/:contactID", (request, response) => {
     console.log("request to get a contact");
     contactDao.getOne((status, data) => {
@@ -422,7 +459,8 @@ app.get("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID);
 });
 
-app.post("/api/contact", (request, response) => {
+//TODO: potensielt sikkerhetshull
+app.post("/contact", (request, response) => {
     console.log("request to add contact");
     let val = [
         request.body.username,
@@ -459,8 +497,9 @@ app.delete("/api/contact/:contactID", (request, response) => {
     }, request.params.contactID)
 });
 
-app.put("/contact/:contactID/change/phonenumber/", (request, response) => {
-    console.log("Request to change phone number for a contact");
+
+app.put("/api/contact/:contactID/change/phoneNumber", (request, response) => {
+    console.log("Request to change password for organizer");
 
     let val = [
         request.body.phone,
@@ -472,6 +511,7 @@ app.put("/contact/:contactID/change/phonenumber/", (request, response) => {
         response.json(data);
     }, val);
 });
+
 
 // ARTIST
 app.get("/api/artist/:artistID", (request, response) => {
@@ -569,7 +609,7 @@ app.delete("/api/artist/assign/:eventID/:artistID", (request, response) => {
     artistDao.unAssignOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.eventID, request.params.artistID)
+    }, [request.params.eventID, request.params.artistID])
 });
 
 app.get("/api/artist-genres", (request, response) => {
@@ -598,20 +638,41 @@ app.get("/api/crew/organizer/:organizerID", (request, response) => {
     }, request.params.organizerID);
 });
 
-app.get("/api/event/crew/:eventID", (request, response) => {
-    console.log("request for all crew attached to en event");
-    crewDao.getAllForEvent((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.eventID);
-});
-
 app.get("/api/crew/categories/:organizerID", (request, response) => {
     console.log("request for all crew categories attached to organizer");
     crewDao.getAllCategories((status, data) => {
         response.status(status);
         response.json(data);
     }, request.params.organizerID);
+});
+
+app.get("/api/crew/event/:eventID", (request, response) => {
+    console.log("Express: request for all crew  attached to event");
+
+    let val = [
+        request.params.eventID
+    ];
+
+    crewDao.getAllForEvent((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val);
+});
+
+app.get("/api/crew/event/:eventID/categories/:crewID", (request, response) => {
+    console.log("request for all crew categories attached to a crew member for an event");
+    crewDao.getAllCategoriesForOneForEvent((status,data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.crewID, request.params.eventID);
+});
+
+app.get("/crew/event/:eventID/categories/", (request, response) => {
+    console.log("request for all crew categories for an event");
+    crewDao.getAllCategoriesForEvent((status,data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.eventID);
 });
 
 app.post("/api/crew", (request, response) => {
@@ -920,7 +981,7 @@ app.put("/api/organizer/:organizerID/change/username", (request, response) => {
         request.body.username,
         request.params.organizerID
     ];
-    organizerDao.changeUsername(val, (status, data) => {
+    organizerDao.changeUsername(val,(status, data) => {
         response.status(status);
         response.json(data);
     });
@@ -1021,20 +1082,18 @@ app.delete("/api/event/:eventID/artist/:artistID/rider/:riderElementID", (reques
 
 //DOCUMENT
 
-app.post("/api/document/", (request, response) => {
+app.post("/api/document", (request, response) => {
     console.log("Express: Request to add a document");
-    let val = [
-        request.body.eventID,
+    documentationDao.insertDocument(request.body.eventID,
         request.body.documentName,
         request.body.documentLink,
         request.body.artistID,
         request.body.crewID,
-        request.body.documentCategoryID
-    ];
-    documentDao.createOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, val);
+        request.body.documentCategoryID,
+        (status, data) => {
+            response.status(status);
+            response.json(data);
+        });
 });
 
 app.put("/api/document/:documentID", (request, response) => {
@@ -1061,42 +1120,11 @@ app.delete("/api/document/:documentID", (request, response) => {
     }, request.params.documentID);
 });
 
-// PICTURE
-//Insert picture
-app.post("/api/picture/insert", (request, response) => {
-    console.log("Request to add a picture link");
-    pictureDao.createOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.body.pictureLink);
-});
-
-//Delete picture
-app.delete("/api/picture/delete/:pictureID", (request, response) => {
-    console.log("Request to delete a picture");
-    pictureDao.deleteOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.pictureID);
-});
-
-//Update picture
-app.put("/api/picture/update/:pictureID", (request, response) => {
-    console.log("Request to update a picture");
-    pictureDao.updateOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.body.pictureLink, request.params.pictureID);
-});
-
-//Get one picture
-app.get("/api/picture/:pictureID", (require, response) => {
-    console.log("Request to get a rider element");
-    pictureDao.getPicture((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, require.params.pictureID);
-});
-
-
 const server = app.listen(8080);
+
+
+
+
+
+
+
