@@ -220,9 +220,9 @@ export class UserPage extends React.Component {
             if (statusCode === 200){
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
 
-                var databaseUsername = OrganizerStore.currentOrganizer.username;
-                var dataBbaseEmail = OrganizerStore.currentOrganizer.email;
-                var databasePhone = OrganizerStore.currentOrganizer.phone;
+                let databaseUsername = OrganizerStore.currentOrganizer.username;
+                let dataBaseEmail = OrganizerStore.currentOrganizer.email;
+                let databasePhone = OrganizerStore.currentOrganizer.phone;
                 let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
 
                 let image = null;
@@ -238,7 +238,7 @@ export class UserPage extends React.Component {
 
                 this.setState(this.setState({
                     username: databaseUsername,
-                    email: dataBbaseEmail,
+                    email: dataBaseEmail,
                     phonenumber: databasePhone,
                     profilePicture: image
                 }));
