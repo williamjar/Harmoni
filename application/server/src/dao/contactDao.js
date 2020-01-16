@@ -19,7 +19,7 @@ module.exports = class contactDao extends Dao {
     }
 
     changePhoneNumber(callback, list) {
-        super.query('UPDATE contact SET phone = ? WHERE contactID = ?', list, callback)
+        super.query('UPDATE contact SET phone = ? WHERE contactID = (SELECT organizer.contactID from organizer WHERE organizerID = ?)', list, callback)
     }
 };
 
