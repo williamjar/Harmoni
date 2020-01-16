@@ -205,7 +205,7 @@ export class AddToCrew extends Component{
 
     updateCrewSearch = () => {
         console.log("update crew search");
-        CrewService.getAllCrewMembersForOrganizer((list) => {
+        CrewStore.getAllCrewMembersForOrganizer((list) => {
             let currentState = this.state;
             currentState.results = list;
             this.setState(currentState);
