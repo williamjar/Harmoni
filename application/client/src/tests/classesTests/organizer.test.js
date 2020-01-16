@@ -1,6 +1,6 @@
 import {Organizer} from "../../classes/organizer";
 
-test('Check lengths of Organizer arrays (contacts, events, crewCategories)', () => {
+test('Check lengths of organizer arrays (contacts, events, crewCategories)', () => {
     expect(Organizer.getTestOrganizer()[0].events.length).toBe(0);
     expect(Organizer.getTestOrganizer()[0].contacts.length).toBe(3);
     expect(Organizer.getTestOrganizer()[0].crewCategories.length).toBe(1);

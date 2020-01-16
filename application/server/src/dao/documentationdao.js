@@ -10,6 +10,34 @@ module.exports = class documentationDao extends Dao {
         );
     }
 
+    insertDocument(eventID, documentName, link, artistID, crewID, categoryID, callback){
+        console.log("Inserting file on " + link);
+        let val = [eventID, documentName, link, artistID, crewID, categoryID];
+        console.log("val");
+        console.log(val);
+        super.query(
+            "INSERT INTO document (eventID,documentName,documentLink, artistID, crewID, documentCategoryID) VALUES (?,?,?,?,?,?)",
+            val, callback
+        );
+    }
+
+    insertDocumentArtist(eventID, category, req, artistID, callback){
+        var val = [eventID, req.originalname, req.path, category, artistID];
+        super.query(
+            "INSERT INTO document (eventID,documentName,documentLink,documentCategoryID, artistID) VALUES (?,?,?,?,?)",
+            val, callback
+        );
+    }
+
+    insertDocumentCrew(eventID, category, req, crewID, callback){
+        var val = [eventID, req.originalname, req.path, category, crewID];
+        super.query(
+            "INSERT INTO document (eventID,documentName,documentLink,documentCategoryID, crewID) VALUES (?,?,?,?,?)",
+            val, callback
+        );
+    }
+
+
     getAllDocuments(eventID, callback){
         super.query(
             "select * from document where eventID = ?",
@@ -18,32 +46,6 @@ module.exports = class documentationDao extends Dao {
         );
     }
 
-    insertDocument(eventID, json, callback) {
-        var val = [eventID, json.documentName, json.documentLink, json.documentCategoryID];
-        super.query(
-            "INSERT INTO document (eventID,documentName,documentLink,documentCategoryID) VALUES (?,?,?,?)",
-            val,
-            callback
-        );
-    }
-
-    insertDocumentArtist(eventID, json,callback) {
-        var val = [eventID, json.documentName, json.documentLink, json.artistID, json.documentCategoryID];
-        super.query(
-            "INSERT INTO document (eventID,documentName,documentLink,artistID,documentCategoryID) VALUES (?,?,?,?,?)",
-            val,
-            callback
-        );
-    }
-
-    insertDocumentCrew(eventID, json,callback) {
-        var val = [eventID, json.documentName, json.documentLink, json.crewID, json.documentCategoryID];
-        super.query(
-            "INSERT INTO document (eventID,documentName,documentLink,crewID,documentCategoryID) VALUES (?,?,?,?,?)",
-            val,
-            callback
-        );
-    }
 
     getOneDocument(eventID, documentID, callback){
         var val = [eventID, documentID];
