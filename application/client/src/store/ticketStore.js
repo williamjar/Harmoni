@@ -2,6 +2,7 @@ import {CookieStore} from "./cookieStore";
 import {Genre} from "../classes/genre";
 import axios from "axios";
 import {TicketType} from "../classes/ticketType";
+import {CrewMember} from "../classes/crewMember";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -36,8 +37,6 @@ export class TicketStore {
     }
 
     //returns one ticket
-    //ticketTypeID, price, amount, releaseDate, releaseTime, hasEndDate, endDate, endTime, description
-
     static getOneTicket(ticketTypeID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -52,5 +51,24 @@ export class TicketStore {
             }
         );
     }
-    //reteurn all tickets in a event
+
+    //return all tickets to an event in a list.
+    static  getAllTickets(eventID, callback) {
+        let allTickets = [];
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        //ticketTypeID, price, amount, releaseDate, releaseTime, hasEndDate, endDate, endTime, description
+        axios.get(axiosConfig.root + '/api/ticket/allTickets/:eventID' + eventID, {headers: header}).then(response =>  {
+            for (let i = 0; i < response.data.length; i++) {
+                allTickets.push(new TicketType(response.data[i].eventID, response.data[i].price, response.data[i].amount, response[i].releaseDate,
+                                                response.data[i].releaseTime, response.data[i].hasEndDate, response.data[i].endDate,
+                                                response.data[i].endTime, response.data[i].description));
+            }
+            callback(allTickets);
+        });
+
+    }
 }
