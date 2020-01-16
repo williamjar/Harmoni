@@ -13,21 +13,6 @@ import {RiderStore} from "../../store/riderStore";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
 
-export class PerformersTab extends Component{
-    /* All the performer content for use in the Performer tab */
-
-    render(){
-        return(
-            <div>
-                <PerformerPanel/>
-            </div>
-        )
-    }
-
-
-
-
-}
 
 export class PerformerPanel extends Component{
     /* Performerpanel is the left side in the PerformerTab, it is combined, because of the search and performercard. */
