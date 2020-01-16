@@ -1,7 +1,19 @@
-import React from 'react';
+import React, {Component} from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Accordion, Button, Card,ButtonGroup, Col, Dropdown, DropdownButton, ListGroup, Row, Tab} from "react-bootstrap";
+import {
+    Accordion,
+    Button,
+    Card,
+    ButtonGroup,
+    Col,
+    Dropdown,
+    DropdownButton,
+    ListGroup,
+    Row,
+    Tab,
+    Table
+} from "react-bootstrap";
 import {FaAngleDown, FaPlusCircle} from "react-icons/fa";
 import {EventView} from "./eventView";
 import {Event} from "../../../classes/event";
@@ -82,8 +94,8 @@ export class Dashboard extends React.Component {
                         <Row className="no-gutters">
                             {console.log(EventStore.allEventsForOrganizer)}
                             {this.state.events.filter(e => e.status === 1).length > 0 ?
-                                <EventView events={this.state.events.filter(event => event.status === 1)}/> : null}
-                                {/*<NoEvents message="Du har ingen planlagte arrangement"/>}*/}
+                                <EventView events={this.state.events.filter(event => event.status === 1)}/> :
+                                <NoEvents message="Du har ingen planlagte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
@@ -96,8 +108,8 @@ export class Dashboard extends React.Component {
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
                             {this.state.events.filter(e => e.status === 0).length > 0 ?
-                                <EventView events={this.state.events.filter(event => event.status === 0)}/> : null}
-                                {/*<NoEvents message="Du har ingen arrangement under planlegging"/>}*/}
+                                <EventView events={this.state.events.filter(event => event.status === 0)}/> :
+                                <NoEvents message="Du har ingen arrangement under planlegging"/>}
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
@@ -110,8 +122,8 @@ export class Dashboard extends React.Component {
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
                             {this.state.events.filter(e => e.status === 2).length > 0 ?
-                                <EventView events={this.state.events.filter(event => event.status === 2)}/> : null}
-                                {/*<NoEvents message="Du har ingen arkiverte arrangement"/>}*/}
+                                <EventView events={this.state.events.filter(event => event.status === 2)}/> :
+                                <NoEvents message="Du har ingen arkiverte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
                 </Accordion>
@@ -128,5 +140,19 @@ export class Dashboard extends React.Component {
 
     searchHandler(){
 
+    }
+}
+
+export class NoEvents extends Component {
+    render() {
+        return (
+            <Table className="mb-4" striped>
+                <tbody>
+                <tr>
+                    <td>{this.props.message}</td>
+                </tr>
+                </tbody>
+            </Table>
+        )
     }
 }

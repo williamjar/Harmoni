@@ -12,7 +12,7 @@ import {CookieStore} from "../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
-import {eventStore as EventStore, eventStore} from "../../store/eventStore";
+import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
 
 
