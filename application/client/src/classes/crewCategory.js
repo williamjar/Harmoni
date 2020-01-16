@@ -1,7 +1,7 @@
 export class CrewCategory {
 
-    constructor(crewCategoryID, crewCategoryName){
+    constructor(crewCategoryID, crewCategory){
         this.crewCategoryID = crewCategoryID;
-        this.crewCategoryName = crewCategoryName;
+        this.crewCategory = crewCategory;
     }
 }

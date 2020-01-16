@@ -90,6 +90,7 @@ export class LoginForm extends React.Component {
         this.setState({loggingIn: true});
 
         LoginService.loginOrganizer(this.state.email, this.state.password, status => {
+            console.log(status);
             if (status===200) {
                 sessionStorage.setItem('loggedIn', 'true');
                 this.props.logIn();
