@@ -305,11 +305,6 @@ export class CrewView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            contactName : "",
-            phone : "",
-            email : "",
-            description : "",
-            crewCategory: "",
             crewList: []
         }
     }
@@ -359,8 +354,8 @@ export class CrewView extends Component {
         CrewStore.storeAllCrewMembersForEvent(() => {
             console.log("return crew members" + CrewStore.allCrewForCurrentEvent);
             this.setState(
-                { results : CrewStore.allCrewForCurrentEvent })
-        }, EventStore.currentEvent.eventID);
+                { crewList : CrewStore.allCrewForCurrentEvent })
+        }, 2);
         console.log(this.state);
     };
 
@@ -436,7 +431,7 @@ export class AddCrewMember extends Component{
     };
 
     submitForm = () => {
-        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
+        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, 2, CookieStore.currentUserID, () => {});
         this.props.toggleRegisterCrewMember();
         this.props.submit();
     };
