@@ -6,6 +6,7 @@ import {FaFolder, FaFolderOpen} from "react-icons/all";
 import { createHashHistory } from 'history';
 import {DocumentService as documentService} from "../store/documentService";
 import {DocumentCategory} from "../classes/documentCategory";
+import {OrganizerStore as organizerStore} from "../store/organizerStore";
 
 const history = createHashHistory();
 
@@ -71,6 +72,40 @@ export class FileItem extends Component{
 
  */
 
+
+//---------------- Events ------------------
+export class FoldersEvents extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            events: []
+        }
+    }
+
+    componentDidMount() {
+        organizerStore.getAllEvents(organizerStore.currentOrganizer)
+            .then(event => this.setState({events: event}));
+    }
+
+    render() {
+
+        return (
+            <Row>
+                {this.state.events.map((item) => {
+                    return (
+                        <Col className = {"col-4"}>
+                            <FolderItem name = {item.eventName}/>
+                        </Col>
+                    );
+                })}
+            </Row>
+        );
+    }
+
+}
+
+
+//------- Categories -------------
 export class Folders extends Component {
     constructor(props){
         super(props);
@@ -93,11 +128,7 @@ export class Folders extends Component {
     };
 
     render() {
-
-        console.log(this.state.folderSpecs);
         return (
-
-
             <Row>
                 {this.state.folderSpecs.map((item) => {
                     return (
@@ -121,6 +152,9 @@ export class Documents extends Component{
                 <Folders eventID = {45}>
 
                 </Folders>
+                <FoldersEvents>
+
+                </FoldersEvents>
             </div>
         )
     }

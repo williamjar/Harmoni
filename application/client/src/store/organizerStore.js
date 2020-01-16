@@ -62,14 +62,25 @@ export class OrganizerStore {
 
     }
 
-
-    getAllEvents(organizerId) {
+    /*
+        static getAllEvents(organizerId) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.get(`/api/organizer/${organizerId}/events`, {headers: header});
+        return axios.get(`/organizer/${organizerId}/events`, {headers: header});
     }
+     */
+
+    static getAllEvents(organizerId) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.get(`/organizer/${organizerId}/events`, {headers: header});
+    }
+
+
 
 
 }
