@@ -1,4 +1,4 @@
-import {app, documentationDao, documentDao, multer, path, fs} from "./server";
+import {app, documentationDao, pictureDao, documentDao, organizerDao, multer, path, fs, uuidv4} from "./server";
 
 function deleteFile(path) {
     try {
