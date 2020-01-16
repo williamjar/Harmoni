@@ -23,8 +23,8 @@ export class CrewStore {
             "x-access-token": CookieStore.currentToken
         };
         axios.get(axiosConfig.root + '/api/crew/' + crewID,  {headers: header}).then(response => {
-            let crew =  new CrewMember(response.data[i].crewID, response.data[i].description,
-                response.data[i].crewCategoryID, response.data[i].contactName, response.data[i].phone, response.data[i].email, response.data[i].isResponsible);
+            let crew =  new CrewMember(response.data.crewID, response.data.description,
+                response.data.crewCategoryID, response.data.contactName, response.data.phone, response.data.email, response.data.isResponsible);
             callback(crew);
         });
     }
