@@ -67,18 +67,23 @@ export class RiderStore {
 
     //get all riders for an event
     static storeAllRidersForEvent(callback, eventID) {
+        this.allRidersForCurrentEvent = [];
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/rider', {headers: header})
             .then(response => {
-                this.allRidersForCurrentEvent = [];
-                for (let i = 0; i < response.data.length; i++) {
-                    this.allRidersForCurrentEvent.push(new RiderElement(response.data[0].riderID, response.data[0].artistID,
-                        response.data[0].status, response.data[0].isDone, response.data[0].description))
-                }
+
+
+                response.data.map( data => {
+
+                    this.allRidersForCurrentEvent.push(new RiderElement(data.riderID, data.artistID,
+                        data.status, data.isDone, data.description))
+                });
+
                 callback();
+
             })
             .catch(error => console.log(error));
     }
