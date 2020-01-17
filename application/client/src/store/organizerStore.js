@@ -40,7 +40,6 @@ export class OrganizerStore {
     }
 
     static changePassword(organizerID, oldPassword, newPassword, callback) {
-
         return hash.verifyPassword(organizerID, oldPassword, rightPassword => {
             console.log("Right password " + rightPassword);
             if (rightPassword) {
@@ -69,9 +68,9 @@ export class OrganizerStore {
             "x-access-token": CookieStore.currentToken
         };
 
-        let contactID = this.currentOrganizer.contactID;
+        let currentUserID = CookieStore.currentUserID;
 
-        return axios.put(axiosConfig.root + '/api/contact/' + contactID + '/change/phonenumber', {
+        return axios.put(axiosConfig.root + '/api/contact/' + currentUserID + '/change/phonenumber', {
             "phone": newPhoneNumber
         }, {headers: header}).catch(error => console.log(error));
     }

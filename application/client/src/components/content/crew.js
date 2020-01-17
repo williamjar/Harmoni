@@ -14,7 +14,6 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
-import {CrewService} from "../../store/crewService";
 
 
 export class CrewTab extends Component{
@@ -206,7 +205,7 @@ export class AddToCrew extends Component{
 
     updateCrewSearch = () => {
         console.log("update crew search");
-        CrewService.getAllCrewMembersForOrganizer((list) => {
+        CrewStore.storeAllCrewMembersForOrganizer((list) => {
             let currentState = this.state;
             currentState.results = list;
             this.setState(currentState);
@@ -305,11 +304,6 @@ export class CrewView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            contactName : "",
-            phone : "",
-            email : "",
-            description : "",
-            crewCategory: "",
             crewList: []
         }
     }
@@ -359,8 +353,9 @@ export class CrewView extends Component {
         CrewStore.storeAllCrewMembersForEvent(() => {
             console.log("return crew members" + CrewStore.allCrewForCurrentEvent);
             this.setState(
-                { results : CrewStore.allCrewForCurrentEvent })
+                { crewList : CrewStore.allCrewForCurrentEvent })
         }, EventStore.currentEvent.eventID);
+        console.log("current eventID:" + EventStore.currentEvent.eventID);
         console.log(this.state);
     };
 
@@ -380,6 +375,8 @@ export class AddCrewMember extends Component{
             name : "",
             phone : "",
             email : "",
+            description: "",
+            isResponsible: false,
             crewCategoryID : 1
         };
     }
@@ -404,7 +401,10 @@ export class AddCrewMember extends Component{
                         <Form.Label>Epost</Form.Label>
                         <Form.Control type="email" placeholder="" onChange={this.handleEmailChange} />
                     </Form.Group>
-
+                    <Form.Group controlId="formGridDescription">
+                        <Form.Label>Beskrivelse</Form.Label>
+                        <Form.Control type="text" placeholder="" onChange={this.handleDescriptionChange} />
+                    </Form.Group>
                     <Button variant="primary" type="button" onClick={this.submitForm}>
                         Submit
                     </Button>
@@ -435,8 +435,15 @@ export class AddCrewMember extends Component{
         this.setState(currentState);
     };
 
+    handleDescriptionChange = (event) =>{
+        let currentState = this.state;
+        currentState.description = event.target.value;
+        this.setState(currentState);
+    };
+
+
     submitForm = () => {
-        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
+        CrewStore.createCrewMemberForEvent(this.state.name, this.state.phone, this.state.email, this.state.description, this.state.crewCategoryID, this.state.isResponsible, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
         this.props.toggleRegisterCrewMember();
         this.props.submit();
     };

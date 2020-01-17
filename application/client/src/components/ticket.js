@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import Accordion from "react-bootstrap/Accordion";
 import { FaCalendar } from 'react-icons/fa';
 import ListGroup from "react-bootstrap/ListGroup";
-import {Row, Table} from "react-bootstrap";
+import {Table} from "react-bootstrap";
 import {FaAngleDown} from "react-icons/all";
 import {TicketStore} from "../store/ticketStore";
 import {EventStore} from "../store/eventStore";
