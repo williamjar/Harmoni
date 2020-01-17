@@ -55,8 +55,7 @@ export class TabContent extends Component {
     }
 
     deleteClicked = () => {
-        console.log("DELETE BUTTON CLICKED!");
-        EventStore.deleteCurrentEvent().then(console.log('Event deleted'));
+        EventStore.deleteCurrentEvent().then(console.log('Event deleted!'));
         history.push("/");
     };
 }
