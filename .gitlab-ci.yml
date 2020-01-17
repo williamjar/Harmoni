@@ -13,15 +13,16 @@ variables:
 before_script:
 
 
+
 # Run JEST tests
 run_tests:
   stage: test
   script:
-    - cd application/server && npm install && npm test
+    #- cd application/server && npm install && npm test
     - cd ../client && npm install && npm test
   artifacts:
     paths:
-      - application/server/coverage
+      #- application/server/coverage
       - application/client/coverage
 
 # Publish coverage report on gitlab-pages
