@@ -64,8 +64,6 @@ export class Dashboard extends React.Component {
     };
 
     render() {
-        let sortedEvents = this.sortEvents(this.state.events);
-
         return(
             <Card className={"border-0 justify-content-md-center m-4"}>
                 <h3 className={"mt-4 mb-4"}>Arrangementer</h3>
@@ -100,7 +98,7 @@ export class Dashboard extends React.Component {
                         <Row className="no-gutters">
                             {console.log(EventStore.allEventsForOrganizer)}
                             {this.state.events.filter(e => e.status === 1).length > 0 ?
-                                <EventView events={sortedEvents.filter(event => event.status === 1)}/> :
+                                <EventView events={this.sortEvents(this.state.events.filter(event => event.status === 1))}/> :
                                 <NoEvents message="Du har ingen planlagte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
@@ -114,7 +112,7 @@ export class Dashboard extends React.Component {
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
                             {this.state.events.filter(e => e.status === 0).length > 0 ?
-                                <EventView events={sortedEvents.filter(event => event.status === 0)}/> :
+                                <EventView events={this.sortEvents(this.state.events.filter(event => event.status === 0))}/> :
                                 <NoEvents message="Du har ingen arrangement under planlegging"/>}
                         </Row>
                     </Accordion.Collapse>
@@ -128,7 +126,7 @@ export class Dashboard extends React.Component {
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
                             {this.state.events.filter(e => e.status === 2).length > 0 ?
-                                <EventView events={sortedEvents.filter(event => event.status === 2)}/> :
+                                <EventView events={this.sortEvents(this.state.events.filter(event => event.status === 2))}/> :
                                 <NoEvents message="Du har ingen arkiverte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
@@ -162,9 +160,11 @@ export class Dashboard extends React.Component {
             */
             return events;
         } else if(this.state.sortBy == 2) {
-            return [].concat(events).sort((a,b) => {
-                return a.town > b.town ? 1 : a.town < b.town ? -1 : 0;
+            let sorted = [].concat(events).sort((a,b) => {
+                return (a.town > b.town ? 1 : a.town < b.town ? -1 : 0);
             });
+            console.log(sorted);
+            return sorted;
         }
     };
 
