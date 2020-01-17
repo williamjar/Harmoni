@@ -19,7 +19,7 @@ run_tests:
   stage: test
   script:
     #- cd application/server && npm install && npm test
-    - cd ../client && npm install && npm test
+    - cd application/client && npm install && npm test
   artifacts:
     paths:
       #- application/server/coverage
@@ -31,7 +31,7 @@ pages:
   dependencies:
     - run_tests
   script:
-    - cd ./..
+    - cd ..
     - mkdir .public
     - cp -r server/coverage/* .public
 
