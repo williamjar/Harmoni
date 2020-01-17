@@ -221,7 +221,7 @@ export class PerformerCard extends Component{
                         </InputGroup>
 
                         {this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(e =>
-                            <Rider description={e.description} isDone={e.isDone} status={e.status} riderObject={e}/>
+                            <Rider description={e.description} isDone={e.isDone} status={e.status} riderObject={e} deleteRider={this.deleteRider}/>
                         )}
 
 
@@ -331,6 +331,15 @@ export class PerformerCard extends Component{
             }
             this.setState(currentState);
         }
+    };
+
+    deleteRider = (rider) => {
+        RiderStore.deleteRider(() => {
+            let currentState = this.state;
+            currentState.riders.splice(rider, 1);
+            RiderStore.allRidersForCurrentEvent.splice(rider, 1);
+            this.setState(currentState);
+        }, EventStore.currentEvent.eventID, rider.artistID, rider.riderID);
     };
 
     addRider = () =>{
@@ -451,6 +460,7 @@ export class Rider extends Component{
     };
 
     deleteRider = () => {
+        this.props.deleteRider(this.props.riderObject);
 
     }
 
