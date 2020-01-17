@@ -26,7 +26,10 @@ export class TabContent extends Component {
                                 <div>
                                     <Button className="mr-1" onClick={this.props.onClick}>Neste</Button>
 
-                                    <Button variant="danger">Slett arrangement</Button>
+                                    <Button variant="danger" onClick={() => {
+                                        if (window.confirm('Er du sikker på at du vil slette dette arrangementet? Dette kan ikke reverseres!')) this.deleteClicked()
+                                    }}>Slett arrangement</Button>
+
                                     <Button  className="mr-1" disabled variant="success">Publiser</Button>
                                 </div>
                         }
@@ -46,7 +49,16 @@ export class TabContent extends Component {
         }
         return null;
     }
+
+
+    deleteClicked = () => {
+        // TODO Create a custom confirm window
+        EventStore.deleteCurrentEvent().then(console.log('Event deleted!'));
+        history.push("/");
+    };
+
 }
+
 
 
 //geir

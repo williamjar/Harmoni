@@ -90,4 +90,8 @@ module.exports = class documentationDao extends Dao {
     }
 
 
+
+    getDocumentsForArtist(eventID, artistID, callback){
+        super.query("SELECT * FROM document where eventID = ? and artistID = ?", [eventID, artistID], callback);
+    }
 };

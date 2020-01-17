@@ -60,5 +60,7 @@ require('./server-organizer.js');
 require('./server-picture.js');
 require('./server-rider.js');
 require('./server-ticket');
+require('./server-email');
 
 app.listen(8080);
+console.log("The server is now running on port 8080");
