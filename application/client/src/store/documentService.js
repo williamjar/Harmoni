@@ -39,6 +39,8 @@ export class DocumentService {
     }
 
     static addDocument(eventID, category, artistID, crewID, documentCategoryID, file, callback){
+        console.log(eventID + "," + documentCategoryID);
+        console.log(file);
 
           axios.post('http://localhost:8080/api/file/document/' + eventID + '/' + documentCategoryID, file)
             .then(response => {
@@ -66,10 +68,14 @@ export class DocumentService {
                     console.log(response.status);
                     console.log(response.data);
                     if (response.status === 200 && response.data.name){
-                        callback(200);
+                        let returnData = {
+                            "documentLink": path,
+                            "documentID": response.data.insertId
+                        };
+                        callback(200, returnData);
                     }
                     else{
-                        callback(501);
+                        callback(501, {"error": "An error occurred regarding saving file information to DB."});
                     }
                 });
         });

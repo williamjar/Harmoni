@@ -12,6 +12,10 @@ import {CookieStore} from "../../store/cookieStore";
 import {RiderStore} from "../../store/riderStore";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
+import {MailService} from "../../store/mailService";
+import {OrganizerStore} from "../../store/organizerStore";
+import {DocumentService} from "../../store/documentService";
+import {Document} from "../../classes/document";
 
 
 export class PerformerPanel extends Component{
@@ -163,7 +167,8 @@ export class PerformerCard extends Component{
         this.state = {
             performer : this.props.performerSelected,
             riderInput : "",
-            numberOfFilesAdded: 0,
+            numberOfFilesChosenForUpload: 0,
+            numberOfFilesAlreadyUploaded: 0,
             riders : [],
         };
     }
@@ -240,11 +245,19 @@ export class PerformerCard extends Component{
 
                    <div className="col-4">
                         <span className="btn btn-primary btn-file">
-                            Legg til vedlegg <input type="file" multiple="multiple" id="uploadAttachmentPerformer" onChange={() => this.addFile()}/>
+                            Legg til vedlegg <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/>
                         </span>
                        {this.state.numberOfFilesAdded > 0 && this.state.numberOfFilesAdded<2? <div className="padding-left-5">{this.state.numberOfFilesAdded + " file added"}</div>: null}
                        {this.state.numberOfFilesAdded > 1 ? <div className="padding-left-5">{this.state.numberOfFilesAdded + " files added"}</div>: null}
 
+                   </div>
+
+                   <div className="col-4">
+                       Filer lagt til fra før: {this.state.numberOfFilesAlreadyUploaded}
+                   </div>
+
+                   <div className="col-4 offset-4 text-right">
+                       <button className = "butn-success-rounded" onClick={() => this.sendEmail()}>Send offisiell invitasjon til artist</button>
                    </div>
 
                    <div className="col-4 offset-4 text-right">
@@ -271,17 +284,44 @@ export class PerformerCard extends Component{
         //Fetches all riders for current artist and event and stores them in state
         let currentState = this.state;
         currentState.riders = RiderStore.allRidersForCurrentArtistAndEvent;
+        currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
         this.setState(currentState);
     }
 
+    //TODO: Change states that show if files are added to server
     addFile = () =>{
         /* For adding attachments to performer */
+        let fileInput = document.querySelector("#uploadAttachmentPerformer");
 
-        let attachment = document.querySelector("#uploadAttachmentPerformer").files.length;
+        let attachment = fileInput.files.length;
         if(attachment !== undefined){
+            let files = fileInput.files;
+
             let currentState = this.state;
-            currentState.numberOfFilesAdded = attachment;
+            currentState.numberOfFilesAdded = files.length;
+
             this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
+
+            //TODO: VALIDATE PDF FILES
+            //TODO: Choose file category
+            let formData = new FormData();
+            for (let i = 0; i < files.length; i++){
+                formData.set('selectedFile', files[i]);
+                DocumentService.addDocument(EventStore.currentEvent.eventID, "Kontrakt", currentState.performer.artistID, null, 1, formData, (statusCode, returnData) => {
+                    if (statusCode === 200){
+                        console.log("Document was successfully uploaded");
+                        this.state.performer.addDocument(new Document(returnData.documentID, returnData.documentLink, 1));
+                        fileInput.value = '';
+                        currentState.numberOfFilesAlreadyUploaded += 1;
+                        currentState.numberOfFilesAdded = 0;
+                    }
+                    else{
+                        console.log("Error uploading document");
+                    }
+
+                });
+            }
+            this.setState(currentState);
         }
     };
 
@@ -305,6 +345,23 @@ export class PerformerCard extends Component{
         currentState.riderInput = event.target.value;
         this.setState(currentState);
     };
+
+    sendEmail(){
+        console.log("Sending email to");
+        console.log(this.state.performer);
+        MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
+            "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
+            "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
+            "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
+            "Regards, " + OrganizerStore.currentOrganizer.username, (statusCode) => {
+                if (statusCode === 200){
+                    console.log("Email sent successfully");
+                }
+                else{
+                    console.log("An error occured sending the email");
+                }
+        });
+    }
 
     save = () => {
         /* Save function to gather all information in the Performer Card that needs to be stored */
