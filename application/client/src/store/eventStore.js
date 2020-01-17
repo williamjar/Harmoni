@@ -14,6 +14,22 @@ export class EventStore{
     static allEventsForOrganizer = [];
 
     static createEvent(callback, eventName, organizerID){
+
+        let today = formatDate(Date.now());
+
+        function formatDate(date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+            return [year, month, day].join('-');
+        }
+
+
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -23,10 +39,10 @@ export class EventStore{
 
         let body = {
             "eventName" : eventName,
-            "startDate" : null,
-            "endDate" : null,
-            "startTime" : null,
-            "endTime" : null,
+            "startDate" : today,
+            "endDate" : today,
+            "startTime" : today,
+            "endTime" : today,
             "address" : null,
             "town" : null,
             "zipCode" : null,
