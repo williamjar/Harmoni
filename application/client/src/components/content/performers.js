@@ -69,6 +69,7 @@ export class PerformerPanel extends Component{
                 currentState.performerList = list; //Receive a new array from database with assigned performer to event
                 currentState.performerSelected = {};
                 this.setState(currentState);
+                this.toggleShowCard();
             }, EventStore.currentEvent.eventID);
         });
     };
@@ -502,12 +503,12 @@ export class RegisteredPerformers extends Component{
     render(){
         return(
             <div>
-                <b>Artister som er lagt til</b>
+                <b className="card-title">Artister som er lagt til</b>
 
                     {this.props.performersAdded.map(p =>
-                        <div className="card card-body pointer selection">
+                        <div className="card card-body pointer selection" onClick={() => this.showCard(p)}>
                         <div className="row">
-                            <div className="col-10" onClick={() => this.showCard(p)}>
+                            <div className="col-10">
                                 {p.contactName}
                             </div>
 
