@@ -114,3 +114,23 @@ app.get("/api/artist-genres", (request, response) => {
         response.json(data);
     })
 });
+
+app.get("/api/event/:eventID/artist/:artistID/artistEventInfo", (request, response) => {
+    console.log("Express: request to get artistEventInfo")
+
+    artistDao.getArtistEventInfo((status, data) =>{
+        response.status(status);
+        response.json(data);
+    }, [request.params.]);
+});
+
+app.put("/api/event/:eventID/artist/:artistID/artistEventInfo", (request, response) => {
+    console.log("Express: request to update artistEventInfo");
+
+
+    artistDao.getArtistEventInfo((status, data) =>{
+        response.status(status);
+        response.json(data);
+    })
+});
+
