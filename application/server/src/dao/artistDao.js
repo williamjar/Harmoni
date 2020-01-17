@@ -35,7 +35,7 @@ module.exports = class artistDao extends Dao {
     }
 
     assignOne(callback, list) {
-        super.query('INSERT INTO event_artist VALUES (?,?)', list, callback);
+        super.query('INSERT INTO event_artist VALUES (?,?,0,0)', list, callback);
     }
 
     unAssignOne(callback, list) {
@@ -45,5 +45,11 @@ module.exports = class artistDao extends Dao {
     getAllGenres(callback){
         super.query('SELECT * FROM genre', null, callback);
     }
+
+    getArtistEventInfo(callback, list){
+        super.query('SELECT * FROM event_artist WHERE eventID = ? AND artistID = ?', list, callback);
+    }
+
+
 
 };
