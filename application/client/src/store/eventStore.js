@@ -132,25 +132,28 @@ export class EventStore{
         return axios.delete(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, {headers: header});
     }
 
-    //TODO: change local event to archived
-    static archiveEvent(eventID){
-
+    static archiveCurrentEvent(){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-
-        return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/3", {headers: header}).then( response => {});
+        return axios.get(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/2", {headers: header}).then( response => {});
     }
 
-    static publishEvent(eventID){
-
+    static publishCurrentEvent(){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
+        return axios.get(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/1", {headers: header}).then( response => {});
+    }
 
-        return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/2", {headers: header}).then( response => {});
+    static cancelCurrentEvent(){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.get(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/3", {headers: header}).then( response => {});
     }
 
     static storeAllEventsForOrganizer(callback, organizerID){
