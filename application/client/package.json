@@ -22,7 +22,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "npx jest -r esm --runInBand --passWithNoTests --detectOpenHandles --forceExit",
+    "test": "npx jest --runInBand --passWithNoTests --detectOpenHandles --forceExit",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
