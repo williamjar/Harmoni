@@ -13,7 +13,6 @@ export class EventStore{
 
     static allEventsForOrganizer = [];
 
-
     static createEvent(callback, eventName, organizerID){
         let header = {
             "Content-Type": "application/json",
@@ -47,7 +46,6 @@ export class EventStore{
         }).catch(console.log("Error in eventStore"));
 
     }
-
 
     static storeCurrentEvent(eventID){
 
@@ -120,6 +118,14 @@ export class EventStore{
                 return true;
             }
         });
+    }
+
+    static deleteCurrentEvent() {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.delete(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, {headers: header});
     }
 
     //TODO: change local event to archived
