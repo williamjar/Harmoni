@@ -27,7 +27,6 @@ export class EventForm extends Component{
 
     }
 
-    //TODO: Implement tab shifting with button click
 
     // Handles when the user wants to edit the event
     editClicked = () => {
@@ -36,17 +35,21 @@ export class EventForm extends Component{
 
     // Handles when the user saves the event
     saveClicked = () => {
-        this.setState({edit: false});
-        EventStore.postCurrentEvent().then(console.log("Lagret"));
+        if(this.validateForm()){
+            this.setState({edit: false});
+            EventStore.postCurrentEvent().then(console.log("Lagret"));
+        } else{
+            console.log("start date can not be after end date");
+        }
     };
 
     render(){
         return(
             <Tabs defaultActiveKey="0" id="tabs">
                 <Tab eventKey="0" title="Generelt" >
-                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
+                    <TabContent>
                         <div className="padding-bottom-20">
-                            <GeneralInfo editable={this.state.edit}/>
+                            <GeneralInfo/>
                         </div>
                     </TabContent>
                 </Tab>

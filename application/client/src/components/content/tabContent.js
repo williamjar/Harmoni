@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Col, Row} from "react-bootstrap";
+import {EventStore} from "../../store/eventStore";
+import {createHashHistory} from "history";
+
+const history = createHashHistory();
 
 // Container-component for the different tabs in EventForm
 // Renders differently when editing events
@@ -10,26 +14,21 @@ export class TabContent extends Component {
         editable: [this.props.editable],
     };
 
-    render(){
-        return(
+    render() {
+        return (
             <div className="tabContent">
                 <div className="tabChildren">
                     {this.props.children}
                 </div>
                 <Row>
-                    <Col xs={8}>
-                        {this.state.editable ? <Button className="mr-1" variant="secondary" onClick={this.props.saveClicked}>Lagre og lukk</Button> :
-                            <Button onClick={this.props.editClicked}>Rediger</Button>}
-                    </Col>
                     <Col xs={6} md={3}>
                         {
-                            this.state.editable ?
                                 <div>
                                     <Button className="mr-1" onClick={this.props.onClick}>Neste</Button>
 
                                     <Button variant="danger">Slett arrangement</Button>
                                     <Button  className="mr-1" disabled variant="success">Publiser</Button>
-                                </div> : null
+                                </div>
                         }
                     </Col>
                 </Row>
@@ -48,3 +47,6 @@ export class TabContent extends Component {
         return null;
     }
 }
+
+
+//geir

@@ -13,7 +13,6 @@ export class EventStore{
 
     static allEventsForOrganizer = [];
 
-
     static createEvent(callback, eventName, organizerID){
         let header = {
             "Content-Type": "application/json",
@@ -31,7 +30,7 @@ export class EventStore{
             "address" : null,
             "town" : null,
             "zipCode" : null,
-            "status" : 0,
+            "status" : 1,
             "description" : null,
             "publishDate" : null,
             "publishTime" : null,
@@ -42,12 +41,11 @@ export class EventStore{
 
         axios.post(axiosConfig.root + "/api/events" , body, {headers: header}).then(response =>{
             //Create an event from the insertID returned from the query and the organizerID, the rest is null
-            this.currentEvent = new Event(response.data.insertId, eventName, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
+            this.currentEvent = new Event(response.data.insertId, eventName, null, null, null, null, null, null, null, 0, null, null, null, organizerID, null);
             callback();
         }).catch(console.log("Error in eventStore"));
 
     }
-
 
     static storeCurrentEvent(eventID){
 
@@ -120,6 +118,14 @@ export class EventStore{
                 return true;
             }
         });
+    }
+
+    static deleteCurrentEvent() {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.delete(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, {headers: header});
     }
 
     //TODO: change local event to archived
