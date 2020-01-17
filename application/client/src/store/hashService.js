@@ -19,8 +19,12 @@ export function generateSalt(length) {
 
 export function getHashedFromEmail(enteredPassword, email, callback) {
     getSaltFromEmail(email, salt => {
-        let hashed = sha512(enteredPassword, salt);
-        callback(hashed);
+        if (salt) {
+            let hashed = sha512(enteredPassword, salt);
+            callback(hashed);
+        } else {
+            callback();
+        }
     });
 }
 
@@ -36,10 +40,15 @@ export function verifyPassword(organizerID, enteredPassword, callback) {
 
 export function getSaltFromEmail(email, callback) {
     getOrganizerID(email, organizerID => {
-        getPassword(organizerID, passwordInDB => {
-            let saltHash = passwordInDB.split("/");
-            callback(saltHash[0]);
-        })
+        if (organizerID) {
+            getPassword(organizerID, passwordInDB => {
+                let saltHash = passwordInDB.split("/");
+                console.log('salt ' + saltHash);
+                callback(saltHash[0]);
+            })
+        } else {
+            callback();
+        }
     });
 }
 
@@ -56,17 +65,20 @@ export function getOrganizerID(email, callback) {
     let header = {
         "Content-Type": "application/json",
     };
-    console.log("getorganizerID email: " + email);
     axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header})
         .then(res => {
-            let organizerID = res.data[0].organizerID;
-            callback(organizerID);
+            if (Object.keys(res.data).length) {
+                let organizerID = res.data[0].organizerID;
+                callback(organizerID);
+            } else {
+                console.log("No email");
+                callback();
+            }
         });
 }
 
 /** Uses organizerID to find the organizers password */
 export function getPassword(organizerID, callback) {
-    console.log('getPWd OrganizerID: ' + organizerID);
     let header = {
         "Content-Type": "application/json",
     };
