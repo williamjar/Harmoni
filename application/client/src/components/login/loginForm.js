@@ -47,11 +47,10 @@ export class LoginForm extends React.Component {
     render(){
         return (
 
-            <Card >
-                <Card.Body className={"m-4"}>
-                    <Card.Title className="ml-5">Logg inn</Card.Title>
-                    <div className="justify-content-md-center m-5">
-                        <Form onSubmit={this.handleSubmit}>
+            <Card style={{width : '25rem'}} className="text-center mx-auto mt-5">
+                <Form onSubmit={this.handleSubmit} className={"align-items-center"}>
+                <Card.Body>
+                    <Card.Title className="mb-4">Logg inn</Card.Title>
                             <Form.Group>
                                 <Form.Control type="email" name="email" placeholder="E-postadresse" value={this.state.email} onChange={this.handleInputChange}/>
                             </Form.Group>
@@ -60,9 +59,7 @@ export class LoginForm extends React.Component {
                                 <Form.Control type="password" maxLength="30" name="password" placeholder="Passord" value={this.state.password} onChange={this.handleInputChange}/>
                             </Form.Group>
 
-                            <Button variant="btn btn-primary" type="submit" hidden={this.state.loggingIn} disabled={!this.validateForm()}> Logg inn</Button>
 
-                            <Button variant="btn btn-primary" disabled hidden={!this.state.loggingIn}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Logger inn</Button>
 
 
                             <Form.Text className="text-danger" hidden={!this.state.loginError}>Feil brukernavn eller passord.</Form.Text>
@@ -73,11 +70,14 @@ export class LoginForm extends React.Component {
                             </span></NavLink></Form.Text>
 
 
-
-                        </Form>
-                    </div>
                 </Card.Body>
+                <Card>
+                        <Button variant="btn btn-primary" type="submit" hidden={this.state.loggingIn} disabled={!this.validateForm()}> Logg inn</Button>
+                        <Button variant="btn btn-primary" disabled hidden={!this.state.loggingIn}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Logger inn</Button>
+                </Card>
+            </Form>
             </Card>
+
         )
     }
 

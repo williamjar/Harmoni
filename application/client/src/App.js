@@ -46,8 +46,6 @@ export class App extends Component{
             }
 
         });
-
-
     }
 
     turnOffMobileView = () => {

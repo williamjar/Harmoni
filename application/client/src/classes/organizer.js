@@ -1,6 +1,5 @@
 import {Contact} from "./contact";
-import {CrewLeader} from "./crewLeader";
-import {Event} from "./event";
+
 
 export class Organizer extends Contact{
 
