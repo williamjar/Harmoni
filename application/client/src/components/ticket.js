@@ -12,6 +12,7 @@ import {Row, Table} from "react-bootstrap";
 import {FaAngleDown} from "react-icons/all";
 import {TicketStore} from "../store/ticketStore";
 import {EventStore} from "../store/eventStore";
+import {CrewStore} from "../store/crewStore";
 
 
 /*
@@ -171,10 +172,6 @@ export class AddTicket extends Component{
         this.setState({[name]: value,});
 
     }
-
-    addTicket = (event) => {
-
-    }
 }
 
 /*
@@ -182,19 +179,24 @@ export class AddTicket extends Component{
 */
 export class ListTickets extends Component{
 
-    tickets = TicketType.getTestTicketTypes();
+    constructor(props) {
+        super(props);
+        this.state = {
+            ticketList : []
+        };
+    }
 
     render(){
-        return(
+            return(
                 <Card.Body>
                     <ListGroup>
-                        {this.tickets.map(ticket =>(
+                        {this.state.ticketList.map(ticket =>(
                             <ListGroup.Item>
                                 <Form>
                                     <Form.Row className="ticketStyle" >
                                         <Col sm={2}>
                                             <Form.Control
-                                                value={ticket.ticketTypeID}
+                                                value={ticket.ticketTypeName}
                                                 readOnly
                                             />
 
@@ -253,8 +255,25 @@ export class ListTickets extends Component{
                         ))}
                     </ListGroup>
                 </Card.Body>
-        );
+            );
     }
+
+    listTickets = () => {
+        TicketStore.getAllTickets( EventStore.currentEvent.eventID, () => {
+            console.log("return all tickets" + TicketStore.getAllTickets);
+            this.setState(
+                { ticketList : TicketStore.getAllTickets})
+        });
+        console.log(this.state);
+    };
+/*
+    componentDidMount() {
+        console.log('componentDidMount');
+        this.listTickets();
+        console.log('Finito');
+    }
+
+ */
 
 }
 

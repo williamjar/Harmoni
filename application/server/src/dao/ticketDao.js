@@ -15,4 +15,12 @@ module.exports = class ticketDao extends Dao {
         super.query('INSERT INTO ticketType (ticketTypeID , eventID, ticketTypeName, price, amount, releaseDate, releaseTime, hasEndDate, endDate, endTime, description) VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', list, callback);
     }
 
+    updateTicket(callback, list) {
+        super.query('UPDATE ticketType SET ticketTypeName = ?, price = ?, amount = ?, releaseDate = ?, releaseTime = ?, endDate = ?, endTime = ?, description = ? WHERE ticketTypeID = ?' , list, callback);
+    }
+
+    deleteTicket(callback, ticketTypeID) {
+        super.query('DELETE FROM ticketType WHERE ticketTypeID = ?', [ticketTypeID], callback);
+    }
+
 };

@@ -1122,13 +1122,6 @@ app.delete("/api/document/:documentID", (request, response) => {
     }, request.params.documentID);
 });
 
-const server = app.listen(8080);
-
-
-
-
-
-
 //Ticket
 //Get one ticket
 app.get("/api/ticket/:ticketTypeID", (require, response) => {
@@ -1171,6 +1164,34 @@ app.post("/api/ticket/insert", (request, response) => {
     }, val);
 });
 
+
+app.put("/api/ticket/:ticketTypeID", (request, response) => {
+    console.log("Express: Request to change ticket " + request.params.ticketTypeID);
+    let val = [
+        request.body.ticketTypeName,
+        request.body.price,
+        request.body.amount,
+        request.body.releaseDate,
+        request.body.releaseTime,
+        request.body.endDate,
+        request.body.endTime,
+        request.body.description
+    ];
+    ticketDao.updateTicket((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, val, request.params.ticketTypeID);
+});
+
+app.delete("api/ticket/:ticketTypeID", (request, response) => {
+    console.log("Express: Request to delete ticket " + request.params.ticketTypeID);
+    documentDao.deleteOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.ticketTypeID);
+});
+
+const server = app.listen(8080);
 
 
 
