@@ -14,6 +14,12 @@ export class EventStore{
     static allEventsForOrganizer = [];
 
     static createEvent(callback, eventName, organizerID){
+
+        let d = new Date();
+        let today = this.formatDate(d);
+        let startTime = this.formatTime(d);
+        let endTime = this.formatTime(d.setHours(d.getHours()+1));
+
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -23,10 +29,10 @@ export class EventStore{
 
         let body = {
             "eventName" : eventName,
-            "startDate" : null,
-            "endDate" : null,
-            "startTime" : null,
-            "endTime" : null,
+            "startDate" : today,
+            "endDate" : today,
+            "startTime" : startTime,
+            "endTime" : endTime,
             "address" : null,
             "town" : null,
             "zipCode" : null,
@@ -38,13 +44,11 @@ export class EventStore{
             "pictureID" : null
         };
 
-
         axios.post(axiosConfig.root + "/api/events" , body, {headers: header}).then(response =>{
             //Create an event from the insertID returned from the query and the organizerID, the rest is null
-            this.currentEvent = new Event(response.data.insertId, eventName, null, null, null, null, null, null, null, 0, null, null, null, organizerID, null);
+            this.currentEvent = new Event(response.data.insertId, eventName, today, today, startTime, endTime, null, null, null, 0, null, null, null, organizerID, null);
             callback();
         }).catch(console.log("Error in eventStore"));
-
     }
 
     static storeCurrentEvent(eventID){
@@ -174,5 +178,24 @@ export class EventStore{
 
             callback();
         });
+    }
+
+    static formatDate(date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [year, month, day].join('-');
+    }
+
+    static formatTime(date) {
+        let d = new Date(date),
+            hours = '' + (d.getHours()),
+            mins = '' + d.getMinutes();
+        return [hours,mins].join(':');
     }
 }
