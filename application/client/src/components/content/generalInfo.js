@@ -36,8 +36,8 @@ export class GeneralInfo extends Component{
                 </div>
                 <Row className="mb-3">
                     <Col>
-                        <Card>
-                            <Card.Header><Card.Title>Billetter</Card.Title></Card.Header>
+                        <Card className="mb-2 border-0">
+                            <Card.Title>Legg til billetter</Card.Title>
                             <Ticket/>
                         </Card>
                     </Col>

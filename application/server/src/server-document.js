@@ -173,6 +173,7 @@ app.get("/api/organizer/picture/:pictureID", (require, response) => {
     }, require.params.pictureID);
 });
 
+//Upload document
 app.post("/api/file/document/:eventID/:documentCategoryID", fileUpload.single('selectedFile'), (req, res) => {
     console.log("Request to create document");
     console.log(req.file);
