@@ -247,12 +247,20 @@ export class ListTickets extends Component{
                                             />
                                         </Col>
                                     </Form.Row>
+                                    <Form.Row className="ticketStyle">
+                                        <Col sm={6}>
+                                            <button id={ticket.ticketTypeID} onClick={this.deleteTicket}>Slett billett</button>
+                                        </Col>
+                                    </Form.Row>
                                 </Form>
                             </ListGroup.Item>
                         ))}
                     </ListGroup>
                 </Card.Body>
             );
+    }
+    componentDidMount() {
+        this.listTickets();
     }
 
     listTickets = () => {
@@ -261,12 +269,19 @@ export class ListTickets extends Component{
             this.setState(
                 { ticketList : TicketStore.allTickets})
         });
-        console.log(this.state.ticketList);
+        console.log(this.state.ticketList, );
     };
 
-    componentDidMount() {
-        this.listTickets();
+    deleteTicket = (event) => {
+        console.log('Button clicked');
+        console.log(EventStore.currentEvent.eventID);
+        console.log(event.target.id);
+        TicketStore.deleteTicket(EventStore.currentEvent.eventID, event.target.id).then(r => console.log('done'));
+
     }
+
+
+
 
 
 

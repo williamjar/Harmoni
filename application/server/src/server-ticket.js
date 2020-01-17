@@ -53,18 +53,19 @@ app.put("/ticket/:ticketTypeID", (request, response) => {
         request.body.releaseTime,
         request.body.endDate,
         request.body.endTime,
-        request.body.description
+        request.body.description,
+        request.params.ticketTypeID
     ];
     ticketDao.updateTicket((status, data) => {
         response.status(status);
         response.json(data);
-    }, val, request.params.ticketTypeID);
+    }, val);
 });
 
-app.delete("/ticket/:ticketTypeID", (request, response) => {
-    console.log("Express: Request to delete ticket " + request.params.ticketTypeID);
-    documentDao.deleteOne((status, data) => {
+app.delete("/api/ticket/:eventID/:ticketTypeID", (request, response) => {
+    console.log("Express: Request to delete ticket " + request.params.eventID + request.params.ticketTypeID);
+    ticketDao.deleteTicket((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.ticketTypeID);
+    }, request.params.eventID, request.params.ticketTypeID);
 });
