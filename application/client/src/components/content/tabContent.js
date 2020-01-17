@@ -33,7 +33,10 @@ export class TabContent extends Component {
                                 <div>
                                     <Button className="mr-1" onClick={this.props.onClick}>Neste</Button>
 
-                                    <Button variant="danger" onClick={this.deleteClicked}>Slett arrangement</Button>
+                                    <Button variant="danger" onClick={() => {
+                                        if (window.confirm('Er du sikker på at du vil slette dette arrangementet? Dette kan ikke reverseres!')) this.deleteClicked()
+                                    }}>Slett arrangement</Button>
+
                                     <Button className="mr-1" disabled variant="success">Publiser</Button>
                                 </div> : null
                         }
@@ -42,6 +45,11 @@ export class TabContent extends Component {
             </div>
         )
     }
+
+    //<Button variant="danger" onClick={this.deleteClicked}>Slett arrangement</Button>
+    // <Button variant="danger" onClick={() => {
+    //                                         if (window.confirm('Are you sure you wish to delete this item?')) this.deleteClicked()
+    //                                     }}>Slett arrangement</Button>
 
     // Updates the state when the received props from parent changes
     static getDerivedStateFromProps(props, state) {
@@ -55,7 +63,9 @@ export class TabContent extends Component {
     }
 
     deleteClicked = () => {
+        // TODO Create a custom confirm window
         EventStore.deleteCurrentEvent().then(console.log('Event deleted!'));
         history.push("/");
     };
+
 }
