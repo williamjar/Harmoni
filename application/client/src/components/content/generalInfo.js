@@ -17,16 +17,15 @@ const history = createHashHistory();
 export class GeneralInfo extends Component{
 
     state = {
-        editable: [this.props.editable],
+
     };
 
     render(){
         return(
             <div>
                 <div className="row">
-
                     <div className="col-7 border-right">
-                        {this.state.editable ? <InfoForm/> : <InfoView/>}
+                        <InfoForm/>
                     </div>
                     <div className="col-5">
                         <Card.Body>
@@ -37,29 +36,14 @@ export class GeneralInfo extends Component{
                 </div>
                 <Row className="mb-3">
                     <Col>
-                        <Card>
-                            <Card.Header><Card.Title>Billetter</Card.Title></Card.Header>
-                            {this.state.editable ? <Ticket/> : <TicketView/>}
+                        <Card className="mb-2 border-0">
+                            <Card.Title>Legg til billetter</Card.Title>
+                            <Ticket/>
                         </Card>
                     </Col>
                 </Row>
             </div>
         )
-    }
-
-    // Updates the state if the received props from the parent is changed
-    static getDerivedStateFromProps(props, state) {
-
-        if(props.editable !== state.editable) {
-            return {
-                editable: props.editable
-            };
-        } else if (props.event !== state.currentEvent) {
-            return {
-                currentEvent: props.event
-            }
-        }
-        return null;
     }
 }
 
@@ -69,7 +53,7 @@ export class InfoForm extends Component {
         super(props);
 
         this.state = {
-            edit: false,
+            edit: true,
             eventName: EventStore.currentEvent.eventName,
             startDate: EventStore.currentEvent.startDate,
             endDate: EventStore.currentEvent.endDate,
@@ -79,46 +63,43 @@ export class InfoForm extends Component {
             zipCode: EventStore.currentEvent.zipCode,
             town: EventStore.currentEvent.town,
             description: EventStore.currentEvent.description,
+            savingInformation: false,
+            dateError: false
         };
 
         this.handleChange = this.handleChange.bind(this);
-
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
-
-    // Handles when the user wants to edit the event name,
-    // when edit = true, the name label is changed to an input field
-    editClicked = () => {
-        this.setState({edit: true})
-    };
 
     // Handles when the user saves the new name
     saveClicked = (e) => {
-        this.setState({edit: false})
+            this.setState({edit: false})
     };
 
     // Updates the state and the event store object when form input is changed
-    handleChange (event) {
-        this.setState({[event.target.name]: event.target.value},
-            () => {
-                EventStore.currentEvent.eventName = this.state.eventName;
-                EventStore.currentEvent.startDate = this.formatDate(this.state.startDate);
-                EventStore.currentEvent.endDate   = this.formatDate(this.state.endDate);
-                EventStore.currentEvent.startTime = this.state.startTime;
-                EventStore.currentEvent.endTime   = this.state.endTime;
-                EventStore.currentEvent.address   = this.state.address;
-                EventStore.currentEvent.zipCode   = this.state.zipCode;
-                EventStore.currentEvent.town      = this.state.town;
-                EventStore.currentEvent.description = this.state.description;
-                EventStore.currentEvent.publishDate = null;
-                EventStore.currentEvent.publishTime = null;
-            });
-    };
+    handleChange(event){
+        this.setState({savingInformation:false});
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({[name]: value,});
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.submitForm();
+    }
+
 
     render() {
+
+        if(this.state.edit){
         return(
             <div>
-                <Card className="mb-2">
-                    <Card.Header>
+                <Card className="mb-2 border-0">
+                    <Form onSubmit={this.handleSubmit}>
+                    <Card.Body>
                         <Row>
                             <Col xs="4">
                                 {this.state.edit === false ? <Card.Title>
@@ -126,12 +107,9 @@ export class InfoForm extends Component {
                                 </Card.Title> : <Form.Control type="text" value={this.state.eventName} name="eventName" onChange={this.handleChange}/>}
                             </Col>
                             <Col>
-                                {this.state.edit === false ? <FaPencilAlt className="ml-1" onClick={this.editClicked}/>:
-                                    <Button type="submit" onClick={this.saveClicked}>Lagre</Button>}
+
                             </Col>
                         </Row>
-                    </Card.Header>
-                    <Card.Body>
                         <Form.Group>
                             <Row className="mb-2">
                                 <Col xs="5">
@@ -186,13 +164,169 @@ export class InfoForm extends Component {
                                     <Form.Control as="textarea" rows="3" value={this.state.description} name="description" onChange={this.handleChange}/>
                                 </Col>
                             </Row>
+                            <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Arrangementet kan ikke starte etter det har sluttet!</Form.Text>
+                        </Form.Group>
+                        <Form.Group>
+                            <Button type="submit" variant="warning">Lagre</Button>
                         </Form.Group>
                     </Card.Body>
+
+                    </Form>
                 </Card>
             </div>
-        )
+        )}
+        else{
+            return (
+                <div>
+                    <Card className="mb-2 border-0">
+                        <Card.Body>
+                            <Card.Title className={"h3"}>{EventStore.currentEvent.eventName}</Card.Title>
+                            <Form.Group>
+                                <Row className="mb-2">
+                                    <Col xs="5">
+                                        <Row>
+                                            <Col>
+                                                <FaCalendarAlt className="mr-1"/>
+                                                <Form.Label>Start</Form.Label>
+                                            </Col>
+                                        </Row>
+                                        {EventStore.currentEvent.startDate !== null ?
+                                            this.formatDate(EventStore.currentEvent.startDate) :
+                                            null}
+                                    </Col>
+                                    <Col xs="3">
+                                        <Row>
+                                            <Col>
+                                                <FaClock className="mr-1"/>
+                                                <Form.Label>Tid</Form.Label>
+                                            </Col>
+                                        </Row>
+                                        {EventStore.currentEvent.startTime}
+                                    </Col>
+                                    <Col>
+                                        <Row>
+                                            <Col>
+                                                <Form.Label>Kategori:</Form.Label>
+                                            </Col>
+                                        </Row>
+                                        Musikk
+                                    </Col>
+                                </Row>
+                                <Row className="mb-4">
+                                    <Col xs="5">
+                                        <Row>
+                                            <Col>
+                                                <FaCalendarAlt className="mr-1"/>
+                                                <Form.Label>Slutt</Form.Label>
+                                            </Col>
+                                        </Row>
+                                        {EventStore.currentEvent.endDate !== null ?
+                                            this.formatDate(EventStore.currentEvent.endDate) :
+                                            null}
+                                    </Col>
+                                    <Col xs="3">
+                                        <Row>
+                                            <Col>
+                                                <FaClock className="mr-1"/>
+                                                <Form.Label>Tid</Form.Label>
+                                            </Col>
+                                        </Row>
+                                        {EventStore.currentEvent.endTime}
+                                    </Col>
+                                </Row>
+                                <Row className="mb-4">
+                                    <Col xs="5">
+                                        <Row>
+                                            <Col>
+                                                <FaHouseDamage className="mr-1"/>
+                                                <Form.Label>Adresse</Form.Label>
+                                            </Col>
+                                        </Row>
+                                        {EventStore.currentEvent.address}
+                                    </Col>
+                                    <Col xs="3">
+                                        <Row>
+                                            <Col>
+                                                <Form.Label>Postnummer</Form.Label>
+                                            </Col>
+                                        </Row>
+                                        {EventStore.currentEvent.zipCode}
+                                    </Col>
+                                    <Col xs="3">
+                                        <Row>
+                                            <Col>
+                                                <Form.Label>Poststed</Form.Label>
+                                            </Col>
+                                        </Row>
+                                        {EventStore.currentEvent.town}
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <Row className="mt-2">
+                                            <Col>
+                                                <Card.Body>
+                                                    <Card.Title>Beskrivelse</Card.Title>
+                                                    {EventStore.currentEvent.description}
+                                                </Card.Body>
+                                            </Col>
+                                        </Row>
+
+                                    </Col>
+                                </Row>
+                            </Form.Group>
+                            <Form.Group>
+                                <Button variant="warning" onClick={() => this.editMode()}>Rediger</Button>
+                            </Form.Group>
+                        </Card.Body>
+
+                    </Card>
+
+                </div>
+            );
+        }
     }
 
+
+    validateForm(){
+
+        console.log("startdato" + this.state.startDate + "sluttdato" + this.state.endDate);
+        if(this.state.startDate===this.state.endDate){
+            return this.state.startTime < this.state.endTime;
+        }
+
+        return this.state.startDate < this.state.endDate;
+    }
+
+    editMode(){
+        console.log("edit er sant");
+        this.setState({edit:true});
+    }
+
+
+    submitForm(){
+        this.setState({dateError: false})
+        if(this.validateForm()){
+            this.save();
+            EventStore.postCurrentEvent().then(console.log("Lagret"));
+            this.setState({edit:false});
+        } else{
+            this.setState({dateError: true})
+        }
+    }
+
+    save(){
+            console.log(this.state);
+            EventStore.currentEvent.eventName = this.state.eventName;
+            EventStore.currentEvent.startDate = this.state.startDate;
+            EventStore.currentEvent.endDate = this.state.endDate;
+            EventStore.currentEvent.startTime = this.state.startTime;
+            EventStore.currentEvent.endTime = this.state.endTime;
+            EventStore.currentEvent.address = this.state.address;
+            EventStore.currentEvent.zipCode = this.state.zipCode;
+            EventStore.currentEvent.town = this.state.town;
+            EventStore.currentEvent.description = this.state.description;
+    }
     // Converts a javascript date to a format compatible with both datepicker and mysql
     formatDate(date) {
         let d = new Date(date);
@@ -211,122 +345,4 @@ export class InfoForm extends Component {
     }
 }
 
-// Component for viewing the general information about an event
-export class InfoView extends Component {
 
-    render() {
-        return(
-            <div>
-                <Card className="mb-2">
-                    <Card.Header>
-                        <Row>
-                            <Card.Title>{EventStore.currentEvent.eventName}</Card.Title>
-                        </Row>
-                    </Card.Header>
-                    <Card.Body>
-                        <Form.Group>
-                            <Row className="mb-2">
-                                <Col xs="5">
-                                    <Row>
-                                        <Col>
-                                            <FaCalendarAlt className="mr-1"/>
-                                            <Form.Label>Start</Form.Label>
-                                        </Col>
-                                    </Row>
-                                    {EventStore.currentEvent.startDate !== null ?
-                                        this.formatDate(EventStore.currentEvent.startDate) :
-                                    null}
-                                </Col>
-                                <Col xs="3">
-                                    <Row>
-                                        <Col>
-                                            <FaClock className="mr-1"/>
-                                            <Form.Label>Tid</Form.Label>
-                                        </Col>
-                                    </Row>
-                                    {EventStore.currentEvent.startTime}
-                                </Col>
-                                <Col>
-                                    <Row>
-                                        <Col>
-                                            <Form.Label>Type arrangement</Form.Label>
-                                        </Col>
-                                    </Row>
-                                    Musikk
-                                </Col>
-                            </Row>
-                            <Row className="mb-4">
-                                <Col xs="5">
-                                    <Row>
-                                        <Col>
-                                            <FaCalendarAlt className="mr-1"/>
-                                            <Form.Label>Slutt</Form.Label>
-                                        </Col>
-                                    </Row>
-                                    {EventStore.currentEvent.endDate !== null ?
-                                        this.formatDate(EventStore.currentEvent.endDate) :
-                                        null}
-                                </Col>
-                                <Col xs="3">
-                                    <Row>
-                                        <Col>
-                                            <FaClock className="mr-1"/>
-                                            <Form.Label>Tid</Form.Label>
-                                        </Col>
-                                    </Row>
-                                    {EventStore.currentEvent.endTime}
-                                </Col>
-                            </Row>
-                            <Row className="mb-4">
-                                <Col xs="5">
-                                    <Row>
-                                        <Col>
-                                            <FaHouseDamage className="mr-1"/>
-                                            <Form.Label>Adresse</Form.Label>
-                                        </Col>
-                                    </Row>
-                                    {EventStore.currentEvent.address}
-                                </Col>
-                                <Col xs="3">
-                                    <Row>
-                                        <Col>
-                                            <Form.Label>Postnummer</Form.Label>
-                                        </Col>
-                                    </Row>
-                                    {EventStore.currentEvent.zipCode}
-                                </Col>
-                                <Col xs="3">
-                                    <Row>
-                                        <Col>
-                                            <Form.Label>Poststed</Form.Label>
-                                        </Col>
-                                    </Row>
-                                    {EventStore.currentEvent.town}
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <Row className="mt-2">
-                                        <Col>
-                                            <Card.Title>Beskrivelse</Card.Title>
-                                        </Col>
-                                    </Row>
-                                    <Card.Body>
-                                        {EventStore.currentEvent.description}
-                                    </Card.Body>
-                                </Col>
-                            </Row>
-                        </Form.Group>
-                    </Card.Body>
-                </Card>
-            </div>
-        )
-    }
-
-    // Converts the date of an event to a more readable format
-    formatDate = (d) => {
-        let options = {year: 'numeric', month: 'long', day: 'numeric'};
-        let date = new Date(d);
-        return date.toLocaleDateString("nb-NO", options);
-    }
-}

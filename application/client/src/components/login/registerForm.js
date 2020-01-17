@@ -73,23 +73,18 @@ export class RegisterForm extends React.Component {
     render() {
 
         return (
-            <Card>
-                <Card.Body className={"m-4"}>
-                    <Card.Title className="ml-5">Registrer bruker</Card.Title>
-                <div className="justify-content-md-center m-5">
-                    <Form onSubmit={this.handleSubmit}>
-
+            <Card style={{width : '35rem'}} className="text-center mx-auto mt-5">
+                <Form onSubmit={this.handleSubmit} className={"align-items-center"}>
+                <Card.Body>
+                    <Card.Title className="mb-4">Registrer bruker</Card.Title>
+                <div className="justify-content-md-center">
                         <Form.Text className="text-danger" hidden={!this.state.usernameAlreadyExist}>Brukernavnet finnes allerede</Form.Text>
                         <Form.Group>
                             <Form.Control maxLength="25" type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
                         </Form.Group>
-
-
                         <Form.Group>
                             <Form.Control maxLength="8" type="number" name="phonenumber" placeholder="Telefonnummer" value={this.state.phonenumvber} onChange={this.handleInputChange}/>
                         </Form.Group>
-
-
                         <Form.Text className="text-danger" hidden={!this.state.emailAlreadyExist}>Det er allerede registrert en bruker med denne e-postaddressen</Form.Text>
                             <Row>
                             <Col>
@@ -120,8 +115,7 @@ export class RegisterForm extends React.Component {
                             </Col>
                         </Row>
 
-                        <Button variant="btn btn-primary" type="submit" hidden={this.state.loggingIn} disabled={!this.validateForm()}> Registrer bruker </Button>
-                        <Button variant="btn btn-primary" disabled hidden={!this.state.loggingIn}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Registrerer bruker</Button>
+
 
 
                         <Form.Text className="text-danger" hidden={this.validateUsername()}>Brukernavnet kan kun inneholde tall og bokstaver</Form.Text>
@@ -140,9 +134,14 @@ export class RegisterForm extends React.Component {
 
 
                         <Form.Text> Har du allerede en bruker? <NavLink to="/"> Klikk her for å logge inn. <span className="NavLink"></span></NavLink></Form.Text>
-                    </Form>
+
                 </div>
                 </Card.Body>
+                    <Card>
+                        <Button variant="btn btn-primary" type="submit" hidden={this.state.loggingIn} disabled={!this.validateForm()}> Registrer bruker </Button>
+                        <Button variant="btn btn-primary" disabled hidden={!this.state.loggingIn}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Registrerer bruker</Button>
+                    </Card>
+                </Form>
             </Card>
         )
     }
