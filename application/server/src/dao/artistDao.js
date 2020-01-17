@@ -46,4 +46,7 @@ module.exports = class artistDao extends Dao {
         super.query('SELECT * FROM genre', null, callback);
     }
 
+
+
+
 };

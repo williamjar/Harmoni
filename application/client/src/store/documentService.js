@@ -3,6 +3,7 @@ import {Document} from "../classes/document.js"
 import {CookieStore} from "./cookieStore";
 import {DocumentCategory} from "../classes/documentCategory";
 import {EventStore} from "./eventStore";
+import {Contact} from "../classes/contact";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -177,6 +178,36 @@ export class DocumentService {
             }
             console.log(document.documentName);
             callback(document);
+        }).catch(res => console.log(res));
+    }
+
+    //TODO: implement in file info
+    static getArtistInfoConnectedToDocument(documentID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let artist;
+
+
+        axios.get(axiosConfig.root + '/api/artist/documents/' + documentID, {headers: header}).then(response => {
+            artist = new Contact(response.data.contactName,response.data.phone,response.data.email,);
+            callback(artist);
+        }).catch(res => console.log(res));
+    }
+
+    //TODO: implement in file info
+    static getCrewInfoConnectedToDocument(documentID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let crew;
+        axios.get(axiosConfig.root + '/api/crew/documents/' + documentID, {headers: header}).then(response => {
+            crew = new Contact(response.data.contactName,response.data.phone,response.data.email,);
+            callback(crew);
         }).catch(res => console.log(res));
     }
 

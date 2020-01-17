@@ -1,4 +1,15 @@
-import {app, documentationDao, pictureDao, documentDao, organizerDao, multer, path, fs, uuidv4} from "./server";
+import {
+    app,
+    documentationDao,
+    pictureDao,
+    documentDao,
+    organizerDao,
+    multer,
+    path,
+    fs,
+    uuidv4,
+    artistDao
+} from "./server";
 
 
 
@@ -267,7 +278,24 @@ app.get("/api/event/:eventID/documents/categories", (req, res) => {
     });
 });
 
-//SELECT * from document where eventID = 45 and documentCategoryID = 1
+app.get("/api/artist/documents/:documentID", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getArtistInfoConnectedToDocument(req.params.documentID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.get("/api/crew/documents/:documentID", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getCrewInfoConnectedToDocument(req.params.documentID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
 app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getAllDocumentsByCategoryForEvent(req.params.eventID,req.params.documentCategoryID, (status, data) => {

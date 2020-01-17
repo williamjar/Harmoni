@@ -23,7 +23,7 @@ export class FolderItem extends Component{
 
     render(){
         return(
-            <div className={"card"}>
+            <div className={"card folder"}>
                 <div className={"card-body"}>
                     <FaFolderOpen/> {this.props.name}
                 </div>
@@ -82,7 +82,6 @@ export class FolderEvent extends Component{
 
 }
 
-//------- Categories -------------
 export class FolderCategory extends Component {
     constructor(props){
         super(props);
@@ -180,16 +179,16 @@ export class Documents extends Component{
             <ul className={"list-group"}>
                 {this.state.document.map((item) => {
                     return (
-                        <li className = {"list-group-item"} onClick={() => this.handleClick(item.documentID)}>
+                        <li className = {"list-group-item folder"} onClick={() => this.handleClick(item.documentID)}>
                             {this.checkFileType(item.documentName)} {item.documentName}
                         </li>
+
                     );
                 })}
             </ul>
         )
     }
 }
-
 
 
 export class File extends Component{
@@ -209,16 +208,10 @@ export class File extends Component{
 
     render(){
         return(
-            <ul className="list-group">
-                <li className="list-group-item disabled">Cras justo odio</li>
-                <li className="list-group-item">Dapibus ac facilisis in</li>
-                <li className="list-group-item">Morbi leo risus</li>
-                <li className="list-group-item">Porta ac consectetur ac</li>
-                <li className="list-group-item">Vestibulum at eros</li>
-            </ul>
-
-        )
+            <iframe src={'userStories.pdf'} width="100%" height="600" frameBorder="0"/>
+        );
     }
+
 }
 
 

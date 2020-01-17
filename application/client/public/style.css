@@ -238,6 +238,15 @@ body{
 
 }
 
+.folder{
+}
+
+.folder:hover {
+    color: white;
+    background-color: #314b57;
+}
+
+
 /* Different mediums, Mobile etc */
 @media only screen and (max-width: 911px) {
     .content{
