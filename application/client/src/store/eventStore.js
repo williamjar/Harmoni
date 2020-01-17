@@ -36,7 +36,7 @@ export class EventStore{
             "address" : null,
             "town" : null,
             "zipCode" : null,
-            "status" : 0,
+            "status" : 1,
             "description" : null,
             "publishDate" : null,
             "publishTime" : null,
@@ -47,7 +47,7 @@ export class EventStore{
 
         axios.post(axiosConfig.root + "/api/events" , body, {headers: header}).then(response =>{
             //Create an event from the insertID returned from the query and the organizerID, the rest is null
-            this.currentEvent = new Event(response.data.insertId, eventName, null, null, null, null, null, null, null, null, null, null, null, organizerID, null);
+            this.currentEvent = new Event(response.data.insertId, eventName, null, null, null, null, null, null, null, 0, null, null, null, organizerID, null);
             callback();
         }).catch(console.log("Error in eventStore"));
 

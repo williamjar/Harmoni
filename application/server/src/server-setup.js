@@ -25,6 +25,7 @@ const riderDaoObj = require('./dao/riderDao.js');
 const documentationDaoObj = require("./dao/documentationdao.js");
 const loginDaoObj = require("./dao/loginDao");
 const pictureDaoObj = require("./dao/pictureDao");
+const ticketDaoObj = require("./dao/ticketDao");
 export let artistDao = new artistDaoObj(pool);
 export let bugDao = new bugDaoObj(pool);
 export let contactDao = new contactDaoObj(pool);
@@ -36,6 +37,8 @@ export let organizerDao = new organizerDaoObj(pool);
 export let riderDao = new riderDaoObj(pool);
 export let loginDao = new loginDaoObj(pool);
 export let pictureDao = new pictureDaoObj(pool);
+export let ticketDao = new ticketDaoObj(pool);
+
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -57,5 +60,6 @@ require('./server-login.js');
 require('./server-organizer.js');
 require('./server-picture.js');
 require('./server-rider.js');
+require('./server-ticket');
 
 app.listen(8080);
