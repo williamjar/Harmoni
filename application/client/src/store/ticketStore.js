@@ -73,6 +73,28 @@ export class TicketStore {
 
     }
 
+    //update ticket
+    static updateTicket(name, price, amount, releaseDate, releaseTime,  endDate, endTime, description, ticketTypeID) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        axios.put(axiosConfig.root + '/api/ticket/' + ticketTypeID, {
+            "ticketTypeID" : name,
+            "price" : price,
+            "amount" : amount,
+            "releaseDate" : releaseDate,
+            "releaseTime" : releaseTime,
+            "endDate" : endDate,
+            "endTime" : endTime,
+            "description" : description,
+            "ticketTypeId" : ticketTypeID
+
+        }, {headers: header})
+            .catch(error => console.log(error));
+    }
+
+
     //delete a ticket from an event
     static deleteTicket(eventID ,ticketTypeID) {
         console.log('Running deleteTicket');
