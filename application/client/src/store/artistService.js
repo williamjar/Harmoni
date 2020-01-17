@@ -49,8 +49,7 @@ export class ArtistService {
             axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(res => {
                 console.log("artist");
                 console.log(res);
-                callback();
-                return new Artist(res.data.insertId, name, phone, email, genreID, organizerID);
+                callback(new Artist(res.data.insertId, name, phone, email, genreID, organizerID));
             });
         });
     }
