@@ -8,8 +8,8 @@ export class RiderElement{
     }
 
     static getTestRiderElement(){
-        let elementOne = new RiderElement(0, 'Almost done, 4 more hours of drying...', false, '7.5 hours of drying the cheese before serving');
-        let elementTwo = new RiderElement(1, null, true, 'Sour water');
+        let elementOne = new RiderElement(0, 0, '7.5 hours of drying the cheese before serving', false, "Cheese");
+        let elementTwo = new RiderElement(1, 0, null, true, null);
         return [elementOne, elementTwo];
     }
 }
