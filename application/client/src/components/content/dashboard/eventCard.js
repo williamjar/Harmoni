@@ -7,14 +7,14 @@ import {EventStore} from "../../../store/eventStore";
 
 const history = createHashHistory();
 
-// Component displaying a single event as a table row
+// Component displaying a single event as a row in the parent table
 export class EventCard extends React.Component {
 
     state = {
         date: null,
     };
 
-    // Handles when the user
+    // Sends the user to the event-screen when clicking "vis"
     viewEvent = () => {
         EventStore.currentEvent = this.props.event;
         history.push("/arrangementEdit/" + this.props.event.eventID);
@@ -32,10 +32,14 @@ export class EventCard extends React.Component {
     }
 
     componentDidMount() {
-        let datestring = this.props.event.startDate;
+        let date = this.formatDate(this.props.event.startDate);
+        this.setState({date: date});
+    }
+
+    // Converts the date of an event to a more readable format
+    formatDate = (d) => {
         let options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
-        let date = new Date(datestring);
-        let startDate = date.toLocaleDateString("nb-NO", options).toLocaleUpperCase();
-        this.setState({date: startDate});
+        let date = new Date(d);
+        return date.toLocaleDateString("nb-NO", options).toLocaleUpperCase();
     }
 }

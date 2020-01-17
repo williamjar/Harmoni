@@ -79,3 +79,5 @@ nodemodules/
 /application/server/node_modules/
 /application/server/resources/
 
+/application/server/resources/profilePictures/
+/application/client/node_modules/

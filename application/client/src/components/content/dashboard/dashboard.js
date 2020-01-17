@@ -9,14 +9,11 @@ import {
     Col,
     Dropdown,
     DropdownButton,
-    ListGroup,
     Row,
-    Tab,
     Table
 } from "react-bootstrap";
 import {FaAngleDown, FaPlusCircle} from "react-icons/fa";
 import {EventView} from "./eventView";
-import {Event} from "../../../classes/event";
 import {Search} from "../search";
 import {EventStore} from "../../../store/eventStore";
 import {CookieStore} from "../../../store/cookieStore";
@@ -37,6 +34,7 @@ export class Dashboard extends React.Component {
         };
     }
 
+    // Method for filtering the organizer's events by status -> NOT IMPLEMENTED YET
     filterEvents = (e) => {
         this.setState({active: e.target.name});
 
@@ -54,10 +52,12 @@ export class Dashboard extends React.Component {
         }
     };
 
+    // Sends the user to create event screen when clicking the "plus"-button
     addEventClicked = () => {
         history.push("/opprett")
     };
 
+    // Stores all the organizer's events before rendering the page
     componentDidMount() {
         EventStore.storeAllEventsForOrganizer(() => {this.setState({events: EventStore.allEventsForOrganizer})}, CookieStore.currentUserID);
     }
@@ -143,6 +143,7 @@ export class Dashboard extends React.Component {
     }
 }
 
+// Component for displaying a feedback message if there is no events
 export class NoEvents extends Component {
     render() {
         return (

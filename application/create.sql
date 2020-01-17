@@ -202,7 +202,7 @@ ADD FOREIGN KEY (documentCategoryID) REFERENCES documentCategory(documentCategor
 
 ALTER TABLE riderElement
 ADD FOREIGN KEY (artistID) REFERENCES artist(artistID),
-ADD FOREIGN KEY (eventID) REFERENCES event(eventID);
+ADD FOREIGN KEY (eventID) REFERENCES event(eventID) ON DELETE CASCADE;
 
 ALTER TABLE bug ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID);
 

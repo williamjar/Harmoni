@@ -53,7 +53,6 @@ export class AddCrewType extends Component{
     render(){
         return(
             <div className="card card-body">
-                <Form>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Personell type</Form.Label>
@@ -61,15 +60,18 @@ export class AddCrewType extends Component{
                         </Form.Group>
                     </Form.Row>
 
-
+                    <Row className="no-gutter">
+                        <Col className="col-1">
                     <Button variant="primary" type="submit" onClick={this.submitForm}>
                         Submit
                     </Button>
+                        </Col>
+                        <Col className="col-1">
                     <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.props.cancelButton}>
                         Cancel
                     </Button>
-
-                </Form>
+                        </Col>
+                    </Row>
             </div>
         )
     }
@@ -86,7 +88,7 @@ export class AddCrewType extends Component{
             alert("Du kan ikke ha en blank kategori");
         } else{
             alert(this.state.crewType);
-            this.props.cancelButton();
+            this.props.submit();
         }
     }
 }
@@ -99,8 +101,13 @@ export class AddToCrew extends Component{
             numberOfFilesAdded: 0,
             showRegisterCrewType:false,
             showRegisterCrewMember : false,
+            results : [],
         };
 
+    }
+
+    componentDidMount() {
+        this.updateCrewSearch();
     }
 
     render() {
@@ -126,6 +133,7 @@ export class AddToCrew extends Component{
 
                     </div>
 
+
                     <div className="col-4">
                         <input className="form-check-input" type="checkbox" value="" id="mainResponsible"/>
                         <label className="form-check-label" htmlFor="mainResponsible">
@@ -137,7 +145,7 @@ export class AddToCrew extends Component{
                 {this.state.showRegisterCrewType?
                     <div className="row padding-top-20">
                         <div className="col-12">
-                            <AddCrewType cancelButton={this.cancelCrewTypeAdd}/>
+                            <AddCrewType cancelButton={this.cancelCrewTypeAdd} submit={this.addNew}/>
                         </div>
                     </div>
                     :null}
@@ -149,13 +157,18 @@ export class AddToCrew extends Component{
                 </div>
 
                 <div className="row padding-top-20">
-                    <div className="col-lg-6 col-md-12">
-                        <Search addRegisterButton={true} searchHandler={this.searchHandler} registerComponent={<AddCrewMember />} />
+                    <div className="col-lg-8 col-md-8">
+                        <Search searchHandler={this.searchHandler} results={this.state.results}  />
+                    </div>
+                    <div className="col-lg-4 col-md-4">
+                        <button className="btn btn-success" onClick={this.showRegisterCrewMemberForm}>Registrer ny</button>
                     </div>
                 </div>
 
-                <div className="row padding-top-20">
+                {this.state.showRegisterCrewMember?<AddCrewMember toggleRegisterCrewMember={this.showRegisterCrewMemberForm} submit={this.searchHandler} />:null}
 
+
+                <div className="row padding-top-20">
                     <div className="col-12">
                         <label htmlFor="descriptionCrew">Beskrivelse</label>
                         <textarea className="form-control" id="descriptionCrew" rows="4"></textarea>
@@ -188,20 +201,37 @@ export class AddToCrew extends Component{
         let currentState = this.state;
         currentState.showRegisterCrewType = false;
         this.setState(currentState);
-    }
+    };
+
+    updateCrewSearch = () => {
+        console.log("update crew search");
+        CrewStore.storeAllCrewMembersForOrganizer((list) => {
+            let currentState = this.state;
+            currentState.results = list;
+            this.setState(currentState);
+            console.log("Searchable crew");
+            console.log(this.state);
+        }, CookieStore.currentUserID);
+    };
 
 
     showRegisterCrewTypeForm = (event) => {
-        if(event.target.value === "Legg til ny..".trim()){
+        if(event.target.value.trim() === "Legg til ny.."){
             let currentState = this.state;
-            currentState.showRegisterCrewType = true;
+            currentState.showRegisterCrewType = !currentState.showRegisterCrewType;
             this.setState(currentState);
         }
-    }
+    };
+
+    showRegisterCrewMemberForm= (event) => {
+        let currentState = this.state;
+        currentState.showRegisterCrewMember = !currentState.showRegisterCrewMember;
+        this.setState(currentState);
+    };
 
     searchHandler = () => {
-
-    }
+        this.updateCrewSearch();
+    };
 
     addFile = () =>{
         /*For adding attachments to crew */
@@ -212,7 +242,7 @@ export class AddToCrew extends Component{
             currentState.numberOfFilesAdded = attachment;
             this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
         }
-    }
+    };
 
     addNew = () => {
         /* Fetches the information from the forms to be used with database */
@@ -230,7 +260,7 @@ export class AddToCrew extends Component{
             attachments : attachment,
         }
 
-    }
+    };
 }
 
 export class AddedCrew extends Component{
@@ -274,11 +304,6 @@ export class CrewView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            contactName : "",
-            phone : "",
-            email : "",
-            description : "",
-            crewCategory: "",
             crewList: []
         }
     }
@@ -329,7 +354,8 @@ export class CrewView extends Component {
             console.log("return crew members" + CrewStore.allCrewForCurrentEvent);
             this.setState(
                 { crewList : CrewStore.allCrewForCurrentEvent })
-        }, EventStore.currentEvent);
+        }, EventStore.currentEvent.eventID);
+        console.log("current eventID:" + EventStore.currentEvent.eventID);
         console.log(this.state);
     };
 
@@ -349,13 +375,15 @@ export class AddCrewMember extends Component{
             name : "",
             phone : "",
             email : "",
+            description: "",
+            isResponsible: false,
             crewCategoryID : 1
         };
     }
 
     render() {
         return(
-            <div>
+            <div className="card card-body">
                 <Form>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
@@ -373,7 +401,10 @@ export class AddCrewMember extends Component{
                         <Form.Label>Epost</Form.Label>
                         <Form.Control type="email" placeholder="" onChange={this.handleEmailChange} />
                     </Form.Group>
-
+                    <Form.Group controlId="formGridDescription">
+                        <Form.Label>Beskrivelse</Form.Label>
+                        <Form.Control type="text" placeholder="" onChange={this.handleDescriptionChange} />
+                    </Form.Group>
                     <Button variant="primary" type="button" onClick={this.submitForm}>
                         Submit
                     </Button>
@@ -390,30 +421,36 @@ export class AddCrewMember extends Component{
         let currentState = this.state;
         currentState.name = event.target.value;
         this.setState(currentState);
-    }
+    };
 
     handlePhoneChange = (event) => {
         let currentState = this.state;
         currentState.phone = event.target.value;
         this.setState(currentState);
-    }
+    };
 
     handleEmailChange = (event) => {
         let currentState = this.state;
         currentState.email = event.target.value;
         this.setState(currentState);
-    }
+    };
+
+    handleDescriptionChange = (event) =>{
+        let currentState = this.state;
+        currentState.description = event.target.value;
+        this.setState(currentState);
+    };
+
 
     submitForm = () => {
-        CrewStore.createCrewMember(this.state.name, this.state.phone, this.state.email, '', this.state.crewCategoryID, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
-
-
-
-    }
+        CrewStore.createCrewMemberForEvent(this.state.name, this.state.phone, this.state.email, this.state.description, this.state.crewCategoryID, this.state.isResponsible, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
+        this.props.toggleRegisterCrewMember();
+        this.props.submit();
+    };
 
     cancelRegister = () => {
-
-    }
+        this.props.toggleRegisterCrewMember();
+    };
 
 
 }

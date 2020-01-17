@@ -8,7 +8,7 @@ import Accordion from "react-bootstrap/Accordion";
 import {TicketType} from "../classes/ticketType";
 import { FaCalendar } from 'react-icons/fa';
 import ListGroup from "react-bootstrap/ListGroup";
-import {Row, Table} from "react-bootstrap";
+import {Table} from "react-bootstrap";
 import {FaAngleDown} from "react-icons/all";
 
 

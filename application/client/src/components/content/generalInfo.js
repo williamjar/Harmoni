@@ -6,14 +6,14 @@ import {Button, Card, Col, Form, Image, Row} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
 import lorde from './lorde.jpg';
 import placeholder from './placeholder.jpg'
-import map from './map.jpg';
-import {GetTicket, Ticket, TicketView} from "../ticket";
+import {Ticket, TicketView} from "../ticket";
 import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
 
 const history = createHashHistory();
 
-// Component for viewing general information about an event
+// Component for viewing or editing the general info about an event
+// The component changes if the event is in "edit mode" or not
 export class GeneralInfo extends Component{
 
     state = {
@@ -24,7 +24,6 @@ export class GeneralInfo extends Component{
         return(
             <div>
                 <div className="row">
-
                     <div className="col-7 border-right">
                         {this.state.editable ? <InfoForm/> : <InfoView/>}
                     </div>
@@ -47,6 +46,7 @@ export class GeneralInfo extends Component{
         )
     }
 
+    // Updates the state if the received props from the parent is changed
     static getDerivedStateFromProps(props, state) {
 
         if(props.editable !== state.editable) {
@@ -77,22 +77,25 @@ export class InfoForm extends Component {
             address: EventStore.currentEvent.address,
             zipCode: EventStore.currentEvent.zipCode,
             town: EventStore.currentEvent.town,
-            description: EventStore.currentEvent.description
+            description: EventStore.currentEvent.description,
         };
 
         this.handleChange = this.handleChange.bind(this);
 
     }
 
+    // Handles when the user wants to edit the event name,
+    // when edit = true, the name label is changed to an input field
     editClicked = () => {
         this.setState({edit: true})
     };
 
+    // Handles when the user saves the new name
     saveClicked = (e) => {
         this.setState({edit: false})
     };
 
-
+    // Updates the state and the event store object when form input is changed
     handleChange (event) {
         this.setState({[event.target.name]: event.target.value},
             () => {
@@ -111,44 +114,10 @@ export class InfoForm extends Component {
     };
 
     render() {
-
-        // Formatted date to fit into default value of datepicker
-
-        let startDate = new Date(this.state.startDate);
-        let endDate = new Date(this.state.endDate);
-        let startMonth = "";
-        let endMonth = "";
-        let startDay = "";
-        let endDay = "";
-
-        if(startDate.getMonth() <= 8) {
-            startMonth = "0" + (startDate.getMonth() + 1);
-        } else {
-            startMonth = startDate.getMonth() + 1;
-        }
-
-        if(endDate.getMonth() <= 8) {
-            endMonth = "0" + (endDate.getMonth() + 1);
-        } else {
-            endMonth = startDate.getMonth() + 1;
-        }
-
-        if(startDate.getDate() > 9) {
-            startDay = startDate.getDate();
-        } else {
-            startDay = "0" + startDate.getDate();
-        }
-
-        if(endDate.getDate() > 9) {
-            endDay = endDate.getDate();
-        } else {
-            endDay = "0" + endDate.getDate();
-        }
-
         return(
             <div>
-                <Card className="mb-2">
-                    <Card.Header>
+                <Card className="mb-2 border-0">
+                    <Card.Body>
                         <Row>
                             <Col xs="4">
                                 {this.state.edit === false ? <Card.Title>
@@ -160,14 +129,12 @@ export class InfoForm extends Component {
                                     <Button type="submit" onClick={this.saveClicked}>Lagre</Button>}
                             </Col>
                         </Row>
-                    </Card.Header>
-                    <Card.Body>
                         <Form.Group>
                             <Row className="mb-2">
                                 <Col xs="5">
                                     <FaCalendarAlt className="mr-1"/>
                                     <Form.Label>Start</Form.Label>
-                                    <Form.Control type="date" value={startDate.getFullYear() + "-" + startMonth + "-" + startDay} name="startDate" onChange={this.handleChange}/>
+                                    <Form.Control type="date" value={this.formatDate(this.state.startDate)} name="startDate" onChange={this.handleChange}/>
                                 </Col>
                                 <Col xs="3">
                                     <FaClock className="mr-1"/>
@@ -177,9 +144,9 @@ export class InfoForm extends Component {
                                 <Col>
                                     <Form.Label>Type arrangement</Form.Label>
                                     <Form.Control as="select">
-                                        <option>Musikk</option>
-                                        <option>Sportsarrangement</option>
-                                        <option>Teater</option>
+                                        <option value={1}>Konsert</option>
+                                        <option value={2}>Festival</option>
+                                        <option value={3}>Konkurranse</option>
                                     </Form.Control>
                                 </Col>
                             </Row>
@@ -187,7 +154,7 @@ export class InfoForm extends Component {
                                 <Col xs="5">
                                     <FaCalendarAlt className="mr-1"/>
                                     <Form.Label>Slutt</Form.Label>
-                                    <Form.Control type="date" value={endDate.getFullYear() + "-" + endMonth + "-" + endDay} name="endDate" onChange={this.handleChange}/>
+                                    <Form.Control type="date" value={this.formatDate(this.state.endDate)} name="endDate" onChange={this.handleChange}/>
                                 </Col>
                                 <Col xs="3">
                                     <FaClock className="mr-1"/>
@@ -223,6 +190,7 @@ export class InfoForm extends Component {
         )
     }
 
+    // Converts a javascript date to a format compatible with both datepicker and mysql
     formatDate(date) {
         let d = new Date(date);
         let month = "" + (d.getMonth() + 1);
@@ -243,28 +211,12 @@ export class InfoForm extends Component {
 // Component for viewing the general information about an event
 export class InfoView extends Component {
 
-    state = {
-        edit: false,
-        name: "Lorde, intimkonsert",
-    };
-
-    editClicked = () => {
-        this.setState({edit: true})
-    };
-
     render() {
-
-        let options = {year: 'numeric', month: 'long', day: 'numeric'};
-
         return(
             <div>
-                <Card className="mb-2">
-                    <Card.Header>
-                        <Row>
-                            <Card.Title>{EventStore.currentEvent.eventName}</Card.Title>
-                        </Row>
-                    </Card.Header>
+                <Card className="mb-2 border-0">
                     <Card.Body>
+                        <Card.Title>{EventStore.currentEvent.eventName}</Card.Title>
                         <Form.Group>
                             <Row className="mb-2">
                                 <Col xs="5">
@@ -275,7 +227,7 @@ export class InfoView extends Component {
                                         </Col>
                                     </Row>
                                     {EventStore.currentEvent.startDate !== null ?
-                                        new Date(EventStore.currentEvent.startDate).toLocaleDateString("no-NO", options) :
+                                        this.formatDate(EventStore.currentEvent.startDate) :
                                     null}
                                 </Col>
                                 <Col xs="3">
@@ -290,7 +242,7 @@ export class InfoView extends Component {
                                 <Col>
                                     <Row>
                                         <Col>
-                                            <Form.Label>Type arrangement</Form.Label>
+                                            <Form.Label>Kategori:</Form.Label>
                                         </Col>
                                     </Row>
                                     Musikk
@@ -305,7 +257,7 @@ export class InfoView extends Component {
                                         </Col>
                                     </Row>
                                     {EventStore.currentEvent.endDate !== null ?
-                                        new Date(EventStore.currentEvent.endDate).toLocaleDateString("no-NO", options) :
+                                        this.formatDate(EventStore.currentEvent.endDate) :
                                         null}
                                 </Col>
                                 <Col xs="3">
@@ -349,12 +301,13 @@ export class InfoView extends Component {
                                 <Col>
                                     <Row className="mt-2">
                                         <Col>
-                                            <Card.Title>Beskrivelse</Card.Title>
+                                            <Card.Body>
+                                                <Card.Title>Beskrivelse</Card.Title>
+                                                {EventStore.currentEvent.description}
+                                            </Card.Body>
                                         </Col>
                                     </Row>
-                                    <Card.Body>
-                                        {EventStore.currentEvent.description}
-                                    </Card.Body>
+
                                 </Col>
                             </Row>
                         </Form.Group>
@@ -362,5 +315,12 @@ export class InfoView extends Component {
                 </Card>
             </div>
         )
+    }
+
+    // Converts the date of an event to a more readable format
+    formatDate = (d) => {
+        let options = {year: 'numeric', month: 'long', day: 'numeric'};
+        let date = new Date(d);
+        return date.toLocaleDateString("nb-NO", options);
     }
 }
