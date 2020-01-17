@@ -67,7 +67,7 @@ export class RiderStore {
     }
 
     //update a rider element
-    static updateRider(riderElementID, artistID, eventID, status, isDone, description) {
+    static updateRider(callback, riderElementID, artistID, eventID, status, isDone, description) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -79,8 +79,9 @@ export class RiderStore {
             status: status,
             isDone: isDone,
             description: description
-        }, {headers: header})
-            .catch(error => console.log(error));
+        }, {headers: header}).then(response => {
+            callback();
+        }).catch(error => console.log(error));
     }
 
     //delete a rider element
