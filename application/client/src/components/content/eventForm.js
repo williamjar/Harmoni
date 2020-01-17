@@ -9,6 +9,8 @@ import {DocumentationTab} from "../documentationTab";
 import {DocList} from "../docView";
 import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
+import {RiderStore} from "../../store/riderStore";
+import {CookieStore} from "../../store/cookieStore";
 
 const history = createHashHistory();
 

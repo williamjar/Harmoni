@@ -270,7 +270,7 @@ export class PerformerCard extends Component{
     componentDidMount() {
         //Fetches all riders for current artist and event and stores them in state
         let currentState = this.state;
-        currentState.riders = RiderStore.allRidersForCurrentArtistAndEvent;
+        currentState.riders = RiderStore.allRidersForCurrentEvent;
         this.setState(currentState);
     }
 
@@ -289,10 +289,10 @@ export class PerformerCard extends Component{
         /* Adds rider to performer on current event */
         alert(this.state.riderInput);
         RiderStore.createNewRiderElement((newRider) => {
-            RiderStore.allRidersForCurrentArtistAndEvent.push(newRider); // Has been posted and returns a
+            RiderStore.allRidersForCurrentEvent.push(newRider); // Has been posted and returns a
 
             let currentState = this.state;
-            currentState.riders = RiderStore.allRidersForCurrentArtistAndEvent;
+            currentState.riders = RiderStore.allRidersForCurrentEvent;
             this.setState(currentState);
 
 
