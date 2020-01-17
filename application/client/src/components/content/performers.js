@@ -51,7 +51,7 @@ export class PerformerPanel extends Component{
 
                         <div className="padding-top-20">
                             {this.state.showRegisterNew?<RegisterPerformer submitFunction={() => this.submitFunction()} toggleRegister={this.toggleRegisterNew} />:null}
-                            {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
+                            {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} />:null}
                         </div>
                     </div>
 
@@ -73,6 +73,7 @@ export class PerformerPanel extends Component{
                 currentState.performerList = list; //Receive a new array from database with assigned performer to event
                 currentState.performerSelected = {};
                 this.setState(currentState);
+                console.log(list);
             }, EventStore.currentEvent.eventID);
         });
     };
@@ -81,10 +82,12 @@ export class PerformerPanel extends Component{
         //Assign performer to event
         let currentState = this.state;
         ArtistService.assignArtist(EventStore.currentEvent.eventID, selected.artistID).then(res => {
+            console.log("Artist is assigned");
                 ArtistService.getArtistsForEvent((list) => {
                     let currentState = this.state;
                     currentState.performerList = list; //Receive a new array from database with assigned performer to event
                     this.setState(currentState);
+                    console.log(list);
                 }, EventStore.currentEvent.eventID);
             }
         );
@@ -166,7 +169,8 @@ export class PerformerCard extends Component{
         this.state = {
             performer : this.props.performerSelected,
             riderInput : "",
-            numberOfFilesAdded: 0,
+            numberOfFilesChosenForUpload: 0,
+            numberOfFilesAlreadyUploaded: 0,
             riders : [],
         };
     }
@@ -250,6 +254,10 @@ export class PerformerCard extends Component{
 
                    </div>
 
+                   <div className="col-4">
+                       Filer lagt til fra før: {this.state.numberOfFilesAlreadyUploaded}
+                   </div>
+
                    <div className="col-4 offset-4 text-right">
                        <button className = "butn-success-rounded" onClick={() => this.sendEmail()}>Send offisiell invitasjon til artist</button>
                    </div>
@@ -278,37 +286,44 @@ export class PerformerCard extends Component{
         //Fetches all riders for current artist and event and stores them in state
         let currentState = this.state;
         currentState.riders = RiderStore.allRidersForCurrentArtistAndEvent;
+        currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
         this.setState(currentState);
     }
 
+    //TODO: Change states that show if files are added to server
     addFile = () =>{
         /* For adding attachments to performer */
+        let fileInput = document.querySelector("#uploadAttachmentPerformer");
 
-        let attachment = document.querySelector("#uploadAttachmentPerformer").files.length;
+        let attachment = fileInput.files.length;
         if(attachment !== undefined){
-            let files = document.querySelector("#uploadAttachmentPerformer").files;
+            let files = fileInput.files;
 
             let currentState = this.state;
             currentState.numberOfFilesAdded = files.length;
 
             this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
 
-
-
+            //TODO: VALIDATE PDF FILES
             //TODO: Choose file category
             let formData = new FormData();
             for (let i = 0; i < files.length; i++){
                 formData.set('selectedFile', files[i]);
-                DocumentService.addDocument(EventStore.currentEvent.eventID, "Kontrakt", this.state.performer.artistID, null, 1, formData, (statusCode, returnData) => {
+                DocumentService.addDocument(EventStore.currentEvent.eventID, "Kontrakt", currentState.performer.artistID, null, 1, formData, (statusCode, returnData) => {
                     if (statusCode === 200){
                         console.log("Document was successfully uploaded");
                         this.state.performer.addDocument(new Document(returnData.documentID, returnData.documentLink, 1));
+                        fileInput.value = '';
+                        currentState.numberOfFilesAlreadyUploaded += 1;
+                        currentState.numberOfFilesAdded = 0;
                     }
                     else{
                         console.log("Error uploading document");
                     }
+
                 });
             }
+            this.setState(currentState);
         }
     };
 

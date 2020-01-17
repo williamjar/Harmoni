@@ -2,6 +2,8 @@ import axios from "axios";
 import {Artist} from "../classes/artist.js"
 import {CookieStore} from "./cookieStore";
 import {Genre} from "../classes/genre";
+import {Document} from "../classes/document";
+import {Artist as artist} from "../classes/artist";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -86,30 +88,21 @@ export class ArtistService {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
+        //TODO!!
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
-                for (let i = 0; i < response.data.length; i++) {
-                    allArtistByEvent.push(new Artist(response.data[i].artistID, response.data[i].contactName,
-                        response.data[i].phone, response.data[i].email, response.data[i].genreID,
-                        response.data[i].organizerID));
-                }
-            callback(allArtistByEvent);
-            }
-        );
-
-    }
-
-    static addDocumentToArtist(eventID, name, link, artistID, categoryID) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        return axios.post(axiosConfig.root + '/api/document/artist', {
-            "eventID": eventID,
-            "documentName": name,
-            "documentLink": link,
-            "artistID": artistID,
-            "documentCategoryID": categoryID
-        }, {headers: header}).then(response => response.data);
+            response.data.map(artist =>
+                allArtistByEvent.push(new Artist(artist.artistID, artist.contactName,
+                    artist.phone, artist.email, artist.genreID,
+                    artist.organizerID)));
+        }).then(() => {
+            allArtistByEvent.map(artist => {
+                axios.get(axiosConfig.root + '/api/artist/documents/' + eventID + '/' + artist.artistID, {headers: header}).then(response => {
+                    response.data.map(document => artist.addDocument(new Document(document.documentID, document.documentLink, document.documentCategory)))
+                }).then(() => artist);
+            });
+        }).then(() => {
+            callback(allArtistByEvent)
+        });
     }
 
     static assignArtist(eventID, artistID) {
