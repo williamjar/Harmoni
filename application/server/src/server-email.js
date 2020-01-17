@@ -34,7 +34,7 @@ app.post("/api/email", (request, response) => {
     let attachments = attachmentLinks.map((link, index) => {
         return {
             filename: fileNames[index],
-            content: link
+            path: "./" + link
         }
     });
 
@@ -46,7 +46,6 @@ app.post("/api/email", (request, response) => {
         html: html,
         attachments: attachments
     }).then(sendEmailResponse => {
-        console.log(sendEmailResponse);
         response.status(200);
         response.json(sendEmailResponse);
     }).catch(error => {

@@ -14,6 +14,8 @@ import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
 import {MailService} from "../../store/mailService";
 import {OrganizerStore} from "../../store/organizerStore";
+import {DocumentService} from "../../store/documentService";
+import {Document} from "../../classes/document";
 
 
 export class PerformerPanel extends Component{
@@ -241,7 +243,7 @@ export class PerformerCard extends Component{
 
                    <div className="col-4">
                         <span className="btn btn-primary btn-file">
-                            Legg til vedlegg <input type="file" multiple="multiple" id="uploadAttachmentPerformer" onChange={() => this.addFile()}/>
+                            Legg til vedlegg <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/>
                         </span>
                        {this.state.numberOfFilesAdded > 0 && this.state.numberOfFilesAdded<2? <div className="padding-left-5">{this.state.numberOfFilesAdded + " file added"}</div>: null}
                        {this.state.numberOfFilesAdded > 1 ? <div className="padding-left-5">{this.state.numberOfFilesAdded + " files added"}</div>: null}
@@ -284,9 +286,29 @@ export class PerformerCard extends Component{
 
         let attachment = document.querySelector("#uploadAttachmentPerformer").files.length;
         if(attachment !== undefined){
+            let files = document.querySelector("#uploadAttachmentPerformer").files;
+
             let currentState = this.state;
-            currentState.numberOfFilesAdded = attachment;
+            currentState.numberOfFilesAdded = files.length;
+
             this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
+
+
+
+            //TODO: Choose file category
+            let formData = new FormData();
+            for (let i = 0; i < files.length; i++){
+                formData.set('selectedFile', files[i]);
+                DocumentService.addDocument(EventStore.currentEvent.eventID, "Kontrakt", this.state.performer.artistID, null, 1, formData, (statusCode, returnData) => {
+                    if (statusCode === 200){
+                        console.log("Document was successfully uploaded");
+                        this.state.performer.addDocument(new Document(returnData.documentID, returnData.documentLink, 1));
+                    }
+                    else{
+                        console.log("Error uploading document");
+                    }
+                });
+            }
         }
     };
 
