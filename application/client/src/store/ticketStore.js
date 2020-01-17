@@ -1,8 +1,6 @@
 import {CookieStore} from "./cookieStore";
-import {Genre} from "../classes/genre";
 import axios from "axios";
 import {TicketType} from "../classes/ticketType";
-import {CrewMember} from "../classes/crewMember";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -77,10 +75,11 @@ export class TicketStore {
 
     //delete a ticket from an event
     static deleteTicket(eventID ,ticketTypeID) {
+        console.log('Running deleteTicket');
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete('/api/ticket/' + eventID + '/' + ticketTypeID , {headers: header}).then(response => response.data);
+        return axios.delete(axiosConfig.root + '/api/ticket/' + eventID + '/' + ticketTypeID , {headers: header}).then(response => response.data);
     }
 }
