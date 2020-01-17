@@ -31,7 +31,7 @@ pages:
   dependencies:
     - run_tests
   script:
-    - cd ..
+    - cd ./..
     - mkdir .public
     - cp -r server/coverage/* .public
 
