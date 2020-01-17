@@ -121,7 +121,7 @@ app.get("/api/event/:eventID/artist/:artistID/artistEventInfo", (request, respon
     artistDao.getArtistEventInfo((status, data) =>{
         response.status(status);
         response.json(data);
-    }, [request.params.]);
+    }, [request.params.eventID, request.params.artistID]);
 });
 
 app.put("/api/event/:eventID/artist/:artistID/artistEventInfo", (request, response) => {
