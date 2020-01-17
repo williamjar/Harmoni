@@ -15,20 +15,10 @@ export class EventStore{
 
     static createEvent(callback, eventName, organizerID){
 
-        let today = formatDate(Date.now());
-
-        function formatDate(date) {
-            let d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-            return [year, month, day].join('-');
-        }
-
+        let d = new Date();
+        let today = this.formatDate(d);
+        let startTime = this.formatTime(d);
+        let endTime = this.formatTime(d.setHours(d.getHours()+1));
 
         let header = {
             "Content-Type": "application/json",
@@ -41,8 +31,8 @@ export class EventStore{
             "eventName" : eventName,
             "startDate" : today,
             "endDate" : today,
-            "startTime" : today,
-            "endTime" : today,
+            "startTime" : startTime,
+            "endTime" : endTime,
             "address" : null,
             "town" : null,
             "zipCode" : null,
@@ -190,5 +180,24 @@ export class EventStore{
 
             callback();
         });
+    }
+
+    static formatDate(date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [year, month, day].join('-');
+    }
+
+    static formatTime(date) {
+        let d = new Date(date),
+            hours = '' + (d.getHours()),
+            mins = '' + d.getMinutes();
+        return [hours,mins].join(':');
     }
 }
