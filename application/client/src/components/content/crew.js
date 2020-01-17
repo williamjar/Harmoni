@@ -13,6 +13,7 @@ import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import {EventStore} from "../../store/eventStore";
+import {OrganizerStore} from "../../store/organizerStore";
 import Row from "react-bootstrap/Row";
 
 
@@ -53,25 +54,25 @@ export class AddCrewType extends Component{
     render(){
         return(
             <div className="card card-body">
-                    <Form.Row>
-                        <Form.Group as={Col} controlId="formGridEmail">
-                            <Form.Label>Personell type</Form.Label>
-                            <Form.Control type="name" placeholder="" onChange={this.handleInputChange}/>
-                        </Form.Group>
-                    </Form.Row>
+                <Form.Row>
+                    <Form.Group as={Col} controlId="formGridEmail">
+                        <Form.Label>Personell type</Form.Label>
+                        <Form.Control type="name" placeholder="" onChange={this.handleInputChange}/>
+                    </Form.Group>
+                </Form.Row>
 
-                    <Row className="no-gutter">
-                        <Col className="col-1">
-                    <Button variant="primary" type="submit" onClick={this.submitForm}>
-                        Submit
-                    </Button>
-                        </Col>
-                        <Col className="col-1">
-                    <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.props.cancelButton}>
-                        Cancel
-                    </Button>
-                        </Col>
-                    </Row>
+                <Row className="no-gutter">
+                    <Col className="col-1">
+                        <Button variant="primary" type="submit" onClick={this.submitForm}>
+                            Submit
+                        </Button>
+                    </Col>
+                    <Col className="col-1">
+                        <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.props.cancelButton}>
+                            Cancel
+                        </Button>
+                    </Col>
+                </Row>
             </div>
         )
     }
@@ -321,17 +322,17 @@ export class CrewView extends Component {
                         </div>
                     </div>
                     <ListGroup>
-                            {this.state.crewList.map(e => (
-                                <ListGroup.Item>
-                                    <Row>
-                                        <Col>Navn: {e.contactName}</Col>
-                                        <Col>Mobil: {e.phone}</Col>
-                                        <Col>E-post: {e.email}</Col>
-                                        <Col>Beskrivelse: {e.description}</Col>
-                                    </Row>
-                                </ListGroup.Item>
-                            ))}
-                        </ListGroup>
+                        {this.state.crewList.map(e => (
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Navn: {e.contactName}</Col>
+                                    <Col>Mobil: {e.phone}</Col>
+                                    <Col>E-post: {e.email}</Col>
+                                    <Col>Beskrivelse: {e.description}</Col>
+                                </Row>
+                            </ListGroup.Item>
+                        ))}
+                    </ListGroup>
                 </Card.Body>
             )
         }
@@ -342,9 +343,9 @@ export class CrewView extends Component {
         CrewStore.getCrewMember(1, (data) => {
             this.setState(
                 { contactName : data.contactName,
-                        phone : data.phone,
-                        email : data.email,
-                        description: data.description})
+                    phone : data.phone,
+                    email : data.email,
+                    description: data.description})
         });
         console.log(this.state);
     };
@@ -376,15 +377,16 @@ export class AddCrewMember extends Component{
             phone : "",
             email : "",
             description: "",
-            isResponsible: false,
-            crewCategoryID : 1
+            isResponsible: true,
+            selectedCategoryID: 0,
+            crewCategoryList: []
         };
     }
 
     render() {
         return(
             <div className="card card-body">
-                <Form>
+                <Form.Group>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
@@ -405,14 +407,37 @@ export class AddCrewMember extends Component{
                         <Form.Label>Beskrivelse</Form.Label>
                         <Form.Control type="text" placeholder="" onChange={this.handleDescriptionChange} />
                     </Form.Group>
+                    <Form.Group controlId="fromGridCategory">
+                        <Form.Label>Velg personell type</Form.Label>
+                        <select
+                            value={this.state.selectedCategoryID}
+                            onChange={e =>
+                                this.setState({
+                                    selectedCategoryID: e.target.value,
+                                })
+                            }
+                        >
+                            {this.state.crewCategoryList.map(category => (
+                                <option key={category.crewCategoryID} value={category.crewCategoryID}>
+                                    {category.crewCategoryID}
+                                </option>
+                            ))}
+                        </select>
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Hovedansvarlig</Form.Label>
+                        <input
+                            type="checkbox"
+                            onClick={this.handleIsResponsibleChange}
+                        />
+                    </Form.Group>
                     <Button variant="primary" type="button" onClick={this.submitForm}>
                         Submit
                     </Button>
                     <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
                         Cancel
                     </Button>
-
-                </Form>
+                </Form.Group>
             </div>
         )
     }
@@ -440,6 +465,13 @@ export class AddCrewMember extends Component{
         currentState.description = event.target.value;
         this.setState(currentState);
     };
+    handleIsResponsibleChange = (event) =>{
+        //currentState.isResponsible = event.target.value;
+        this.setState({isResponsible: !this.state.isResponsible});
+        console.log("status?");
+        console.log(this.state.isResponsible);
+        //this.setState(currentState);
+    };
 
 
     submitForm = () => {
@@ -451,6 +483,19 @@ export class AddCrewMember extends Component{
     cancelRegister = () => {
         this.props.toggleRegisterCrewMember();
     };
+
+    returnCrewCategories = () => {
+        CrewStore.storeAllCrewCategoriesForOrganizer(() => {
+            console.log("return categories for organizer");
+            console.log(CrewStore.allCrewCategoriesForOrganizer);
+            this.setState(
+                { crewCategoryList : CrewStore.allCrewCategoriesForOrganizer })
+        }, 1); //OrganizerStore.currentOrganizer
+    };
+
+    componentDidMount() {
+        this.returnCrewCategories();
+    }
 
 
 }
