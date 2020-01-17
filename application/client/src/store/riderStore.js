@@ -87,13 +87,12 @@ export class RiderStore {
     }
 
     //delete a rider element
-    static deleteRider(eventID, artistID, riderID) {
+    static deleteRider(callback, eventID, artistID, riderID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        axios.delete(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider/' + riderID, {headers: header})
-            .catch(error => console.log(error));
+        axios.delete(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider/' + riderID, {headers: header}).then(callback()).catch(error => console.log(error));
     }
 }
 

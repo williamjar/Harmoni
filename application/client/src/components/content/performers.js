@@ -12,7 +12,7 @@ import {CookieStore} from "../../store/cookieStore";
 import {RiderStore} from "../../store/riderStore";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
-
+import {FaTrashAlt} from "react-icons/all";
 
 export class PerformerPanel extends Component{
     /* Performerpanel is the edit page for artist in an event, this.state keeps track of which components
@@ -168,6 +168,8 @@ export class PerformerCard extends Component{
             riderInput : "",
             numberOfFilesAdded: 0,
             riders : [],
+            signedContract : false,
+            payed : false,
         };
     }
 
@@ -222,7 +224,7 @@ export class PerformerCard extends Component{
                 <div className="row padding-top-20">
                     <div className="col-4">
                         <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value="" id="signedContract"/>
+                            <input className="form-check-input" name="signedContract" type="checkbox" checked={this.state.signedContract} id="signedContract"/>
                             <label className="form-check-label" htmlFor="signedContract">
                                 Signert kontrakt
                             </label>
@@ -230,8 +232,8 @@ export class PerformerCard extends Component{
                     </div>
                     <div className="col-4">
                         <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value="" id="performerPayed"/>
-                            <label className="form-check-label" htmlFor="riderCompleted">
+                            <input className="form-check-input" name="payed" type="checkbox" checked={this.state.payed} id="performerPayed" onChange={this.handleOtherCheckboxes}/>
+                            <label className="form-check-label" htmlFor="performerPayed">
                                 Betalt
                             </label>
                         </div>
@@ -303,6 +305,9 @@ export class PerformerCard extends Component{
         }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
     };
 
+    handleOtherCheckboxes = (event) => {
+        this.setState({[event.target.name] : event.target.checked});
+    }
     handleInputRider = (event) =>{
         /* Handles the rider input for new riders to be added to state variable */
         let currentState = this.state;
@@ -312,9 +317,7 @@ export class PerformerCard extends Component{
 
     save = () => {
         /* Save function to gather all information in the Performer Card that needs to be stored */
-        let genre = document.querySelector("#genreSelect").value;
-        let signedContract = document.querySelector("#signedContract").checked;
-        let payed = document.querySelector("#performerPayed").checked;
+
 
         alert("save clicked");
 
@@ -324,11 +327,7 @@ export class PerformerCard extends Component{
             }
         });
 
-        let json = {
-            genreArtist : genre,
-            signedContract : signedContract,
-            payedArtist : payed,
-        };
+        //TODO: Send signed contract and if artist has been payed
     }
 }
 
@@ -351,11 +350,11 @@ export class Rider extends Component{
             <div className="card card-body">
                 <div className="row align-items-center">
 
-                    <div className="col-5">
+                    <div className="col-4">
                         {this.props.description}
                     </div>
 
-                    <div className="col-3">
+                    <div className="col-2">
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" checked={this.state.taskDone} name="taskDone" onChange={this.handleInput}/>
                                 <label className="form-check-label" htmlFor="riderCompleted">
@@ -366,6 +365,10 @@ export class Rider extends Component{
 
                     <div className="col-4">
                         <input type="text" className="form-control" placeholder="Status"value={this.state.status} name="status" onChange={this.handleInput}/>
+                    </div>
+
+                    <div className="col-1">
+                        <button className="btn btn-danger" onClick={this.deleteRider}><FaTrashAlt/></button>
                     </div>
 
                 </div>
@@ -385,14 +388,9 @@ export class Rider extends Component{
         this.props.riderObject.isModified = true;
     };
 
-/*    submit = () => {
-        let riderID = this.props.riderObject.riderID;
-        let artistID = this.props.riderObject.artistID;
-        let description = this.props.riderObject.description;
+    deleteRider = () => {
 
-        RiderStore.updateRider(() => {}, riderID, artistID, EventStore.currentEvent.eventID, this.state.status, this.state.taskDone, description);
-    }*/
-
+    }
 
 }
 
