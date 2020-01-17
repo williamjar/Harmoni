@@ -51,7 +51,7 @@ export class PerformerPanel extends Component{
 
                         <div className="padding-top-20">
                             {this.state.showRegisterNew?<RegisterPerformer submitFunction={() => this.submitFunction()} toggleRegister={this.toggleRegisterNew} />:null}
-                            {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} />:null}
+                            {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
                         </div>
                     </div>
 
@@ -73,7 +73,7 @@ export class PerformerPanel extends Component{
                 currentState.performerList = list; //Receive a new array from database with assigned performer to event
                 currentState.performerSelected = {};
                 this.setState(currentState);
-                console.log(list);
+                this.toggleShowCard();
             }, EventStore.currentEvent.eventID);
         });
     };
@@ -82,12 +82,10 @@ export class PerformerPanel extends Component{
         //Assign performer to event
         let currentState = this.state;
         ArtistService.assignArtist(EventStore.currentEvent.eventID, selected.artistID).then(res => {
-            console.log("Artist is assigned");
                 ArtistService.getArtistsForEvent((list) => {
                     let currentState = this.state;
                     currentState.performerList = list; //Receive a new array from database with assigned performer to event
                     this.setState(currentState);
-                    console.log(list);
                 }, EventStore.currentEvent.eventID);
             }
         );
@@ -562,12 +560,12 @@ export class RegisteredPerformers extends Component{
     render(){
         return(
             <div>
-                <b>Artister som er lagt til</b>
+                <b className="card-title">Artister som er lagt til</b>
 
                     {this.props.performersAdded.map(p =>
-                        <div className="card card-body pointer selection">
+                        <div className="card card-body pointer selection" onClick={() => this.showCard(p)}>
                         <div className="row">
-                            <div className="col-10" onClick={() => this.showCard(p)}>
+                            <div className="col-10">
                                 {p.contactName}
                             </div>
 

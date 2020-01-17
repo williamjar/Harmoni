@@ -39,6 +39,7 @@ export let loginDao = new loginDaoObj(pool);
 export let pictureDao = new pictureDaoObj(pool);
 export let ticketDao = new ticketDaoObj(pool);
 
+
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -60,7 +61,5 @@ require('./server-organizer.js');
 require('./server-picture.js');
 require('./server-rider.js');
 require('./server-ticket');
-require('./server-email');
 
 app.listen(8080);
-console.log("The server is now running on port 8080");
