@@ -19,8 +19,8 @@ module.exports = class ticketDao extends Dao {
         super.query('UPDATE ticketType SET ticketTypeName = ?, price = ?, amount = ?, releaseDate = ?, releaseTime = ?, endDate = ?, endTime = ?, description = ? WHERE ticketTypeID = ?' , list, callback);
     }
 
-    deleteTicket(callback, ticketTypeID) {
-        super.query('DELETE FROM ticketType WHERE ticketTypeID = ?', [ticketTypeID], callback);
+    deleteTicket(callback, eventID, ticketTypeID) {
+        super.query('DELETE FROM ticketType WHERE eventID = ? AND ticketTypeID = ?', [eventID, ticketTypeID], callback);
     }
 
 };

@@ -74,4 +74,13 @@ export class TicketStore {
         });
 
     }
+
+    //delete a ticket from an event
+    static deleteTicket(eventID ,ticketTypeID) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.delete('/api/ticket/' + eventID + '/' + ticketTypeID , {headers: header}).then(response => response.data);
+    }
 }

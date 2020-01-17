@@ -61,10 +61,10 @@ app.put("/ticket/:ticketTypeID", (request, response) => {
     }, val, request.params.ticketTypeID);
 });
 
-app.delete("/ticket/:ticketTypeID", (request, response) => {
+app.delete("/ticket/:eventID/:ticketTypeID", (request, response) => {
     console.log("Express: Request to delete ticket " + request.params.ticketTypeID);
-    documentDao.deleteOne((status, data) => {
+    ticketDao.deleteTicket((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.ticketTypeID);
+    }, request.params.eventID, request.params.ticketTypeID);
 });
