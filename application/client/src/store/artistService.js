@@ -50,6 +50,7 @@ export class ArtistService {
                 console.log("artist");
                 console.log(res);
                 callback();
+                return new Artist(res.data.insertId, name, phone, email, genreID, organizerID);
             });
         });
     }
