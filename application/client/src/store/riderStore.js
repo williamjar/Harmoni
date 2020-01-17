@@ -40,7 +40,7 @@ export class RiderStore {
                 response.data.map( data => {
 
                     this.allRidersForCurrentEvent.push(new RiderElement(data.riderElementID, data.artistID,
-                        data.status, data.isDone, data.description))
+                        data.status, data.isDone === 1, data.description))
                 });
 
                 callback();

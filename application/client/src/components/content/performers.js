@@ -35,7 +35,7 @@ export class PerformerPanel extends Component{
         return (
             <div>
                 <div className="row">
-                    <div className="col-lg-6 col-md-12  border-right">
+                    <div className="col-lg-8 col-md-12  border-right">
                         <div className="row">
                             <div className="col-8">
                                 <Search searchHandler={this.searchHandler} results={this.state.results} />
@@ -51,7 +51,7 @@ export class PerformerPanel extends Component{
                         </div>
                     </div>
 
-                    <div className="col-lg-6 col-md-12">
+                    <div className="col-lg-4 col-md-12">
                         <RegisteredPerformers performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
                     </div>
                 </div>
@@ -320,7 +320,7 @@ export class PerformerCard extends Component{
 
         this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(rider => {
             if (rider.isModified){
-                RiderStore.updateRider(() => {rider.isModified = false}, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone, rider.description);
+                RiderStore.updateRider(() => {rider.isModified = false}, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone ? 1 : 0, rider.description);
             }
         });
 
@@ -340,8 +340,8 @@ export class Rider extends Component{
         super(props);
 
         this.state = {
-            taskDone: false,
-            status : "",
+            taskDone: this.props.riderObject.isDone,
+            status : this.props.riderObject.status,
         };
 
     }
@@ -357,7 +357,7 @@ export class Rider extends Component{
 
                     <div className="col-3">
                         <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value={this.props.isDone} name="checkbox" onChange={this.handleInput}/>
+                            <input className="form-check-input" type="checkbox" checked={this.state.taskDone} name="taskDone" onChange={this.handleInput}/>
                                 <label className="form-check-label" htmlFor="riderCompleted">
                                     Utført
                                 </label>
@@ -365,7 +365,7 @@ export class Rider extends Component{
                     </div>
 
                     <div className="col-4">
-                        <input type="text" className="form-control" placeholder="Status"value={this.props.status} name="status" onChange={this.handleInput}/>
+                        <input type="text" className="form-control" placeholder="Status"value={this.state.status} name="status" onChange={this.handleInput}/>
                     </div>
 
                 </div>
@@ -377,29 +377,21 @@ export class Rider extends Component{
 
     handleInput = (event) =>{
         /* Gets the input from the status and checkbox and updates state */
-        let currentState = this.state;
+        this.setState({[event.target.name] : event.target.name.trim() === "status"? event.target.value: event.target.checked});
 
+        this.props.riderObject.status = this.state.status;
+        this.props.riderObject.isDone = this.state.taskDone;
 
+        this.props.riderObject.isModified = true;
+    };
 
-        if(event.target.name === "status"){
-            currentState.status = event.target.value;
-
-        }
-
-        if(event.target.name === "checkbox"){
-            currentState.taskDone = event.target.checked;
-        }
-
-        this.setState(currentState);
-    }
-
-    submit = () => {
+/*    submit = () => {
         let riderID = this.props.riderObject.riderID;
         let artistID = this.props.riderObject.artistID;
         let description = this.props.riderObject.description;
 
         RiderStore.updateRider(() => {}, riderID, artistID, EventStore.currentEvent.eventID, this.state.status, this.state.taskDone, description);
-    }
+    }*/
 
 
 }
