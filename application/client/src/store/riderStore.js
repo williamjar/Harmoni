@@ -39,8 +39,8 @@ export class RiderStore {
 
                 response.data.map( data => {
 
-                    this.allRidersForCurrentEvent.push(new RiderElement(data.riderID, data.artistID,
-                        data.status, data.isDone, data.description))
+                    this.allRidersForCurrentEvent.push(new RiderElement(data.riderElementID, data.artistID,
+                        data.status, data.isDone === 1, data.description))
                 });
 
                 callback();
@@ -68,6 +68,8 @@ export class RiderStore {
 
     //update a rider element
     static updateRider(callback, riderElementID, artistID, eventID, status, isDone, description) {
+        console.log("From rider store: " + riderElementID + artistID + eventID + status + isDone + description);
+
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken

@@ -35,7 +35,7 @@ export class PerformerPanel extends Component{
         return (
             <div>
                 <div className="row">
-                    <div className="col-lg-6 col-md-12  border-right">
+                    <div className="col-lg-8 col-md-12  border-right">
                         <div className="row">
                             <div className="col-8">
                                 <Search searchHandler={this.searchHandler} results={this.state.results} />
@@ -46,12 +46,12 @@ export class PerformerPanel extends Component{
                         </div>
 
                         <div className="padding-top-20">
-                            {this.state.showRegisterNew?<RegisterPerformer submitFunction={() => this.submitFunction()} toggleRegister={this.toggleRegisterNew} />:null}
+                            {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
                             {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
                         </div>
                     </div>
 
-                    <div className="col-lg-6 col-md-12">
+                    <div className="col-lg-4 col-md-12">
                         <RegisteredPerformers performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
                     </div>
                 </div>
@@ -126,7 +126,10 @@ export class PerformerPanel extends Component{
         this.setState(currentState);
     };
 
-    submitFunction = () => {
+    submitFunction = (artist) => {
+        console.log("artist mottatt");
+        console.log(artist);
+        this.assignArtist(artist);
         this.callBackSearchResult();
         this.toggleRegisterNew();
 
@@ -189,6 +192,7 @@ export class PerformerCard extends Component{
                         </select>
                     </div>
 
+
                 </div>
                 <hr></hr>
                 <div className="row">
@@ -208,7 +212,7 @@ export class PerformerCard extends Component{
                         </InputGroup>
 
                         {this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(e =>
-                            <Rider description={e.description} isDone={e.isDone} status={e.status}/>
+                            <Rider description={e.description} isDone={e.isDone} status={e.status} riderObject={e}/>
                         )}
 
 
@@ -248,7 +252,7 @@ export class PerformerCard extends Component{
                    </div>
 
                    <div className="col-4 offset-4 text-right">
-                       <button className="btn-success rounded" onClick={() => this.save()}>Lagre</button>
+                       <button className="btn-success rounded" onClick={() => this.save()} id="savePerformer">Lagre</button>
                    </div>
                </div>
 
@@ -311,9 +315,14 @@ export class PerformerCard extends Component{
         let genre = document.querySelector("#genreSelect").value;
         let signedContract = document.querySelector("#signedContract").checked;
         let payed = document.querySelector("#performerPayed").checked;
-        //let performer = this.state.performer;
 
         alert("save clicked");
+
+        this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(rider => {
+            if (rider.isModified){
+                RiderStore.updateRider(() => {rider.isModified = false}, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone ? 1 : 0, rider.description);
+            }
+        });
 
         let json = {
             genreArtist : genre,
@@ -331,9 +340,10 @@ export class Rider extends Component{
         super(props);
 
         this.state = {
-            taskDone: false,
-            status : "",
+            taskDone: this.props.riderObject.isDone,
+            status : this.props.riderObject.status,
         };
+
     }
 
     render(){
@@ -347,7 +357,7 @@ export class Rider extends Component{
 
                     <div className="col-3">
                         <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value={this.props.isDone} id="riderCompleted" onChange={this.handleInput}/>
+                            <input className="form-check-input" type="checkbox" checked={this.state.taskDone} name="taskDone" onChange={this.handleInput}/>
                                 <label className="form-check-label" htmlFor="riderCompleted">
                                     Utført
                                 </label>
@@ -355,7 +365,7 @@ export class Rider extends Component{
                     </div>
 
                     <div className="col-4">
-                        <input type="text" className="form-control" placeholder="Status" id="statusRider" value={this.props.status} onChange={this.handleInput}/>
+                        <input type="text" className="form-control" placeholder="Status"value={this.state.status} name="status" onChange={this.handleInput}/>
                     </div>
 
                 </div>
@@ -363,15 +373,27 @@ export class Rider extends Component{
         )
     }
 
+
+
     handleInput = (event) =>{
         /* Gets the input from the status and checkbox and updates state */
-        let completedTask = document.querySelector("#riderCompleted").checked;
-        let status = document.querySelector("#statusRider").value;
+        this.setState({[event.target.name] : event.target.name.trim() === "status"? event.target.value: event.target.checked});
 
-        this.setState({taskDone: false, status: status});
+        this.props.riderObject.status = this.state.status;
+        this.props.riderObject.isDone = this.state.taskDone;
 
-        //TODO:  Need to post this state to database
-    }
+        this.props.riderObject.isModified = true;
+    };
+
+/*    submit = () => {
+        let riderID = this.props.riderObject.riderID;
+        let artistID = this.props.riderObject.artistID;
+        let description = this.props.riderObject.description;
+
+        RiderStore.updateRider(() => {}, riderID, artistID, EventStore.currentEvent.eventID, this.state.status, this.state.taskDone, description);
+    }*/
+
+
 }
 
 export class RegisterPerformer extends Component{
@@ -483,8 +505,10 @@ export class RegisterPerformer extends Component{
             /* Should check if valid as email address, not able to put type to email because it fucked eveything up */
             let genreID = 1;
             console.log(this.state.email);
-            ArtistService.createArtist(() => {
-                this.props.submitFunction(); // Call to parent to update it's information in state.
+            ArtistService.createArtist((artist) => {
+                console.log("received artist");
+                console.log(artist);
+                this.props.submitFunction(artist); // Call to parent to update it's information in state.
                 }, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
         } else{
             alert("Du har ikke fyllt inn alle feltene");
