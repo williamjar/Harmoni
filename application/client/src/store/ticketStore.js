@@ -8,6 +8,8 @@ const axiosConfig = require("./axiosConfig");
 
 export class TicketStore {
 
+    static allTickets = [];
+
     //Adds ticket
     static addTicket(eventID, name, price, amount, releaseDate, releaseTime,  endDate, endTime, description ) {
 
@@ -43,8 +45,8 @@ export class TicketStore {
             "x-access-token": CookieStore.currentToken
         };
 
-        axios.get(axiosConfig.root + '/ticket/:ticketTypeID' + ticketTypeID, {headers: header}).then(response => {
-                let ticket = new TicketType(response.data[0].ticketTypeID, response.data[0].price, response.data[0].amount,
+        axios.get(axiosConfig.root + '/ticket/' + ticketTypeID, {headers: header}).then(response => {
+                let ticket = new TicketType(response.data[0].ticketTypeID, response.data[0].ticketTypeName, response.data[0].price, response.data[0].amount,
                                             response.data[0].releaseDate, response.data[0].releaseTime, response.data[0].hasEndDate,
                                             response.data[0].endDate, response.data[0].endTime, response.data[0].description);
                 callback(ticket);
@@ -54,20 +56,21 @@ export class TicketStore {
 
     //return all tickets to an event in a list.
     static  getAllTickets(eventID, callback) {
-        let allTickets = [];
+
+        this.allTickets = [];
+
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        //ticketTypeID, price, amount, releaseDate, releaseTime, hasEndDate, endDate, endTime, description
-        axios.get(axiosConfig.root + '/api/ticket/allTickets/:eventID' + eventID, {headers: header}).then(response =>  {
+        axios.get(axiosConfig.root + '/api/ticket/allTickets/' + eventID, {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
-                allTickets.push(new TicketType(response.data[i].eventID, response.data[i].price, response.data[i].amount, response[i].releaseDate,
+                this.allTickets.push(new TicketType(response.data[i].ticketTypeID, response.data[i].ticketTypeName , response.data[i].price, response.data[i].amount, response.data[i].releaseDate,
                                                 response.data[i].releaseTime, response.data[i].hasEndDate, response.data[i].endDate,
                                                 response.data[i].endTime, response.data[i].description));
             }
-            callback(allTickets);
+            callback();
         });
 
     }

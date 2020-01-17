@@ -5,15 +5,12 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Accordion from "react-bootstrap/Accordion";
-import {TicketType} from "../classes/ticketType";
 import { FaCalendar } from 'react-icons/fa';
 import ListGroup from "react-bootstrap/ListGroup";
 import {Row, Table} from "react-bootstrap";
 import {FaAngleDown} from "react-icons/all";
 import {TicketStore} from "../store/ticketStore";
 import {EventStore} from "../store/eventStore";
-import {CrewStore} from "../store/crewStore";
-
 
 /*
     Component to share all the ticket components
@@ -190,7 +187,7 @@ export class ListTickets extends Component{
             return(
                 <Card.Body>
                     <ListGroup>
-                        {this.state.ticketList.map(ticket =>(
+                        {this.state.ticketList.map(ticket => (
                             <ListGroup.Item>
                                 <Form>
                                     <Form.Row className="ticketStyle" >
@@ -259,21 +256,19 @@ export class ListTickets extends Component{
     }
 
     listTickets = () => {
+        console.log(EventStore.currentEvent.eventID);
         TicketStore.getAllTickets( EventStore.currentEvent.eventID, () => {
-            console.log("return all tickets" + TicketStore.getAllTickets);
             this.setState(
-                { ticketList : TicketStore.getAllTickets})
+                { ticketList : TicketStore.allTickets})
         });
-        console.log(this.state);
+        console.log(this.state.ticketList);
     };
-/*
+
     componentDidMount() {
-        console.log('componentDidMount');
         this.listTickets();
-        console.log('Finito');
     }
 
- */
+
 
 }
 

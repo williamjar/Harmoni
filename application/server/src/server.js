@@ -1134,7 +1134,7 @@ app.get("/api/ticket/:ticketTypeID", (require, response) => {
 
 //Get all tickets for an event
 app.get("/api/ticket/allTickets/:eventID", (require, response) => {
-    console.log("Request to get a rider element");
+    console.log("Request to get a list with tickets  element");
     ticketDao.getAllTicketsForEvent((status, data) => {
         response.status(status);
         response.json(data);
@@ -1165,7 +1165,7 @@ app.post("/api/ticket/insert", (request, response) => {
 });
 
 
-app.put("/api/ticket/:ticketTypeID", (request, response) => {
+app.put("/ticket/:ticketTypeID", (request, response) => {
     console.log("Express: Request to change ticket " + request.params.ticketTypeID);
     let val = [
         request.body.ticketTypeName,
@@ -1183,7 +1183,7 @@ app.put("/api/ticket/:ticketTypeID", (request, response) => {
     }, val, request.params.ticketTypeID);
 });
 
-app.delete("api/ticket/:ticketTypeID", (request, response) => {
+app.delete("/ticket/:ticketTypeID", (request, response) => {
     console.log("Express: Request to delete ticket " + request.params.ticketTypeID);
     documentDao.deleteOne((status, data) => {
         response.status(status);
