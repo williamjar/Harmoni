@@ -41,30 +41,13 @@ export class EventForm extends Component{
         }
     };
 
-    validateForm(){
-        let startTime = EventStore.currentEvent.startTime;
-        let endTime =  EventStore.currentEvent.endTime;
-        let startDate = EventStore.currentEvent.startDate;
-        let endDate = EventStore.currentEvent.endDate;
-
-        if(startDate <= endDate){
-            return true;
-        }
-
-        if(startDate===endDate){
-            alert("samme dag" + startTime < endTime);
-            return startTime < endTime;
-        }
-
-    }
-
     render(){
         return(
             <Tabs defaultActiveKey="0" id="tabs">
                 <Tab eventKey="0" title="Generelt" >
-                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
+                    <TabContent>
                         <div className="padding-bottom-20">
-                            <GeneralInfo editable={this.state.edit}/>
+                            <GeneralInfo/>
                         </div>
                     </TabContent>
                 </Tab>

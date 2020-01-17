@@ -166,8 +166,11 @@ export class InfoForm extends Component {
                             </Row>
                             <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Arrangementet kan ikke starte etter det har sluttet!</Form.Text>
                         </Form.Group>
+                        <Form.Group>
+                            <Button type="submit" variant="warning">Lagre</Button>
+                        </Form.Group>
                     </Card.Body>
-                        <Button type="submit" variant="warning">Lagre</Button>
+
                     </Form>
                 </Card>
             </div>
@@ -272,10 +275,13 @@ export class InfoForm extends Component {
                                     </Col>
                                 </Row>
                             </Form.Group>
+                            <Form.Group>
+                                <Button variant="warning" onClick={() => this.editMode()}>Rediger</Button>
+                            </Form.Group>
                         </Card.Body>
 
                     </Card>
-                    <Button variant="warning" onClick={() => this.editMode()}>Rediger</Button>
+
                 </div>
             );
         }

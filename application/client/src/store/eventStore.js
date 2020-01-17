@@ -93,8 +93,6 @@ export class EventStore{
             "pictureID" : this.currentEvent.picture
         };
 
-        console.log(body);
-
         return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, body, {headers: header});
     }
 

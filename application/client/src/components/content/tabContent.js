@@ -19,13 +19,12 @@ export class TabContent extends Component {
                 <Row>
                     <Col xs={6} md={3}>
                         {
-                            this.state.editable ?
                                 <div>
                                     <Button className="mr-1" onClick={this.props.onClick}>Neste</Button>
 
                                     <Button variant="danger">Slett arrangement</Button>
                                     <Button  className="mr-1" disabled variant="success">Publiser</Button>
-                                </div> : null
+                                </div>
                         }
                     </Col>
                 </Row>
