@@ -257,7 +257,7 @@ app.post("/api/:eventID/documents/create/crew", (req, res) => {
 });
 
 
-app.get("/api/:eventID/documents/categories", (req, res) => {
+app.get("/api/event/:eventID/documents/categories", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getAllDocumentCategoriesForEvent(req.params.eventID, (status, data) => {
         console.log(data);

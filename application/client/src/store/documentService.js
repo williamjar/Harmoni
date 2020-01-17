@@ -18,10 +18,10 @@ export class DocumentService {
         let documentsByCategoryForEvent = [];
 
         axios.get(axiosConfig.root + '/api/' + eventID + '/documents/category/' + documentCategoryID, {headers: header}).then(response => {
-            //TODO endre document klasse -- se DB
             for (let i = 0; i < response.data.length; i++) {
-                currentCategories.push(new Document(response.data[i].documentID, response.data[i].documentLink,
-                    response.data[i].documentCategory));
+                documentsByCategoryForEvent.push(new Document(response.data[i].documentID, response.data[i].eventID,
+                    response.data[i].documentName, response.data[i].documentLink, response.data[i].artistID,
+                    response.data[i].crewID, response.data[i].documentCategoryID));
             }
             callback(documentsByCategoryForEvent);
         });
@@ -143,13 +143,35 @@ export class DocumentService {
 
         let currentCategories = [];
 
-        axios.get(axiosConfig.root + '/api/' + eventID + '/documents/categories', {headers: header}).then(response => {
+        axios.get(axiosConfig.root + '/api/event/' + eventID + '/documents/categories', {headers: header}).then(response => {
             for (let i = 0; i < response.data.length; i++) {
                 currentCategories.push(new DocumentCategory(response.data[i].documentCategoryID,
                     response.data[i].documentCategoryName));
             }
+
             callback(currentCategories);
-        });
+        }).catch(res => console.log(res));
+    }
+
+    static getOneDocument(eventID, documentID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let document;
+
+
+        axios.get(axiosConfig.root + '/api/' + eventID + '/documents/' + documentID, {headers: header}).then(response => {
+            console.log(response.data.length);
+            for (let i = 0; i < response.data.length; i++) {
+                document = new Document(response.data[i].documentID, response.data[i].eventID,
+                    response.data[i].documentName, response.data[i].documentLink, response.data[i].artistID,
+                    response.data[i].crewID, response.data[i].documentCategoryID);
+            }
+            console.log(document.documentName);
+            callback(document);
+        }).catch(res => console.log(res));
     }
 
 }
