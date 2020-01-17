@@ -12,6 +12,8 @@ import {CookieStore} from "../../store/cookieStore";
 import {RiderStore} from "../../store/riderStore";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
+import {MailService} from "../../store/mailService";
+import {OrganizerStore} from "../../store/organizerStore";
 
 
 export class PerformerPanel extends Component{
@@ -247,6 +249,10 @@ export class PerformerCard extends Component{
                    </div>
 
                    <div className="col-4 offset-4 text-right">
+                       <button className = "butn-success-rounded" onClick={() => this.sendEmail()}>Send offisiell invitasjon til artist</button>
+                   </div>
+
+                   <div className="col-4 offset-4 text-right">
                        <button className="btn-success rounded" onClick={() => this.save()}>Lagre</button>
                    </div>
                </div>
@@ -304,6 +310,23 @@ export class PerformerCard extends Component{
         currentState.riderInput = event.target.value;
         this.setState(currentState);
     };
+
+    sendEmail(){
+        console.log("Sending email to");
+        console.log(this.state.performer);
+        MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
+            "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
+            "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
+            "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
+            "Regards, " + OrganizerStore.currentOrganizer.username, (statusCode) => {
+                if (statusCode === 200){
+                    console.log("Email sent successfully");
+                }
+                else{
+                    console.log("An error occured sending the email");
+                }
+        });
+    }
 
     save = () => {
         /* Save function to gather all information in the Performer Card that needs to be stored */
