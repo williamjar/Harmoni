@@ -37,7 +37,7 @@ export let organizerDao = new organizerDaoObj(pool);
 export let riderDao = new riderDaoObj(pool);
 export let loginDao = new loginDaoObj(pool);
 export let pictureDao = new pictureDaoObj(pool);
-export let tickDao = new ticketDaoObj(pool);
+export let ticketDao = new ticketDaoObj(pool);
 
 
 app.use(bodyParser.json());
