@@ -76,8 +76,7 @@ export class RiderStore {
                 this.allRidersForCurrentEvent = [];
                 for (let i = 0; i < response.data.length; i++) {
                     this.allRidersForCurrentEvent.push(new RiderElement(response.data[0].riderID, response.data[0].artistID,
-                        response.data[0].eventID, response.data[0].status, response.data[0].isDone,
-                        response.data[0].description))
+                        response.data[0].status, response.data[0].isDone, response.data[0].description))
                 }
                 callback();
             })
