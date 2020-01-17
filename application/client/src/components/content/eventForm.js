@@ -25,7 +25,6 @@ export class EventForm extends Component{
 
     }
 
-    //TODO: Implement tab shifting with button click
 
     // Handles when the user wants to edit the event
     editClicked = () => {
@@ -34,9 +33,30 @@ export class EventForm extends Component{
 
     // Handles when the user saves the event
     saveClicked = () => {
-        this.setState({edit: false});
-        EventStore.postCurrentEvent().then(console.log("Lagret"));
+        if(this.validateForm()){
+            this.setState({edit: false});
+            EventStore.postCurrentEvent().then(console.log("Lagret"));
+        } else{
+            console.log("start date can not be after end date");
+        }
     };
+
+    validateForm(){
+        let startTime = EventStore.currentEvent.startTime;
+        let endTime =  EventStore.currentEvent.endTime;
+        let startDate = EventStore.currentEvent.startDate;
+        let endDate = EventStore.currentEvent.endDate;
+
+        if(startDate <= endDate){
+            return true;
+        }
+
+        if(startDate===endDate){
+            alert("samme dag" + startTime < endTime);
+            return startTime < endTime;
+        }
+
+    }
 
     render(){
         return(

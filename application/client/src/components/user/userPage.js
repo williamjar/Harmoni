@@ -210,6 +210,7 @@ export class UserPage extends React.Component {
     hideModal(){
         this.setState({showPasswordAlert: false});
     }
+
     validateFile(){
         console.log(this.state.newProfilePicture);
         return (/\.(gif|jpeg|jpg|png)$/i).test(this.state.newProfilePicture.name);
