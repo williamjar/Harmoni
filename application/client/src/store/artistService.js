@@ -1,9 +1,8 @@
 import axios from "axios";
-import {Artist} from "../classes/artist.js"
+import {Artist} from "../classes/artist";
 import {CookieStore} from "./cookieStore";
 import {Genre} from "../classes/genre";
 import {Document} from "../classes/document";
-import {Artist as artist} from "../classes/artist";
 
 const axiosConfig = require("./axiosConfig");
 

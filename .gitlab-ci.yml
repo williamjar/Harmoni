@@ -14,7 +14,7 @@ before_script:
 
 
 
-# Run JEST tests
+# Run JEST test
 run_tests:
   stage: test
   script:

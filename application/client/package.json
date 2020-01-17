@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
+    "mocha": "^7.0.0",
     "axios": "^0.19.1",
     "bootstrap": "^4.4.1",
     "history": "^4.10.1",
@@ -23,7 +24,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "npx jest --runInBand --passWithNoTests --detectOpenHandles --forceExit",
+    "test": "mocha --require esm \"src/**/*.test.js\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
