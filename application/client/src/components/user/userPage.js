@@ -8,17 +8,12 @@ import {
     Table,
     Image,
     Accordion,
-    CardColumns,
     FormControl,
-    ListGroup,
-    CardDeck,
     Spinner,
     Modal
 } from 'react-bootstrap'
-import {CardText} from "react-bootstrap/Card";
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
-import {StandardAlert} from "../widgets/alert";
 import {PictureService} from "../../store/pictureService";
 
 export class UserPage extends React.Component {
@@ -147,6 +142,7 @@ export class UserPage extends React.Component {
                                                 <Card.Body>
                                                     <Form.Group>
                                                         <Form.Control maxLength="8" type="number"  name="newPhonenumber" placeholder={this.state.phonenumber} value={this.state.newPhonenumber} onChange={this.handleInputChange}/>
+                                                        <Form.Text className={"text-danger"} hidden={this.validatePhoneNumberLength()}>Telefonnummeret må være 8 siffer</Form.Text>
                                                     </Form.Group>
                                                     <Form.Group>
                                                         <SubmitButton loading={this.state.savingInformation} stop={!this.validatePhoneNumber()}/>
@@ -200,8 +196,11 @@ export class UserPage extends React.Component {
         }
     }
 
+    validatePhoneNumberLength(){
+        return (this.state.newPhonenumber.length === 8)
+    }
     validatePhoneNumber(){
-        return (this.state.newPhonenumber !== this.state.phonenumber) && (this.state.newPhonenumber.length === 8);
+        return (this.state.newPhonenumber !== this.state.phonenumber) && this.validatePhoneNumberLength();
     }
 
     validatePassword(){
@@ -221,9 +220,9 @@ export class UserPage extends React.Component {
             if (statusCode === 200){
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
 
-                var databaseUsername = OrganizerStore.currentOrganizer.username;
-                var dataBbaseEmail = OrganizerStore.currentOrganizer.email;
-                var databasePhone = OrganizerStore.currentOrganizer.phone;
+                let databaseUsername = OrganizerStore.currentOrganizer.username;
+                let dataBaseEmail = OrganizerStore.currentOrganizer.email;
+                let databasePhone = OrganizerStore.currentOrganizer.phone;
                 let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
 
                 let image = null;
@@ -239,7 +238,7 @@ export class UserPage extends React.Component {
 
                 this.setState(this.setState({
                     username: databaseUsername,
-                    email: dataBbaseEmail,
+                    email: dataBaseEmail,
                     phonenumber: databasePhone,
                     profilePicture: image
                 }));

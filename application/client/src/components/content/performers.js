@@ -288,13 +288,13 @@ export class PerformerCard extends Component{
         /* Adds rider to performer on current event */
         alert(this.state.riderInput);
         RiderStore.createNewRiderElement((newRider) => {
-            RiderStore.allRidersForCurrentArtistAndEvent.push(newRider);
-            console.log(RiderStore.allRidersForCurrentArtistAndEvent);
+            RiderStore.allRidersForCurrentArtistAndEvent.push(newRider); // Has been posted and returns a
 
             let currentState = this.state;
             currentState.riders = RiderStore.allRidersForCurrentArtistAndEvent;
             this.setState(currentState);
-            console.log(this.state);
+
+
         }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
     };
 
@@ -310,7 +310,7 @@ export class PerformerCard extends Component{
         let genre = document.querySelector("#genreSelect").value;
         let signedContract = document.querySelector("#signedContract").checked;
         let payed = document.querySelector("#performerPayed").checked;
-        let performer = this.state.performer;
+        //let performer = this.state.performer;
 
         alert("save clicked");
 
@@ -479,7 +479,7 @@ export class RegisterPerformer extends Component{
 
     submitForm = () => {
         if(this.state.name.trim() !== "" && this.state.phone.trim() !== "" && this.state.email.trim() !== ""){
-            /* Should check if valid as email adress, not able to put type to email because it fucked eveything up */
+            /* Should check if valid as email address, not able to put type to email because it fucked eveything up */
             let genreID = 1;
             console.log(this.state.email);
             ArtistService.createArtist(() => {

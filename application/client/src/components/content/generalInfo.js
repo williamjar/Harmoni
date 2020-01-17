@@ -24,7 +24,6 @@ export class GeneralInfo extends Component{
         return(
             <div>
                 <div className="row">
-
                     <div className="col-7 border-right">
                         {this.state.editable ? <InfoForm/> : <InfoView/>}
                     </div>
@@ -117,8 +116,8 @@ export class InfoForm extends Component {
     render() {
         return(
             <div>
-                <Card className="mb-2">
-                    <Card.Header>
+                <Card className="mb-2 border-0">
+                    <Card.Body>
                         <Row>
                             <Col xs="4">
                                 {this.state.edit === false ? <Card.Title>
@@ -130,8 +129,6 @@ export class InfoForm extends Component {
                                     <Button type="submit" onClick={this.saveClicked}>Lagre</Button>}
                             </Col>
                         </Row>
-                    </Card.Header>
-                    <Card.Body>
                         <Form.Group>
                             <Row className="mb-2">
                                 <Col xs="5">
@@ -217,13 +214,9 @@ export class InfoView extends Component {
     render() {
         return(
             <div>
-                <Card className="mb-2">
-                    <Card.Header>
-                        <Row>
-                            <Card.Title>{EventStore.currentEvent.eventName}</Card.Title>
-                        </Row>
-                    </Card.Header>
+                <Card className="mb-2 border-0">
                     <Card.Body>
+                        <Card.Title>{EventStore.currentEvent.eventName}</Card.Title>
                         <Form.Group>
                             <Row className="mb-2">
                                 <Col xs="5">
@@ -249,7 +242,7 @@ export class InfoView extends Component {
                                 <Col>
                                     <Row>
                                         <Col>
-                                            <Form.Label>Type arrangement</Form.Label>
+                                            <Form.Label>Kategori:</Form.Label>
                                         </Col>
                                     </Row>
                                     Musikk
@@ -308,12 +301,13 @@ export class InfoView extends Component {
                                 <Col>
                                     <Row className="mt-2">
                                         <Col>
-                                            <Card.Title>Beskrivelse</Card.Title>
+                                            <Card.Body>
+                                                <Card.Title>Beskrivelse</Card.Title>
+                                                {EventStore.currentEvent.description}
+                                            </Card.Body>
                                         </Col>
                                     </Row>
-                                    <Card.Body>
-                                        {EventStore.currentEvent.description}
-                                    </Card.Body>
+
                                 </Col>
                             </Row>
                         </Form.Group>
