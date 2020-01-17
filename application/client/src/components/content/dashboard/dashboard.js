@@ -10,7 +10,7 @@ import {
     Dropdown,
     DropdownButton,
     Row,
-    Table
+    Table, Form
 } from "react-bootstrap";
 import {FaAngleDown, FaPlusCircle} from "react-icons/fa";
 import {EventView} from "./eventView";
@@ -31,6 +31,7 @@ export class Dashboard extends React.Component {
         this.state = {
             active: "all",
             events: [],
+            sortBy: 0
         };
     }
 
@@ -52,23 +53,24 @@ export class Dashboard extends React.Component {
         }
     };
 
+    // Sets what the user wants to sort by
+    sortSelected = (e) => {
+        this.setState({sortBy: e.target.value});
+    };
+
     // Sends the user to create event screen when clicking the "plus"-button
     addEventClicked = () => {
         history.push("/opprett")
     };
 
-    // Stores all the organizer's events before rendering the page
-    componentDidMount() {
-        EventStore.storeAllEventsForOrganizer(() => {this.setState({events: EventStore.allEventsForOrganizer})}, CookieStore.currentUserID);
-    }
-
     render() {
+        let sortedEvents = this.sortEvents(this.state.events);
 
         return(
             <Card className={"border-0 justify-content-md-center m-4"}>
                 <h3 className={"mt-4 mb-4"}>Arrangementer</h3>
                 <Search searchHandler={this.searchHandler}/>
-                <Row className="filterMenu">
+                <Row className="filterMenu mb-2 mt-2">
                         <Col>
                             <ButtonGroup size="sm">
                                 <Button name="all" variant="secondary" active={this.state.active === "all"} onClick={this.filterEvents}>Alle</Button>
@@ -76,14 +78,18 @@ export class Dashboard extends React.Component {
                                 <Button name="planning" variant="secondary" active={this.state.active === "planning"} onClick={this.filterEvents}>Under planlegging</Button>
                                 <Button name="archived" variant="secondary" active={this.state.active === "archived"} onClick={this.filterEvents}>Arkiverte</Button>
                             </ButtonGroup>
-
-                            <DropdownButton size="sm" variant="info" title="Sorter etter..">
-                                <Dropdown.Item as="button">Dato</Dropdown.Item>
-                                <Dropdown.Item as="button">Pris</Dropdown.Item>
-                            </DropdownButton>
                         </Col>
-
-                    </Row>
+                </Row>
+                <Row className="mb-2">
+                    <Col xs={2}>
+                        <Form.Control as="select" size="sm" onChange={this.sortSelected}>
+                            <option selected disabled>Sorter etter..</option>
+                            <option value={0}>Dato</option>
+                            <option value={1}>Pris</option>
+                            <option value={2}>Sted</option>
+                        </Form.Control>
+                    </Col>
+                </Row>
 
                 <Accordion id="plannedEvents" defaultActiveKey="0">
                     <Row className="no-gutters">
@@ -94,7 +100,7 @@ export class Dashboard extends React.Component {
                         <Row className="no-gutters">
                             {console.log(EventStore.allEventsForOrganizer)}
                             {this.state.events.filter(e => e.status === 1).length > 0 ?
-                                <EventView events={this.state.events.filter(event => event.status === 1)}/> :
+                                <EventView events={sortedEvents.filter(event => event.status === 1)}/> :
                                 <NoEvents message="Du har ingen planlagte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
@@ -108,7 +114,7 @@ export class Dashboard extends React.Component {
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
                             {this.state.events.filter(e => e.status === 0).length > 0 ?
-                                <EventView events={this.state.events.filter(event => event.status === 0)}/> :
+                                <EventView events={sortedEvents.filter(event => event.status === 0)}/> :
                                 <NoEvents message="Du har ingen arrangement under planlegging"/>}
                         </Row>
                     </Accordion.Collapse>
@@ -122,7 +128,7 @@ export class Dashboard extends React.Component {
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
                             {this.state.events.filter(e => e.status === 2).length > 0 ?
-                                <EventView events={this.state.events.filter(event => event.status === 2)}/> :
+                                <EventView events={sortedEvents.filter(event => event.status === 2)}/> :
                                 <NoEvents message="Du har ingen arkiverte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
@@ -140,6 +146,31 @@ export class Dashboard extends React.Component {
 
     searchHandler(){
 
+    }
+
+    // Sorts the events by either date, price or location
+    sortEvents = (events) => {
+        if(this.state.sortBy == 0) {
+            return [].concat(events).sort((a,b) => {
+                a = new Date(a.startDate);
+                b = new Date(b.startDate);
+                return a>b ? 1 : a<b ? -1 : 0;
+            });
+        } else if(this.state.sortBy == 1) {
+            /*return [].concat(events).sort((a,b) => {
+            });
+            */
+            return events;
+        } else if(this.state.sortBy == 2) {
+            return [].concat(events).sort((a,b) => {
+                return a.town > b.town ? 1 : a.town < b.town ? -1 : 0;
+            });
+        }
+    };
+
+    // Stores all the organizer's events before rendering the page
+    componentDidMount() {
+        EventStore.storeAllEventsForOrganizer(() => {this.setState({events: EventStore.allEventsForOrganizer})}, CookieStore.currentUserID);
     }
 }
 
