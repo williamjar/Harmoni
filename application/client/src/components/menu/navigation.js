@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, Row, Col, Button, Card, Spinner} from 'react-bootstrap'
+import {Row, Col} from 'react-bootstrap'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { NavLink } from 'react-router-dom';
@@ -18,7 +18,7 @@ export class NavBar extends Component{
         return(
             <div className="Nav-Menu card">
                 <div className="logoImg">
-                <img width={"300px"} src={logo} alt="logo image"/>
+                <img width={"300px"} src={logo} alt=""/>
                 </div>
 
                 <Menu/>
@@ -95,6 +95,8 @@ export class UserProfileButton extends Component{
 
                             </div>
                         </Col>
+                        <Col/>
+                        <Col/>
                     </Row>
                 </div>
             </NavLink>

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {CookieStore} from "./cookieStore";
 const crypto = require('crypto');
 const hash = require('./hashService');
 const root = require('./axiosConfig').root;
