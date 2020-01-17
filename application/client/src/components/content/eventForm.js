@@ -56,21 +56,21 @@ export class EventForm extends Component{
                 <Tab eventKey="1" title="Artister">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
                         <div className="padding-bottom-20">
-                            {this.state.edit ? <PerformerPanel editable={this.state.edit}/> : <PerformersView/>}
+                            <PerformerPanel/>
                         </div>
                     </TabContent>
                 </Tab>
                 <Tab eventKey="2" title="Personell">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
                         <div className="padding-bottom-20">
-                            <CrewTab editable={this.state.edit}/>
+                            <CrewTab editable={true}/>
                         </div>
                     </TabContent>
                 </Tab>
                 <Tab eventKey="3" title="Dokumentasjon">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editalbe={this.state.edit}>
                         <div className="padding-bottom-20">
-                        <DocumentationTab editable={this.state.edit}/>
+                        <DocumentationTab editable={true}/>
                         <DocList/>
                         </div>
                     </TabContent>
