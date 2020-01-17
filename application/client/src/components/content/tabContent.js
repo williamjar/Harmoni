@@ -21,24 +21,14 @@ export class TabContent extends Component {
                     {this.props.children}
                 </div>
                 <Row>
-                    <Col xs={8}>
-                        {this.state.editable ?
-                            <Button className="mr-1" variant="secondary" onClick={this.props.saveClicked}>Lagre og
-                                lukk</Button> :
-                            <Button onClick={this.props.editClicked}>Rediger</Button>}
-                    </Col>
                     <Col xs={6} md={3}>
                         {
-                            this.state.editable ?
                                 <div>
                                     <Button className="mr-1" onClick={this.props.onClick}>Neste</Button>
 
-                                    <Button variant="danger" onClick={() => {
-                                        if (window.confirm('Er du sikker på at du vil slette dette arrangementet? Dette kan ikke reverseres!')) this.deleteClicked()
-                                    }}>Slett arrangement</Button>
-
-                                    <Button className="mr-1" disabled variant="success">Publiser</Button>
-                                </div> : null
+                                    <Button variant="danger">Slett arrangement</Button>
+                                    <Button  className="mr-1" disabled variant="success">Publiser</Button>
+                                </div>
                         }
                     </Col>
                 </Row>
@@ -46,26 +36,17 @@ export class TabContent extends Component {
         )
     }
 
-    //<Button variant="danger" onClick={this.deleteClicked}>Slett arrangement</Button>
-    // <Button variant="danger" onClick={() => {
-    //                                         if (window.confirm('Are you sure you wish to delete this item?')) this.deleteClicked()
-    //                                     }}>Slett arrangement</Button>
-
     // Updates the state when the received props from parent changes
     static getDerivedStateFromProps(props, state) {
 
-        if (props.editable !== state.editable) {
+        if(props.editable !== state.editable) {
             return {
                 editable: props.editable
             };
         }
         return null;
     }
-
-    deleteClicked = () => {
-        // TODO Create a custom confirm window
-        EventStore.deleteCurrentEvent().then(console.log('Event deleted!'));
-        history.push("/");
-    };
-
 }
+
+
+//geir
