@@ -311,6 +311,10 @@ export class PerformerCard extends Component{
         let genre = document.querySelector("#genreSelect").value;
         let signedContract = document.querySelector("#signedContract").checked;
         let payed = document.querySelector("#performerPayed").checked;
+
+        /* Gets the input from the status and checkbox and updates state */
+        let completedTask = document.querySelector("#riderCompleted").checked;
+        let status = document.querySelector("#statusRider").value;
         //let performer = this.state.performer;
 
         alert("save clicked");
