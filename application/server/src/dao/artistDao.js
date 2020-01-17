@@ -51,7 +51,7 @@ module.exports = class artistDao extends Dao {
     }
 
     updateArtistEventInfo(callback, list){
-        super.query('UPDATE event_artist SET contractSigned = ?, hasBeenPaid = ? WHERE eventID = ? AND artistID = ?');
+        super.query('UPDATE event_artist SET contractSigned = ?, hasBeenPaid = ? WHERE eventID = ? AND artistID = ?', list, callback);
     }
 
 
