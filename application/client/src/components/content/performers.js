@@ -206,6 +206,7 @@ export class PerformerCard extends Component{
                                 placeholder=""
                                 aria-label=""
                                 aria-describedby="basic-addon2"
+                                value={this.state.riderInput}
                                 onChange={this.handleInputRider}
                             />
                             <InputGroup.Append>
@@ -299,7 +300,10 @@ export class PerformerCard extends Component{
 
             let currentState = this.state;
             currentState.riders = RiderStore.allRidersForCurrentEvent;
+            currentState.riderInput = "";
             this.setState(currentState);
+
+
 
 
         }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
