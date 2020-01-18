@@ -160,8 +160,12 @@ export class Dashboard extends React.Component {
         )
     }
 
-    searchHandler() {
+    searchHandler(event) {
+        console.log("Event received");
+        console.log(event);
 
+        //TODO: may need to sett current event in event store perhaps and maybe some other variables?
+        //history.push(`/arrangementEdit/${event.eventID}`);
     }
 }
 
