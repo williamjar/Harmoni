@@ -19,7 +19,7 @@ export class MobileMenu extends Component{
         return(
             <div className="fixed-top card">
                 <Navbar bg="light" expand="lg">
-                    <Navbar.Brand href="/">Harmoni</Navbar.Brand>
+                    <NavLink to="/"><Navbar.Brand>Harmoni</Navbar.Brand></NavLink>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <div className="padding-top-20 nav-links">
