@@ -61,7 +61,7 @@ export class Menu extends Component{
                 <div className="w-100">
                     <NavLink className="" to="/" exact={true}>
                     <li className="list-group-item nav-link">
-                        <FaCalendarAlt/> Dine arrangement
+                        <FaCalendarAlt/> Mine arrangement
                     </li>
                     </NavLink>
 
@@ -83,9 +83,9 @@ export class Menu extends Component{
                     </li>
                     </NavLink>
 
-                    <NavLink className="" to="/kontrakter">
+                    <NavLink className="" to="/dokumenter">
                     <li className="list-group-item nav-link">
-                        <FaFileSignature/> Kontrakter
+                        <FaFileSignature/> Mine dokumenter
                     </li>
                     </NavLink>
                 </div>
