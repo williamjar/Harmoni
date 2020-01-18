@@ -95,6 +95,7 @@ body{
     padding-top: 50px;
     outline: 0px !important;
     border: none !important;
+    z-index: 22000;
 
 }
 
@@ -135,11 +136,13 @@ body{
 }
 
 .user-nav-mobile{
+    position: relative;
     width: 100%;
     text-align: left;
     color:black !important;
     padding:20px;
     background: lightgrey;
+    z-index: 999999;
 }
 
 .user-nav-mobile:hover{
@@ -309,6 +312,11 @@ body{
 {
     width: 10px;
     background-color: #F5F5F5;
+}
+
+.bottom-right{
+    position: absolute;
+    bottom: 0;
 }
 
 #style-5::-webkit-scrollbar-thumb

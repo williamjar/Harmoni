@@ -56,7 +56,7 @@ export class NavBar extends Component{
 export class Menu extends Component{
     render() {
         return(
-            <ul className="nav nav-links text-left list-group-flush w-100">
+            <ul className="nav nav-links text-left list-group-flush w-100 ">
 
                 <div className="w-100">
                     <NavLink className="" to="/" exact={true}>

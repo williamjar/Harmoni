@@ -40,14 +40,6 @@ export class App extends Component{
             mobileView : false,
         };
 
-        window.addEventListener('resize', () =>{
-            if(window.innerWidth > 900){
-               this.turnOffMobileView();
-            } else{
-               this.turnOnMobileView();
-            }
-        });
-
     }
 
     turnOffMobileView = () => {
@@ -63,6 +55,14 @@ export class App extends Component{
     };
 
     componentDidMount = () => {
+        window.addEventListener('resize', () =>{
+            if(window.innerWidth > 900){
+                this.turnOffMobileView();
+            } else{
+                this.turnOnMobileView();
+            }
+        });
+
         if(window.innerWidth>900){
             this.turnOffMobileView();
         } else {
@@ -71,6 +71,12 @@ export class App extends Component{
 
         this.handleLogin();
     };
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', () => {
+
+        });
+    }
 
     render(){
         if (this.state.loggedIn){
