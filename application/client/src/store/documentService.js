@@ -1,11 +1,14 @@
 import axios from "axios";
 import {Document} from "../classes/document.js"
 import {CookieStore} from "./cookieStore";
+import {DocumentCategory} from "../classes/documentCategory";
 import {EventStore} from "./eventStore";
 
 const axiosConfig = require("./axiosConfig");
 
 export class DocumentService {
+
+
 
     getAllDocumentsForOrganizer(organizerID) {
         let header = {
@@ -116,6 +119,23 @@ export class DocumentService {
         axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/crew/' + crewID)
             .then(res => console.log(res.data))
             .catch(err => console.error(err));
+    }
+
+    static getAllDocumentCategoriesForEvent(eventID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let currentCategories = [];
+
+        axios.get(axiosConfig.root + '/api/' + eventID + '/documents/categories', {headers: header}).then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+                currentCategories.push(new DocumentCategory(response.data[i].documentCategoryID,
+                    response.data[i].documentCategoryName));
+            }
+            callback(currentCategories);
+        });
     }
 
 }
