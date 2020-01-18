@@ -2,8 +2,8 @@ import React from 'react';
 import {Component} from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Menu, NavBar, UserProfileButton} from "./components/menu/navigation";
-import {Content} from "./components/content/content";
+import {Menu, MobileMenu, NavBar, UserProfileButton} from "./components/menu/navigation";
+import {Content, SimpleContent} from "./components/content/content";
 import {HashRouter, NavLink, Route} from 'react-router-dom';
 import {PerformerCard, PerformersTab} from "./components/content/performers";
 import {Dashboard} from "./components/content/dashboard/dashboard";
@@ -22,6 +22,8 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "react-icons/all";
+import {Alert} from './components/alerts'
+
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
 let history = createHashHistory();
@@ -42,8 +44,8 @@ export class App extends Component{
             } else{
                this.turnOnMobileView();
             }
-
         });
+
     }
 
     turnOffMobileView = () => {
@@ -83,7 +85,7 @@ export class App extends Component{
 
                             <div className="col-lg-10">
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
-                                <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash />} />} />
+                                <Route exact path="/opprett"  component={() => <SimpleContent page={<CreateEventSplash />} />} />
                                 <Route exact path="/artister" component={() => <Content page={<Search/>} />} />
                                 <Route exact path="/personell" component={Content}/>
                                 <Route exact path="/kontrakter" component={Content}/>
@@ -134,24 +136,6 @@ export class App extends Component{
 
 }
 
-export class MobileMenu extends Component{
-    render() {
-        return(
-            <div className="fixed-top card">
-                <Navbar bg="light" expand="lg">
-                    <Navbar.Brand href="/">Harmoni</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <div className="padding-top-20 nav-links">
-                            <Menu/>
-                            <UserProfileButton/>
-                        </div>
-                    </Navbar.Collapse>
-                </Navbar>
-            </div>
 
-        )
-    }
-}
 
 export default App;

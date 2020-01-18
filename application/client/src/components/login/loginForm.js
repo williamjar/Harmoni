@@ -20,6 +20,7 @@ export class LoginForm extends React.Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
     }
 
 

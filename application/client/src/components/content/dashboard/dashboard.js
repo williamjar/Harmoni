@@ -68,7 +68,7 @@ export class Dashboard extends React.Component {
         return (
             <Card className={"border-0 justify-content-md-center m-4"}>
                 <h3 className={"mt-4 mb-4"}>Arrangementer</h3>
-                <Search searchHandler={this.searchHandler}/>
+                <Search searchHandler={this.searchHandler} results={this.state.events}/>
                 <Row className="filterMenu">
                     <Col>
                         <ButtonGroup size="sm">

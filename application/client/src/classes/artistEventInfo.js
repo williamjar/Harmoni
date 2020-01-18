@@ -1,4 +1,4 @@
-class ArtistEventInfo {
+export class ArtistEventInfo {
 
     constructor(artistID, eventID, contractSigned, hasBeenPaid){
         this.artistID = artistID;

@@ -4,6 +4,7 @@ import {CookieStore} from "./cookieStore";
 import {Genre} from "../classes/genre";
 import {Document} from "../classes/document";
 import {Artist as artist} from "../classes/artist";
+import {ArtistEventInfo} from "../classes/artistEventInfo";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -25,7 +26,7 @@ export class ArtistService {
         );
     }
 
-    static getArtisEventInfo(callback, artistID, eventID){
+    static getArtistEventInfo(callback, artistID, eventID){
 
         let header = {
             "Content-Type": "application/json",
