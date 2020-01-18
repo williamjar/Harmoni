@@ -56,16 +56,16 @@ export class App extends Component{
 
     componentDidMount = () => {
         window.addEventListener('resize', () =>{
-            if(window.innerWidth > 900){
+            if(window.innerWidth > 991){
                 this.turnOffMobileView();
             } else{
                 this.turnOnMobileView();
             }
         });
 
-        if(window.innerWidth>900){
+        if(window.innerWidth > 900){
             this.turnOffMobileView();
-        } else {
+        } else{
             this.turnOnMobileView();
         }
 
@@ -84,14 +84,14 @@ export class App extends Component{
                 <div className="App">
                     <HashRouter>
                         <div className="row no-gutters">
-                            <div className="col-md-2 col-12">
-                                {!this.state.mobileView?<NavBar />:<MobileMenu/>}
+
+                                {!this.state.mobileView?<div className="col-lg-2"><NavBar /></div>:<div className="col-12"><MobileMenu/></div>}
                                 {this.state.mobileView?
                                     <div className="margin-bottom-30"><br/> </div>:null
                                 }
-                            </div>
 
-                            <div className="col-lg-10">
+
+                            <div className="col-lg-10 col-sm-12">
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
                                 <Route exact path="/opprett"  component={() => <SimpleContent page={<CreateEventSplash />} />} />
                                 <Route exact path="/artister" component={() => <Content page={<Search/>} />} />

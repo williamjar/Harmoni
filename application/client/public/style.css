@@ -283,7 +283,7 @@ body{
 
 .search{
     position: relative;
-    z-index: 21470;
+    z-index: 1000;
 }
 
 
@@ -296,7 +296,6 @@ body{
     width: 100%;
     max-height: 500px;
     overflow-y: scroll;
-    z-index: 21470 !important;
     margin-top:15px;
     background:lightgrey;
 }
@@ -374,7 +373,7 @@ search-result-item{
 }
 
 /* Different mediums, Mobile etc */
-@media only screen and (max-width: 911px) {
+@media only screen and (max-width: 900px) {
     .content{
         overflow-y: scroll;
         height: 100vh;
