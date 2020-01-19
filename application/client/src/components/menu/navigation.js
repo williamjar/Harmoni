@@ -29,7 +29,7 @@ export class MobileMenu extends Component{
 
     render() {
         return(
-            <div className="fixed-top card">
+            <div className="zoom-80 fixed-top card">
                 <div className="row no-gutters">
                     <div className="col-4">
                         <div className="logoImg-mobile">
