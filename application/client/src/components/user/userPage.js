@@ -1,20 +1,9 @@
 import React from 'react';
-import {
-    Button,
-    Card,
-    Col,
-    Form,
-    Row,
-    Table,
-    Image,
-    Accordion,
-    FormControl,
-    Spinner,
-    Modal
-} from 'react-bootstrap'
+import {Button, Card, Col, Form, Row, Table, Image, Accordion, FormControl, Spinner, Modal} from 'react-bootstrap'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {PictureService} from "../../store/pictureService";
+import {MegaValidator} from "../../megaValidator";
 
 export class UserPage extends React.Component {
     constructor(props) {
@@ -26,9 +15,9 @@ export class UserPage extends React.Component {
             oldPassword: '',
             firstNewPassword: '',
             secondNewPassword: '',
-            phonenumber : '',
+            phonenumber: '',
             newPhonenumber: '',
-            profilePicture: 'http://www.jacqueslacoupe.com/images/sample-user.png',
+            profilePicture: '',
             newProfilePicture: '',
             savingInformation: false,
             showPasswordAlert: false,
@@ -39,32 +28,13 @@ export class UserPage extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleInputChange(event){
-        this.setState({savingInformation:false});
-        const target = event.target;
-        if (target.name === 'newProfilePicture'){
-            this.setState({newProfilePicture: target.files[0]});
-        }
-        else{
-            const value = target.type === 'checkbox' ? target.checked : target.value;
-            const name = target.name;
-
-            this.setState({[name]: value,});
-        }
-    }
-
-    handleSubmit(event) {
-        event.preventDefault();
-        this.submitForm();
-    }
-
     componentDidMount() {
         this.updateInfo();
     }
 
-    // Functions to verify the contents in the form.
+
     render() {
-        return(
+        return (
             <Card className={"border-0"}>
                 <Modal show={this.state.showPasswordAlert}>
                     <Modal.Header closeButton>
@@ -82,31 +52,39 @@ export class UserPage extends React.Component {
                     <Row>
                         <Col>
                             <Card className={"p-2 card border-0"}>
-                                <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} rounded />
+                                <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture}
+                                       rounded/>
 
                                 <Form onSubmit={this.handleSubmit}>
 
                                     <Form.Group>
-                                        <FormControl name="newProfilePicture" type="file" onChange={this.handleInputChange}/>
+                                        <FormControl name="newProfilePicture" type="file"
+                                                     onChange={this.handleInputChange}/>
                                     </Form.Group>
-
                                     <Form.Group>
                                         <Button variant="secondary" type="submit">Last opp profilbilde</Button>
                                     </Form.Group>
-
-
                                 </Form>
                                 <Card.Title>Brukerprofil</Card.Title>
                                 <Table borderless>
                                     <tbody>
-                                    <tr><td>E-postaddresse</td><td>{this.state.email}</td></tr>
-                                    <tr><td>Brukernavn</td><td>{this.state.username}</td></tr>
-                                    <tr><td>Telefonnummer</td><td>{this.state.phonenumber}</td></tr>
+                                    <tr>
+                                        <td>E-postaddresse</td>
+                                        <td>{this.state.email}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Brukernavn</td>
+                                        <td>{this.state.username}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Telefonnummer</td>
+                                        <td>{this.state.phonenumber}</td>
+                                    </tr>
                                     </tbody>
                                 </Table>
                             </Card>
-                            </Col>
-                            <Col>
+                        </Col>
+                        <Col>
                             <Card className={"p-2 card border-0"}>
                                 <Card.Title>Innstillinger</Card.Title>
                                 <Accordion>
@@ -120,11 +98,17 @@ export class UserPage extends React.Component {
                                             <Accordion.Collapse eventKey="0">
                                                 <Card.Body>
                                                     <Form.Group>
-                                                        <Form.Control type="text" name="newUsername" placeholder={this.state.username} value={this.state.newUsername} onChange={this.handleInputChange}/>
-                                                        <Form.Text className={"text-danger"} hidden={!(this.state.newUsername.toLowerCase()==="geir")}>Geir er ikke et gydlig brukernavn</Form.Text>
+                                                        <Form.Control type="text" name="newUsername"
+                                                                      placeholder={this.state.username}
+                                                                      value={this.state.newUsername}
+                                                                      onChange={this.handleInputChange}/>
+                                                        <Form.Text className={"text-danger"}
+                                                                   hidden={!(this.state.newUsername.toLowerCase() === "geir")}>Geir
+                                                            er ikke et gydlig brukernavn</Form.Text>
                                                     </Form.Group>
                                                     <Form.Group>
-                                                        <SubmitButton loading={this.state.savingInformation} stop={!this.validateUsername()}/>
+                                                        <SubmitButton loading={this.state.savingInformation}
+                                                                      stop={!MegaValidator.validateUsername(this.state.username, this.state.newUsername)}/>
                                                     </Form.Group>
                                                 </Card.Body>
                                             </Accordion.Collapse>
@@ -141,11 +125,17 @@ export class UserPage extends React.Component {
                                             <Accordion.Collapse eventKey="1">
                                                 <Card.Body>
                                                     <Form.Group>
-                                                        <Form.Control maxLength="8" type="number"  name="newPhonenumber" placeholder={this.state.phonenumber} value={this.state.newPhonenumber} onChange={this.handleInputChange}/>
-                                                        <Form.Text className={"text-danger"} hidden={this.validatePhoneNumberLength()}>Telefonnummeret må være 8 siffer</Form.Text>
+                                                        <Form.Control maxLength="8" type="number" name="newPhonenumber"
+                                                                      placeholder={this.state.phonenumber}
+                                                                      value={this.state.newPhonenumber}
+                                                                      onChange={this.handleInputChange}/>
+                                                        <Form.Text className={"text-danger"}
+                                                                   hidden={MegaValidator.validatePhoneNumberLength(this.state.phonenumber)}>Telefonnummeret
+                                                            må være 8 siffer</Form.Text>
                                                     </Form.Group>
                                                     <Form.Group>
-                                                        <SubmitButton loading={this.state.savingInformation} stop={!this.validatePhoneNumber()}/>
+                                                        <SubmitButton loading={this.state.savingInformation}
+                                                                      stop={!MegaValidator.validatePhoneNumber(this.state.phonenumber, this.state.newPhonenumber)}/>
                                                     </Form.Group>
                                                 </Card.Body>
                                             </Accordion.Collapse>
@@ -162,16 +152,26 @@ export class UserPage extends React.Component {
                                             <Accordion.Collapse eventKey="2">
                                                 <Card.Body>
                                                     <Form.Group>
-                                                        <Form.Control type="password" name="oldPassword" placeholder="Gammelt passord" value={this.state.oldPassword} onChange={this.handleInputChange}/>
+                                                        <Form.Control type="password" name="oldPassword"
+                                                                      placeholder="Gammelt passord"
+                                                                      value={this.state.oldPassword}
+                                                                      onChange={this.handleInputChange}/>
                                                     </Form.Group>
                                                     <Form.Group>
-                                                        <Form.Control type="password" name="firstNewPassword" placeholder="Nytt passord" value={this.state.firstNewPassword} onChange={this.handleInputChange}/>
+                                                        <Form.Control type="password" name="firstNewPassword"
+                                                                      placeholder="Nytt passord"
+                                                                      value={this.state.firstNewPassword}
+                                                                      onChange={this.handleInputChange}/>
                                                     </Form.Group>
                                                     <Form.Group>
-                                                        <Form.Control type="password" name="secondNewPassword" placeholder="Gjenta nytt passord" value={this.state.secondNewPassword} onChange={this.handleInputChange}/>
+                                                        <Form.Control type="password" name="secondNewPassword"
+                                                                      placeholder="Gjenta nytt passord"
+                                                                      value={this.state.secondNewPassword}
+                                                                      onChange={this.handleInputChange}/>
                                                     </Form.Group>
                                                     <Form.Group>
-                                                        <SubmitButton loading={this.state.savingInformation} stop={!this.validatePassword()}/>
+                                                        <SubmitButton loading={this.state.savingInformation}
+                                                                      stop={!MegaValidator.validatePassword(this.state.password, this.state.firstNewPassword, this.state.secondNewPassword)}/>
                                                     </Form.Group>
                                                 </Card.Body>
                                             </Accordion.Collapse>
@@ -183,42 +183,35 @@ export class UserPage extends React.Component {
                     </Row>
                 </div>
             </Card>
-        )}
+        )
+    }
 
+    handleInputChange(event) {
+        this.setState({savingInformation: false});
+        const target = event.target;
+        if (target.name === 'newProfilePicture') {
+            this.setState({newProfilePicture: target.files[0]});
+        } else {
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
 
-
-    validateUsername(){
-        let  illegalCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-        if(illegalCharacters.test(this.state.newUsername)){
-            return false;
-        }else{
-            return (this.state.username !== this.state.newUsername) && (this.state.newUsername.length > 0) && !(this.state.newUsername.toLowerCase()==="geir");
+            this.setState({[name]: value,});
         }
     }
 
-    validatePhoneNumberLength(){
-        return (this.state.newPhonenumber.length === 8)
-    }
-    validatePhoneNumber(){
-        return (this.state.newPhonenumber !== this.state.phonenumber) && this.validatePhoneNumberLength();
+    handleSubmit(event) {
+        event.preventDefault();
+        this.submitForm();
     }
 
-    validatePassword(){
-        return (this.state.firstNewPassword === this.state.secondNewPassword) && (this.state.firstNewPassword.length > 0) && (this.state.firstNewPassword  !== this.state.oldPassword);
-    }
-
-    hideModal(){
+    hideModal() {
         this.setState({showPasswordAlert: false});
     }
 
-    validateFile(){
-        console.log(this.state.newProfilePicture);
-        return (/\.(gif|jpeg|jpg|png)$/i).test(this.state.newProfilePicture.name);
-    }
 
-    updateInfo(){
-       OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
-            if (statusCode === 200){
+    updateInfo() {
+        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
+            if (statusCode === 200) {
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
 
                 let databaseUsername = OrganizerStore.currentOrganizer.username;
@@ -227,10 +220,9 @@ export class UserPage extends React.Component {
                 let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
 
                 let image = null;
-                if (databaseImage == null){
+                if (databaseImage == null) {
                     image = 'http://www.jacqueslacoupe.com/images/sample-user.png'
-                }
-                else{
+                } else {
                     image = databaseImage;
                 }
 
@@ -243,31 +235,32 @@ export class UserPage extends React.Component {
                     phonenumber: databasePhone,
                     profilePicture: image
                 }));
-            }
-            else{
+            } else {
                 //console.log("We have an error!");
             }
         });
     }
 
-    submitForm(){
+    submitForm() {
         this.setState({savingInformation: true});
-        if(this.validateUsername()) {
+
+        if (MegaValidator.validateUsername(this.state.username, this.state.newUsername)) {
             OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername).then(r => {
                 this.setState({savingInformation: false});
                 this.setState({username: this.state.newUsername});
-            });}
+            });
+        }
 
 
-        if(this.validatePhoneNumber()){
-            OrganizerStore.changePhoneNumber(this.state.newPhonenumber).then(r =>{
+        if (MegaValidator.validatePhoneNumber(this.state.phonenumber, this.state.newPhonenumber)) {
+            OrganizerStore.changePhoneNumber(this.state.newPhonenumber).then(r => {
                 this.setState({savingInformation: false});
                 this.setState({phonenumber: this.state.newPhonenumber});
             });
         }
 
 
-        if (this.validatePassword()) {
+        if (MegaValidator.validatePassword(this.state.password, this.state.firstNewPassword, this.state.secondNewPassword)) {
             OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword, status => {
                 console.log(status);
                 this.setState({savingInformation: false});
@@ -280,33 +273,29 @@ export class UserPage extends React.Component {
             });
         }
 
-        // code for submitting profile picture here, you can access it with this.state.newprofilePicture
-        if (this.validateFile()){
+        if (MegaValidator.validateFile(this.state.newProfilePicture)) {
             console.log("Image validated");
             let formData = new FormData();
             formData.append('description', this.state.newProfilePicture.name);
             formData.append('selectedFile', this.state.newProfilePicture);
             PictureService.insertPicture(OrganizerStore.currentOrganizer.organizerID, formData, (statusCode, link) => {
                 console.log("Image uploaded with status " + statusCode);
-                if (statusCode === 200 && link){
+                if (statusCode === 200 && link) {
                     const totalPath = __dirname + '../../../../server/' + link;
                     this.state.profilePicture = totalPath;
                 }
             });
-        }
-        else{
+        } else {
             console.log("Image not validated");
         }
-
         // code for submitting profile picture here, you can access it with this.state.new.profilePicture
-
     }
 }
 
-export class SubmitButton extends React.Component{
-    render(){
-        if(this.props.loading){
-            return(<Button type="submit" variant="success" disabled>
+export class SubmitButton extends React.Component {
+    render() {
+        if (this.props.loading) {
+            return (<Button type="submit" variant="success" disabled>
                 <Spinner
                     as="span"
                     animation="border"
@@ -314,8 +303,8 @@ export class SubmitButton extends React.Component{
                     role="status"
                     aria-hidden="true"
                 /> Lagrer</Button>)
-        } else{
-            return(<Button type="submit" variant="success" disabled={this.props.stop}>Lagre</Button>)
+        } else {
+            return (<Button type="submit" variant="success" disabled={this.props.stop}>Lagre</Button>)
         }
 
     }

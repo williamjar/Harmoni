@@ -14,7 +14,6 @@ const history = createHashHistory();
 
 // Parent component for editing and viewing all info about an event, divides information into tabs.
 export class EventForm extends Component{
-
     constructor(props) {
         super(props);
 

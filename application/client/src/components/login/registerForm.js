@@ -3,6 +3,7 @@ import {Form, Button, Card, Row, Col, Spinner} from 'react-bootstrap'
 import {RegisterOrganizerService} from "../../store/registerOrganizerService";
 import { createHashHistory } from 'history';
 import {NavLink} from "react-router-dom";
+import {MegaValidator} from "../../megaValidator";
 
 let history = createHashHistory();
 
@@ -42,32 +43,13 @@ export class RegisterForm extends React.Component {
 
     // Functions to verify the contents in the form.
 
-    validatePasswordLength(){
-        return this.state.firstPassword.length >= 8 || this.state.secondPassword.length >=8;
-    }
-
-    validateEmailLength(){
-        return this.state.firstEmail.length >= 3 || this.state.secondEmail.length >= 3;
-    }
-
-    validatePassword(){
-        return (this.state.firstPassword === this.state.secondPassword);
-    }
-
-    validateEmail(){
-        return this.state.firstEmail === this.state.secondEmail;
-    }
-
-    validateUsernameLength(){
-        return this.state.username.length >= 2;
-    }
-    validateUsername(){
-        let  illegalCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-        return !(illegalCharacters.test(this.state.username));
-    }
 
     validateForm() {
-        return (this.validateEmail() && (this.validatePassword())) && (this.validatePasswordLength()) && (this.validateUsername()) && (this.validateEmailLength()) && this.validatePasswordLength() && !(this.state.username.toLowerCase()==="geir");
+        return MegaValidator.validateEmail(this.state.firstEmail,this.state.secondEmail) &&
+            MegaValidator.validatePassword("nothing", this.state.firstPassword, this.state.secondPassword) &&
+            MegaValidator.validateUsername("nothing",this.state.username) &&
+            MegaValidator.validateUsernameLength(this.state.username) &&
+            MegaValidator.validatePhoneNumberLength(this.state.phonenumber);
     }
 
     render() {
@@ -118,16 +100,17 @@ export class RegisterForm extends React.Component {
 
 
 
-                        <Form.Text className="text-danger" hidden={this.validateUsername()}>Brukernavnet kan kun inneholde tall og bokstaver</Form.Text>
-                        <Form.Text className="text-danger" hidden={this.validateUsernameLength()}>Brukernavn kreves</Form.Text>
+                        <Form.Text className="text-danger" hidden={MegaValidator.validateUsername("nothing", this.state.username)}>Brukernavnet kan kun inneholde tall og bokstaver</Form.Text>
+                        <Form.Text className="text-danger" hidden={MegaValidator.validateUsernameLength(this.state.username)}>Brukernavn kreves</Form.Text>
 
-                        <Form.Text className="text-danger" hidden={this.validateEmail()}>E-postadressene må være like</Form.Text>
-                        <Form.Text className="text-danger" hidden={this.validateEmailLength()}>E-postaddresse kreves</Form.Text>
+                        <Form.Text className="text-danger" hidden={MegaValidator.validateEmail(this.state.firstEmail, this.state.secondEmail)}>E-postadressene må være like</Form.Text>
+                        <Form.Text className="text-danger" hidden={MegaValidator.validateEmailLength(this.state.firstEmail, this.state.secondEmail)}>E-postaddresse kreves</Form.Text>
 
-                        <Form.Text className="text-danger" hidden={this.validatePassword()}>Passordene må være like</Form.Text>
-                        <Form.Text className="text-danger" hidden={this.validatePasswordLength()}>Passordet ditt må være på minst 8 tegn</Form.Text>
+                        <Form.Text className="text-danger" hidden={MegaValidator.validatePassword(null,this.state.firstPassword,this.state.secondPassword)}>Passordene må være like</Form.Text>
+                        <Form.Text className="text-danger" hidden={MegaValidator.validatePasswordLength(this.state.firstPassword,this.state.secondPassword)}>Passordet ditt må være på minst 8 tegn</Form.Text>
 
-                        <Form.Text className="text-danger" hidden={!(this.state.username.toLowerCase()==="geir")}>"Geir er ikke et gyldig brukernavn"</Form.Text>
+
+
 
                         <Form.Text className="text-danger" hidden={!this.state.databaseConnectionError}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
 
