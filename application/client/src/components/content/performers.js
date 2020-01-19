@@ -40,27 +40,34 @@ export class PerformerPanel extends Component{
     render() {
         return (
             <div>
-                <div className="row">
-                    <div className="col-lg-6 col-md-12  border-right">
-                        <div className="row">
-                            <div className="col-8">
-                                <Search searchHandler={this.searchHandler} results={this.state.results} />
+                {this.state.performerList.length === 0?
+
+
+                    <img src="https://pngimage.net/wp-content/uploads/2018/05/colorful-graphic-design-png-3.png" alt=""/>
+
+                        :
+                    <div className="row">
+                        <div className="col-lg-6 col-md-12  border-right">
+                            <div className="row">
+                                <div className="col-8">
+                                    <Search searchHandler={this.searchHandler} results={this.state.results} />
+                                </div>
+                                <div className="col-4">
+                                    <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny</button>
+                                </div>
                             </div>
-                            <div className="col-4">
-                                <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny</button>
+
+                            <div className="padding-top-20">
+                                {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
+                                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
                             </div>
                         </div>
 
-                        <div className="padding-top-20">
-                            {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
-                            {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
+                        <div className="col-lg-6 col-md-12">
+                            <RegisteredPerformers performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
                         </div>
-                    </div>
+                    </div>}
 
-                    <div className="col-lg-6 col-md-12">
-                        <RegisteredPerformers performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
-                    </div>
-                </div>
             </div>
         );
     }
@@ -611,8 +618,11 @@ export class RegisteredPerformers extends Component{
     render(){
         return(
             <div>
-                <b className="card-title">Artister som er lagt til</b>
-                    <ul className="list-group">
+                {this.props.performersAdded.length === 0?
+                <div>Ingen artister er lagt</div>
+                :<b className="card-title">Artister som er lagt til</b>}
+
+                <ul className="list-group">
                     {this.props.performersAdded.map(p =>
                         <li className="list-group-item pointer selection" onClick={() => this.showCard(p)}>
                         <div className="row">
