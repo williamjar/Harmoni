@@ -14,10 +14,14 @@ before_script:
     - cd application/server && npm install && npm start
 
 # Run JEST test
+
+setup_server:
+  script:
+    - cd application/server && npm install && npm start
+
 run_tests:
   stage: test
   script:
-    #- cd application/server && npm install && npm test
     - cd ..
     - cd application/client && npm install && npm test
   artifacts:
