@@ -1,12 +1,13 @@
-import {CookieStorage} from "../cookieStorage";
 import axios from 'axios';
+import {CookieStore} from "./cookieStore";
+
 
 export class MailService{
 
     static sendGeneralEmail(emailTo, subject, emailBody, attachmentLinks, callback){
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStorage.currentToken
+            "x-access-token": CookieStore.currentToken
         };
 
         let body = {

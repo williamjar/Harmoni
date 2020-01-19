@@ -1,5 +1,5 @@
 import {app, loginDao,organizerDao, SECRET, jwt} from "./server";
-import {CookieStorage} from "../../client/src/cookieStorage";
+import {CookieStore} from "../../client/src/store/cookieStore";
 
 let privateKey = SECRET.privateKey;
 let publicKey = SECRET.publicKey;
@@ -95,7 +95,7 @@ app.use('/api', (req, res, next) => {
                     algorithm: "RS512",
                 });
             console.log("Token after /api " + newToken);
-            CookieStorage.currentToken = newToken;
+            CookieStore.currentToken = newToken;
             next();
         } catch (e) {
             console.log('Token not OK');

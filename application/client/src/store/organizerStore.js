@@ -1,7 +1,6 @@
 import axios from "axios";
 import {Organizer} from "../classes/organizer.js";
 import {CookieStore} from "./cookieStore";
-import {CookieStorage} from "../cookieStorage";
 import {sha512} from "./hashService";
 
 const hash = require('./hashService');
@@ -16,7 +15,7 @@ export class OrganizerStore {
     static getOrganizer(organizerID, callback) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStorage.currentToken
+            "x-access-token": CookieStore.currentToken
         };
 
         axios.get(axiosConfig.root + '/api/organizer/' + organizerID, {headers: header})
@@ -32,7 +31,7 @@ export class OrganizerStore {
     static changeUsername(organizerID, newUsername) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStorage.currentToken
+            "x-access-token": CookieStore.currentToken
         };
 
         return axios.put(axiosConfig.root + '/api/organizer/' + organizerID + '/change/username', {
@@ -49,7 +48,7 @@ export class OrganizerStore {
 
                 let header = {
                     "Content-Type": "application/json",
-                    "x-access-token": CookieStorage.currentToken
+                    "x-access-token": CookieStore.currentToken
                 };
 
                 axios.put(axiosConfig.root + '/api/organizer/' + organizerID + '/change/password', {
@@ -66,7 +65,7 @@ export class OrganizerStore {
     static changePhoneNumber(newPhoneNumber) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStorage.currentToken
+            "x-access-token": CookieStore.currentToken
         };
 
         let currentUserID = CookieStore.currentUserID;
@@ -79,7 +78,7 @@ export class OrganizerStore {
     static changeUserImage(pictureLink) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStorage.currentToken
+            "x-access-token": CookieStore.currentToken
         };
 
         axios.put(axiosConfig.root + '/api/picture/insert/', {
@@ -95,7 +94,7 @@ export class OrganizerStore {
     getAllEvents(organizerId) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStorage.currentToken
+            "x-access-token": CookieStore.currentToken
         };
         return axios.get(`/api/organizer/${organizerId}/events`, {headers: header});
     }

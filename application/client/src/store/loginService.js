@@ -1,5 +1,4 @@
 import axios from "axios";
-import {CookieStorage} from '../cookieStorage';
 import {CookieStore} from "./cookieStore";
 
 const hash = require('./hashService');
@@ -28,7 +27,7 @@ export class LoginService {
                     })
                     .then(loginResponse => {
                         if (loginResponse.error) {
-                            CookieStorage.currentToken = null;
+                            CookieStore.currentToken = null;
                             CookieStore.currentUserID = null;
                             console.log("Current token set to null");
                             callback(501);
@@ -41,11 +40,11 @@ export class LoginService {
                                     if (!(loginResponse.error && loginResponse.data.length > 0)) {
                                         console.log("UserID and Token set");
                                         CookieStore.currentUserID = emailResponse[0].organizerID;
-                                        CookieStorage.currentToken = loginResponse.jwt;
+                                        CookieStore.currentToken = loginResponse.jwt;
                                         //The user logs in
                                         callback(200);
                                     } else {
-                                        CookieStorage.currentToken = null;
+                                        CookieStore.currentToken = null;
                                         CookieStore.currentUserID = null;
                                         console.log("Current token set to null");
                                         //The user doesn't log in

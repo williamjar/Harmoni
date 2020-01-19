@@ -1,7 +1,6 @@
 import {LoginService} from "../../store/loginService";
 import runSQLFile from '../../../../runsqlfile';
 import {CookieStore} from "../../store/cookieStore";
-import {CookieStorage} from "../../cookieStorage";
 
 let mysql = require("mysql");
 
@@ -37,15 +36,15 @@ test('Check that a user is registered with a valid token', () => {
         console.log(CookieStore.currentUserID);
         expect(CookieStore.currentUserID).not.toBe(null);
 
-        CookieService.checkToken(CookieStorage.currentToken);
-        console.log(CookieStorage.currentToken);
-        expect(CookieStorage.currentToken).not.toBe(null);
+        CookieService.checkToken(CookieStore.currentToken);
+        console.log(CookieStore.currentToken);
+        expect(CookieStore.currentToken).not.toBe(null);
     });
 });
 
 test('Check that user is not registered with a valid token', () => {
     LoginService.loginOrganizer('Unregistered', 'Unregistered', () => {
         expect(CookieStore.currentUserID).toBe(null);
-        expect(CookieStorage.currentToken).toBe(null);
+        expect(CookieStore.currentToken).toBe(null);
     });
 });
