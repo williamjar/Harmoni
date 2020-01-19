@@ -1,8 +1,6 @@
 import {CookieStore} from "./cookieStore";
-import {Genre} from "../classes/genre";
 import axios from "axios";
 import {TicketType} from "../classes/ticketType";
-import {CrewMember} from "../classes/crewMember";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -73,5 +71,37 @@ export class TicketStore {
             callback();
         });
 
+    }
+
+    //update ticket
+    static updateTicket(name, price, amount, releaseDate, releaseTime,  endDate, endTime, description, ticketTypeID) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        axios.put(axiosConfig.root + '/api/ticket/' + ticketTypeID, {
+            "ticketTypeID" : name,
+            "price" : price,
+            "amount" : amount,
+            "releaseDate" : releaseDate,
+            "releaseTime" : releaseTime,
+            "endDate" : endDate,
+            "endTime" : endTime,
+            "description" : description,
+            "ticketTypeId" : ticketTypeID
+
+        }, {headers: header})
+            .catch(error => console.log(error));
+    }
+
+
+    //delete a ticket from an event
+    static deleteTicket(eventID ,ticketTypeID) {
+        console.log('Running deleteTicket');
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.delete(axiosConfig.root + '/api/ticket/' + eventID + '/' + ticketTypeID , {headers: header}).then(response => response.data);
     }
 }

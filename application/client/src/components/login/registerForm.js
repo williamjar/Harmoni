@@ -55,7 +55,7 @@ export class RegisterForm extends React.Component {
     render() {
 
         return (
-            <Card style={{width : '35rem'}} className="text-center mx-auto mt-5">
+            <Card style={{width : '35rem'}} className="text-center mx-auto mt-5 drop-shadow">
                 <Form onSubmit={this.handleSubmit} className={"align-items-center"}>
                 <Card.Body>
                     <Card.Title className="mb-4">Registrer bruker</Card.Title>
@@ -65,7 +65,7 @@ export class RegisterForm extends React.Component {
                             <Form.Control maxLength="25" type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Control maxLength="8" type="number" name="phonenumber" placeholder="Telefonnummer" value={this.state.phonenumvber} onChange={this.handleInputChange}/>
+                            <Form.Control maxLength="8" type="number" name="phonenumber" placeholder="Telefonnummer" value={this.state.phonenumber} onChange={this.handleInputChange}/>
                         </Form.Group>
                         <Form.Text className="text-danger" hidden={!this.state.emailAlreadyExist}>Det er allerede registrert en bruker med denne e-postaddressen</Form.Text>
                             <Row>
@@ -139,7 +139,7 @@ export class RegisterForm extends React.Component {
         *   It can be assumed that the emails are identical and that the passwords are identical.
         *
         * */
-        RegisterOrganizerService.registerOrganizer(this.state.username, this.state.firstEmail, this.state.firstPassword, statusCode => {
+        RegisterOrganizerService.registerOrganizer(this.state.username, this.state.phonenumber,this.state.firstEmail, this.state.firstPassword, statusCode => {
             if (statusCode === 200){
                 console.log("User perfectly registered");
                 history.push('/');

@@ -46,4 +46,14 @@ module.exports = class artistDao extends Dao {
         super.query('SELECT * FROM genre', null, callback);
     }
 
+    getArtistEventInfo(callback, list){
+        super.query('SELECT * FROM event_artist WHERE eventID = ? AND artistID = ?', list, callback);
+    }
+
+    updateArtistEventInfo(callback, list){
+        super.query('UPDATE event_artist SET contractSigned = ?, hasBeenPaid = ? WHERE eventID = ? AND artistID = ?', list, callback);
+    }
+
+
+
 };

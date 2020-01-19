@@ -31,27 +31,30 @@ export class Search extends Component{
 
     render() {
         return(
-            <div>
-                <div className="row">
-                    <div className="col-12">
-                        <InputGroup>
-                            <FormControl
-                                placeholder="Søk"
-                                aria-label="Søk"
-                                aria-describedby="basic-addon2"
-                                onChange={this.handleSearchInput}
-                                className="rounded-pill"
-                            />
-                        </InputGroup>
+            <div className="search" >
+                <InputGroup>
+                    <FormControl
+                        placeholder="Søk"
+                        aria-label="Søk"
+                        aria-describedby="basic-addon2"
+                        onChange={this.handleSearchInput}
+                        className="rounded-pill"
+                    />
+                </InputGroup>
 
-                        <div className="card-text margin-top-5 ma">
-                            {this.state.showSearchResults && this.state.results != undefined?
-                                this.state.results.filter(e => e.contactName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map(show =>
-                                <div className="card-title card-header search" onClick={() => this.searchHandler(show)}>{show.contactName}</div>
-                                ):null}
+                <div className="results" id="style-5">
+                    {this.state.showSearchResults && this.state.results != undefined && this.state.results[0].contactName !== undefined && this.state.results.length !== 0?
+                        this.state.results.filter(e => e.contactName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map((show, index) =>
+                        <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>{show.contactName}</div>
+                        ):null}
 
-                        </div>
-                    </div>
+                    {this.state.showSearchResults && this.state.results != undefined && this.state.results[0].eventName != undefined && this.state.results.length !== 0?
+                        this.state.results.filter(e => e.eventName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map((show, index) =>
+                            <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>{show.eventName}</div>
+                        ):null}
+
+
+
                 </div>
             </div>
         )
