@@ -1,6 +1,6 @@
-import {LoginService} from "../store/loginService";
-import runSQLFile from '../../../runsqlfile';
-import {CookieStore} from "../store/cookieStore";
+import {LoginService} from "../../store/loginService";
+import runSQLFile from '../../../../runsqlfile';
+import {CookieStore} from "../../store/cookieStore";
 
 let mysql = require("mysql");
 
