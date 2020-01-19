@@ -8,9 +8,8 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
 
-
-
 export class Content extends Component{
+    /* Container to serve content in a strict page layout */
 
     render(){
         return(
@@ -27,14 +26,19 @@ export class Content extends Component{
 }
 
 export class SimpleContent extends Component{
+    /* Container to serve content in a strict page layout
+    * Similar to Content class, but used for few and small components, like "opprett arrangement" */
+
     render() {
         return (
-            <div className="card w-50 center simple-content-top">
+            <div className="card max-w-50 center simple-content-top">
+                <Alert/>
                 {this.props.page}
             </div>
-
         );
     }
 }
+
+
 
 

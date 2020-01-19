@@ -63,7 +63,7 @@ export class App extends Component{
             }
         });
 
-        if(window.innerWidth > 900){
+        if(window.innerWidth > 991){
             this.turnOffMobileView();
         } else{
             this.turnOnMobileView();
