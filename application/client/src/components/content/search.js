@@ -80,14 +80,11 @@ export class Search extends Component{
 
     toggleShowResults = () => {
         setTimeout(() => {this.setState({showSearchResults: !this.state.showSearchResults})}, 150);
-
     };
 
 
     searchHandler(input){
-        let currentState = this.state;
-        currentState.showSearchResults = false; //Hide search results after selection
-        this.setState(currentState);
+        setTimeout(() => {this.setState({showSearchResults: false})}, 180);
         this.props.searchHandler(input); // Sends object of selection to parent method.
     }
 
