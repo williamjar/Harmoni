@@ -12,29 +12,63 @@ import logo from './logo.jpeg';
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import Navbar from "react-bootstrap/Navbar";
-
+import {FaBars} from "react-icons/all";
+import {FaUserCog} from "react-icons/all";
+import { createHashHistory } from 'history';
+let history = createHashHistory();
 
 export class MobileMenu extends Component{
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            expand : false
+        }
+    }
+
     render() {
         return(
             <div className="fixed-top card">
-                <Navbar bg="light" expand="lg">
-                    <NavLink to="/"><Navbar.Brand>Harmoni</Navbar.Brand></NavLink>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <div className="padding-top-20 nav-links">
-                            <Menu/>
+                <div className="row no-gutters">
+                    <div className="col-4">
+                        <div className="logoImg-mobile">
+                            <NavLink to="/" onClick={this.collapse}>
+                            <img width="100px" src={logo} alt=""/>
+                            </NavLink>
                         </div>
-                        <div className="user-nav-mobile">
-                        <UserProfileButton/>
-                        </div>
+                    </div>
 
-                    </Navbar.Collapse>
-                </Navbar>
+                    <div className="col-8 text-right padding-20  padding-right-20 align-content-center">
+                        <FaUserCog size="30" onClick={this.goToUserProfile} className="pointer"/>
+                        <FaBars size="30" onClick={this.toggleExpand} className="pointer margin-left-30"/>
+                    </div>
+                </div>
+                {this.state.expand?
+                <div className="card" onClick={this.toggleExpand}>
+                    <Menu/>
+
+                </div>
+
+
+
+                :null}
             </div>
-
         )
     }
+
+    collapse = () => {
+        this.setState({expand : false});
+    };
+
+    toggleExpand = () => {
+        this.setState({expand : !this.state.expand});
+    };
+
+    goToUserProfile = () => {
+        history.push("/brukerprofil");
+        this.collapse();
+    };
 }
 
 export class NavBar extends Component{

@@ -31,7 +31,7 @@ export class SimpleContent extends Component{
 
     render() {
         return (
-            <div className="card max-w-50 center simple-content-top">
+            <div className="card simple-content center simple-content-top">
                 <Alert/>
                 {this.props.page}
             </div>

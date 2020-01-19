@@ -87,7 +87,7 @@ export class App extends Component{
 
                                 {!this.state.mobileView?<div className="col-lg-2"><NavBar /></div>:<div className="col-12"><MobileMenu/></div>}
                                 {this.state.mobileView?
-                                    <div className="margin-bottom-30"><br/> </div>:null
+                                    <div className="margin-bottom-50"><br/> </div>:null
                                 }
 
 
