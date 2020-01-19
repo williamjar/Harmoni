@@ -19,7 +19,7 @@ run_tests:
   stage: test
   script:
     #- cd application/server && npm install && npm test
-    - cd application/server && npm start
+    - cd application/server && npm install && npm start
     - cd ..
     - cd application/client && npm install && npm test
   artifacts:
