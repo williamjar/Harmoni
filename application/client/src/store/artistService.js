@@ -4,6 +4,7 @@ import {CookieStore} from "./cookieStore";
 import {Genre} from "../classes/genre";
 import {Document} from "../classes/document";
 import {Artist as artist} from "../classes/artist";
+import {ArtistEventInfo} from "../classes/artistEventInfo";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -23,6 +24,40 @@ export class ArtistService {
                 callback(artist);
             }
         );
+    }
+
+    static getArtistEventInfo(callback, artistID, eventID){
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        axios.get(axiosConfig.root + '/api/event/'+ eventID + '/artist/' + artistID + '/artistEventInfo', {headers: header}).then(response => {
+                let artistEventInfo = new ArtistEventInfo(response.data.artistID, response.data.eventID, response.data.contractSigned === 1, response.data.hasBeenPaid === 1);
+                callback(artistEventInfo);
+            }
+        );
+
+    }
+
+    static updateArtistEventInfo(callback, artistID, eventID, contractSigned, hasBeenPaid){
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let artistEventInfoBody = {
+            "contractSigned": contractSigned ? 1 : 0,
+            "hasBeenPaid": hasBeenPaid ? 1 : 0
+        };
+
+        axios.put(axiosConfig.root + '/api/event/'+ eventID + '/artist/' + artistID + '/artistEventInfo', artistEventInfoBody, {headers: header}).then(response => {
+                callback();
+            }
+        );
+
     }
 
     // OrganizerID == innlogget bruker.
@@ -103,6 +138,10 @@ export class ArtistService {
         }).then(() => {
             callback(allArtistByEvent)
         });
+    }
+
+    static getArtistEventInfosForEvent(callback, eventID){
+        //TODO: do dis
     }
 
     static assignArtist(eventID, artistID) {
