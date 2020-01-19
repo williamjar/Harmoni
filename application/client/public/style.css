@@ -2,11 +2,21 @@
 
 
 *{
-    font-family: Roboto !important;
+    font-family: Roboto, serif !important;
 }
 
 body{
-    background: #314b57 !important;
+    /* background: #314b57 !important; */
+    background-image: url("./resources/concert.jpg");
+    background-repeat: no-repeat;
+    background-size:120%;
+    background-color: #314b57 !important;
+    width: 100%;
+    height: 100%;
+}
+
+.center-v{
+    margin-top: 10%;
 }
 
 .zoom-80{
@@ -200,6 +210,13 @@ body{
 /* Content */
 .Login-Container{
 
+
+}
+
+.drop-shadow{
+    -webkit-box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
+    -moz-box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
+    box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
 }
 
 .content-container{
@@ -409,5 +426,28 @@ search-result-item{
         padding: 20px 20px 50px 20px;
         margin:0 auto;
     }
-
 }
+
+
+
+@media only screen and (max-width: 600px) {
+    body{
+        /* background: #314b57 !important; */
+
+        background-repeat: no-repeat;
+        background-position: 0px 0px ;
+        background-size: 500% auto;
+    }
+}
+
+@media only screen and (min-width: 600px) and (max-width: 1400px){
+    body{
+        /* background: #314b57 !important; */
+
+        background-repeat: no-repeat;
+        background-position: 0px 0px ;
+        background-size: 230% auto;
+    }
+}
+
+

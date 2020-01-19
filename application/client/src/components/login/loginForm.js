@@ -47,8 +47,8 @@ export class LoginForm extends React.Component {
 
     render(){
         return (
-
-            <Card style={{width : '25rem'}} className="text-center mx-auto mt-5">
+            <div className="">
+            <Card style={{width : '25rem'}} className="text-center mx-auto mt-5 drop-shadow">
                 <Form onSubmit={this.handleSubmit} className={"align-items-center"}>
                 <Card.Body>
                     <Card.Title className="mb-4">Logg inn</Card.Title>
@@ -78,7 +78,7 @@ export class LoginForm extends React.Component {
                 </Card>
             </Form>
             </Card>
-
+            </div>
         )
     }
 

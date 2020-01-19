@@ -73,7 +73,7 @@ export class RegisterForm extends React.Component {
     render() {
 
         return (
-            <Card style={{width : '35rem'}} className="text-center mx-auto mt-5">
+            <Card style={{width : '35rem'}} className="text-center mx-auto mt-5 drop-shadow">
                 <Form onSubmit={this.handleSubmit} className={"align-items-center"}>
                 <Card.Body>
                     <Card.Title className="mb-4">Registrer bruker</Card.Title>

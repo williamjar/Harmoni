@@ -24,6 +24,7 @@ import Button from "react-bootstrap/Button";
 import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "react-icons/all";
 import {Alert} from './components/alerts'
 
+
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
 import {Contracts, Documents} from "./components/contract";
@@ -108,7 +109,8 @@ export class App extends Component{
         }
         else {
             return(
-                <div className="Login-Container">
+                <div className="Login-Container center-v">
+
                     <HashRouter>
                         <Route exact path="/" component={() => <LoginForm logIn={() => this.handleLogin()}/>} />
                         <Route exact path="/registrer" component={() => <RegisterForm />} />
