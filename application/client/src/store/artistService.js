@@ -1,8 +1,8 @@
 import axios from "axios";
 import {Artist} from "../classes/artist";
-import {CookieStore} from "./cookieStore";
 import {Genre} from "../classes/genre";
 import {Document} from "../classes/document";
+import {CookieStorage} from "../cookieStorage";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -14,7 +14,7 @@ export class ArtistService {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
 
         axios.get(axiosConfig.root + '/api/artist/' + artistID, {headers: header}).then(response => {
@@ -28,7 +28,7 @@ export class ArtistService {
     static createArtist(callback, name, phone, email, genreID, organizerID) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
 
         let contactBody = {
@@ -59,7 +59,7 @@ export class ArtistService {
     static deleteArtist(artistID) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
         return axios.delete('/api/artist/organizer/' + artistID, {headers: header}).then(response => response.data);
     }
@@ -68,7 +68,7 @@ export class ArtistService {
         let allArtistByOrganizer = [];
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
         axios.get(axiosConfig.root + '/api/artist/organizer/' + organizerID, {headers: header}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
@@ -86,7 +86,7 @@ export class ArtistService {
         let allArtistByEvent = [];
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
         //TODO!!
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
@@ -109,7 +109,7 @@ export class ArtistService {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
 
         return axios.post(axiosConfig.root + '/api/artist/assign', {
@@ -122,7 +122,7 @@ export class ArtistService {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
 
         return axios.delete(axiosConfig.root + '/api/artist/assign/' + eventID + '/' + artistID, {headers: header}).then(response => response.data);
@@ -131,7 +131,7 @@ export class ArtistService {
     static getAllGenres(callback) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
 
         return axios.get(axiosConfig.root + "/api/artist-genres", {headers: header})

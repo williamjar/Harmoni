@@ -1,12 +1,13 @@
 import axios from "axios";
 import {CookieStore} from "./cookieStore";
+import {CookieStorage} from "../cookieStorage";
 
 class BugService{
 
     getOneBug(bugID, callback){
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
         return axios.get(`/api/bug/${bugID}`, {headers: header}).then(() => callback());
     }
@@ -14,7 +15,7 @@ class BugService{
     getAllBugs(){
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
         return axios.get('/api/bug', {headers: header});
     }
@@ -23,7 +24,7 @@ class BugService{
     registerBug(organizerID, description, date){
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
         axios.post(axiosConfig.root + '/api/bug/register/' + organizerID, {
             date: date,

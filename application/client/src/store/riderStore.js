@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import {RiderElement} from "../classes/riderElement"
-import {CookieStore} from "./cookieStore";
+import {CookieStorage} from "../cookieStorage";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -14,7 +14,7 @@ export class RiderStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
 
         axios.get(axiosConfig.root + '/api/rider/' + riderID, {headers: header})
@@ -32,7 +32,7 @@ export class RiderStore {
         let allRiderElementsFromArtist = [];
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
 
         axios.get(axiosConfig.root + '/api/artist/' + artistID + '/rider', {headers: header}).then(response => {
@@ -51,7 +51,7 @@ export class RiderStore {
     static getAllRiderElementsFromArtistAndEvent(eventID, artistID) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider', {headers: header})
             .then(response => {
@@ -69,7 +69,7 @@ export class RiderStore {
     static storeAllRidersForEvent(eventID) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/rider', {headers: header})
             .then(response => {
@@ -88,7 +88,7 @@ export class RiderStore {
     static createNewRiderElement(callback, artistID, eventID, description) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
 
         axios.post(axiosConfig.root + '/api/rider', {
@@ -104,7 +104,7 @@ export class RiderStore {
     static updateRider(riderElementID, artistID, eventID, status, isDone, description) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
         axios.put(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider/' + riderElementID, {
             riderElementID: riderElementID,
@@ -121,7 +121,7 @@ export class RiderStore {
     static deleteRider(eventID, artistID, riderID) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": CookieStorage.currentToken
         };
         axios.delete(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider/' + riderID, {headers: header})
             .catch(error => console.log(error));
