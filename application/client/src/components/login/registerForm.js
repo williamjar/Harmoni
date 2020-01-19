@@ -99,12 +99,11 @@ export class RegisterForm extends React.Component {
 
 
 
-
-                        <Form.Text className="text-danger" hidden={MegaValidator.validateUsername("nothing", this.state.username)}>Brukernavnet kan kun inneholde tall og bokstaver</Form.Text>
                         <Form.Text className="text-danger" hidden={MegaValidator.validateUsernameLength(this.state.username)}>Brukernavn kreves</Form.Text>
+                        <Form.Text className="text-danger" hidden={MegaValidator.validateEmailLength(this.state.firstEmail, this.state.secondEmail)}>E-postaddresse kreves</Form.Text>
+                        <Form.Text className="text-danger" hidden={MegaValidator.validateUsername("nothing", this.state.username)}>Brukernavnet kan kun inneholde tall og bokstaver</Form.Text>
 
                         <Form.Text className="text-danger" hidden={MegaValidator.validateEmail(this.state.firstEmail, this.state.secondEmail)}>E-postadressene må være like</Form.Text>
-                        <Form.Text className="text-danger" hidden={MegaValidator.validateEmailLength(this.state.firstEmail, this.state.secondEmail)}>E-postaddresse kreves</Form.Text>
 
                         <Form.Text className="text-danger" hidden={MegaValidator.validatePassword(null,this.state.firstPassword,this.state.secondPassword)}>Passordene må være like</Form.Text>
                         <Form.Text className="text-danger" hidden={MegaValidator.validatePasswordLength(this.state.firstPassword,this.state.secondPassword)}>Passordet ditt må være på minst 8 tegn</Form.Text>
@@ -145,11 +144,11 @@ export class RegisterForm extends React.Component {
                 history.push('/');
             }
             else if (statusCode === 501){
-                this.setState({emailAlreadyExist: true})
+                this.setState({emailAlreadyExist: true});
                 this.setState({loggingIn: false});
             }
             else if (statusCode === 502){
-                this.setState({usernameAlreadyExist: true})
+                this.setState({usernameAlreadyExist: true});
                 this.setState({loggingIn: false});
             }
             else if (statusCode === 500){
