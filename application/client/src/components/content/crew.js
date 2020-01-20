@@ -120,13 +120,13 @@ export class AddCrewType extends Component{
 
                     <Row className="no-gutter">
                         <Col className="col-1">
-                    <Button variant="primary" type="submit" onClick={this.submitForm}>
-                        Submit
+                    <Button variant="success" type="submit" onClick={this.submitForm}>
+                       Lagre
                     </Button>
                         </Col>
                         <Col className="col-1">
                     <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.props.cancelButton}>
-                        Cancel
+                        Avbryt
                     </Button>
                         </Col>
                     </Row>
@@ -181,15 +181,7 @@ export class AddToCrew extends Component{
 
                 <div className="row padding-top-20 align-items-center">
 
-                    <div className="col-4">
 
-                        <select className="form-control" id="crewCategory" onChange={this.showRegisterCrewTypeForm}>
-                            <option>Lydperson</option>
-                            <option>Lysperson</option>
-                            <option>Legg til ny..</option>
-                        </select>
-
-                    </div>
 
 
                     <div className="col-4">
@@ -437,7 +429,8 @@ export class AddCrewMember extends Component{
             email : "",
             description: "",
             isResponsible: false,
-            crewCategoryID : 1
+            crewCategoryID : 1,
+            showRegisterCrewType : false
         };
     }
 
@@ -465,6 +458,32 @@ export class AddCrewMember extends Component{
                         <Form.Label>Beskrivelse</Form.Label>
                         <Form.Control type="text" placeholder="" onChange={this.handleDescriptionChange} />
                     </Form.Group>
+
+
+                    <div className="row padding-bottom-20">
+                        <div className="col-4">
+
+                            <select className="form-control" id="crewCategory" >
+                                <option>Lydperson</option>
+                                <option>Lysperson</option>
+                            </select>
+                        </div>
+
+
+                        <div className="col-4">
+                            <button className="btn btn-success" onClick={this.showRegisterCrewTypeForm}>Ny personell type</button>
+                        </div>
+
+                    </div>
+
+                    <div className="row padding-bottom-20">
+                        {this.state.showRegisterCrewType?
+                            <div className="col-12">
+                                <AddCrewType />
+                            </div>
+                            :null}
+                    </div>
+
                     <Button variant="primary" type="button" onClick={this.submitForm}>
                         Submit
                     </Button>
@@ -476,6 +495,10 @@ export class AddCrewMember extends Component{
             </div>
         )
     }
+
+    showRegisterCrewTypeForm = () => {
+        this.setState({showRegisterCrewType : true})
+    };
 
     handleNameChange = (event) =>{
         let currentState = this.state;
