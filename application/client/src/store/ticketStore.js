@@ -1,6 +1,9 @@
-import {CookieStore} from "./cookieStore";
+import {Genre} from "../classes/genre";
 import axios from "axios";
 import {TicketType} from "../classes/ticketType";
+import {CrewMember} from "../classes/crewMember";
+import {CookieStore} from "./cookieStore";
+
 
 const axiosConfig = require("./axiosConfig");
 

@@ -8,6 +8,14 @@ export class CookieStore{
     static currentToken = null;
     static currentUserID = -1;
 
+    static setCurrentToken(newToken){
+        this.currentToken = newToken;
+    }
+
+    static setCurrentUserID(newID){
+        this.currentUserID = newID;
+    }
+
     static validateToken(){
 
         if (this.currentToken == null || this.currentUserID === -1){
@@ -38,7 +46,7 @@ export class CookieStore{
             'email': email
         };
 
-        if (CookieStore.currentToken == null){
+        if (this.currentToken == null){
             return null;
         }
 
@@ -70,4 +78,4 @@ export class CookieStore{
             console.log('Error: ' + error.error);
         });
     }
-}
+};

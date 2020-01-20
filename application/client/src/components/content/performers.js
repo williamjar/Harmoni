@@ -355,7 +355,7 @@ export class PerformerCard extends Component{
         /* Adds rider to performer on current event */
         if(this.state.riderInput.trim() !== ""){
             RiderStore.createNewRiderElement((newRider) => {
-                RiderStore.allRidersForCurrentEvent.push(newRider); // Has been posted and returns a
+                RiderStore.addToAllRidersForCurrentArtistAndEvent(newRider); // Has been posted and returns a
 
                 let currentState = this.state;
                 currentState.riders = RiderStore.allRidersForCurrentEvent;
