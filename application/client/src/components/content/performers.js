@@ -625,7 +625,7 @@ export class RegisteredPerformers extends Component{
                                 {p.contactName}
                             </div>
 
-                            <div className="col-2">
+                            <div className="col-2 text-right">
                                 <button className="btn-danger rounded" onClick={() => this.unAssignArtist(p)}>Slett</button>
                             </div>
                         </div>
