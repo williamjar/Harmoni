@@ -35,12 +35,8 @@ export class Ticket extends Component{
         return(
             <Card>
                 <Form>
-                    <ListTickets/>
+                    <TicketAll/>
                 </Form>
-                <Form>
-                    <AddTicket/>
-                </Form>
-
             </Card>
         );
 
@@ -48,9 +44,10 @@ export class Ticket extends Component{
 }
 
 /*
-    Component to add new tickets to an event.
- */
-export class AddTicket extends Component{
+    The component both fetch tickets from database, post new tickets
+    and delete tickets from the database.
+*/
+export class TicketAll extends Component {
 
     constructor(props) {
         super(props);
@@ -62,7 +59,8 @@ export class AddTicket extends Component{
             endDate : '',
             releaseTime : '',
             endTime : '',
-            description : ''
+            description : '',
+            ticketList : []
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -70,11 +68,89 @@ export class AddTicket extends Component{
 
     render() {
         return(
-                <Card.Body>
-                    <Accordion>
-                        <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                + Legg til en ny billett
-                        </Accordion.Toggle>
+            <Card.Body>
+                <ListGroup>
+                    {this.state.ticketList.map(ticket => (
+                        <ListGroup.Item>
+                            <Form>
+                                <Form.Row className="ticketStyle" >
+                                    <Col sm={2}>
+                                        <Form.Text>{nameTicekt}</Form.Text>
+                                        <Form.Control
+                                            value={ticket.ticketTypeName}
+                                            readOnly
+                                        />
+
+                                    </Col>
+                                    <Col sm={1}>
+                                        <Form.Text>{priceTicket}</Form.Text>
+                                        <Form.Control
+                                            value={ticket.price}
+                                            readOnly
+                                        />
+                                    </Col>
+                                    <Col sm={1}>
+                                        <Form.Text>{amountTicket}</Form.Text>
+                                        <Form.Control
+                                            value={ticket.amount}
+                                            readOnly
+                                        />
+                                    </Col>
+                                    <Col sm={2}>
+                                        <Form.Text>{releaseDate}</Form.Text>
+                                        <Form.Control
+                                            value={ticket.releaseDate}
+                                            readOnly
+                                        />
+                                    </Col>
+
+                                    <Col sm={2}>
+                                        <Form.Text>{endDate}</Form.Text>
+                                        <Form.Control
+                                            value={ticket.endDate}
+                                            readOnly
+                                        />
+                                    </Col>
+                                    <Col sm={1}>
+                                        <Form.Text>{releaseTime}</Form.Text>
+                                        <Form.Control
+                                            value={ticket.releaseTime}
+                                            readOnly
+                                        />
+                                    </Col>
+                                    <Col sm={1}>
+                                        <Form.Text>{endTime}</Form.Text>
+                                        <Form.Control
+                                            value={ticket.endTime}
+                                            readOnly
+                                        />
+                                    </Col>
+                                    <Col>
+                                        <h5><FaCalendar/></h5>
+                                    </Col>
+                                </Form.Row>
+                                <Form.Row className="ticketStyle">
+                                    <Col sm={6}>
+                                        <Form.Text>{description}</Form.Text>
+                                        <Form.Control
+                                            value={ticket.description}
+                                            readOnly
+                                        />
+                                    </Col>
+                                </Form.Row>
+                                <Form.Row className="ticketStyle">
+                                    <Col sm={6}>
+                                        <button id={ticket.ticketTypeID} onClick={this.deleteTicket}>Slett billett</button>
+                                    </Col>
+                                </Form.Row>
+                            </Form>
+                        </ListGroup.Item>
+                    ))}
+                </ListGroup>
+                <Accordion>
+                    <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                        + Legg til en ny billett
+                    </Accordion.Toggle>
                     <Accordion.Collapse eventKey="0">
                         <Card.Body>
                             <p>Fyll inn alle informasjon om billetten</p>
@@ -163,27 +239,26 @@ export class AddTicket extends Component{
                                         />
                                     </Col>
                                 </Form.Row>
-                                <Button variant="primary" size="sm" type="submit" onClick={this.handleSubmit}>
+                                <Button eventKey="1" variant="primary" size="sm" type="submit" onClick={this.handleSubmit}>
                                     Lagre billett
                                 </Button>
                             </Form>
                         </Card.Body>
-                     </Accordion.Collapse>
-                    </Accordion>
-                </Card.Body>
+                    </Accordion.Collapse>
+                </Accordion>
+            </Card.Body>
         );
     }
+    /*
+        Fetches all tickets from the databse the moment the page opens.
+    */
+    componentDidMount() {
+        this.listTickets();
+    }
 
-    handleSubmit(event){
-        event.preventDefault();
-        TicketStore.addTicket(EventStore.currentEvent.eventID,
-                                    this.state.ticketTypeName, this.state.price, this.state.amount,
-                                    this.state.releaseDate, this.state.releaseTime, this.state.endDate,
-                                    this.state.endTime, this.state.description);
-        console.log('Ticket Saved' + ' ' + 'this: ' + this.state.price);
-
-    };
-
+    /*
+        Updates all the states when changed.
+    */
     handleInputChange(event) {
         console.log(this.state.ticketTypeName);
         let target = event.target;
@@ -193,107 +268,32 @@ export class AddTicket extends Component{
         this.setState({[name]: value,});
 
     }
-}
 
-/*
-    Component to list all tickets in an event.
-*/
-export class ListTickets extends Component{
+    /*
+        Post the new ticket in the database and notifies the user
+        with an alert message.
+    */
+    handleSubmit(event){
+        event.preventDefault();
+        TicketStore.addTicket(EventStore.currentEvent.eventID,
+            this.state.ticketTypeName, this.state.price, this.state.amount,
+            this.state.releaseDate, this.state.releaseTime, this.state.endDate,
+            this.state.endTime, this.state.description, statusCode => {
+                if (statusCode === 200){
+                    TicketStore.getAllTickets(EventStore.currentEvent.eventID, () => {
+                        this.setState({ticketList: TicketStore.allTickets})
+                    });
+                    alert("Billetten ble publisert");
+                }else{
+                    alert("Det oppsto et problem. Prøv igjen, eller ta kontakt med oss!");
+                }
+            });
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            ticketList : []
-        };
-    }
+    };
 
-    render(){
-            return(
-                <Card.Body>
-                    <ListGroup>
-                        {this.state.ticketList.map(ticket => (
-                            <ListGroup.Item>
-                                <Form>
-                                    <Form.Row className="ticketStyle" >
-                                        <Col sm={2}>
-                                            <Form.Text>{nameTicekt}</Form.Text>
-                                            <Form.Control
-                                                value={ticket.ticketTypeName}
-                                                readOnly
-                                            />
-
-                                        </Col>
-                                        <Col sm={1}>
-                                            <Form.Text>{priceTicket}</Form.Text>
-                                            <Form.Control
-                                                value={ticket.price}
-                                                readOnly
-                                            />
-                                        </Col>
-                                        <Col sm={1}>
-                                            <Form.Text>{amountTicket}</Form.Text>
-                                            <Form.Control
-                                                value={ticket.amount}
-                                                readOnly
-                                            />
-                                        </Col>
-                                        <Col sm={2}>
-                                            <Form.Text>{releaseDate}</Form.Text>
-                                            <Form.Control
-                                                value={ticket.releaseDate}
-                                                readOnly
-                                            />
-                                        </Col>
-
-                                        <Col sm={2}>
-                                            <Form.Text>{endDate}</Form.Text>
-                                            <Form.Control
-                                                value={ticket.endDate}
-                                                readOnly
-                                            />
-                                        </Col>
-                                        <Col sm={1}>
-                                            <Form.Text>{releaseTime}</Form.Text>
-                                            <Form.Control
-                                                value={ticket.releaseTime}
-                                                readOnly
-                                            />
-                                        </Col>
-                                        <Col sm={1}>
-                                            <Form.Text>{endTime}</Form.Text>
-                                            <Form.Control
-                                                value={ticket.endTime}
-                                                readOnly
-                                            />
-                                        </Col>
-                                        <Col>
-                                            <h5><FaCalendar/></h5>
-                                        </Col>
-                                    </Form.Row>
-                                    <Form.Row className="ticketStyle">
-                                        <Col sm={6}>
-                                            <Form.Text>{description}</Form.Text>
-                                            <Form.Control
-                                                value={ticket.description}
-                                                readOnly
-                                            />
-                                        </Col>
-                                    </Form.Row>
-                                    <Form.Row className="ticketStyle">
-                                        <Col sm={6}>
-                                            <button id={ticket.ticketTypeID} onClick={this.deleteTicket}>Slett billett</button>
-                                        </Col>
-                                    </Form.Row>
-                                </Form>
-                            </ListGroup.Item>
-                        ))}
-                    </ListGroup>
-                </Card.Body>
-            );
-    }
-    componentDidMount() {
-        this.listTickets();
-    }
+    /*
+        List all tickets from the database to one spesific event.
+    */
 
     listTickets = () => {
         console.log(EventStore.currentEvent.eventID);
@@ -304,84 +304,26 @@ export class ListTickets extends Component{
         console.log(this.state.ticketList, );
     };
 
+    /*
+        Deletes ticket in the database and nd notifies the user
+        with an alert message.
+    */
+
     deleteTicket = (event) => {
         console.log('Button clicked');
         console.log(EventStore.currentEvent.eventID);
         console.log(event.target.id);
-        TicketStore.deleteTicket(EventStore.currentEvent.eventID, event.target.id).then(r => console.log('done'));
+        TicketStore.deleteTicket(EventStore.currentEvent.eventID, event.target.id, statusCode => {
+            if (statusCode === 200){
+                alert("Billetten ble slettet!");
+                this.listTickets();
+            }
+            else{
+                alert("Det oppsto et problem. Prøv igjen, eller ta kontakt med oss!");
+            }
+        }).then(r => console.log('done'));
 
     }
 
-
-
-
-
-
-}
-
-/*
-    Component for viewing all types of tickets associated with the event.
- */
-export class TicketView extends Component {
-
-    state = {
-        collapse: true
-    };
-
-    collapse = (e) => {
-        if(this.state.collapse) {
-            this.setState({collapse: false})
-        } else {
-            this.setState({collapse: true})
-        }
-    };
-
-    render() {
-        return(
-            <Table striped>
-                <thead>
-                <tr align="center">
-                    <th>Billettype</th>
-                    <th>Pris</th>
-                    <th>Antall</th>
-                    <th>Slippdato</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr align='center' onClick={this.collapse}>
-                    <td>Standard</td>
-                    <td>200kr</td>
-                    <td>1000</td>
-                    <td>01 JAN 2020</td>
-                    <td><FaAngleDown/></td>
-                </tr>
-                <tr className={this.state.collapse ? "collapse" : null}>
-                    beskrivelse
-                </tr>
-                <tr align='center' className="accordion">
-                    <td>GULL</td>
-                    <td>500kr</td>
-                    <td>500</td>
-                    <td>01 JAN 2020</td>
-                    <td><FaAngleDown/></td>
-                </tr>
-                <tr className={this.state.collapse ? "collapse" : null}>
-                    beskrivelse
-                </tr>
-                <tr align='center' className="accordion">
-                    <td>VIP</td>
-                    <td>1000kr</td>
-                    <td>100</td>
-                    <td>01 JAN 2020</td>
-                    <td><FaAngleDown/></td>
-                </tr>
-                <tr className={this.state.collapse ? "collapse" : null}>
-                    beskrivelse
-                </tr>
-                </tbody>
-            </Table>
-        )
-    }
 }
 
