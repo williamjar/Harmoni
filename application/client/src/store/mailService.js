@@ -27,6 +27,23 @@ export class MailService{
         }).catch(err => callback(500, err));
     }
 
+    static sendGeneralEmailToMany(emailToArray, subject, emailBody, attachmentLinks, callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let body = {
+
+        }
+    }
+
+    static sendCancelNotice(subject, emailBody, artists, crew, otherEmails, callback){
+        let artistEmails = artists.map(artist => artist.email);
+        let crewEmails = crew.map(crewMember => crewMember.email);
+        let allEmails = [].concat(artistEmails).concat(crewEmails.concat(otherEmails));
+    }
+
     static sendArtistInvitation(artist, subject, emailBody, callback){
 
         let documentLinks = artist.documents.map(doc => doc.documentLink);
