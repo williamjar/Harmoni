@@ -262,6 +262,7 @@ export class PerformerCard extends Component{
 
                    </div>
 
+
                    <div className="col-4">
                        Filer lagt til fra før: {this.state.numberOfFilesAlreadyUploaded}
                    </div>
@@ -410,7 +411,6 @@ export class PerformerCard extends Component{
         });
 
         //TODO: Send signed contract and if artist has been payed
-
         artistService.updateArtistEventInfo(()=>{}, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.signedContract, this.state.payed);
     }
 }
