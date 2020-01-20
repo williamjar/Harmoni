@@ -164,7 +164,7 @@ CREATE TABLE riderElement(
 
 
 ALTER TABLE event
-ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID),
+ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID) ON DELETE CASCADE,
 ADD FOREIGN KEY (eventTypeID) REFERENCES eventType(eventTypeID),
 ADD FOREIGN KEY (pictureID) REFERENCES picture(pictureID);
 
