@@ -212,76 +212,99 @@ export class DocumentService {
         }).catch(res => console.log(res));
     }
 
-    static downloadDocument(eventID, documentCategoryID, documentName){
-        console.log(axiosConfig.root + '/api/pdf/' + eventID + '/' + documentCategoryID + '/' + documentName);
-        axios.get(axiosConfig.root + '/api/pdf/' + eventID + '/' + documentCategoryID + '/' + documentName,
+    static downloadDocument(documentLink, doucmentName){
+        axios.get(axiosConfig.root + '/api/document/download/' + documentLink,
             {responseType: 'arraybuffer'}).then(res => {
-            /*let url = window.URL.createObjectURL(new Blob([res.data]
-                ,{type: "application/pdf"}));*/
             let url;
 
-            if((/\.(jpeg)$/i).test(documentName) || (/\.(jpg)$/i).test(documentName)){
+            //Checks which content-type is correct to file extension name
+            //jpg/jpeg image
+            if((/\.(jpeg)$/i).test(documentLink) || (/\.(jpg)$/i).test(documentLink)){
                url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: "image/jpeg"}));
             }
             //Png image
-            else if((/\.(png)$/i).test(documentName)){
+            else if((/\.(png)$/i).test(documentLink)){
                 url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: "image/png"}));
             }
 
             //Postscript
-            else if((/\.(ai)$/i).test(documentName)){
+            else if((/\.(ai)$/i).test(documentLink)){
                 url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: "application/postscript"}));
             }
 
             //PDF
-            else if((/\.(pdf)$/i).test(documentName)){
+            else if((/\.(pdf)$/i).test(documentLink)){
                 url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: "application/pdf"}));
             }
-            //Powerpoint
-            else if((/\.(pptx)$/i).test(documentName) || (/\.(ppt)$/i).test(documentName)){
+            //Microsoft Powerpoint
+            else if((/\.(pptx)$/i).test(documentLink) || (/\.(ppt)$/i).test(documentLink)){
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    ,{type: "application/vnd.openxmlformats-officedocument.presentationml.presentation"}));
+            }
+            else if((/\.(ppt)$/i).test(documentLink)){
                 url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: "application/vnd.ms-powerpoint"}));
             }
-            //Excel
-            else if((/\.(xlsx)$/i).test(documentName) || (/\.(xls)$/i).test(documentName)){
+            //Microsoft Excel
+            else if((/\.(xlsx)$/i).test(documentLink)){
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    ,{type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+            }
+
+            else if((/\.(xls)$/i).test(documentLink)){
                 url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: "application/vnd.ms-excel"}));
             }
-            //Word
-            else if((/\.(doc)$/i).test(documentName)){
+
+            //Microsoft Word
+            else if((/\.(docx)$/i).test(documentLink)){
                 url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}));
             }
 
-            else if((/\.(rar)$/i).test(documentName)){
+            else if((/\.(doc)$/i).test(documentLink)){
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    ,{type: "application/msword"}));
+            }
+            //Compressed File
+            else if((/\.(rar)$/i).test(documentLink)){
                 url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: "application/x-rar-compressed"}));
             }
 
-            else if((/\.(7z)$/i).test(documentName)){
+            else if((/\.(7z)$/i).test(documentLink)){
                 url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: "application/x-7z-compressed"}));
             }
-            //Compressed File
-            else if((/\.(zip)$/i).test(documentName)){
+            else if((/\.(zip)$/i).test(documentLink)){
                 url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: "application/zip"}));
             }
+            //Rich text format
+
+            else if((/\.(rtf)$/i).test(documentLink)){
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    ,{type: "application/rtf"}));
+            }
+            else if((/\.(rtx)$/i).test(documentLink)){
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    ,{type: "text/richtext"}));
+            }
             else {
-                console.log("There are no MIME support to " + documentName);
+                console.log("There are no MIME support to " + documentLink);
                 url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: ""}));
             }
             var link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', documentName.replace(/\.[^/.]+$/, ""));
+            link.setAttribute('download', doucmentName);
             document.body.appendChild(link);
             link.click();
         });
-        console.log("Downloading...");
+        console.log("Downloading document...");
     }
 }

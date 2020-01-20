@@ -305,56 +305,77 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     });
 });
 
-/*
-TODO: se i service klasse. Sender dokument navn men det er ikke det samme som selve filnavnet på serveren. Regex på path for å få riktig filnavn?
- */
-app.get("/api/pdf/:eventID/:documentCategoryID/:documentName", (req, res) => {
-    var file = './resources/' + req.params.eventID + '/' + req.params.documentCategoryID + '/' + req.params.documentName;
+app.get("/api/document/download/:path*", (req, res) => {
+    var file = req.params.path + req.params['0'];
     fs.readFile(file, function(err, data){
-
-    if((/\.(jpeg)$/i).test(req.params.documentName) || (/\.(jpg)$/i).test(req.params.documentName)){
+        //jpg/jpeg image
+    if((/\.(jpeg)$/i).test(req.params.path + req.params['0']) || (/\.(jpg)$/i).test(req.params.path + req.params['0'])){
         res.contentType("image/jpeg");
     }
     //Png image
-    else if((/\.(png)$/i).test(req.params.documentName)){
+    else if((/\.(png)$/i).test(req.params.path + req.params['0'])){
         res.contentType("image/png");
     }
 
     //Postscript
-    else if((/\.(ai)$/i).test(req.params.documentName)){
+    else if((/\.(ai)$/i).test(req.params.path + req.params['0'])){
         res.contentType("application/postscript");
     }
 
     //PDF
-    else if((/\.(pdf)$/i).test(req.params.documentName)){
+    else if((/\.(pdf)$/i).test(req.params.path + req.params['0'])){
         res.contentType("application/pdf");
     }
-    //Powerpoint
-    else if((/\.(pptx)$/i).test(req.params.documentName) || (/\.(ppt)$/i).test(req.params.documentName)){
+    //Microsoft Powerpoint
+    else if((/\.(pptx)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/vnd.openxmlformats-officedocument.presentationml.presentation");
+    }
+    else if((/\.(ppt)$/i).test(req.params.path + req.params['0'])){
         res.contentType("application/vnd.ms-powerpoint");
     }
-    //Excel
-    else if((/\.(xlsx)$/i).test(req.params.documentName) || (/\.(xls)$/i).test(req.params.documentName)){
+    //Microsoft Excel
+    else if((/\.(xlsx)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    }
+
+    else if((/\.(xls)$/i).test(req.params.path + req.params['0'])){
         res.contentType("application/vnd.ms-excel");
     }
-    //Word
-    else if((/\.(doc)$/i).test(req.params.documentName)){
+    //Microsoft Word
+    else if((/\.(docx)$/i).test(req.params.path + req.params['0'])){
+        console.log(".docx registered");
         res.contentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
     }
 
-    else if((/\.(rar)$/i).test(req.params.documentName)){
+    else if((/\.(doc)$/i).test(req.params.path + req.params['0'])){
+        console.log(".doc registered");
+        res.contentType("application/msword");
+    }
+    //Compressed File
+    else if((/\.(rar)$/i).test(req.params.path + req.params['0'])){
         res.contentType("application/x-rar-compressed");
     }
 
-    else if((/\.(7z)$/i).test(req.params.documentName)){
+    else if((/\.(7z)$/i).test(req.params.path + req.params['0'])){
         res.contentType("application/x-7z-compressed");
     }
-    //Compressed File
-    else if((/\.(zip)$/i).test(req.params.documentName)){
+
+    else if((/\.(zip)$/i).test(req.params.path + req.params['0'])){
         res.contentType("application/zip");
     }
+    //Plaint text file
+    else if((/\.(txt)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("text/plain");
+    }
+    //Rich text format
+    else if((/\.(rtf)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/rtf");
+    }
+    else if((/\.(rtx)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("text/richtext");
+    }
     else {
-        console.log("There are no MIME support to " + req.params.documentName);
+        console.log("There are no MIME support to " + req.params.path + req.params['0']);
         res.contentType("");
     }
         res.send(data)

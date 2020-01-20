@@ -127,7 +127,7 @@ export class Documents extends Component{
     }
 
     //TODO: show information of file - render component
-    handleClick(eventID, documentCategoryID, documentName){
+    handleClick(documentLink, documentName){
         /*
           console.log("Clicked document with id " + documentID);
         documentService.getOneDocument(this.props.match.params.eventID, documentID,(document) => {
@@ -137,7 +137,7 @@ export class Documents extends Component{
         console.log(this.state.documentInfo.documentName);
          */
 
-        documentService.downloadDocument(eventID, documentCategoryID, documentName);
+        documentService.downloadDocument(documentLink, documentName);
     }
 
     componentDidMount() {
@@ -166,7 +166,7 @@ export class Documents extends Component{
             return <FaFileExcel size = {25}/>
         }
         //Word
-        else if((/\.(doc)$/i).test(fileName)){
+        else if((/\.(docx)$/i).test(fileName) || (/\.(doc)$/i).test(fileName)){
             return <FaFileWord size = {25}/>
         }
         //Compressed File
@@ -183,7 +183,7 @@ export class Documents extends Component{
             <ul className={"list-group"}>
                 {this.state.document.map((item) => {
                     return (
-                        <li className = {"list-group-item folder"} onClick={() => this.handleClick(this.props.match.params.eventID, item.documentCategoryID, item.documentName)}>
+                        <li className = {"list-group-item folder"} onClick={() => this.handleClick(item.documentLink, item.documentName)}>
                             {this.checkFileType(item.documentName)} {item.documentName}
                         </li>
 
