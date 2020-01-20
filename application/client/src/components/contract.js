@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Col, Row} from "react-bootstrap";
+import {Button, Col, Row} from "react-bootstrap";
 import {NavLink} from "react-router-dom";
 import {FaFileImage, FaFilePowerpoint,FaFileExcel,FaFileArchive,FaFileWord, FaFilePdf, FaFileAlt, FaFolderOpen} from "react-icons/all";
 import { createHashHistory } from 'history';
@@ -8,6 +8,8 @@ import {DocumentService as documentService} from "../store/documentService";
 import {DocumentCategory} from "../classes/documentCategory";
 import {OrganizerStore as organizerStore} from "../store/organizerStore";
 import {EventStore as eventStore} from "../store/eventStore";
+import axios from "axios";
+
 
 
 const history = createHashHistory();
@@ -178,19 +180,47 @@ export class Documents extends Component{
         }
     }
 
+    checkIfAllowedToPreview(documentLink) {
+        if ((/\.(pdf)$/i).test(documentLink)) {
+            return (
+                <Col size={3} className={"text-right"}>
+                    <App path={documentLink}/>
+                </Col>
+            );
+        }
+    }
+
     render(){
         return(
-            <ul className={"list-group"}>
+            <section>
                 {this.state.document.map((item) => {
+
                     return (
-                        <li className = {"list-group-item folder"} onClick={() => this.handleClick(item.documentLink, item.documentName)}>
-                            {this.checkFileType(item.documentName)} {item.documentName}
-                        </li>
+                        <div className={"border-bottom padding-top-10 padding-bottom-5"}>
+                            <Row className={"no-gutters"} onClick={() => this.handleClick(item.documentLink, item.documentName)}>
+                                <Col size = {9} className = {" folder "}>
+                                    {this.checkFileType(item.documentName)} {item.documentName}
+
+                                </Col>
+                                {this.checkIfAllowedToPreview(item.documentLink)}
+                            </Row>
+                        </div>
 
                     );
                 })}
-            </ul>
+            </section>
         )
+    }
+}
+
+class App extends Component {
+    viewHandler = async () => {
+        documentService.previewDocument(this.props.path);
+    };
+    render() {
+        return (
+                <Button variant="outline-info" onClick={this.viewHandler}> View Pdf </Button>
+        );
     }
 }
 
@@ -215,7 +245,6 @@ export class File extends Component{
             <iframe src={'userStories.pdf'} width="100%" height="600" frameBorder="0"/>
         );
     }
-
 }
 
 

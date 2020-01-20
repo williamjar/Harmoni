@@ -305,6 +305,19 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     });
 });
 
+app.get("/document/preview/:path*", (req, res) => {
+    console.log("PATH: " + req.params.path + req.params['0']);
+    var file = fs.createReadStream("./" + req.params.path + req.params['0']);
+    file.pipe(res);
+});
+/*
+app.get("/document/preview", (req, res) => {
+    console.log("TEST");
+    var file = fs.createReadStream("./resources/Formelark2018.pdf");
+    file.pipe(res);
+});
+ */
+
 app.get("/api/document/download/:path*", (req, res) => {
     var file = req.params.path + req.params['0'];
     fs.readFile(file, function(err, data){

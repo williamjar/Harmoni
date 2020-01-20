@@ -307,4 +307,31 @@ export class DocumentService {
         });
         console.log("Downloading document...");
     }
+
+    static previewDocument(documentLink) {
+        if((/\.(pdf)$/i).test(documentLink)){
+            axios.get(axiosConfig.root + '/document/preview/' + documentLink, {
+                method: "GET",
+                responseType: "blob"
+                //Force to receive data in a Blob Format
+            }).then(response => {
+                //Create a Blob from the PDF Stream
+                console.log(response.data);
+                const file = new Blob([response.data], {
+                    type: "application/pdf"
+                });
+                //Build a URL from the file
+                const fileURL = URL.createObjectURL(file);
+                //Open the URL on new Window
+                window.open(fileURL);
+            })
+                .catch(error => {
+                    console.log(error);
+                });
+        } else {
+            console.log("Can only preview pdf documents");
+        }
+
+    }
+
 }
