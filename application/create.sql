@@ -117,6 +117,8 @@ CREATE TABLE artist(
 CREATE TABLE event_artist(
     eventID INT,
     artistID INT,
+    contractSigned tinyint default 0 not null,
+    hasBeenPaid    tinyint default 0 not null,
     PRIMARY KEY(eventID, artistID)
 );
 
@@ -184,7 +186,7 @@ ADD FOREIGN KEY (eventID) REFERENCES event(eventID) ON DELETE CASCADE,
 ADD FOREIGN KEY (artistID) REFERENCES artist(artistID) ON DELETE CASCADE;
 
 ALTER TABLE crew
-ADD FOREIGN KEY (contactID) REFERENCES contact(contactID) ON DELETE CASCADE;
+ADD FOREIGN KEY (contactID) REFERENCES contact(contactID) ON DELETE CASCADE,
 ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID) ON DELETE CASCADE;
 
 ALTER TABLE crewCategory ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID);
