@@ -38,14 +38,6 @@ app.get("/api/crew/event/:eventID", (request, response) => {
     }, val);
 });
 
-app.get("/api/crew/event/:eventID/categories/:crewID", (request, response) => {
-    console.log("request for all crew categories attached to a crew member for an event");
-    crewDao.getAllCategoriesForOneForEvent((status,data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.crewID, request.params.eventID);
-});
-
 app.get("/api/crew/event/:eventID/categories", (request, response) => {
     console.log("request for all crew categories for an event");
     crewDao.getAllCategoriesForEvent((status,data) => {
