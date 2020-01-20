@@ -129,20 +129,6 @@ export class Documents extends Component{
         }
     }
 
-    //TODO: show information of file - render component
-    handleClick(documentLink, documentName){
-        /*
-          console.log("Clicked document with id " + documentID);
-        documentService.getOneDocument(this.props.match.params.eventID, documentID,(document) => {
-            this.setState({documentInfo: document});
-        });
-        //TODO: get info from service
-        console.log(this.state.documentInfo.documentName);
-         */
-
-        documentService.downloadDocument(documentLink, documentName);
-    }
-
     componentDidMount() {
         documentService.getAllDocumentsByCategoryForEvent(this.props.match.params.eventID, this.props.match.params.documentCategoryID,(list) => {
             this.setState({document: list});
@@ -178,16 +164,6 @@ export class Documents extends Component{
         }
         else {
             return <FaFileAlt size = {25}/>
-        }
-    }
-
-    previewButton(documentLink) {
-        if ((/\.(pdf)$/i).test(documentLink)) {
-            return (
-                <Col size={3}>
-                    <PreviewButton path={documentLink}/>
-                </Col>
-            );
         }
     }
 
@@ -302,41 +278,6 @@ class Info extends Component {
         );
     }
 }
-
-class PreviewButton extends Component {
-    viewHandler = async () => {
-        documentService.previewDocument(this.props.path);
-    };
-    render() {
-        return (
-                <Button variant="outline-info" onClick={this.viewHandler}> View Pdf </Button>
-        );
-    }
-}
-
-
-export class File extends Component{
-    constructor(props){
-        super(props);
-        this.state= {
-        }
-    }
-
-    handleClick(){
-        console.log("Clicked")
-    }
-
-    componentDidMount() {
-    }
-
-
-    render(){
-        return(
-            <iframe src={'userStories.pdf'} width="100%" height="600" frameBorder="0"/>
-        );
-    }
-}
-
 
 
 
