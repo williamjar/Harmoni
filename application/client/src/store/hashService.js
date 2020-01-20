@@ -29,7 +29,6 @@ export function getHashedFromEmail(enteredPassword, email, callback) {
 }
 
 export function verifyPassword(organizerID, enteredPassword, callback) {
-    console.log("verify " + organizerID + " " + enteredPassword);
     getPassword(organizerID, passwordInDB => {
         getSaltFromID(organizerID, salt => {
             let enteredPasswordHashed = sha512(enteredPassword, salt);

@@ -21,7 +21,7 @@ export class OrganizerStore {
 
         axios.get(axiosConfig.root + '/api/organizer/' + organizerID, {headers: header})
             .then(response => {
-                    this.currentOrganizer = new Organizer(response.data[0].organizerID,response.data[0].contactID, response.data[0].contactName, response.data[0].phone,
+                    this.currentOrganizer = new Organizer(response.data[0].organizerID, response.data[0].contactID, response.data[0].contactName, response.data[0].phone,
                         response.data[0].email, response.data[0].username, response.data[0].pictureLink);
                     console.log(this.currentOrganizer);
                     callback(200);
@@ -105,7 +105,11 @@ export class OrganizerStore {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete(axiosConfig.root + 'api/contact/' + this.currentOrganizer.contactID, {headers: header});
+
+        console.log("CONTACT ID " + this.currentOrganizer.contactID);
+        return axios.delete(axiosConfig.root + '/api/contact/' + this.currentOrganizer.contactID, {headers: header}).then( res => {
+            console.log(res);
+        });
     }
 
     static archiveOldEvents() {
