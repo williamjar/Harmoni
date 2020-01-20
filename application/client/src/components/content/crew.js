@@ -6,7 +6,6 @@ import Button from "react-bootstrap/Button";
 import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
-import {TicketType} from "../../classes/ticketType";
 import {CrewStore} from "../../store/crewStore";
 import {CookieStore} from "../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
@@ -15,7 +14,10 @@ import ListGroup from "react-bootstrap/ListGroup";
 import {EventStore} from "../../store/eventStore";
 import {OrganizerStore} from "../../store/organizerStore";
 import Row from "react-bootstrap/Row";
+import {DocumentService} from "../../store/documentService";
 import {Alert} from "../alerts";
+import {Document} from "../../classes/document";
+import {MailService} from "../../store/mailService";
 
 
 export class CrewTab extends Component{
@@ -50,8 +52,8 @@ export class CrewPanel extends Component{
         this.state = {
             crewList : [],
             crewCategoryList : [],
-            showArtistCard: false,
-            performerSelected : {},
+            showCrewCard: false,
+            crewSelected : {},
             results : [],
             showRegisterNew : false,
         }
@@ -74,6 +76,8 @@ export class CrewPanel extends Component{
 
                         <div className="padding-top-20">
                             {this.state.showRegisterNew?<AddCrewMember submit={this.submitFunction} toggleRegisterCrewMember={this.toggleRegisterNew} crewCategoryList={this.state.crewCategoryList} />:null}
+                            {this.state.showCrewCard?<CrewCard crewSelected={this.state.crewSelected}/>:null}
+
                         </div>
                     </div>
 
@@ -104,15 +108,11 @@ export class CrewPanel extends Component{
 
     returnCrewCategories = () => {
         CrewStore.storeAllCrewCategoriesForOrganizer(() => {
-            console.log("return categories for organizer");
-            console.log(CrewStore.allCrewCategoriesForOrganizer);
             this.setState(
                 {
                     crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
                 })
         }, OrganizerStore.currentOrganizer.organizerID); //OrganizerStore.currentOrganizer
-        console.log(" liste over pesonellkategorier:");
-        console.log( this.state.crewCategoryList.crewCategoryID);
     };
 
     submitFunction = () => {
@@ -178,9 +178,6 @@ export class AddCrewType extends Component{
         } else{
             CrewStore.addCategory(this.state.crewType, OrganizerStore.currentOrganizer.organizerID);
             alert(this.state.crewType);
-            console.log("følgende kategori og ID : ");
-            console.log(this.state.crewType);
-            console.log( OrganizerStore.currentOrganizer.organizerID);
             this.props.submit();
         }
     };
@@ -208,8 +205,6 @@ export class AddToCrew extends Component{
 
     returnCrewCategories = () => {
         CrewStore.storeAllCrewCategoriesForOrganizer(() => {
-            console.log("return categories for organizer");
-            console.log(CrewStore.allCrewCategoriesForOrganizer);
             this.setState(
                 {
                     crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
@@ -389,6 +384,215 @@ export class AddToCrew extends Component{
     };
 }
 
+export class CrewCard extends Component{
+    /* Crew card that shows information about crew members */
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            crew : this.props.crewSelected,
+            numberOfFilesChosenForUpload: 0,
+            numberOfFilesAlreadyUploaded: 0,
+            descriptionInput: "",
+            signedContract : false,
+            payed : false,
+        };
+    }
+
+    render(){
+        return(
+            <div className="card card-body">
+                <div className="row align-items-center">
+                    <div className="col-2">
+                        <img src="https://s3.us-east-2.amazonaws.com/upload-icon/uploads/icons/png/19339625881548233621-512.png" width={50} alt=""/>
+                    </div>
+
+                    <div className="col-7">
+                        {this.state.crew.contactName}<br/>
+                        {this.state.crew.email}
+                    </div>
+
+                    <div className="col-3">
+                        <label htmlFor="categorySelect">Kategori</label>
+                        <select className="form-control" id="genreSelect">
+                            <option>Blues</option>
+                            <option>Country</option>
+                        </select>
+                    </div>
+
+
+                </div>
+                <hr></hr>
+                <div className="row">
+                    <div className="col-12">
+                        Beskrivelse<br/>
+
+                        <InputGroup className="mb-3">
+                            <FormControl
+                                placeholder=""
+                                aria-label=""
+                                aria-describedby="basic-addon2"
+                                value={this.state.descriptionInput}
+                                onChange={this.handleInputCrew}
+                            />
+                            <InputGroup.Append>
+                                <Button variant="outline-secondary" onClick={() => this.updateCrew()}>Oppdater beskrivelse</Button>
+                            </InputGroup.Append>
+                        </InputGroup>
+                    </div>
+                </div>
+
+                <div className="row padding-top-20">
+                    <div className="col-4">
+                        <div className="form-check">
+                            <input className="form-check-input" name="signedContract" type="checkbox" checked={this.state.signedContract} id="signedContract"/>
+                            <label className="form-check-label" htmlFor="signedContract">
+                                Signert kontrakt
+                            </label>
+                        </div>
+                    </div>
+                    <div className="col-4">
+                        <div className="form-check">
+                            <input className="form-check-input" name="payed" type="checkbox" checked={this.state.payed} id="crewPayed" onChange={this.handleOtherCheckboxes}/>
+                            <label className="form-check-label" htmlFor="crewPayed">
+                                Betalt
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="row padding-top-20">
+
+
+
+                    <div className="col-4">
+                        <span className="btn btn-primary btn-file">
+                            Legg til vedlegg <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/>
+                        </span>
+                        {this.state.numberOfFilesAdded > 0 && this.state.numberOfFilesAdded<2? <div className="padding-left-5">{this.state.numberOfFilesAdded + " file added"}</div>: null}
+                        {this.state.numberOfFilesAdded > 1 ? <div className="padding-left-5">{this.state.numberOfFilesAdded + " files added"}</div>: null}
+
+                    </div>
+
+                    <div className="col-4">
+                        Filer lagt til fra før: {this.state.numberOfFilesAlreadyUploaded}
+                    </div>
+
+                    <div className="col-4 offset-4 text-right">
+                        <button className = "butn-success-rounded" onClick={() => this.sendEmail()}>Send offisiell invitasjon til personell</button>
+                    </div>
+
+                    <div className="col-4 offset-4 text-right">
+                        <button className="btn-success rounded" onClick={() => this.save()} id="saveCrew">Lagre</button>
+                    </div>
+                </div>
+
+            </div>
+        )
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        /* Updates the props based on parent state change
+        * sets the current performer to be displayed in card */
+        if(props.performerSelected !== state.performer) {
+            return {
+                performer: props.performerSelected
+            };
+        }
+        return null;
+    }
+
+    componentDidMount() {
+        let currentState = this.state;
+        currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
+        this.setState(currentState);
+    }
+
+    //TODO: Change states that show if files are added to server
+    addFile = () =>{
+        /* For adding attachments to crew */
+        let fileInput = document.querySelector("#uploadAttachmentPerformer");
+
+        let attachment = fileInput.files.length;
+        if(attachment !== undefined){
+            let files = fileInput.files;
+
+            let currentState = this.state;
+            currentState.numberOfFilesAdded = files.length;
+
+            this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
+
+            //TODO: VALIDATE PDF FILES
+            //TODO: Choose file category
+            let formData = new FormData();
+            for (let i = 0; i < files.length; i++){
+                formData.set('selectedFile', files[i]);
+                DocumentService.addDocument(EventStore.currentEvent.eventID, "Kontrakt", currentState.performer.artistID, null, 1, formData, (statusCode, returnData) => {
+                    if (statusCode === 200){
+                        console.log("Document was successfully uploaded");
+                        Alert.success("Dokumentet ble lastet opp");
+                        this.state.performer.addDocument(new Document(returnData.documentID, returnData.documentLink, 1));
+                        fileInput.value = '';
+                        currentState.numberOfFilesAlreadyUploaded += 1;
+                        currentState.numberOfFilesAdded = 0;
+                    }
+                    else{
+                        console.log("Error uploading document");
+                        Alert.danger("En feil skjedde under opplastning");
+                    }
+
+                });
+            }
+            this.setState(currentState);
+        }
+    };
+
+    handleOtherCheckboxes = (event) => {
+        this.setState({[event.target.name] : event.target.checked});
+    }
+
+    handleInput = (event) =>{
+        /* Handles the description input for crew members */
+        let currentState = this.state;
+        currentState.descriptionInput = event.target.value;
+        this.setState(currentState);
+    };
+
+    sendEmail(){
+        console.log("Sending email to");
+        console.log(this.state.crew);
+      /*  MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
+            "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
+            "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
+            "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
+            "Regards, " + OrganizerStore.currentOrganizer.username, (statusCode) => {
+                if (statusCode === 200){
+                    console.log("Email sent successfully");
+                }
+                else{
+                    console.log("An error occured sending the email");
+                }
+            }); */
+    }
+
+    save = () => {
+        /* Save function to gather all information in the Performer Card that needs to be stored */
+
+
+        Alert.success("Artist lagret");
+
+        this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(rider => {
+            if (rider.isModified){
+                RiderStore.updateRider(() => {rider.isModified = false}, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone ? 1 : 0, rider.description);
+            }
+        });
+
+        //TODO: Send signed contract and if artist has been payed
+    }
+}
+
+
 export class CrewView extends Component {
 
     constructor(props) {
@@ -491,7 +695,7 @@ export class AddCrewMember extends Component{
             isResponsible: false,
             crewCategoryID : 1,
             showRegisterCrewType : false,
-            selectedCategoryID: 1,
+            selectedCategoryID: this.props.crewCategoryList[0].crewCategoryID,
             crewCategoryList: [this.props.crewCategoryList]
         };
     }
@@ -616,10 +820,6 @@ export class AddCrewMember extends Component{
     handleIsResponsibleChange = (event) =>{
         //currentState.isResponsible = event.target.value;
         this.setState({isResponsible: !this.state.isResponsible});
-        console.log("status?");
-        console.log(this.state.isResponsible);
-        console.log((this.state.isResponsible ? 1 : 0));
-        //this.setState(currentState);
     };
 
 
