@@ -141,6 +141,15 @@ export class AddToCrew extends Component{
         console.log("onChange");
     };
 
+    handleAddNewCategory(e){
+        this.setState({
+            categoryID: e.target.value,
+        })
+        this.showRegisterCrewTypeForm(e);
+        console.log("onClick");
+
+    }
+
     render() {
         return(
             <div className="card card-body">
@@ -161,6 +170,7 @@ export class AddToCrew extends Component{
                             <select
                                 value={this.state.categoryID}
                                 onChange={e => this.handleCategoryChange(e)}
+                                onClick={e => this.handleAddNewCategory(e)}
                             >
                                 {this.state.crewCategoryList.map(category => (
                                     <option key={category.crewCategoryID} value={category.crewCategoryID}>
@@ -282,6 +292,7 @@ export class AddToCrew extends Component{
     };
 
     addNew = () => {
+        this.returnCrewCategories();
         /* Fetches the information from the forms to be used with database */
 
         //TODO: Search bar is not functiong yet.
@@ -299,42 +310,6 @@ export class AddToCrew extends Component{
 
     };
 }
-
-export class AddedCrew extends Component{
-
-    render() {
-        return (
-            <div>
-                <div className="row padding-top-20">
-                    <div className="col-12">
-                        <b>Personell som er lagt til</b>
-                    </div>
-                </div>
-
-                <div className="row padding-top-20">
-                    <div className="col-3">
-                        <b>Lysperson</b>
-                    </div>
-                </div>
-
-                <div className="row">
-                    <div className="col-12">
-                        <div className="card card-body">
-                            Navn navnesen
-                        </div>
-                        <div className="card card-body">
-                            Navn navnesen
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        );
-    }
-
-}
-
 
 export class CrewView extends Component {
 
@@ -532,7 +507,7 @@ export class AddCrewMember extends Component{
                     crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
                 })
         }, OrganizerStore.currentOrganizer.organizerID); //OrganizerStore.currentOrganizer
-        console.log(" id:");
+        console.log(" liste over pesonellkategorier:");
         console.log( this.state.crewCategoryList.crewCategoryID);
     };
 
