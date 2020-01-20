@@ -18,6 +18,7 @@ import {CookieStore} from "../../../store/cookieStore";
 import {createHashHistory} from "history";
 import {TicketStore} from "../../../store/ticketStore";
 import {RiderStore} from "../../../store/riderStore";
+import {OrganizerStore} from "../../../store/organizerStore";
 
 const history = createHashHistory();
 
@@ -72,7 +73,9 @@ export class Dashboard extends React.Component {
     }
 
     render() {
-
+        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
+            OrganizerStore.archiveOldEvents();
+        });
         return (
             <Card className={"border-0 justify-content-md-center m-4"}>
                 <h3 className={"mt-4 mb-4"}>Arrangementer</h3>
