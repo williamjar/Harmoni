@@ -40,7 +40,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "mocha --require esm \"src/**/*.test.js\"",
+    "test": "mocha --require esm \"src/**/*.test.js\"" ,
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

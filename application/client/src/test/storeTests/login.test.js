@@ -1,7 +1,5 @@
-import runSQLFile from '../../../../runsqlfile';
 import {LoginService} from "../../store/loginService";
-import {RegisterOrganizerService} from "../../store/registerOrganizerService";
-const Connection = require('./connection');
+import {beforeAll} from "./allTests";
 
 let assert = require('assert');
 const mocha = require('mocha');
@@ -10,25 +8,15 @@ const chai = require('chai');
 const chaiHTTP = require('chai-http');
 const server = require('../../../../server/src/server');
 
-const mysql = require("mysql");
-
 chai.use(chaiHTTP);
 chai.should();
 
 chai.request(server);
 
-const pool = Connection.privatePool;
-
 mocha.describe('User system', function() {
     this.timeout(10000);
     mocha.before(done => {
-        runSQLFile("../create.sql", pool, () => {
-            runSQLFile('../testData.sql', pool, () => {
-                RegisterOrganizerService.registerOrganizer('tester1', 'test@test.com', 'passord1', (statusCode, err) => {
-                    done();
-                });
-            });
-        });
+        beforeAll(done);
     });
 
     mocha.describe('Login system', () => {

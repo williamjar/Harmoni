@@ -1,5 +1,5 @@
-export const cors = require("cors");
 export const express = require("express");
+export const cors = require("cors");
 export const bodyParser = require("body-parser");
 export const app = express();
 export const mysql = require("mysql");
