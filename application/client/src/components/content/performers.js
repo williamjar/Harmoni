@@ -40,12 +40,7 @@ export class PerformerPanel extends Component{
     render() {
         return (
             <div>
-                {this.state.performerList.length === 0?
 
-
-                    <img src="https://pngimage.net/wp-content/uploads/2018/05/colorful-graphic-design-png-3.png" alt=""/>
-
-                        :
                     <div className="row">
                         <div className="col-lg-6 col-md-12  border-right">
                             <div className="row">
@@ -66,7 +61,7 @@ export class PerformerPanel extends Component{
                         <div className="col-lg-6 col-md-12">
                             <RegisteredPerformers performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
                         </div>
-                    </div>}
+                    </div>
 
             </div>
         );
