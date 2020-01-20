@@ -25,8 +25,13 @@ export class MegaValidator {
         return (phoneNumber.length === 8)
     }
 
+    static checkForEInNumber(number) {
+        let pattern = new RegExp("e");
+        return (pattern.test(number));
+    }
+
     static validatePhoneNumber(phoneNumber, newPhoneNumber) {
-            return (newPhoneNumber !== phoneNumber) && this.validatePhoneNumberLength(newPhoneNumber)
+        return (newPhoneNumber !== phoneNumber) && this.validatePhoneNumberLength(newPhoneNumber) && !this.checkForEInNumber(newPhoneNumber)
     }
 
     static validatePasswordLength(firstPassword, secondPassword){
