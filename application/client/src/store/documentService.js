@@ -182,7 +182,6 @@ export class DocumentService {
         }).catch(res => console.log(res));
     }
 
-    //TODO: implement in file info
     static getArtistInfoConnectedToDocument(documentID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -190,15 +189,17 @@ export class DocumentService {
         };
 
         let artist;
-
-
-        axios.get(axiosConfig.root + '/api/artist/documents/' + documentID, {headers: header}).then(response => {
-            artist = new Contact(response.data.contactName,response.data.phone,response.data.email,);
-            callback(artist);
+        axios.get(axiosConfig.root + '/api/document/info/artist/' + documentID, {headers: header}).then(response => {
+           if(response.data[0] !== undefined){
+               console.log("Lengde artist: " + response.data.length);
+               console.log("Data: " + response.data[0].contactName);
+               artist = new Contact(response.data[0].contactName,response.data[0].phone,response.data[0].email);
+               callback(artist);
+           }
+            return undefined;
         }).catch(res => console.log(res));
     }
 
-    //TODO: implement in file info
     static getCrewInfoConnectedToDocument(documentID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -206,9 +207,12 @@ export class DocumentService {
         };
 
         let crew;
-        axios.get(axiosConfig.root + '/api/crew/documents/' + documentID, {headers: header}).then(response => {
-            crew = new Contact(response.data.contactName,response.data.phone,response.data.email,);
-            callback(crew);
+        axios.get(axiosConfig.root + '/api/document/info/crew/' + documentID, {headers: header}).then(response => {
+            if(response.data[0] !== undefined){
+                crew = new Contact(response.data[0].contactName,response.data[0].phone,response.data[0].email);
+                callback(crew);
+            }
+            return undefined;
         }).catch(res => console.log(res));
     }
 
@@ -307,4 +311,31 @@ export class DocumentService {
         });
         console.log("Downloading document...");
     }
+
+    static previewDocument(documentLink) {
+        if((/\.(pdf)$/i).test(documentLink)){
+            axios.get(axiosConfig.root + '/document/preview/' + documentLink, {
+                method: "GET",
+                responseType: "blob"
+                //Force to receive data in a Blob Format
+            }).then(response => {
+                //Create a Blob from the PDF Stream
+                console.log(response.data);
+                const file = new Blob([response.data], {
+                    type: "application/pdf"
+                });
+                //Build a URL from the file
+                const fileURL = URL.createObjectURL(file);
+                //Open the URL on new Window
+                window.open(fileURL);
+            })
+                .catch(error => {
+                    console.log(error);
+                });
+        } else {
+            console.log("Can only preview pdf documents");
+        }
+
+    }
+
 }
