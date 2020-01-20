@@ -1,5 +1,5 @@
 import axios from "axios";
-import {setCurrentToken, setCurrentUserID} from "./cookieStore";
+import {CookieStore} from "./cookieStore";
 
 const hash = require('./hashService');
 
@@ -27,9 +27,8 @@ export class LoginService {
                     })
                     .then(loginResponse => {
                         if (loginResponse.error) {
-                            console.log(typeof setCurrentUserID);
-                            setCurrentToken(null);
-                            setCurrentUserID(-1);
+                            CookieStore.setCurrentToken(null);
+                            CookieStore.setCurrentUserID(-1);
                             console.log("Current token set to null");
                             callback(501);
                         } else {
@@ -40,13 +39,13 @@ export class LoginService {
                                 .then(emailResponse => {
                                     if (!(loginResponse.error && loginResponse.data.length > 0)) {
                                         console.log("UserID and Token set");
-                                        setCurrentUserID(emailResponse[0].organizerID);
-                                        setCurrentToken(loginResponse.jwt);
+                                        CookieStore.setCurrentUserID(emailResponse[0].organizerID);
+                                        CookieStore.setCurrentToken(loginResponse.jwt);
                                         //The user logs in
                                         callback(200);
                                     } else {
-                                        setCurrentToken(null);
-                                        setCurrentUserID(-1);
+                                        CookieStore.setCurrentToken(null);
+                                        CookieStore.setCurrentUserID(-1);
                                         console.log("Current token set to null");
                                         //The user doesn't log in
                                         callback(500);

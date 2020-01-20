@@ -16,7 +16,7 @@ export class EventCard extends React.Component {
 
     // Sends the user to the event-screen when clicking "vis"
     viewEvent = () => {
-        EventStore.currentEvent = this.props.event;
+        EventStore.setCurrentEvent(this.props.event);
         history.push("/arrangementEdit/" + this.props.event.eventID);
     };
 

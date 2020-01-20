@@ -1,5 +1,4 @@
 import runSQLFile from '../../../../runsqlfile';
-import {checkToken, getCurrentUserID as currentUserID} from "../../store/cookieStore";
 import {LoginService} from "../../store/loginService";
 import {RegisterOrganizerService} from "../../store/registerOrganizerService";
 const Connection = require('./connection');
@@ -19,7 +18,6 @@ chai.should();
 chai.request(app);
 
 const pool = Connection.privatePool;
-
 
 mocha.describe('User system', function() {
     this.timeout(10000);

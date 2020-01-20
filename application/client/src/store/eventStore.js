@@ -1,7 +1,7 @@
 import axios from "axios";
 import {Event} from "../classes/event.js";
 import {forEach} from "react-bootstrap/esm/ElementChildren";
-import {getCurrentToken} from "./cookieStore";
+import {CookieStore} from "./cookieStore";
 
 
 let axiosConfig = require("./axiosConfig");
@@ -13,6 +13,10 @@ export class EventStore{
     static allEvents = [];
 
     static allEventsForOrganizer = [];
+
+    static setCurrentEvent(newEvent){
+        this.currentEvent = newEvent;
+    }
 
     static createEvent(callback, eventName, organizerID){
 
