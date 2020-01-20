@@ -14,6 +14,7 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
+import {PerformerCard, RegisteredPerformers, RegisterPerformer} from "./performers";
 
 
 export class CrewTab extends Component{
@@ -38,6 +39,63 @@ export class CrewTab extends Component{
         }
         return null;
     }
+}
+
+export class CrewPanel extends Component{
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            performerList : [],
+            showArtistCard: false,
+            performerSelected : {},
+            results : [],
+            showRegisterNew : false,
+        }
+    }
+
+    render() {
+        return(
+            <div>
+
+                <div className="row">
+                    <div className="col-lg-6 col-md-12  border-right">
+                        <div className="row">
+                            <div className="col-8">
+                                <Search searchHandler={this.searchHandler} results={this.state.results} />
+                            </div>
+                            <div className="col-4">
+                                <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny</button>
+                            </div>
+                        </div>
+
+                        <div className="padding-top-20">
+                            {this.state.showRegisterNew?<AddCrewMember submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
+                            {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
+                        </div>
+                    </div>
+
+                    <div className="col-lg-6 col-md-12">
+                        <AddedCrew performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
+                    </div>
+                </div>
+
+            </div>
+        )
+    }
+
+    toggleRegisterNew = () => {
+        this.setState({showRegisterNew : !this.state.showRegisterNew});
+    };
+
+    submitFunction = () => {
+
+    };
+
+    changeCurrentCrewMember = () => {
+
+    };
 }
 
 export class AddCrewType extends Component{
