@@ -610,34 +610,31 @@ export class CrewView extends Component {
         } else {
             console.log(this.state.crewList);
             return(
-                <Card.Body>
-                    <div className="row padding-top-20">
-                        <div className="col-12">
-                            Personell som er lagt til:
-                        </div>
-                    </div>
-                    <ListGroup>
-                    {this.state.categoryList.map(e => (
-                        <ListGroup.Item>
-                            <Row>
-                                <Col> Kategori: {e.crewCategoryName}</Col>
-                            </Row>
+      <div>
 
-                            {this.state.crewList.filter(u=>u.crewCategoryName === e.crewCategoryName).map(u=> (
-                                <Row>
-                                    <Col>Navn: {u.contactName}</Col>
-                                    <Col>Mobil: {u.phone}</Col>
-                                    <Col>E-post: {u.email}</Col>
-                                    <Col>Beskrivelse: {u.description}</Col>
-                                    <Col>Personell-type: {u.crewCategoryName}</Col>
-                                    <Col>Hovedsansvarlig? {u.isResponsible}</Col>
-                                    <Col></Col>
-                                </Row>
-                            ))}
-                        </ListGroup.Item>
+            {this.state.categoryList.map(e => (
+                <ul className="list-group">
+
+                        <b>{e.crewCategoryName}</b>
+
+
+                    {this.state.crewList.filter(u=>u.crewCategoryName === e.crewCategoryName).map(u=> (
+                        <li className="list-group-item pointer selection" onClick={() => {}}>
+                            <div className="row">
+                                <div className="col-10">
+                                    {u.contactName}
+                                </div>
+
+                                <div className="col-2 text-right">
+                                    <button className="btn-danger rounded" onClick={() => {}}>Slett</button>
+                                </div>
+                            </div>
+                        </li>
                     ))}
-                    </ListGroup>
-                </Card.Body>
+                </ul>
+            ))}
+      </div>
+
             )
         }
     }
