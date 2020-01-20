@@ -70,7 +70,7 @@ export class EventStore{
         });
     }
 
-    static postCurrentEvent(){
+    static editCurrentEvent(){
 
         let header = {
             "Content-Type": "application/json",
