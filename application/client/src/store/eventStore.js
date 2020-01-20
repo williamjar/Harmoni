@@ -1,7 +1,7 @@
 import axios from "axios";
 import {Event} from "../classes/event.js";
-import {CookieStore} from "../store/cookieStore.js";
 import {forEach} from "react-bootstrap/esm/ElementChildren";
+import {CookieStore} from "./cookieStore";
 
 let axiosConfig = require("./axiosConfig");
 
@@ -12,6 +12,10 @@ export class EventStore{
     static allEvents = [];
 
     static allEventsForOrganizer = [];
+
+    static setCurrentEvent(newEvent){
+        this.currentEvent = newEvent;
+    }
 
     static createEvent(callback, eventName, organizerID){
 
@@ -33,11 +37,11 @@ export class EventStore{
             "endDate" : today,
             "startTime" : startTime,
             "endTime" : endTime,
-            "address" : null,
-            "town" : null,
+            "address" : "",
+            "town" : "",
             "zipCode" : null,
-            "status" : 1,
-            "description" : null,
+            "status" : 0,
+            "description" : "",
             "publishDate" : null,
             "publishTime" : null,
             "organizerID" : organizerID,
@@ -70,7 +74,7 @@ export class EventStore{
         });
     }
 
-    static postCurrentEvent(){
+    static editCurrentEvent(){
 
         let header = {
             "Content-Type": "application/json",
@@ -132,25 +136,36 @@ export class EventStore{
         return axios.delete(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, {headers: header});
     }
 
-    //TODO: change local event to archived
-    static archiveEvent(eventID){
-
+    static archiveCurrentEvent(){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-
-        return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/3", {headers: header}).then( response => {});
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/2", {headers: header}).then( response => {});
     }
 
-    static publishEvent(eventID){
-
+    static publishCurrentEvent(){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/1", {headers: header}).then( response => {});
+    }
 
-        return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/2", {headers: header}).then( response => {});
+    static cancelCurrentEvent(){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/3", {headers: header}).then( response => {});
+    }
+
+    static planCurrentEvent(){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/0", {headers: header}).then( response => {});
     }
 
     static storeAllEventsForOrganizer(callback, organizerID){
@@ -179,7 +194,6 @@ export class EventStore{
             callback();
         });
     }
-
     static formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),

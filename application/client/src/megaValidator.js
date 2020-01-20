@@ -11,9 +11,7 @@ export class MegaValidator {
     }
 
     static validateUsername(oldUsername, newUsername) {
-        console.log(newUsername);
         let illegalCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-        console.log(illegalCharacters.test(newUsername));
         if (illegalCharacters.test(newUsername)) {
             return false;
         } else {
@@ -25,8 +23,13 @@ export class MegaValidator {
         return (phoneNumber.length === 8)
     }
 
+    static checkForEInNumber(number) {
+        let pattern = new RegExp("e");
+        return (pattern.test(number));
+    }
+
     static validatePhoneNumber(phoneNumber, newPhoneNumber) {
-            return (newPhoneNumber !== phoneNumber) && this.validatePhoneNumberLength(newPhoneNumber)
+        return (newPhoneNumber !== phoneNumber) && this.validatePhoneNumberLength(newPhoneNumber) && !this.checkForEInNumber(newPhoneNumber)
     }
 
     static validatePasswordLength(firstPassword, secondPassword){
@@ -46,6 +49,9 @@ export class MegaValidator {
     }
 
     static validateFile(file) {
+        if(file===undefined){
+            return false;
+        }
         return (/\.(gif|jpeg|jpg|png)$/i).test(file.name);
 
     }
