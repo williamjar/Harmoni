@@ -92,7 +92,7 @@ export class OrganizerStore {
         }).catch(error => console.log(error));
     }
 
-        static getAllEvents(organizerId) {
+    static getAllEvents(organizerId) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -100,8 +100,13 @@ export class OrganizerStore {
         return axios.get(`/organizer/${organizerId}/events`, {headers: header});
     }
 
-
-
+    static deleteCurrentOrganizer() {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.get('api/contact/' + this.currentOrganizer.contactID, {headers: header});
+    }
 
 
 }
