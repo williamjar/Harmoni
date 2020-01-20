@@ -3,6 +3,8 @@ import {Artist} from "../classes/artist";
 import {Genre} from "../classes/genre";
 import {Document} from "../classes/document";
 import {CookieStore} from "./cookieStore";
+import {Artist as artist} from "../classes/artist";
+import {ArtistEventInfo} from "../classes/artistEventInfo";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -27,6 +29,45 @@ export class ArtistService {
                 }
             }
         ).catch(err => console.log(err));
+    }
+
+    static getArtistEventInfo(callback, artistID, eventID){
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        axios.get(axiosConfig.root + '/api/event/'+ eventID + '/artist/' + artistID + '/artistEventInfo', {headers: header}).then(response => {
+            console.log(response);
+                let artistEventInfo = new ArtistEventInfo(response.data[0].artistID, response.data[0].eventID, response.data[0].contractSigned === 1, response.data[0].hasBeenPaid === 1);
+                console.log("getArtistEventInfo");
+                console.log(artistEventInfo);
+                callback(artistEventInfo);
+            }
+        );
+
+    }
+
+    static updateArtistEventInfo(callback, artistID, eventID, contractSigned, hasBeenPaid){
+
+        console.log("updateArtistEventInfo has been paid: " + hasBeenPaid);
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let artistEventInfoBody = {
+            "contractSigned": contractSigned ? 1 : 0,
+            "hasBeenPaid": hasBeenPaid ? 1 : 0
+        };
+
+        axios.put(axiosConfig.root + '/api/event/'+ eventID + '/artist/' + artistID + '/artistEventInfo', artistEventInfoBody, {headers: header}).then(response => {
+                callback();
+            }
+        );
+
     }
 
     // OrganizerID == innlogget bruker.
@@ -100,7 +141,7 @@ export class ArtistService {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        //TODO!!
+
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
             response.data.map(artist =>
                 allArtistByEvent.push(new Artist(artist.artistID, artist.contactName,

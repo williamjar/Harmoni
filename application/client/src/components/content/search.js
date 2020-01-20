@@ -31,27 +31,33 @@ export class Search extends Component{
 
     render() {
         return(
-            <div>
-                <div className="row">
-                    <div className="col-12">
-                        <InputGroup>
-                            <FormControl
-                                placeholder="Søk"
-                                aria-label="Søk"
-                                aria-describedby="basic-addon2"
-                                onChange={this.handleSearchInput}
-                                className="rounded-pill"
-                            />
-                        </InputGroup>
+            <div className="search" onBlur={this.toggleShowResults} >
+                <InputGroup>
+                    <FormControl
+                        placeholder="Søk"
+                        aria-label="Søk"
+                        aria-describedby="basic-addon2"
+                        onChange={this.handleSearchInput}
+                        className="rounded-pill"
 
-                        <div className="card-text margin-top-5 ma">
-                            {this.state.showSearchResults && this.state.results != undefined?
-                                this.state.results.filter(e => e.contactName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map(show =>
-                                <div className="card-title card-header search" onClick={() => this.searchHandler(show)}>{show.contactName}</div>
-                                ):null}
 
-                        </div>
-                    </div>
+                    />
+                </InputGroup>
+
+                <div className="results" id="style-5">
+
+                    {(this.state.showSearchResults && this.props.results[0] !== undefined && this.props.results[0].contactName !==  undefined &&  this.state.results.length !== 0)?
+                        this.state.results.filter(e => e.contactName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map((show, index) =>
+                        <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>{show.contactName}</div>
+                        ):null}
+
+                    {(this.state.showSearchResults && this.props.results[0] !== undefined && this.props.results[0].eventName != undefined) ?
+                        this.state.results.filter(e => e.eventName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map((show, index) =>
+                            <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>{show.eventName}</div>
+                        ):null}
+
+
+
                 </div>
             </div>
         )
@@ -73,11 +79,13 @@ export class Search extends Component{
         return null;
     }
 
+    toggleShowResults = () => {
+        setTimeout(() => {this.setState({showSearchResults: !this.state.showSearchResults})}, 150);
+    };
+
 
     searchHandler(input){
-        let currentState = this.state;
-        currentState.showSearchResults = false; //Hide search results after selection
-        this.setState(currentState);
+        setTimeout(() => {this.setState({showSearchResults: false})}, 180);
         this.props.searchHandler(input); // Sends object of selection to parent method.
     }
 

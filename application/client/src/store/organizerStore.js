@@ -2,6 +2,7 @@ import axios from "axios";
 import {Organizer} from "../classes/organizer.js";
 import {CookieStore} from "./cookieStore";
 import {sha512} from "./hashService";
+import {DocumentCategory} from "../classes/documentCategory";
 
 const hash = require('./hashService');
 const axiosConfig = require("./axiosConfig");
@@ -91,12 +92,28 @@ export class OrganizerStore {
         }).catch(error => console.log(error));
     }
 
-    getAllEvents(organizerId) {
+    static getAllEvents(organizerId) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.get(`/api/organizer/${organizerId}/events`, {headers: header});
+        return axios.get(`/organizer/${organizerId}/events`, {headers: header});
+    }
+
+    static deleteCurrentOrganizer() {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.delete(axiosConfig.root + 'api/contact/' + this.currentOrganizer.contactID, {headers: header});
+    }
+
+    static archiveOldEvents() {
+        axios.put(axiosConfig.root + '/api/archive/' + this.currentOrganizer.organizerID).then(response => {
+            if (response) {
+                console.log(response.data.changedRows + " events moved to archive");
+            }
+        });
     }
 
 

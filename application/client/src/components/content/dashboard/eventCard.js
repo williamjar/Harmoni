@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button} from "react-bootstrap";
 import { createHashHistory } from 'history';
 import {EventStore} from "../../../store/eventStore";
+import {RiderStore} from "../../../store/riderStore";
+import {Rider} from "../performers";
 
 const history = createHashHistory();
 
@@ -17,15 +19,20 @@ export class EventCard extends React.Component {
     // Sends the user to the event-screen when clicking "vis"
     viewEvent = () => {
         EventStore.setCurrentEvent(this.props.event);
-        history.push("/arrangementEdit/" + this.props.event.eventID);
+        RiderStore.storeAllRidersForEvent(() => {
+            console.log("Here comes the sun, nananana");
+            console.log(RiderStore.allRidersForCurrentEvent);
+            history.push("/arrangementEdit/" + this.props.event.eventID);
+        }, EventStore.currentEvent.eventID);
+
     };
 
     render() {
 
         return(
             <tr align='center'>
-                <td align="left">{this.state.date}</td>
-                <td>{this.props.event.eventName} - {this.props.event.town}</td>
+                <td align="left">{this.formatDate(this.props.event.startDate)}</td>
+                <td>{this.props.event.eventName} {this.props.event.town !== "" && this.props.event.town !== null ? " - " + this.props.event.town : null}</td>
                 <td align="right"><Button variant="outline-secondary" onClick={this.viewEvent}>Vis </Button></td>
             </tr>
         )

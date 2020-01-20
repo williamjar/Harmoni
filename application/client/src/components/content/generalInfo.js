@@ -25,7 +25,7 @@ export class GeneralInfo extends Component{
             <div>
                 <div className="row">
                     <div className="col-7 border-right">
-                        <InfoForm/>
+                        <InfoForm editMode={this.props.editMode}/>
                     </div>
                     <div className="col-5">
                         <Card.Body>
@@ -36,8 +36,8 @@ export class GeneralInfo extends Component{
                 </div>
                 <Row className="mb-3">
                     <Col>
-                        <Card>
-                            <Card.Header><Card.Title>Billetter</Card.Title></Card.Header>
+                        <Card className="mb-2 border-0">
+                            <Card.Title>Legg til billetter</Card.Title>
                             <Ticket/>
                         </Card>
                     </Col>
@@ -53,7 +53,7 @@ export class InfoForm extends Component {
         super(props);
 
         this.state = {
-            edit: true,
+            edit: this.props.editMode,
             eventName: EventStore.currentEvent.eventName,
             startDate: EventStore.currentEvent.startDate,
             endDate: EventStore.currentEvent.endDate,
@@ -71,10 +71,6 @@ export class InfoForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    // Handles when the user saves the new name
-    saveClicked = (e) => {
-            this.setState({edit: false})
-    };
 
     // Updates the state and the event store object when form input is changed
     handleChange(event){
@@ -167,7 +163,7 @@ export class InfoForm extends Component {
                             <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Arrangementet kan ikke starte etter det har sluttet!</Form.Text>
                         </Form.Group>
                         <Form.Group>
-                            <Button type="submit" variant="warning">Lagre</Button>
+                            <Button type="submit" variant="primary">Lagre</Button>
                         </Form.Group>
                     </Card.Body>
 
@@ -179,8 +175,8 @@ export class InfoForm extends Component {
             return (
                 <div>
                     <Card className="mb-2 border-0">
+                        <Card.Title className={"h3"}>{EventStore.currentEvent.eventName}</Card.Title>
                         <Card.Body>
-                            <Card.Title className={"h3"}>{EventStore.currentEvent.eventName}</Card.Title>
                             <Form.Group>
                                 <Row className="mb-2">
                                     <Col xs="5">
@@ -265,18 +261,15 @@ export class InfoForm extends Component {
                                     <Col>
                                         <Row className="mt-2">
                                             <Col>
-                                                <Card.Body>
                                                     <Card.Title>Beskrivelse</Card.Title>
                                                     {EventStore.currentEvent.description}
-                                                </Card.Body>
                                             </Col>
                                         </Row>
-
                                     </Col>
                                 </Row>
                             </Form.Group>
                             <Form.Group>
-                                <Button variant="warning" onClick={() => this.editMode()}>Rediger</Button>
+                                <Button variant="success" onClick={() => this.editMode()}>Rediger</Button>
                             </Form.Group>
                         </Card.Body>
 
@@ -308,7 +301,7 @@ export class InfoForm extends Component {
         this.setState({dateError: false})
         if(this.validateForm()){
             this.save();
-            EventStore.postCurrentEvent().then(console.log("Lagret"));
+            EventStore.editCurrentEvent().then(console.log("Lagret"));
             this.setState({edit:false});
         } else{
             this.setState({dateError: true})
@@ -316,7 +309,6 @@ export class InfoForm extends Component {
     }
 
     save(){
-            console.log(this.state);
             EventStore.currentEvent.eventName = this.state.eventName;
             EventStore.currentEvent.startDate = this.state.startDate;
             EventStore.currentEvent.endDate = this.state.endDate;

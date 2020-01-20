@@ -1,4 +1,7 @@
 export class RiderElement{
+
+    isModified = false;
+
     constructor(riderID, artistID, status, isDone, description){
         this.riderID = riderID;
         this.artistID = artistID;

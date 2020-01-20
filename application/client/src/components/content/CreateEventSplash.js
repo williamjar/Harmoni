@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from "react-bootstrap/Form";
-import {InputGroup, FormControl, Spinner} from "react-bootstrap";
+import {InputGroup, FormControl, Spinner, FormLabel} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import { NavLink } from 'react-router-dom';
 import { createHashHistory } from 'history';
@@ -36,17 +36,18 @@ export class CreateEventSplash extends Component{
             )
         } else {
         return (
-            <div className="splashCreateEvent w-75 center">
-
-                    <div className = "padding-top-20">
+            <div className=" w-75 center">
+                    <div className = "padding-top-bottom-100">
                     <Form onSubmit={this.create}>
-                        <InputGroup className="mb-3 " size="lg">
+                        <div className="padding-bottom-10"> Opprett  arrangement</div>
+                        <InputGroup className="mb-3 " size="sm">
                             <FormControl
                                 onChange={this.inputHandler}
-                                placeholder="Navn på arrangementet"
-                                aria-label="Navn på arrangementet"
+                                placeholder="Skriv inn navn på arrangementet"
+                                aria-label="Skriv inn navn på arrangementet"
                                 aria-describedby="basic-addon2"
                             />
+
                             <InputGroup.Append>
                                 <Button type="submit" variant="success">Opprett</Button>
                             </InputGroup.Append>
@@ -74,7 +75,7 @@ export class CreateEventSplash extends Component{
             this.setState(state);
         } else{
             EventStore.createEvent(() => {
-                history.push("/arrangementEdit");
+                history.push('/arrangementEdit/');
                 this.setState({isLoading: false});
             }, this.state.inputName, CookieStore.currentUserID);
         }

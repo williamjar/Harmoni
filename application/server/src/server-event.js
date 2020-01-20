@@ -76,6 +76,16 @@ app.put("/api/events/:eventID/status/:status", (request, response) => {
     }, request.params.eventID, request.params.status);
 });
 
+// Set all published events that has ended to archive
+app.put("/api/archive/:organizerID", (request, response) => {
+    console.log("Express: request to archive event " + request.params.eventID);
+    eventDao.archiveOldEvents((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.organizerID);
+});
+
+
 //Get number of events with status
 app.get("/api/events/status/:organizerID/:status/amount", (request, response) => {
     console.log("Express: request to get number of elements with status " + request.params.status + " for organizer " + request.params.organizerID);

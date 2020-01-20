@@ -2,8 +2,8 @@ import React from 'react';
 import {Component} from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Menu, NavBar, UserProfileButton} from "./components/menu/navigation";
-import {Content} from "./components/content/content";
+import {Menu, MobileMenu, NavBar, UserProfileButton} from "./components/menu/navigation";
+import {Content, SimpleContent} from "./components/content/content";
 import {HashRouter, NavLink, Route} from 'react-router-dom';
 import {PerformerCard, PerformersTab} from "./components/content/performers";
 import {Dashboard} from "./components/content/dashboard/dashboard";
@@ -22,9 +22,14 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "react-icons/all";
+import {Alert} from './components/alerts'
+
+
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
+import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
 let history = createHashHistory();
+
 
 export class App extends Component{
 
@@ -36,14 +41,6 @@ export class App extends Component{
             mobileView : false,
         };
 
-        window.addEventListener('resize', () =>{
-            if(window.innerWidth > 900){
-               this.turnOffMobileView();
-            } else{
-               this.turnOnMobileView();
-            }
-
-        });
     }
 
     turnOffMobileView = () => {
@@ -59,14 +56,28 @@ export class App extends Component{
     };
 
     componentDidMount = () => {
-        if(window.innerWidth>900){
+        window.addEventListener('resize', () =>{
+            if(window.innerWidth > 991){
+                this.turnOffMobileView();
+            } else{
+                this.turnOnMobileView();
+            }
+        });
+
+        if(window.innerWidth > 991){
             this.turnOffMobileView();
-        } else {
+        } else{
             this.turnOnMobileView();
         }
 
         this.handleLogin();
     };
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', () => {
+
+        });
+    }
 
     render(){
         if (this.state.loggedIn){
@@ -74,19 +85,21 @@ export class App extends Component{
                 <div className="App">
                     <HashRouter>
                         <div className="row no-gutters">
-                            <div className="col-md-2 col-12">
-                                {!this.state.mobileView?<NavBar />:<MobileMenu/>}
+
+                                {!this.state.mobileView?<div className="col-lg-2"><NavBar /></div>:<div className="col-12"><MobileMenu/></div>}
                                 {this.state.mobileView?
                                     <div className="margin-bottom-30"><br/> </div>:null
                                 }
-                            </div>
 
-                            <div className="col-lg-10">
+
+                            <div className="col-lg-10 col-sm-12">
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
-                                <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash />} />} />
+                                <Route exact path="/opprett"  component={() => <SimpleContent page={<CreateEventSplash />} />} />
                                 <Route exact path="/artister" component={() => <Content page={<Search/>} />} />
                                 <Route exact path="/personell" component={Content}/>
-                                <Route exact path="/kontrakter" component={Content}/>
+                                <Route exact path="/dokumenter" component={() => <Content page ={<MyDocuments/>}/>}/>
+                                <Route exact path="/dokumenter/:eventID" render={(props) => <Content page ={<FolderCategory{...props} />}/>}/>
+                                <Route exact path="/dokumenter/:eventID/:documentCategoryID" render={(props) => <Content page ={<Documents{...props} />}/>}/>
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage/>} />} />
                                 <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
                                 <Route exact path="/arrangementEdit/:id"  component={() => <Content page={<EventForm/>} />} />
@@ -99,6 +112,7 @@ export class App extends Component{
         else {
             return(
                 <div className="Login-Container">
+
                     <HashRouter>
                         <Route exact path="/" component={() => <LoginForm logIn={() => this.handleLogin()}/>} />
                         <Route exact path="/registrer" component={() => <RegisterForm />} />
@@ -134,24 +148,6 @@ export class App extends Component{
 
 }
 
-export class MobileMenu extends Component{
-    render() {
-        return(
-            <div className="fixed-top card">
-                <Navbar bg="light" expand="lg">
-                    <Navbar.Brand href="/">Harmoni</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <div className="padding-top-20 nav-links">
-                            <Menu/>
-                            <UserProfileButton/>
-                        </div>
-                    </Navbar.Collapse>
-                </Navbar>
-            </div>
 
-        )
-    }
-}
 
 export default App;

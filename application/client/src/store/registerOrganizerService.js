@@ -5,14 +5,14 @@ const root = require('./axiosConfig').root;
 
 export class RegisterOrganizerService {
 
-    static registerOrganizer(username, email, password, callback) {
+    static registerOrganizer(username,phone, email, password, callback) {
         let header = {
             "Content-Type": "application/json",
         };
 
         let contactBody = {
             "username": username,
-            "phone": null,
+            "phone": phone,
             "email": email
         };
 

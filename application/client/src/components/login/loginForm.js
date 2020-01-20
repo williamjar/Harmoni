@@ -14,12 +14,14 @@ export class LoginForm extends React.Component {
             password : '',
             loginError : false,
             serverError: false,
+            userDoesNotExist: false,
             loggingIn: false
         };
 
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
     }
 
 
@@ -46,8 +48,8 @@ export class LoginForm extends React.Component {
 
     render(){
         return (
-
-            <Card style={{width : '25rem'}} className="text-center mx-auto mt-5">
+            <div className="">
+            <Card style={{width : '25rem'}} className="text-center mx-auto mt-5 drop-shadow">
                 <Form onSubmit={this.handleSubmit} className={"align-items-center"}>
                 <Card.Body>
                     <Card.Title className="mb-4">Logg inn</Card.Title>
@@ -62,8 +64,9 @@ export class LoginForm extends React.Component {
 
 
 
-                            <Form.Text className="text-danger" hidden={!this.state.loginError}>Feil brukernavn eller passord.</Form.Text>
-                            <Form.Text className="text-danger" hidden={!this.state.serverError}>Feil med oppkoblingen, prøv igjen senere.</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.state.loginError}>Feil brukernavn eller passord</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.state.serverError}>Feil med oppkoblingen, prøv igjen senere</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.state.userDoesNotExist}>Brukeren finnes ikke</Form.Text>
 
                             <Form.Text> Ny bruker? <NavLink to="/registrer"> Klikk <span className="NavLink">
                                 her for registrere deg
@@ -77,7 +80,7 @@ export class LoginForm extends React.Component {
                 </Card>
             </Form>
             </Card>
-
+            </div>
         )
     }
 
@@ -98,10 +101,15 @@ export class LoginForm extends React.Component {
             } else if(status===501){
                 this.setState({loggingIn: false});
                 this.setState({loginError: true});
+            } else if(status===502){
+                this.setState({loggingIn: false});
+                this.setState({userDoesNotExist: true});
             } else {
                 this.setState({loggingIn: false});
                 this.setState({serverError: true});
             }
+
+
 
         });
 
