@@ -7,8 +7,6 @@ import {
     Card,
     ButtonGroup,
     Col,
-    Dropdown,
-    DropdownButton,
     Row,
     Table, Form
 } from "react-bootstrap";
@@ -34,6 +32,10 @@ export class Dashboard extends React.Component {
             active: "all",
             events: [],
             sortBy: 0,
+            published: [],
+            planning: [],
+            archived: [],
+            cancelled: []
         };
     }
 
@@ -54,9 +56,13 @@ export class Dashboard extends React.Component {
         }
     };
 
-    // Sets what the user wants to sort by
+    // Sets what the user wants to sort by and calls sort method to sort all categories
     sortSelected = (e) => {
-        this.setState({sortBy: e.target.value});
+        this.sortEvents(this.state.published,e.target.value, (sorted) => this.setState({published: sorted}));
+        this.sortEvents(this.state.planning,e.target.value,(sorted) => {this.setState({planning: sorted});});
+        this.sortEvents(this.state.archived,e.target.value, (sorted) => this.setState({archived: sorted}));
+        this.sortEvents(this.state.cancelled,e.target.value, (sorted) => this.setState({cancelled: sorted}));
+        console.log(this.state.planning);
     };
 
     // Sends the user to create event screen when clicking the "plus"-button
@@ -67,11 +73,18 @@ export class Dashboard extends React.Component {
     // Stores all the organizer's events before rendering the page
     componentDidMount() {
         EventStore.storeAllEventsForOrganizer(() => {
-            this.setState({events: EventStore.allEventsForOrganizer})
+            this.setState({
+                events: EventStore.allEventsForOrganizer,
+                published: EventStore.allEventsForOrganizer.filter(event => event.status === 1),
+                planning: EventStore.allEventsForOrganizer.filter(event => event.status === 0),
+                archived: EventStore.allEventsForOrganizer.filter(event => event.status === 2),
+                cancelled: EventStore.allEventsForOrganizer.filter(event => event.status === 3)
+            })
         }, CookieStore.currentUserID);
     }
 
     render() {
+
         return (
             <Card className={"border-0 justify-content-md-center m-4"}>
                 <h3 className={"mt-4 mb-4"}>Arrangementer</h3>
@@ -97,7 +110,8 @@ export class Dashboard extends React.Component {
                         <Form.Control as="select" size="sm" onChange={this.sortSelected}>
                             <option selected disabled>Sorter etter..</option>
                             <option value={0}>Dato</option>
-                            <option value={1}>Pris</option>
+                            <option value={1}>Navn</option>
+                            {/*<option value={1}>Pris</option>*/}
                         <option value={2}>Sted</option>
                         </Form.Control>
                     </Col>
@@ -110,9 +124,8 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            {console.log(EventStore.allEventsForOrganizer)}
-                            {this.state.events.filter(e => e.status === 1).length > 0 ?
-                                <EventView events={this.sortEvents(this.state.events.filter(event => event.status === 1))}/> :
+                            {this.state.published.length > 0 ?
+                                <EventView events={this.state.published}/> :
                                 <NoEvents message="Du har ingen planlagte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
@@ -125,8 +138,8 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            {this.state.events.filter(e => e.status === 0).length > 0 ?
-                                <EventView events={this.sortEvents(this.state.events.filter(event => event.status === 0))}/> :
+                            {this.state.planning.length > 0 ?
+                                <EventView events={this.state.planning}/> :
                                 <NoEvents message="Du har ingen arrangement under planlegging"/>}
                         </Row>
                     </Accordion.Collapse>
@@ -139,8 +152,8 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            {this.state.events.filter(e => e.status === 2).length > 0 ?
-                                <EventView events={this.sortEvents(this.state.events.filter(event => event.status === 2))}/> :
+                            {this.state.archived.length > 0 ?
+                                <EventView events={this.state.archived}/> :
                                 <NoEvents message="Du har ingen arkiverte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
@@ -153,8 +166,8 @@ export class Dashboard extends React.Component {
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
-                            {this.state.events.filter(e => e.status === 3).length > 0 ?
-                                <EventView events={this.state.events.filter(event => event.status === 3)}/> :
+                            {this.state.cancelled.length > 0 ?
+                                <EventView events={this.state.cancelled}/> :
                                 <NoEvents message="Du har ingen kansellerte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
@@ -186,49 +199,44 @@ export class Dashboard extends React.Component {
     }
 
     // Sorts the events by either date, price or location
-    sortEvents = (events) => {
-        if(this.state.sortBy == 0) {
-            return [].concat(events).sort((a,b) => {
+    sortEvents = (events, sortBy, callback) => {
+        if(sortBy == 0) {
+            let sorted = [].concat(events).sort((a,b) => {
                 a = new Date(a.startDate);
                 b = new Date(b.startDate);
                 return a>b ? 1 : a<b ? -1 : 0;
             });
-        } else if(this.state.sortBy == 1) {
+            callback(sorted);
+        } else if(sortBy == 1) {
             let sorted = [].concat(events).sort((a,b) => {
-                let price1 = null;
-                let price2 = null;
-                function getPrices(callback) {
-                    TicketStore.getAllTickets(a.eventID, () => price1 = Math.min.apply(Math, TicketStore.allTickets.map(ticket => {
-                        return ticket.price;
-                    })));
-                    TicketStore.getAllTickets(b.eventID, () => price2 = Math.min.apply(Math, TicketStore.allTickets.map(ticket => {
-                        return ticket.price;
-                    })));
-                    callback();
-                }
-                console.log( getPrices(() => {
-                    return price1 > price2 ? 1 : price1 < price2 ? -1 : 0
-                }))
+                return (a.eventName > b.eventName ? 1 : a.eventName < b.eventName ? -1 : 0);
             });
-            console.log(events);
-            console.log(sorted);
-            return sorted;
-        } else if(this.state.sortBy == 2) {
-            return [].concat(events).sort((a,b) => {
+            callback(sorted);
+        }
+            //TODO: If time, fix this so events can be sorted by price.
+        /*else if(sortBy == 1) {
+            let sorted = [];
+            TicketStore.getAllTickets(() => {
+                console.log(TicketStore.allTickets);
+                sorted = [].concat(events).sort((a,b) => {
+                    let price1 = Math.min.apply(Math, TicketStore.allTickets.filter(e => e.eventID = a.eventID).map(e => {
+                        return e.price;
+                    }));
+                    let price2 = Math.min.apply(Math, TicketStore.allTickets.filter(e => e.eventID = b.eventID).map(e => {
+                        return e.price;
+                    }));
+                    return price1>price2 ? 1 : price1<price2 ? -1 : 0;
+                });
+                console.log(sorted);
+            });
+            callback(sorted);
+        }*/ else if(sortBy == 2) {
+            let sorted = [].concat(events).sort((a,b) => {
                 return (a.town > b.town ? 1 : a.town < b.town ? -1 : 0);
             });
+            callback(sorted);
         }
     };
-
-    getPrice = (event) => {
-        let price = null;
-        return price;
-    };
-
-    // Stores all the organizer's events before rendering the page
-    componentDidMount() {
-        EventStore.storeAllEventsForOrganizer(() => {this.setState({events: EventStore.allEventsForOrganizer})}, CookieStore.currentUserID);
-    }
 }
 
 // Component for displaying a feedback message if there is no events
