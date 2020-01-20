@@ -13,8 +13,8 @@ import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import {EventStore} from "../../store/eventStore";
+import {OrganizerStore} from "../../store/organizerStore";
 import Row from "react-bootstrap/Row";
-import {PerformerCard, RegisteredPerformers, RegisterPerformer} from "./performers";
 
 
 export class CrewTab extends Component{
@@ -111,12 +111,12 @@ export class AddCrewType extends Component{
     render(){
         return(
             <div className="card card-body">
-                    <Form.Row>
-                        <Form.Group as={Col} controlId="formGridEmail">
-                            <Form.Label>Personell type</Form.Label>
-                            <Form.Control type="name" placeholder="" onChange={this.handleInputChange}/>
-                        </Form.Group>
-                    </Form.Row>
+                <Form.Row>
+                    <Form.Group as={Col} controlId="formGridEmail">
+                        <Form.Label>Personell-type</Form.Label>
+                        <Form.Control type="name" placeholder="" onChange={this.handleInputChange}/>
+                    </Form.Group>
+                </Form.Row>
 
                     <Row className="no-gutter">
                         <Col className="col-1">
@@ -145,7 +145,11 @@ export class AddCrewType extends Component{
             //Error message
             alert("Du kan ikke ha en blank kategori");
         } else{
+            CrewStore.addCategory(this.state.crewType, OrganizerStore.currentOrganizer.organizerID);
             alert(this.state.crewType);
+            console.log("følgende kategori og ID : ");
+            console.log(this.state.crewType);
+            console.log( OrganizerStore.currentOrganizer.organizerID);
             this.props.submit();
         }
     }
@@ -159,13 +163,44 @@ export class AddToCrew extends Component{
             numberOfFilesAdded: 0,
             showRegisterCrewType:false,
             showRegisterCrewMember : false,
-            results : [],
+            categoryID: 1,
+            crewCategoryList : [],
+            results : []
         };
 
     }
 
     componentDidMount() {
         this.updateCrewSearch();
+        this.returnCrewCategories();
+    }
+
+    returnCrewCategories = () => {
+        CrewStore.storeAllCrewCategoriesForOrganizer(() => {
+            console.log("return categories for organizer");
+            console.log(CrewStore.allCrewCategoriesForOrganizer);
+            this.setState(
+                {
+                    crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
+                })
+        }, OrganizerStore.currentOrganizer.organizerID); //OrganizerStore.currentOrganizer
+    };
+
+    handleCategoryChange(e){
+        this.setState({
+            categoryID: e.target.value,
+        })
+        this.showRegisterCrewTypeForm(e);
+        console.log("onChange");
+    };
+
+    handleAddNewCategory(e){
+        this.setState({
+            categoryID: e.target.value,
+        })
+        this.showRegisterCrewTypeForm(e);
+        console.log("onClick");
+
     }
 
     render() {
@@ -173,7 +208,7 @@ export class AddToCrew extends Component{
             <div className="card card-body">
                 <div className="row">
                     <div className="col-12">
-                        Personell type
+                        Personell-type
                     </div>
                 </div>
 
@@ -181,7 +216,30 @@ export class AddToCrew extends Component{
 
                 <div className="row padding-top-20 align-items-center">
 
+                    <div className="col-4">
+                        <Form>
+                        <Form.Group controlId="fromGridCategory">
+                            <Form.Label>Velg personell-type</Form.Label>
+                            <select
+                                value={this.state.categoryID}
+                                onChange={e => this.handleCategoryChange(e)}
+                                onClick={e => this.handleAddNewCategory(e)}
+                            >
+                                {this.state.crewCategoryList.map(category => (
+                                    <option key={category.crewCategoryID} value={category.crewCategoryID}>
+                                        {category.crewCategoryName}
+                                    </option>
+                                ))}
+                                <option>
+                                    Legg til ny..
+                                </option>
+                            </select>
+                        </Form.Group>
+                        </Form>
 
+
+
+                    </div>
 
 
                     <div className="col-4">
@@ -217,15 +275,6 @@ export class AddToCrew extends Component{
 
                 {this.state.showRegisterCrewMember?<AddCrewMember toggleRegisterCrewMember={this.showRegisterCrewMemberForm} submit={this.searchHandler} />:null}
 
-
-                <div className="row padding-top-20">
-                    <div className="col-12">
-                        <label htmlFor="descriptionCrew">Beskrivelse</label>
-                        <textarea className="form-control" id="descriptionCrew" rows="4"></textarea>
-                    </div>
-
-                </div>
-
                 <div className="row padding-top-20">
 
 
@@ -246,6 +295,7 @@ export class AddToCrew extends Component{
             </div>
         )
     }
+
 
     cancelCrewTypeAdd = () => {
         let currentState = this.state;
@@ -295,68 +345,35 @@ export class AddToCrew extends Component{
     };
 
     addNew = () => {
+        this.returnCrewCategories();
         /* Fetches the information from the forms to be used with database */
 
         //TODO: Search bar is not functiong yet.
-        let crewSelect = document.querySelector("#crewCategory").value;
+      /*  let crewSelect = document.querySelector("#crewCategory").value;
         let mainResponsible = document.querySelector("#mainResponsible").checked;
         let description = document.querySelector("#descriptionCrew").value;
         let attachment = document.querySelector("#uploadAttachment").files;
 
         let json = {
-            crewCategory : crewSelect,
+            crewCategoryName : crewSelect,
             responsible : mainResponsible,
             description : description,
             attachments : attachment,
-        }
+        } */
 
 
 
     };
 }
 
-export class AddedCrew extends Component{
-
-    render() {
-        return (
-            <div>
-                <div className="row padding-top-20">
-                    <div className="col-12">
-                        <b>Personell som er lagt til</b>
-                    </div>
-                </div>
-
-                <div className="row padding-top-20">
-                    <div className="col-3">
-                        <b>Lysperson</b>
-                    </div>
-                </div>
-
-                <div className="row">
-                    <div className="col-12">
-                        <div className="card card-body">
-                            Navn navnesen
-                        </div>
-                        <div className="card card-body">
-                            Navn navnesen
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        );
-    }
-
-}
-
-
 export class CrewView extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            crewList: []
+            crewList: [],
+            categoryList: [],
+            categoryName: ""
         }
     }
 
@@ -373,47 +390,63 @@ export class CrewView extends Component {
                         </div>
                     </div>
                     <ListGroup>
-                            {this.state.crewList.map(e => (
-                                <ListGroup.Item>
-                                    <Row>
-                                        <Col>Navn: {e.contactName}</Col>
-                                        <Col>Mobil: {e.phone}</Col>
-                                        <Col>E-post: {e.email}</Col>
-                                        <Col>Beskrivelse: {e.description}</Col>
-                                    </Row>
-                                </ListGroup.Item>
-                            ))}
-                        </ListGroup>
+                    {this.state.categoryList.map(e => (
+                        <ListGroup.Item>
+                            <Row>
+                                <Col> Kategori: {e.crewCategoryName}</Col>
+                            </Row>
+                                {this.state.crewList.filter(u=>u.crewCategoryName === e.crewCategoryName).map(u=> (
+                                        <Row>
+                                            <Col>Navn: {u.contactName}</Col>
+                                            <Col>Mobil: {u.phone}</Col>
+                                            <Col>E-post: {u.email}</Col>
+                                            <Col>Beskrivelse: {u.description}</Col>
+                                            <Col>Personell-type: {u.crewCategoryName}</Col>
+                                            <Col>Hovedsansvarlig? {u.isResponsible}</Col>
+                                            <Col></Col>
+                                        </Row>
+                                ))}
+                        </ListGroup.Item>
+                    ))}
+                    </ListGroup>
                 </Card.Body>
             )
         }
     }
-
+/*
     returnOneCrewMember = () => {
         console.log('runs returnCrew');
         CrewStore.getCrewMember(1, (data) => {
             this.setState(
-                { contactName : data.contactName,
-                        phone : data.phone,
-                        email : data.email,
-                        description: data.description})
+                { crewList : data})
         });
         console.log(this.state);
-    };
+    }; */
 
     returnCrew = () => {
         CrewStore.storeAllCrewMembersForEvent(() => {
-            console.log("return crew members" + CrewStore.allCrewForCurrentEvent);
             this.setState(
                 { crewList : CrewStore.allCrewForCurrentEvent })
         }, EventStore.currentEvent.eventID);
-        console.log("current eventID:" + EventStore.currentEvent.eventID);
-        console.log(this.state);
+        console.log("member list:");
+        console.log(CrewStore.allCrewForCurrentEvent);
+    };
+
+    returnCrewCategories = () => {
+        CrewStore.storeAllCrewCategoriesForEvent(() => {
+            this.setState(
+                {
+                    categoryList : CrewStore.allCrewCategoriesForCurrentEvent
+                })
+        }, EventStore.currentEvent.eventID);
+        console.log("return categories for event");
+        console.log(CrewStore.allCrewCategoriesForCurrentEvent);
     };
 
     componentDidMount() {
-        this.returnOneCrewMember();
+      //  this.returnOneCrewMember();
         this.returnCrew();
+        this.returnCrewCategories();
 
     }
 }
@@ -431,13 +464,15 @@ export class AddCrewMember extends Component{
             isResponsible: false,
             crewCategoryID : 1,
             showRegisterCrewType : false
+            selectedCategoryID: 1,
+            crewCategoryList: []
         };
     }
 
     render() {
         return(
             <div className="card card-body">
-                <Form>
+                <Form.Group>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
@@ -458,40 +493,37 @@ export class AddCrewMember extends Component{
                         <Form.Label>Beskrivelse</Form.Label>
                         <Form.Control type="text" placeholder="" onChange={this.handleDescriptionChange} />
                     </Form.Group>
-
-
-                    <div className="row padding-bottom-20">
-                        <div className="col-4">
-
-                            <select className="form-control" id="crewCategory" >
-                                <option>Lydperson</option>
-                                <option>Lysperson</option>
-                            </select>
-                        </div>
-
-
-                        <div className="col-4">
-                            <button className="btn btn-success" onClick={this.showRegisterCrewTypeForm}>Ny personell type</button>
-                        </div>
-
-                    </div>
-
-                    <div className="row padding-bottom-20">
-                        {this.state.showRegisterCrewType?
-                            <div className="col-12">
-                                <AddCrewType />
-                            </div>
-                            :null}
-                    </div>
-
+                    <Form.Group controlId="fromGridCategory">
+                        <Form.Label>Velg personell-type</Form.Label>
+                        <select
+                            value={this.state.selectedCategoryID}
+                            onChange={e =>
+                                this.setState({
+                                    selectedCategoryID: e.target.value,
+                                })
+                            }
+                        >
+                            {this.state.crewCategoryList.map(category => (
+                                <option key={category.crewCategoryID} value={category.crewCategoryID}>
+                                    {category.crewCategoryName}
+                                </option>
+                            ))}
+                        </select>
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Hovedansvarlig</Form.Label>
+                        <input
+                            type="checkbox"
+                            onClick={this.handleIsResponsibleChange}
+                        />
+                    </Form.Group>
                     <Button variant="primary" type="button" onClick={this.submitForm}>
                         Submit
                     </Button>
                     <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
                         Cancel
                     </Button>
-
-                </Form>
+                </Form.Group>
             </div>
         )
     }
@@ -523,10 +555,19 @@ export class AddCrewMember extends Component{
         currentState.description = event.target.value;
         this.setState(currentState);
     };
+    handleIsResponsibleChange = (event) =>{
+        //currentState.isResponsible = event.target.value;
+        this.setState({isResponsible: !this.state.isResponsible});
+        console.log("status?");
+        console.log(this.state.isResponsible);
+        console.log((this.state.isResponsible ? 1 : 0));
+        //this.setState(currentState);
+    };
 
 
     submitForm = () => {
-        CrewStore.createCrewMemberForEvent(this.state.name, this.state.phone, this.state.email, this.state.description, this.state.crewCategoryID, this.state.isResponsible, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
+
+        CrewStore.createCrewMemberForEvent(this.state.name, this.state.phone, this.state.email, this.state.description, this.state.selectedCategoryID, (this.state.isResponsible ? 1 : 0), EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
         this.props.toggleRegisterCrewMember();
         this.props.submit();
     };
@@ -534,6 +575,23 @@ export class AddCrewMember extends Component{
     cancelRegister = () => {
         this.props.toggleRegisterCrewMember();
     };
+
+    returnCrewCategories = () => {
+        CrewStore.storeAllCrewCategoriesForOrganizer(() => {
+            console.log("return categories for organizer");
+            console.log(CrewStore.allCrewCategoriesForOrganizer);
+            this.setState(
+                {
+                    crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
+                })
+        }, OrganizerStore.currentOrganizer.organizerID); //OrganizerStore.currentOrganizer
+        console.log(" liste over pesonellkategorier:");
+        console.log( this.state.crewCategoryList.crewCategoryID);
+    };
+
+    componentDidMount() {
+        this.returnCrewCategories();
+    }
 
 
 }
