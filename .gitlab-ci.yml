@@ -11,13 +11,15 @@ variables:
 
 # Install node libraries
 before_script:
+  - cd application/client
+  - npm install
 
 # Run JEST test
 
 run_tests:
   stage: test
   script:
-    - cd application/client && npm install && npm test
+    - npm test
   artifacts:
     paths:
       #- application/server/coverage
