@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Col, Row} from "react-bootstrap";
 import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
+import {Alert} from '../alerts.js';
 
 const history = createHashHistory();
 
@@ -71,6 +72,7 @@ export class TabContent extends Component {
     publishEvent = () => {
         EventStore.publishCurrentEvent().then(console.log('Event published!'));
         this.setState({status : 1})
+        Alert.success("Arrangementet har blitt publisert")
     };
 
     archiveEvent = () => {
@@ -81,14 +83,12 @@ export class TabContent extends Component {
     cancelEvent = () => {
         EventStore.cancelCurrentEvent().then(console.log('Event cancelled!'));
         this.setState({status : 3})
+        Alert.danger("Arrangementet har blitt kansellert")
     };
 
     planEvent = () => {
         EventStore.planCurrentEvent().then(console.log('Event sent to planning!'));
         this.setState({status : 0})
+        Alert.success("Arrangementet har blitt flyttet til under planlegging")
     };
-
 }
-
-
-//geir

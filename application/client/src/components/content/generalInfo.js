@@ -301,7 +301,7 @@ export class InfoForm extends Component {
         this.setState({dateError: false})
         if(this.validateForm()){
             this.save();
-            EventStore.postCurrentEvent().then(console.log("Lagret"));
+            EventStore.editCurrentEvent().then(console.log("Lagret"));
             this.setState({edit:false});
         } else{
             this.setState({dateError: true})

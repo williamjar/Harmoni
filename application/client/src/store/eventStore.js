@@ -33,11 +33,11 @@ export class EventStore{
             "endDate" : today,
             "startTime" : startTime,
             "endTime" : endTime,
-            "address" : null,
-            "town" : null,
+            "address" : "",
+            "town" : "",
             "zipCode" : null,
             "status" : 0,
-            "description" : null,
+            "description" : "",
             "publishDate" : null,
             "publishTime" : null,
             "organizerID" : organizerID,
@@ -70,7 +70,7 @@ export class EventStore{
         });
     }
 
-    static postCurrentEvent(){
+    static editCurrentEvent(){
 
         let header = {
             "Content-Type": "application/json",
@@ -190,7 +190,6 @@ export class EventStore{
             callback();
         });
     }
-
     static formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
