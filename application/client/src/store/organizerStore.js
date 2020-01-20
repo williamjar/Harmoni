@@ -105,11 +105,14 @@ export class OrganizerStore {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete('api/contact/' + this.currentOrganizer.contactID, {headers: header});
+        return axios.delete(axiosConfig.root + 'api/contact/' + this.currentOrganizer.contactID, {headers: header});
     }
 
     static archiveOldEvents() {
-        axios.put('/api/events/archive/' + this.currentOrganizer.organizerID).then(response => {
+        axios.put(axiosConfig.root + '/api/archive/' + this.currentOrganizer.organizerID).then(response => {
+            if (response) {
+                console.log(response.data.changedRows + " events moved to archive");
+            }
         });
     }
 
