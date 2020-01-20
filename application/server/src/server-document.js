@@ -1,4 +1,18 @@
-import {app, documentationDao, pictureDao, documentDao, organizerDao, multer, path, fs, uuidv4} from "./server";
+import {
+    app,
+    documentationDao,
+    pictureDao,
+    documentDao,
+    organizerDao,
+    multer,
+    path,
+    fs,
+    uuidv4,
+    artistDao
+} from "./server";
+
+
+
 
 function deleteFile(path) {
     try {
@@ -115,6 +129,7 @@ const uploadUserPicture = multer({
 const fileUpload = multer({storage: fileStorage});
 
 // PICTURE
+
 
 //Save picture to server
 app.post("/api/file/picture", uploadUserPicture.single('selectedFile'), (req, res) => {
@@ -251,6 +266,120 @@ app.post("/api/:eventID/documents/create/crew", (req, res) => {
         res.status(status);
         res.json(data);
     });
+});
+
+
+app.get("/api/event/:eventID/documents/categories", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getAllDocumentCategoriesForEvent(req.params.eventID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.get("/api/artist/documents/:documentID", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getArtistInfoConnectedToDocument(req.params.documentID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.get("/api/crew/documents/:documentID", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getCrewInfoConnectedToDocument(req.params.documentID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getAllDocumentsByCategoryForEvent(req.params.eventID,req.params.documentCategoryID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.get("/api/document/download/:path*", (req, res) => {
+    var file = req.params.path + req.params['0'];
+    fs.readFile(file, function(err, data){
+        //jpg/jpeg image
+    if((/\.(jpeg)$/i).test(req.params.path + req.params['0']) || (/\.(jpg)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("image/jpeg");
+    }
+    //Png image
+    else if((/\.(png)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("image/png");
+    }
+
+    //Postscript
+    else if((/\.(ai)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/postscript");
+    }
+
+    //PDF
+    else if((/\.(pdf)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/pdf");
+    }
+    //Microsoft Powerpoint
+    else if((/\.(pptx)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/vnd.openxmlformats-officedocument.presentationml.presentation");
+    }
+    else if((/\.(ppt)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/vnd.ms-powerpoint");
+    }
+    //Microsoft Excel
+    else if((/\.(xlsx)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    }
+
+    else if((/\.(xls)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/vnd.ms-excel");
+    }
+    //Microsoft Word
+    else if((/\.(docx)$/i).test(req.params.path + req.params['0'])){
+        console.log(".docx registered");
+        res.contentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+    }
+
+    else if((/\.(doc)$/i).test(req.params.path + req.params['0'])){
+        console.log(".doc registered");
+        res.contentType("application/msword");
+    }
+    //Compressed File
+    else if((/\.(rar)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/x-rar-compressed");
+    }
+
+    else if((/\.(7z)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/x-7z-compressed");
+    }
+
+    else if((/\.(zip)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/zip");
+    }
+    //Plaint text file
+    else if((/\.(txt)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("text/plain");
+    }
+    //Rich text format
+    else if((/\.(rtf)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("application/rtf");
+    }
+    else if((/\.(rtx)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("text/richtext");
+    }
+    else {
+        console.log("There are no MIME support to " + req.params.path + req.params['0']);
+        res.contentType("");
+    }
+        res.send(data)
+    })
 });
 
 // TODO Her er det sikkert noe duplikat
