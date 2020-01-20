@@ -130,11 +130,10 @@ export class RegisterForm extends React.Component {
                         <Form.Text className="text-danger" hidden={MegaValidator.validateUsername("nothing", this.state.username)}>Brukernavnet kan kun inneholde tall og bokstaver</Form.Text>
 
                         <Form.Text className="text-danger" hidden={MegaValidator.validateEmail(this.state.firstEmail, this.state.secondEmail)}>E-postadressene må være like</Form.Text>
-
                         <Form.Text className="text-danger" hidden={MegaValidator.validatePassword(null,this.state.firstPassword,this.state.secondPassword)}>Passordene må være like</Form.Text>
+
                         <Form.Text className="text-danger" hidden={MegaValidator.validatePasswordLength(this.state.firstPassword,this.state.secondPassword)}>Passordet ditt må være på minst 8 tegn</Form.Text>
                         <Form.Text className="text-danger" hidden={!MegaValidator.checkForEInNumber(this.state.phonenumber)}>Telefonnummeret ditt inneholder ugyldige symboler</Form.Text>
-
 
                         <Form.Text className="text-danger" hidden={!this.state.databaseConnectionError}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
 
