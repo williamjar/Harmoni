@@ -1,7 +1,6 @@
 const mysql = require("mysql");
 
-export class Connection{
-    static privatePool = mysql.createPool({
+module.exports.privatePool = mysql.createPool({
         connectionLimit: 1,
         host: "mysql-ait.stud.idi.ntnu.no",
         user: "evengu",
@@ -11,7 +10,7 @@ export class Connection{
         multipleStatements: true
     });
 
-    static pool = mysql.createPool({
+module.exports.pool = mysql.createPool({
         connectionLimit: 1,
         host: "mysql",
         user: "root",
@@ -20,4 +19,3 @@ export class Connection{
         debug: false,
         multipleStatements: true
     });
-}
