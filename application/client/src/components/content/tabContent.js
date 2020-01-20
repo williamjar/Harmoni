@@ -32,13 +32,20 @@ export class TabContent extends Component {
                                     }}>Slett</Button>
 
                                     <Button className="mr-1" variant="success" onClick={() => {
+                                        if (window.confirm('Er du sikker på at du vil arkivere dette arrangementet?')) this.archiveEvent();
+                                    }}>Arkiver</Button>
+
+                                    <Button className="mr-1" variant="success" onClick={() => {
+                                        if (window.confirm('Er du sikker på at du vil kansellere dette arrangementet?')) this.cancelEvent();
+                                    }}>Kanseller</Button>
+
+                                    <Button className="mr-1" variant="success" onClick={() => {
                                         if (window.confirm('Er du sikker på at du vil publisere dette arrangementet?')) this.publishEvent()
                                     }}>Publiser</Button>
                                 </div>
                         }
                     </Col>
                 </Row>
-
             </div>
         )
     }

@@ -137,7 +137,7 @@ export class EventStore{
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.get(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/2", {headers: header}).then( response => {});
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/2", {headers: header}).then( response => {});
     }
 
     static publishCurrentEvent(){
@@ -145,7 +145,7 @@ export class EventStore{
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.get(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/1", {headers: header}).then( response => {});
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/1", {headers: header}).then( response => {});
     }
 
     static cancelCurrentEvent(){
@@ -153,7 +153,7 @@ export class EventStore{
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.get(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/3", {headers: header}).then( response => {});
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/3", {headers: header}).then( response => {});
     }
 
     static storeAllEventsForOrganizer(callback, organizerID){
