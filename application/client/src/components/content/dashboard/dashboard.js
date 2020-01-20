@@ -42,18 +42,6 @@ export class Dashboard extends React.Component {
     // Method for filtering the organizer's events by status -> NOT IMPLEMENTED YET
     filterEvents = (e) => {
         this.setState({active: e.target.name});
-
-        if (this.state.active === "all") {
-
-        } else if (this.state.active === "planning") {
-
-        } else if (this.state.active === "published") {
-
-        } else if (this.state.active === "archived") {
-
-        } else if (this.state.active === "cancelled") {
-
-        }
     };
 
     // Sets what the user wants to sort by and calls sort method to sort all categories
@@ -117,7 +105,8 @@ export class Dashboard extends React.Component {
                     </Col>
                 </Row>
 
-                <Accordion id="publishedEvents" defaultActiveKey="0">
+                {this.state.active === "all" || this.state.active === "published" ?
+                    <Accordion id="publishedEvents" defaultActiveKey="0">
                     <Row className="no-gutters">
                         <p>Publisert</p>
                         <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
@@ -129,9 +118,9 @@ export class Dashboard extends React.Component {
                                 <NoEvents message="Du har ingen planlagte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
-                </Accordion>
-
-                <Accordion id="plannedEvents" defaultActiveKey="0">
+                </Accordion> : null}
+                {this.state.active === "all" || this.state.active === "planning" ?
+                    <Accordion id="plannedEvents" defaultActiveKey="0">
                     <Row className="no-gutters">
                         <p>Under planlegging</p>
                         <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
@@ -143,35 +132,36 @@ export class Dashboard extends React.Component {
                                 <NoEvents message="Du har ingen arrangement under planlegging"/>}
                         </Row>
                     </Accordion.Collapse>
-                </Accordion>
-
-                <Accordion id="archivedEvents" defaultActiveKey="1">
+                </Accordion> : null}
+                {this.state.active === "all" || this.state.active === "archived" ?
+                    <Accordion id="archivedEvents" defaultActiveKey="1">
                     <Row className="no-gutters">
                         <p>Arkivert</p>
                         <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
                     </Row>
-                    <Accordion.Collapse eventKey="0">
+                    <Accordion.Collapse eventKey={this.state.active === "archived" ? "1" : "0"}>
                         <Row className="no-gutters">
                             {this.state.archived.length > 0 ?
                                 <EventView events={this.state.archived}/> :
                                 <NoEvents message="Du har ingen arkiverte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
-                </Accordion>
+                </Accordion> : null}
 
-                <Accordion id="cancelledEvents" defaultActiveKey="1">
+                {this.state.active === "all" || this.state.active === "cancelled" ?
+                    <Accordion id="cancelledEvents" defaultActiveKey="1">
                     <Row className="no-gutters">
                         <p>Kansellert</p>
                         <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
                     </Row>
-                    <Accordion.Collapse eventKey="0">
+                    <Accordion.Collapse eventKey={this.state.active === "cancelled" ? "1" : "0"}>
                         <Row className="no-gutters">
                             {this.state.cancelled.length > 0 ?
                                 <EventView events={this.state.cancelled}/> :
                                 <NoEvents message="Du har ingen kansellerte arrangement"/>}
                         </Row>
                     </Accordion.Collapse>
-                </Accordion>
+                </Accordion> : null}
 
                 <Row>
                     <Col className="pull-right" size={12}>
