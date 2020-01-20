@@ -128,10 +128,7 @@ export class AddToCrew extends Component{
                     crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
                 })
         }, OrganizerStore.currentOrganizer.organizerID); //OrganizerStore.currentOrganizer
-        console.log(" id:");
-        console.log( this.state.crewCategoryList.crewCategoryID);
     };
-
 
     handleCategoryChange(e){
         this.setState({
@@ -174,7 +171,7 @@ export class AddToCrew extends Component{
                             >
                                 {this.state.crewCategoryList.map(category => (
                                     <option key={category.crewCategoryID} value={category.crewCategoryID}>
-                                        {category.crewCategory}
+                                        {category.crewCategoryName}
                                     </option>
                                 ))}
                                 <option>
@@ -302,7 +299,7 @@ export class AddToCrew extends Component{
         let attachment = document.querySelector("#uploadAttachment").files;
 
         let json = {
-            crewCategory : crewSelect,
+            crewCategoryName : crewSelect,
             responsible : mainResponsible,
             description : description,
             attachments : attachment,
@@ -316,7 +313,9 @@ export class CrewView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            crewList: []
+            crewList: [],
+            categoryList: [],
+            categoryName: ""
         }
     }
 
@@ -332,21 +331,25 @@ export class CrewView extends Component {
                             Personell som er lagt til:
                         </div>
                     </div>
-
                     <ListGroup>
-                        {this.state.crewList.map(e => (
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Navn: {e.contactName}</Col>
-                                    <Col>Mobil: {e.phone}</Col>
-                                    <Col>E-post: {e.email}</Col>
-                                    <Col>Beskrivelse: {e.description}</Col>
-                                    <Col>Personell-type: {e.crewCategory}</Col>
-                                    <Col>Hovedsansvarlig? {e.isResponsible}</Col>
-                                    <Col></Col>
-                                    </Row>
-                            </ListGroup.Item>
-                        ))}
+                    {this.state.categoryList.map(e => (
+                        <ListGroup.Item>
+                            <Row>
+                                <Col> Kategori: {e.crewCategoryName}</Col>
+                            </Row>
+                                {this.state.crewList.filter(u=>u.crewCategoryName === e.crewCategoryName).map(u=> (
+                                        <Row>
+                                            <Col>Navn: {u.contactName}</Col>
+                                            <Col>Mobil: {u.phone}</Col>
+                                            <Col>E-post: {u.email}</Col>
+                                            <Col>Beskrivelse: {u.description}</Col>
+                                            <Col>Personell-type: {u.crewCategoryName}</Col>
+                                            <Col>Hovedsansvarlig? {u.isResponsible}</Col>
+                                            <Col></Col>
+                                        </Row>
+                                ))}
+                        </ListGroup.Item>
+                    ))}
                     </ListGroup>
                 </Card.Body>
             )
@@ -364,17 +367,28 @@ export class CrewView extends Component {
 
     returnCrew = () => {
         CrewStore.storeAllCrewMembersForEvent(() => {
-            console.log("return crew members" + CrewStore.allCrewForCurrentEvent);
             this.setState(
                 { crewList : CrewStore.allCrewForCurrentEvent })
         }, EventStore.currentEvent.eventID);
-        console.log("current eventID:" + EventStore.currentEvent.eventID);
-        console.log(this.state);
+        console.log("member list:");
+        console.log(CrewStore.allCrewForCurrentEvent);
+    };
+
+    returnCrewCategories = () => {
+        CrewStore.storeAllCrewCategoriesForEvent(() => {
+            this.setState(
+                {
+                    categoryList : CrewStore.allCrewCategoriesForCurrentEvent
+                })
+        }, EventStore.currentEvent.eventID);
+        console.log("return categories for event");
+        console.log(CrewStore.allCrewCategoriesForCurrentEvent);
     };
 
     componentDidMount() {
       //  this.returnOneCrewMember();
         this.returnCrew();
+        this.returnCrewCategories();
 
     }
 }
@@ -431,7 +445,7 @@ export class AddCrewMember extends Component{
                         >
                             {this.state.crewCategoryList.map(category => (
                                 <option key={category.crewCategoryID} value={category.crewCategoryID}>
-                                    {category.crewCategory}
+                                    {category.crewCategoryName}
                                 </option>
                             ))}
                         </select>
