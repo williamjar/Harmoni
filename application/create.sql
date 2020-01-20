@@ -190,7 +190,7 @@ ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID) ON DELETE CASCAD
 ALTER TABLE crewCategory ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID);
 
 ALTER TABLE event_crewCategory_crew
-ADD FOREIGN KEY (eventID) REFERENCES event(eventID),
+ADD FOREIGN KEY (eventID) REFERENCES event(eventID) ON DELETE CASCADE,
 ADD FOREIGN KEY (crewCategoryID) REFERENCES crewCategory(crewCategoryID),
 ADD FOREIGN KEY (crewID) REFERENCES crew(crewID) ON DELETE CASCADE;
 
