@@ -190,7 +190,6 @@ export class EventStore{
             callback();
         });
     }
-
     static formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),

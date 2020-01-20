@@ -108,5 +108,10 @@ export class OrganizerStore {
         return axios.delete('api/contact/' + this.currentOrganizer.contactID, {headers: header});
     }
 
+    static archiveOldEvents() {
+        axios.put('/api/events/archive/' + this.currentOrganizer.organizerID).then(response => {
+        });
+    }
+
 
 }
