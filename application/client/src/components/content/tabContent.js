@@ -54,8 +54,9 @@ export class TabContent extends Component {
         return null;
     }
 
+    // TODO Create a custom confirm window for these.
     deleteEvent = () => {
-        // TODO Create a custom confirm window
+
         EventStore.deleteCurrentEvent().then(console.log('Event deleted!'));
         history.push("/");
     };
@@ -63,19 +64,16 @@ export class TabContent extends Component {
     // Nothing seems to happen
 
     publishEvent = () => {
-        // TODO Create a custom confirm window
         EventStore.publishCurrentEvent().then(console.log('Event published!'));
         history.push("/");
     };
 
     archiveEvent = () => {
-        // TODO Create a custom confirm window
         EventStore.archiveCurrentEvent().then(console.log('Event archived!'));
         history.push("/");
     };
 
     cancelEvent = () => {
-        // TODO Create a custom confirm window
         EventStore.cancelCurrentEvent().then(console.log('Event cancelled!'));
         history.push("/");
     };
