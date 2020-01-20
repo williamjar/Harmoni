@@ -100,8 +100,8 @@ export class CrewPanel extends Component{
     }
 
     toggleRegisterNew = () => {
-        this.setState({showRegisterNew : !this.state.showRegisterNew});
-    };º
+        this.setState({showRegisterNew : !this.state.showRegisterNew, showCrewCard : false});
+    };
 
     returnCrew = () => {
         CrewStore.storeAllCrewMembersForEvent(() => {
@@ -124,7 +124,7 @@ export class CrewPanel extends Component{
     };
 
     changeCrewSelected = (crew) => {
-        this.setState({showCrewCard : true, crewSelected : crew});
+        this.setState({showCrewCard : true, crewSelected : crew, showRegisterNew : false});
     };
 }
 
