@@ -37,9 +37,7 @@ export class CreateEventSplash extends Component{
         } else {
         return (
             <div className=" w-75 center">
-
                     <div className = "padding-top-bottom-100">
-
                     <Form onSubmit={this.create}>
                         <div className="padding-bottom-10"> Opprett  arrangement</div>
                         <InputGroup className="mb-3 " size="sm">
@@ -77,7 +75,7 @@ export class CreateEventSplash extends Component{
             this.setState(state);
         } else{
             EventStore.createEvent(() => {
-                history.push("/arrangementEdit");
+                history.push('/arrangementEdit/');
                 this.setState({isLoading: false});
             }, this.state.inputName, CookieStore.currentUserID);
         }
