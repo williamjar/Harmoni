@@ -180,11 +180,11 @@ export class Documents extends Component{
         }
     }
 
-    checkIfAllowedToPreview(documentLink) {
+    previewButton(documentLink) {
         if ((/\.(pdf)$/i).test(documentLink)) {
             return (
                 <Col size={3} className={"text-right"}>
-                    <App path={documentLink}/>
+                    <PreviewButton path={documentLink}/>
                 </Col>
             );
         }
@@ -200,9 +200,8 @@ export class Documents extends Component{
                             <Row className={"no-gutters"} onClick={() => this.handleClick(item.documentLink, item.documentName)}>
                                 <Col size = {9} className = {" folder "}>
                                     {this.checkFileType(item.documentName)} {item.documentName}
-
                                 </Col>
-                                {this.checkIfAllowedToPreview(item.documentLink)}
+                                {this.previewButton(item.documentLink)}
                             </Row>
                         </div>
 
@@ -213,7 +212,7 @@ export class Documents extends Component{
     }
 }
 
-class App extends Component {
+class PreviewButton extends Component {
     viewHandler = async () => {
         documentService.previewDocument(this.props.path);
     };
