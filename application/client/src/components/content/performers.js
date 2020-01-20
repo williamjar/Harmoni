@@ -295,7 +295,13 @@ export class PerformerCard extends Component{
         let currentState = this.state;
         currentState.riders = RiderStore.allRidersForCurrentEvent;
         currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
-        this.setState(currentState);
+
+        ArtistService.getArtistEventInfo((artistEventInfo) =>{
+            currentState.signedContract = artistEventInfo.contractSigned;
+            currentState.payed = artistEventInfo.hasBeenPaid;
+            console.log("artistEventInfo hasBeen Paid: " + artistEventInfo.hasBeenPaid);
+            this.setState(currentState);
+        }, currentState.performer.artistID, EventStore.currentEvent.eventID);
     }
 
     //TODO: Change states that show if files are added to server
@@ -340,7 +346,6 @@ export class PerformerCard extends Component{
     deleteRider = (rider) => {
         RiderStore.deleteRider(() => {
             let currentState = this.state;
-            currentState.riders.splice(rider, 1);
             RiderStore.allRidersForCurrentEvent.splice(rider, 1);
             this.setState(currentState);
         }, EventStore.currentEvent.eventID, rider.artistID, rider.riderID);
@@ -366,7 +371,7 @@ export class PerformerCard extends Component{
 
     handleOtherCheckboxes = (event) => {
         this.setState({[event.target.name] : event.target.checked});
-    }
+    };
 
     handleInputRider = (event) =>{
         /* Handles the rider input for new riders to be added to state variable */
@@ -405,6 +410,8 @@ export class PerformerCard extends Component{
         });
 
         //TODO: Send signed contract and if artist has been payed
+
+        artistService.updateArtistEventInfo(()=>{}, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.signedContract, this.state.payed);
     }
 }
 

@@ -297,9 +297,9 @@ export class TicketAll extends Component {
 
     listTickets = () => {
         console.log(EventStore.currentEvent.eventID);
-        TicketStore.getAllTickets( EventStore.currentEvent.eventID, () => {
+        TicketStore.getAllTicketsForEvent( EventStore.currentEvent.eventID, () => {
             this.setState(
-                { ticketList : TicketStore.allTickets})
+                { ticketList : TicketStore.allTicketsCurrentEvent})
         });
         console.log(this.state.ticketList, );
     };

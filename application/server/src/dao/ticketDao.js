@@ -11,6 +11,10 @@ module.exports = class ticketDao extends Dao {
         super.query('SELECT * FROM ticketType WHERE eventID = ?', [eventID], callback);
     }
 
+    getAllTickets(callback) {
+        super.query('SELECT * FROM ticketType', callback);
+    }
+
     addTicket(callback, list) {
         super.query('INSERT INTO ticketType (ticketTypeID , eventID, ticketTypeName, price, amount, releaseDate, releaseTime, hasEndDate, endDate, endTime, description) VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', list, callback);
     }
