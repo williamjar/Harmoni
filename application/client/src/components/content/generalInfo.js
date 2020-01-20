@@ -25,7 +25,7 @@ export class GeneralInfo extends Component{
             <div>
                 <div className="row">
                     <div className="col-7 border-right">
-                        <InfoForm/>
+                        <InfoForm editMode={this.props.editMode}/>
                     </div>
                     <div className="col-5">
                         <Card.Body>
@@ -53,7 +53,7 @@ export class InfoForm extends Component {
         super(props);
 
         this.state = {
-            edit: true,
+            edit: this.props.editMode,
             eventName: EventStore.currentEvent.eventName,
             startDate: EventStore.currentEvent.startDate,
             endDate: EventStore.currentEvent.endDate,
@@ -301,7 +301,7 @@ export class InfoForm extends Component {
         this.setState({dateError: false})
         if(this.validateForm()){
             this.save();
-            EventStore.postCurrentEvent().then(console.log("Lagret"));
+            EventStore.editCurrentEvent().then(console.log("Lagret"));
             this.setState({edit:false});
         } else{
             this.setState({dateError: true})

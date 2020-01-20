@@ -21,7 +21,7 @@ export class EventForm extends Component{
 
         this.state = {
             activeTab: 0,
-            edit: false,
+            editMode: false,
         };
 
     }
@@ -36,7 +36,7 @@ export class EventForm extends Component{
     saveClicked = () => {
         if(this.validateForm()){
             this.setState({edit: false});
-            EventStore.postCurrentEvent().then(console.log("Lagret"));
+            EventStore.editCurrentEvent().then(console.log("Lagret"));
         } else{
             console.log("start date can not be after end date");
         }
@@ -48,7 +48,7 @@ export class EventForm extends Component{
                 <Tab eventKey="0" title="Generelt" >
                     <TabContent>
                         <div className="padding-bottom-20">
-                            <GeneralInfo/>
+                            <GeneralInfo editMode={this.state.editMode}/>
                         </div>
                     </TabContent>
                 </Tab>

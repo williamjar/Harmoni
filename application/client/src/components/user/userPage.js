@@ -4,6 +4,7 @@ import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {PictureService} from "../../store/pictureService";
 import {MegaValidator} from "../../megaValidator";
+import {LoginService} from "../../store/loginService";
 
 export class UserPage extends React.Component {
     constructor(props) {
@@ -52,8 +53,7 @@ export class UserPage extends React.Component {
                     <Row>
                         <Col>
                             <Card className={"p-2 card border-0"}>
-                                <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture}
-                                       rounded/>
+                                <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} />
 
                                 <Form onSubmit={this.handleSubmit}>
 
@@ -62,7 +62,8 @@ export class UserPage extends React.Component {
                                                      onChange={this.handleInputChange}/>
                                     </Form.Group>
                                     <Form.Group>
-                                        <Button variant="secondary" type="submit">Last opp profilbilde</Button>
+                                        <Button hidden={this.state.savingInformation}  variant="secondary" type="submit">Last opp profilbilde</Button>
+                                        <Button hidden={!this.state.savingInformation} disabled variant="secondary" type="submit"><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>Laster opp profilbilde</Button>
                                     </Form.Group>
                                 </Form>
                                 <Card.Title>Brukerprofil</Card.Title>
@@ -177,6 +178,8 @@ export class UserPage extends React.Component {
                                             </Accordion.Collapse>
                                         </Card>
                                     </Form>
+
+                                   <DeleteUserForm/>
                                 </Accordion>
                             </Card>
                         </Col>
@@ -203,6 +206,7 @@ export class UserPage extends React.Component {
         event.preventDefault();
         this.submitForm();
     }
+
 
     hideModal() {
         this.setState({showPasswordAlert: false});
@@ -233,7 +237,7 @@ export class UserPage extends React.Component {
                     username: databaseUsername,
                     email: dataBaseEmail,
                     phonenumber: databasePhone,
-                    profilePicture: image
+                    profilePicture: databaseImage
                 }));
             } else {
                 //console.log("We have an error!");
@@ -262,7 +266,6 @@ export class UserPage extends React.Component {
 
         if (MegaValidator.validatePassword(this.state.password, this.state.firstNewPassword, this.state.secondNewPassword)) {
             OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword, status => {
-                console.log(status);
                 this.setState({savingInformation: false});
                 this.setState({
                     oldPassword: '',
@@ -280,6 +283,7 @@ export class UserPage extends React.Component {
             formData.append('selectedFile', this.state.newProfilePicture);
             PictureService.insertPicture(OrganizerStore.currentOrganizer.organizerID, formData, (statusCode, link) => {
                 console.log("Image uploaded with status " + statusCode);
+                this.setState({savingInformation: false});
                 if (statusCode === 200 && link) {
                     const totalPath = __dirname + '../../../../server/' + link;
                     this.state.profilePicture = totalPath;
@@ -287,6 +291,7 @@ export class UserPage extends React.Component {
             });
         } else {
             console.log("Image not validated");
+            this.setState({savingInformation: false});
         }
         // code for submitting profile picture here, you can access it with this.state.new.profilePicture
     }
@@ -306,7 +311,94 @@ export class SubmitButton extends React.Component {
         } else {
             return (<Button type="submit" variant="success" disabled={this.props.stop}>Lagre</Button>)
         }
+    }
 
+}
+
+export class DeleteUserForm extends React.Component {
+
+    constructor(props){
+        super(props);
+        this.state = {
+            password : '',
+            savingInformation: false,
+            confirmDeleteUser: false,
+            errorDeleting: false
+        };
+
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+
+    }
+
+
+    render() {
+            return (
+                <Form onSubmit={this.handleSubmit}>
+                <Card>
+                    <Card.Header>
+                        <Accordion.Toggle as={Button} className="text-danger" variant="link" eventKey="3">
+                            Slett brukerprofil (GDPR)
+                        </Accordion.Toggle>
+                    </Card.Header>
+                    <Accordion.Collapse eventKey="3">
+                        <Card.Body>
+                            <Form.Group>
+                                <Form.Control type="password" name="password"
+                                              placeholder="Bekfreft med passord"
+                                              value={this.state.password}
+                                              onChange={this.handleInputChange}/>
+                            </Form.Group>
+                            <Form.Group>
+                            <Form.Check name="confirmDeleteUser" value={this.state.confirmDeleteUser}  onChange={this.handleInputChange} type="checkbox" id="custom-switch" label="Bekreft at du ønsker å slette denne brukerprofilen (ikke reverserbart)"/>
+                            </Form.Group>
+                            <Form.Group>
+                                <Button type="submit" variant="danger" disabled={!this.state.confirmDeleteUser}>Slett brukerprofil</Button>
+                            </Form.Group>
+                        </Card.Body>
+                    </Accordion.Collapse>
+                </Card>
+            </Form>
+            )
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.submitForm();
+    }
+
+    handleInputChange(event) {
+        this.setState({savingInformation: false});
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+        console.log(this.state.confirmDeleteUser);
+        this.setState({[name]: value,});
+
+    }
+
+    submitForm(){
+        if(this.checkPassword()){
+
+            alert("Brukeren er slettet");
+        }  else {
+            alert("feil passord");
+        }
+    }
+
+
+    checkPassword(){
+        LoginService.loginOrganizer(OrganizerStore.currentOrganizer.email, this.state.password, status => {
+
+            if (status===200) {
+                OrganizerStore.deleteCurrentOrganizer();
+
+            } else {
+                this.setState({errorDeleting: true});
+                return false;
+            }
+
+        });
     }
 
 }

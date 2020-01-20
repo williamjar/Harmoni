@@ -1,4 +1,4 @@
-image: node:8
+image: node:13
 
 # Set up MySQL test-database
 services:
@@ -11,17 +11,18 @@ variables:
 
 # Install node libraries
 before_script:
+  - cd application/client
+  - npm install
 
+# Run JEST test
 
-# Run JEST tests
 run_tests:
   stage: test
   script:
-    - cd application/server && npm install && npm test
-    - cd ../client && npm install && npm test
+    - npm test
   artifacts:
     paths:
-      - application/server/coverage
+      #- application/server/coverage
       - application/client/coverage
 
 # Publish coverage report on gitlab-pages
@@ -32,7 +33,7 @@ pages:
   script:
     - cd ..
     - mkdir .public
-    - cp -r server/coverage/* .public
+    - cp -r client/coverage/* .public
 
     - mv .public public
   artifacts:

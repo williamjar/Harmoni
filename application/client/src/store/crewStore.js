@@ -9,6 +9,9 @@ let axiosConfig = require("./axiosConfig");
 
 export class CrewStore {
 
+    /*
+    Create set functions if set outside of here
+     */
     static allCrewMembersForOrganizer = [];
     static allCrewCategoriesForOrganizer = [];
     static allCrewCategoriesForCurrentEvent = [];
@@ -146,16 +149,16 @@ export class CrewStore {
             };
 
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>{
-                    console.log(response);
+                console.log(response);
 
-                    let assignBody = {
-                        "eventID": eventID,
-                        "crewCategoryID": crewCategoryID,
-                        "crewID": response.data.insertId,
-                        "isResponsible": isResponsible
-                    };
+                let assignBody = {
+                    "eventID": eventID,
+                    "crewCategoryID": crewCategoryID,
+                    "crewID": response.data.insertId,
+                    "isResponsible": isResponsible
+                };
 
-                    axios.post(axiosConfig.root + '/api/crew/assign', assignBody,{headers: header}).then(response =>{
+                axios.post(axiosConfig.root + '/api/crew/assign', assignBody,{headers: header}).then(response =>{
                     console.log(response);
                     callback();
                     });

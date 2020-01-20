@@ -3,10 +3,15 @@ import axios from "axios";
 import {RiderElement} from "../classes/riderElement"
 import {CookieStore} from "./cookieStore";
 
+
 const axiosConfig = require("./axiosConfig");
 
 export class RiderStore {
     static allRidersForCurrentEvent = [];
+
+    static addToAllRidersForCurrentArtistAndEvent(rider){
+        this.allRidersForCurrentArtistAndEvent.push(rider);
+    }
 
     //get a rider element
     static getRider(riderID) {
