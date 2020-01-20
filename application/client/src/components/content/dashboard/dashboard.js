@@ -18,6 +18,7 @@ import {Search} from "../search";
 import {EventStore} from "../../../store/eventStore";
 import {CookieStore} from "../../../store/cookieStore";
 import {createHashHistory} from "history";
+import {RiderStore} from "../../../store/riderStore";
 
 const history = createHashHistory();
 
@@ -68,7 +69,7 @@ export class Dashboard extends React.Component {
         return (
             <Card className={"border-0 justify-content-md-center m-4"}>
                 <h3 className={"mt-4 mb-4"}>Arrangementer</h3>
-                <Search searchHandler={this.searchHandler}/>
+                <Search searchHandler={this.searchHandler} results={this.state.events}/>
                 <Row className="filterMenu">
                     <Col>
                         <ButtonGroup size="sm">
@@ -160,8 +161,18 @@ export class Dashboard extends React.Component {
         )
     }
 
-    searchHandler() {
+    searchHandler(event) {
+        console.log("Event received");
+        console.log(event);
 
+        //TODO: may need to sett current event in event store perhaps and maybe some other variables?
+        EventStore.currentEvent = event;
+        RiderStore.storeAllRidersForEvent(() => {
+            console.log("Here comes the sun, nananana");
+            console.log(RiderStore.allRidersForCurrentEvent);
+            history.push("/arrangementEdit/" + this.props.event.eventID);
+        }, event.eventID);
+        history.push(`/arrangementEdit/${event.eventID}`);
     }
 }
 

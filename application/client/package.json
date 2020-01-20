@@ -42,7 +42,9 @@
     ]
   },
   "devDependencies": {
+    "jest": "^24.9.0",
+    "mdbreact": "^4.24.0",
     "react-router-dom": "^5.1.2",
-    "jest": "^24.9.0"
+    "react-simplified": "^1.6.1"
   }
 }
