@@ -45,12 +45,13 @@ export class Search extends Component{
                 </InputGroup>
 
                 <div className="results" id="style-5">
-                    {this.state.showSearchResults && this.state.results !== undefined && this.state.results[0].contactName !== undefined && this.state.results.length !== 0?
+
+                    {(this.state.showSearchResults && this.props.results[0] !== undefined && this.props.results[0].contactName !==  undefined &&  this.state.results.length !== 0)?
                         this.state.results.filter(e => e.contactName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map((show, index) =>
                         <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>{show.contactName}</div>
                         ):null}
 
-                    {this.state.showSearchResults && this.state.results !== undefined && this.state.results[0].eventName !== undefined && this.state.results.length !== 0?
+                    {(this.state.showSearchResults && this.props.results[0] !== undefined && this.props.results[0].eventName != undefined) ?
                         this.state.results.filter(e => e.eventName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map((show, index) =>
                             <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>{show.eventName}</div>
                         ):null}
