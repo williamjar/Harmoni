@@ -26,8 +26,7 @@ export class MegaValidator {
     }
 
     static validatePhoneNumber(phoneNumber, newPhoneNumber) {
-
-        return (newPhoneNumber !== phoneNumber) && this.validatePhoneNumberLength(newPhoneNumber)
+            return (newPhoneNumber !== phoneNumber) && this.validatePhoneNumberLength(newPhoneNumber)
     }
 
     static validatePasswordLength(firstPassword, secondPassword){
