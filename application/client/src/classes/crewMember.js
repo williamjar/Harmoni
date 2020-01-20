@@ -3,10 +3,11 @@ import {Contact} from "./contact";
 export class CrewMember extends Contact{
 
 
-    constructor(crewID, description, crewCategoryName, contactName, phone, email, isResponsible){
+    constructor(crewID, description, crewCategoryID, crewCategoryName, contactName, phone, email, isResponsible){
         super(contactName, phone, email);
         this.crewID = crewID;
-        this.description = description;
+        this.description = description
+        this.crewCategoryID = crewCategoryID;
         this.crewCategoryName = crewCategoryName;
         this.isResponsible = isResponsible;
     }
