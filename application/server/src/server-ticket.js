@@ -19,15 +19,6 @@ app.get("/api/ticket/allTickets/:eventID", (require, response) => {
     }, require.params.eventID);
 });
 
-// Get all tickets
-app.get("/api/ticket", (require, response) => {
-    console.log("Request to get a list with tickets  element");
-    ticketDao.getAllTickets((status, data) => {
-        response.status(status);
-        response.json(data);
-    });
-});
-
 //add one ticket
 app.post("/api/ticket/insert", (request, response) => {
     console.log("Request to add a ticket");

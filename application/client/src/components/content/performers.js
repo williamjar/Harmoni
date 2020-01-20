@@ -40,7 +40,6 @@ export class PerformerPanel extends Component{
     render() {
         return (
             <div>
-
                     <div className="row">
                         <div className="col-lg-6 col-md-12  border-right">
                             <div className="row">
