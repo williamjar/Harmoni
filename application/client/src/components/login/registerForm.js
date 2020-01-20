@@ -120,9 +120,6 @@ export class RegisterForm extends React.Component {
                         <Form.Text className="link text-primary" onClick={()=>this.functionToShowGDPR()}> Les vår personvernserklæring </Form.Text>
                     </Form.Group>
 
-
-
-
                     <Container hidden={!this.state.formCheckerActive}>
 
                         <Form.Text className="text-danger" hidden={MegaValidator.validateUsernameLength(this.state.username)}>Brukernavn kreves</Form.Text>
