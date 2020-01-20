@@ -71,10 +71,6 @@ export class InfoForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    // Handles when the user saves the new name
-    saveClicked = (e) => {
-            this.setState({edit: false})
-    };
 
     // Updates the state and the event store object when form input is changed
     handleChange(event){
@@ -167,7 +163,7 @@ export class InfoForm extends Component {
                             <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Arrangementet kan ikke starte etter det har sluttet!</Form.Text>
                         </Form.Group>
                         <Form.Group>
-                            <Button type="submit" variant="warning">Lagre</Button>
+                            <Button type="submit" variant="primary">Lagre</Button>
                         </Form.Group>
                     </Card.Body>
 
@@ -179,8 +175,8 @@ export class InfoForm extends Component {
             return (
                 <div>
                     <Card className="mb-2 border-0">
+                        <Card.Title className={"h3"}>{EventStore.currentEvent.eventName}</Card.Title>
                         <Card.Body>
-                            <Card.Title className={"h3"}>{EventStore.currentEvent.eventName}</Card.Title>
                             <Form.Group>
                                 <Row className="mb-2">
                                     <Col xs="5">
@@ -265,18 +261,15 @@ export class InfoForm extends Component {
                                     <Col>
                                         <Row className="mt-2">
                                             <Col>
-                                                <Card.Body>
                                                     <Card.Title>Beskrivelse</Card.Title>
                                                     {EventStore.currentEvent.description}
-                                                </Card.Body>
                                             </Col>
                                         </Row>
-
                                     </Col>
                                 </Row>
                             </Form.Group>
                             <Form.Group>
-                                <Button variant="warning" onClick={() => this.editMode()}>Rediger</Button>
+                                <Button variant="success" onClick={() => this.editMode()}>Rediger</Button>
                             </Form.Group>
                         </Card.Body>
 
@@ -316,7 +309,6 @@ export class InfoForm extends Component {
     }
 
     save(){
-            console.log(this.state);
             EventStore.currentEvent.eventName = this.state.eventName;
             EventStore.currentEvent.startDate = this.state.startDate;
             EventStore.currentEvent.endDate = this.state.endDate;
