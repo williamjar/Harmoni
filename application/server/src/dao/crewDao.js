@@ -19,12 +19,8 @@ module.exports = class crewDao extends Dao {
     }
 
     getAllForOrganizer(callback, organizerID) {
-        super.query('SELECT * FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE crew.organizerID = ? AND crew.contactID = contact.contactID', [organizerID], callback);
+        super.query('SELECT * FROM crew JOIN contact ON crew.contactID = contact.contactID WHERE crew.organizerID = ?', [organizerID], callback);
     }
-
-    /*getAllForEvent(callback, eventID) {
-        super.query('SELECT contactName, phone, email, crew.crewID, description FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE eventID = ?', [eventID], callback);
-    }*/
 
     addDocument(callback, list) {
         super.query('INSERT INTO document (eventID,documentName,documentLink,crewID,documentCategoryID) VALUES (?, ?, ?, ?, ?)', list, callback);
@@ -32,11 +28,6 @@ module.exports = class crewDao extends Dao {
 
     setResponsible(callback, list) {
         super.query('UPDATE event_crewCategory_crew SET isResponsible = ? WHERE eventID = ? AND crewCategoryID = ? AND crewID = ?', list, callback);
-    }
-
-    //TODO remove getAllCategoriesForEvent or getAllCategoriesForEvent
-    getAllCategoriesForOneForEvent(callback, crewID, eventID){
-        super.query('SELECT crewCategoryName FROM crewCategory JOIN event_crewCategory_crew on crewCategory.crewCategoryID = event_crewCategory_crew.crewCategoryID WHERE crewID = ? AND eventID = ? ', [crewID, eventID], callback)
     }
 
     getAllCategoriesForEvent(callback, eventID){
