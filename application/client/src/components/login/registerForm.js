@@ -21,7 +21,8 @@ export class RegisterForm extends React.Component {
             usernameAlreadyExist: false,
             emailAlreadyExist: false,
             databaseConnectionError: false,
-            loggingIn: false
+            loggingIn: false,
+            userFeedback: false
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -49,7 +50,7 @@ export class RegisterForm extends React.Component {
             MegaValidator.validatePassword("nothing", this.state.firstPassword, this.state.secondPassword) &&
             MegaValidator.validateUsername("nothing",this.state.username) &&
             MegaValidator.validateUsernameLength(this.state.username) &&
-            MegaValidator.validatePhoneNumberLength(this.state.phonenumber);
+            MegaValidator.validatePhoneNumber(11111111, this.state.phonenumber);
     }
 
     render() {
@@ -65,7 +66,7 @@ export class RegisterForm extends React.Component {
                             <Form.Control maxLength="25" type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Control maxLength="8" type="number" name="phonenumber" placeholder="Telefonnummer" value={this.state.phonenumber} onChange={this.handleInputChange}/>
+                            <Form.Control maxLength="8" type="tel" name="phonenumber" placeholder="Telefonnummer" value={this.state.phonenumber} onChange={this.handleInputChange}/>
                         </Form.Group>
                         <Form.Text className="text-danger" hidden={!this.state.emailAlreadyExist}>Det er allerede registrert en bruker med denne e-postaddressen</Form.Text>
                             <Row>
@@ -107,8 +108,7 @@ export class RegisterForm extends React.Component {
 
                         <Form.Text className="text-danger" hidden={MegaValidator.validatePassword(null,this.state.firstPassword,this.state.secondPassword)}>Passordene må være like</Form.Text>
                         <Form.Text className="text-danger" hidden={MegaValidator.validatePasswordLength(this.state.firstPassword,this.state.secondPassword)}>Passordet ditt må være på minst 8 tegn</Form.Text>
-
-
+                        <Form.Text className="text-danger" hidden={!MegaValidator.checkForEInNumber(this.state.phonenumber)}>Telefonnummeret ditt inneholder ugyldige symboler</Form.Text>
 
 
                         <Form.Text className="text-danger" hidden={!this.state.databaseConnectionError}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
