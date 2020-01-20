@@ -15,6 +15,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import {EventStore} from "../../store/eventStore";
 import {OrganizerStore} from "../../store/organizerStore";
 import Row from "react-bootstrap/Row";
+import {Alert} from "../alerts";
 
 
 export class CrewTab extends Component{
@@ -73,7 +74,6 @@ export class CrewPanel extends Component{
 
                         <div className="padding-top-20">
                             {this.state.showRegisterNew?<AddCrewMember submit={this.submitFunction} toggleRegisterCrewMember={this.toggleRegisterNew} crewCategoryList={this.state.crewCategoryList} />:null}
-
                         </div>
                     </div>
 
@@ -151,7 +151,7 @@ export class AddCrewType extends Component{
                     </Button>
                         </Col>
                         <Col className="col-1">
-                    <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.props.cancelButton}>
+                    <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelButton}>
                         Avbryt
                     </Button>
                         </Col>
@@ -164,7 +164,12 @@ export class AddCrewType extends Component{
         let currentState = this.state;
         currentState.crewType = event.target.value;
         this.setState(currentState);
-    }
+    };
+
+    cancelButton = () => {
+        this.setState({crewType : ""});
+        this.props.cancelButton();
+    };
 
     submitForm = () => {
         if(this.state.crewType.trim() === ""){
@@ -178,7 +183,7 @@ export class AddCrewType extends Component{
             console.log( OrganizerStore.currentOrganizer.organizerID);
             this.props.submit();
         }
-    }
+    };
 }
 
 export class AddToCrew extends Component{
@@ -187,7 +192,7 @@ export class AddToCrew extends Component{
 
         this.state = {
             numberOfFilesAdded: 0,
-            showRegisterCrewType:false,
+            showRegisterCrewType : false,
             showRegisterCrewMember : false,
             categoryID: 1,
             crewCategoryList : [],
@@ -238,8 +243,6 @@ export class AddToCrew extends Component{
                     </div>
                 </div>
 
-
-
                 <div className="row padding-top-20 align-items-center">
 
                     <div className="col-4">
@@ -276,13 +279,7 @@ export class AddToCrew extends Component{
                     </div>
                 </div>
 
-                {this.state.showRegisterCrewType?
-                    <div className="row padding-top-20">
-                        <div className="col-12">
-                            <AddCrewType cancelButton={this.cancelCrewTypeAdd} submit={this.addNew}/>
-                        </div>
-                    </div>
-                    :null}
+
 
                 <div className="row padding-top-20">
                     <div className="col-12">
@@ -421,6 +418,7 @@ export class CrewView extends Component {
                             <Row>
                                 <Col> Kategori: {e.crewCategoryName}</Col>
                             </Row>
+
                             {this.state.crewList.filter(u=>u.crewCategoryName === e.crewCategoryName).map(u=> (
                                 <Row>
                                     <Col>Navn: {u.contactName}</Col>
@@ -525,6 +523,8 @@ export class AddCrewMember extends Component{
                     </Form.Group>
 
                     <Form.Group controlId="fromGridCategory">
+                        <Row className="no-gutters">
+                            <Col size={6}>
                         <Form.Label>Velg personell-type</Form.Label>
                         <select
                             value={this.state.selectedCategoryID}
@@ -540,7 +540,22 @@ export class AddCrewMember extends Component{
                                 </option>
                             ))}
                         </select>
+
+                            </Col>
+
+
+                        <Col size={6}>
+                            <button className="btn btn-success" onClick={this.toggleRegisterCrewTypeForm}>Ny kategori</button>
+                        </Col>
+
+                        </Row>
                     </Form.Group>
+
+                    {this.state.showRegisterCrewType?
+                    <div className="padding-bottom-20">
+                        <AddCrewType submit={this.submitCrewType} cancelButton={this.toggleRegisterCrewTypeForm}/>
+                    </div>
+                    :null}
 
                     <Form.Group>
                         <Form.Label>Hovedansvarlig</Form.Label>
@@ -550,10 +565,10 @@ export class AddCrewMember extends Component{
                         />
                     </Form.Group>
                     <Button variant="primary" type="button" onClick={this.submitForm}>
-                        Submit
+                        Lagre
                     </Button>
                     <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
-                        Cancel
+                        Avbryt
                     </Button>
                 </Form.Group>
             </div>
@@ -571,8 +586,8 @@ export class AddCrewMember extends Component{
         return null;
     }
 
-    showRegisterCrewTypeForm = () => {
-        this.setState({showRegisterCrewType : true})
+    toggleRegisterCrewTypeForm = () => {
+        this.setState({showRegisterCrewType : !this.state.showRegisterCrewType})
     };
 
     handleNameChange = (event) =>{
@@ -609,21 +624,27 @@ export class AddCrewMember extends Component{
 
 
     submitForm = () => {
-
         CrewStore.createCrewMemberForEvent(() => {
             this.props.toggleRegisterCrewMember();
             this.props.submit();
-        }, this.state.name, this.state.phone, this.state.email, this.state.description, this.state.selectedCategoryID, (this.state.isResponsible ? 1 : 0), EventStore.currentEvent.eventID, CookieStore.currentUserID,
-            );
+        }, this.state.name, this.state.phone, this.state.email, this.state.description, this.state.selectedCategoryID, (this.state.isResponsible ? 1 : 0), EventStore.currentEvent.eventID, CookieStore.currentUserID);
+    };
+
+    submitCrewType = () => {
+      Alert.success("Crew category added");
+    };
+
+    toggleShowCrewType = () => {
+        this.setState({showRegisterCrewType : !this.state.showRegisterCrewType});
     };
 
     cancelRegister = () => {
+        this.setState({name : "",
+            phone : "",
+            email : "",
+            description: "",
+            isResponsible: false});
         this.props.toggleRegisterCrewMember();
     };
-
-    componentDidMount() {
-
-    }
-
 
 }
