@@ -8,7 +8,7 @@ import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {ArtistService as artistService, ArtistService} from "../../store/artistService";
-import {getCurrentUserID} from "../../store/cookieStore";
+import {CookieStore} from "../../store/cookieStore";
 import {RiderStore} from "../../store/riderStore";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
@@ -143,7 +143,7 @@ export class PerformerPanel extends Component{
             let currentState = this.state;
             currentState.results = allArtistByOrganizer;
             this.setState(currentState);
-        },getCurrentUserID());
+        },CookieStore.currentUserID);
     };
 
     searchHandler = (selected) => {
@@ -542,7 +542,7 @@ export class RegisterPerformer extends Component{
             console.log(this.state.email);
             ArtistService.createArtist(() => {
                 this.props.submitFunction(); // Call to parent to update it's information in state.
-                }, this.state.name, this.state.phone, this.state.email, genreID, getCurrentUserID());
+                }, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
         } else{
             alert("Du har ikke fyllt inn alle feltene");
             //TODO: add better alert system

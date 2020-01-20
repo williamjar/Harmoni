@@ -1,7 +1,7 @@
-const express = require("express");
+export const cors = require("cors");
+export const express = require("express");
 export const bodyParser = require("body-parser");
 export const app = express();
-export const cors = require("cors");
 export const mysql = require("mysql");
 export const path = require('path');
 export const multer = require('multer');

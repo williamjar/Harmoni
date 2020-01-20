@@ -16,7 +16,7 @@ import {FaAngleDown, FaPlusCircle} from "react-icons/fa";
 import {EventView} from "./eventView";
 import {Search} from "../search";
 import {EventStore} from "../../../store/eventStore";
-import {getCurrentUserID} from "../../../store/cookieStore";
+import {CookieStore} from "../../../store/cookieStore";
 import {createHashHistory} from "history";
 
 const history = createHashHistory();
@@ -59,7 +59,7 @@ export class Dashboard extends React.Component {
 
     // Stores all the organizer's events before rendering the page
     componentDidMount() {
-        EventStore.storeAllEventsForOrganizer(() => {this.setState({events: EventStore.allEventsForOrganizer})}, getCurrentUserID());
+        EventStore.storeAllEventsForOrganizer(() => {this.setState({events: EventStore.allEventsForOrganizer})}, CookieStore.currentUserID);
     }
 
     render() {

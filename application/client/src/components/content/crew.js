@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {TicketType} from "../../classes/ticketType";
 import {CrewStore} from "../../store/crewStore";
-import {getCurrentUserID} from "../../store/cookieStore";
+import {CookieStore} from "../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -211,7 +211,7 @@ export class AddToCrew extends Component{
             this.setState(currentState);
             console.log("Searchable crew");
             console.log(this.state);
-        }, getCurrentUserID());
+        }, CookieStore.currentUserID);
     };
 
 
@@ -443,7 +443,7 @@ export class AddCrewMember extends Component{
 
 
     submitForm = () => {
-        CrewStore.createCrewMemberForEvent(this.state.name, this.state.phone, this.state.email, this.state.description, this.state.crewCategoryID, this.state.isResponsible, EventStore.currentEvent.eventID, getCurrentUserID(), () => {});
+        CrewStore.createCrewMemberForEvent(this.state.name, this.state.phone, this.state.email, this.state.description, this.state.crewCategoryID, this.state.isResponsible, EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
         this.props.toggleRegisterCrewMember();
         this.props.submit();
     };

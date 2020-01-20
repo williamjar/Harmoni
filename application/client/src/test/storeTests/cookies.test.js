@@ -8,14 +8,14 @@ const mocha = require('mocha');
 
 const chai = require('chai');
 const chaiHTTP = require('chai-http');
-const app = require('../../../../server/src/server');
+const server = require('../../../../server/src/server');
 
 const mysql = require("mysql");
 
 chai.use(chaiHTTP);
 chai.should();
 
-chai.request(app);
+chai.request(server);
 
 const pool = Connection.privatePool;
 

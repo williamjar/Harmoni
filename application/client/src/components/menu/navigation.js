@@ -10,7 +10,7 @@ import {FaUsers} from "react-icons/all";
 import {FaFileSignature} from "react-icons/all";
 import logo from './logo.jpeg';
 import {OrganizerStore} from "../../store/organizerStore";
-import {getCurrentUserID} from "../../store/cookieStore";
+import {CookieStore} from "../../store/cookieStore";
 
 
 export class NavBar extends Component{
@@ -104,7 +104,7 @@ export class UserProfileButton extends Component{
     }
 
     updateInfo(){
-        OrganizerStore.getOrganizer(getCurrentUserID(), statusCode => {
+        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
             if (statusCode === 200){
                 var databaseUsername = OrganizerStore.currentOrganizer.username;
                 this.setState(this.setState({
