@@ -1,27 +1,23 @@
 import axios from "axios";
 import {CrewMember} from "../classes/crewMember.js"
+import {getCurrentToken} from "./cookieStore";
 import createWithBsPrefix from "react-bootstrap/esm/createWithBsPrefix";
 import {forEach} from "react-bootstrap/esm/ElementChildren";
 import {CrewCategory} from "../classes/crewCategory";
-import {getCurrentToken} from "./cookieStore";
 
 let axiosConfig = require("./axiosConfig");
 
-let allCrewMembersForOrganizer = [];
-let allCrewCategoriesForOrganizer = [];
-let allCrewCategoryForCurrentEvent = [];
-let allCrewForCurrentEvent = [];
-
-export
-
-
-
-
 export class CrewStore {
+
+    static allCrewMembersForOrganizer = [];
+    static allCrewCategoriesForOrganizer = [];
+    static allCrewCategoryForCurrentEvent = [];
+    static allCrewForCurrentEvent = [];
 
 
     //get a crew member
     static getCrewMember(crewID, callback){
+
         let header = {
             "Content-Type": "application/json",
             "x-access-token": getCurrentToken()
@@ -36,7 +32,27 @@ export class CrewStore {
 
 
     //store/get all crew members for an organizer
+    static storeAllCrewMembersForOrganizer(callback, organizerID){
 
+        this.allCrewMembersForOrganizer = [];
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": getCurrentToken()
+        };
+
+        axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response =>  {
+
+            response.data.map(data => {
+
+                this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.description,
+                    data.crewCategoryID, data.contactName, data.phone, data.email, data.isResponsible));
+
+            });
+
+            callback();
+        });
+    }
 
     //store/get all crew members for an event
     static storeAllCrewMembersForEvent(callback, eventID) {
@@ -133,19 +149,19 @@ export class CrewStore {
             };
 
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>{
-                    console.log(response);
+                console.log(response);
 
-                    let assignBody = {
-                        "eventID": eventID,
-                        "crewCategoryID": crewCategoryID,
-                        "crewID": response.data.insertId,
-                        "isResponsible": isResponsible
-                    };
+                let assignBody = {
+                    "eventID": eventID,
+                    "crewCategoryID": crewCategoryID,
+                    "crewID": response.data.insertId,
+                    "isResponsible": isResponsible
+                };
 
-                    axios.post(axiosConfig.root + '/api/crew/assign', assignBody,{headers: header}).then(response =>{
+                axios.post(axiosConfig.root + '/api/crew/assign', assignBody,{headers: header}).then(response =>{
                     console.log(response);
                     //callback();
-                    });
+                });
             });
         });
     }
