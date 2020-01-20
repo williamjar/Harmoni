@@ -10,7 +10,7 @@ export class TicketStore {
     static allTickets = [];
 
     //Adds ticket
-    static addTicket(eventID, name, price, amount, releaseDate, releaseTime,  endDate, endTime, description ) {
+    static addTicket(eventID, name, price, amount, releaseDate, releaseTime,  endDate, endTime, description, callback) {
 
         let header = {
             "Content-Type": "application/json",
@@ -31,9 +31,14 @@ export class TicketStore {
 
         };
 
-
         axios.post(axiosConfig.root + '/api/ticket/insert', list, {headers: header}).then(response => {
             console.log(response);
+            if (response.status === 200){
+                callback(200);
+            }
+            else{
+                callback(501);
+            }
         });
     }
 
@@ -117,12 +122,20 @@ export class TicketStore {
 
 
     //delete a ticket from an event
-    static deleteTicket(eventID ,ticketTypeID) {
+    static deleteTicket(eventID ,ticketTypeID, callback) {
         console.log('Running deleteTicket');
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete(axiosConfig.root + '/api/ticket/' + eventID + '/' + ticketTypeID , {headers: header}).then(response => response.data);
+        return axios.delete(axiosConfig.root + '/api/ticket/' + eventID + '/' + ticketTypeID , {headers: header}).then(response => {
+            console.log(response);
+            if (response.status === 200){
+                callback(200);
+            }
+            else{
+                callback(501);
+            }
+        });
     }
 }
