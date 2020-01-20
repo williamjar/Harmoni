@@ -278,7 +278,7 @@ app.get("/api/event/:eventID/documents/categories", (req, res) => {
     });
 });
 
-app.get("/api/artist/documents/:documentID", (req, res) => {
+app.get("/api/document/info/artist/:documentID", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getArtistInfoConnectedToDocument(req.params.documentID, (status, data) => {
         console.log(data);
@@ -287,7 +287,7 @@ app.get("/api/artist/documents/:documentID", (req, res) => {
     });
 });
 
-app.get("/api/crew/documents/:documentID", (req, res) => {
+app.get("/api/document/info/crew/:documentID", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getCrewInfoConnectedToDocument(req.params.documentID, (status, data) => {
         console.log(data);
@@ -304,6 +304,19 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
         res.json(data);
     });
 });
+
+app.get("/document/preview/:path*", (req, res) => {
+    console.log("PATH: " + req.params.path + req.params['0']);
+    var file = fs.createReadStream("./" + req.params.path + req.params['0']);
+    file.pipe(res);
+});
+/*
+app.get("/document/preview", (req, res) => {
+    console.log("TEST");
+    var file = fs.createReadStream("./resources/Formelark2018.pdf");
+    file.pipe(res);
+});
+ */
 
 app.get("/api/document/download/:path*", (req, res) => {
     var file = req.params.path + req.params['0'];

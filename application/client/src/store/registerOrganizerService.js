@@ -23,9 +23,11 @@ export class RegisterOrganizerService {
                 return res.data.insertId;
             })
             .then(contactID => {
+                console.log("Contact registered: " + contactID);
                 axios.get("http://localhost:8080/organizer/username/" + username, {headers: header}).then(res => {
                     if (res.data.length === 0) {
                         axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header}).then(res => {
+                            console.log("Registering an organizer with hash " + hashedPassword);
                             if (res.data.length === 0) {
                                 let organizerBody = {
                                     "username": username,
@@ -33,16 +35,17 @@ export class RegisterOrganizerService {
                                     "contactID": contactID
                                 };
                                 return axios.post('http://localhost:8080/organizer', JSON.stringify(organizerBody), {headers: header}).then(res => {
+                                    console.log("Organizer posted");
                                     callback(200);
-                                }).catch(() => callback(500));
+                                }).catch(err => callback(500, err));
                             }
                             callback(501);
-                        }).catch(() => callback(500));
+                        }).catch(err => callback(500, err));
                     } else {
-                        callback(502);
+                        callback(502, {error: "Username does exist when it shouldn't"});
                     }
-                }).catch(() => callback(500));
-            }).catch(() => callback(500));
+                }).catch(err => callback(500, err));
+            }).catch(err => callback(500, err));
     }
 }
 
