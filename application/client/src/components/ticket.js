@@ -280,8 +280,8 @@ export class TicketAll extends Component {
             this.state.releaseDate, this.state.releaseTime, this.state.endDate,
             this.state.endTime, this.state.description, statusCode => {
                 if (statusCode === 200){
-                    TicketStore.getAllTickets(EventStore.currentEvent.eventID, () => {
-                        this.setState({ticketList: TicketStore.allTickets})
+                    TicketStore.getAllTicketsForEvent(EventStore.currentEvent.eventID, () => {
+                        this.setState({ticketList: TicketStore.allTicketsCurrentEvent})
                     });
                     alert("Billetten ble publisert");
                 }else{
@@ -301,7 +301,7 @@ export class TicketAll extends Component {
             this.setState(
                 { ticketList : TicketStore.allTicketsCurrentEvent})
         });
-        console.log(this.state.ticketList, );
+        console.log(this.state.ticketList);
     };
 
     /*
