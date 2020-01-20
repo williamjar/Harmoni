@@ -1,13 +1,17 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Col, Row} from "react-bootstrap";
+import {Button, Col, Row} from "react-bootstrap";
 import {NavLink} from "react-router-dom";
-import {FaFileImage, FaFilePowerpoint,FaFileExcel,FaFileArchive,FaFileWord, FaFilePdf, FaFileAlt, FaFolderOpen} from "react-icons/all";
+import {FaAngleDown,FaFileImage, FaFilePowerpoint,FaFileExcel,FaFileArchive,FaFileWord, FaFilePdf, FaFileAlt, FaFolderOpen} from "react-icons/all";
 import { createHashHistory } from 'history';
 import {DocumentService as documentService} from "../store/documentService";
 import {DocumentCategory} from "../classes/documentCategory";
 import {OrganizerStore as organizerStore} from "../store/organizerStore";
 import {EventStore as eventStore} from "../store/eventStore";
+import axios from "axios";
+import Accordion from "react-bootstrap/Accordion";
+import ListGroup from "react-bootstrap/ListGroup";
+
 
 
 const history = createHashHistory();
@@ -122,22 +126,7 @@ export class Documents extends Component{
         super(props);
         this.state= {
             document: [],
-            documentInfo: {}
         }
-    }
-
-    //TODO: show information of file - render component
-    handleClick(documentLink, documentName){
-        /*
-          console.log("Clicked document with id " + documentID);
-        documentService.getOneDocument(this.props.match.params.eventID, documentID,(document) => {
-            this.setState({documentInfo: document});
-        });
-        //TODO: get info from service
-        console.log(this.state.documentInfo.documentName);
-         */
-
-        documentService.downloadDocument(documentLink, documentName);
     }
 
     componentDidMount() {
@@ -180,44 +169,115 @@ export class Documents extends Component{
 
     render(){
         return(
-            <ul className={"list-group"}>
+            <section>
                 {this.state.document.map((item) => {
-                    return (
-                        <li className = {"list-group-item folder"} onClick={() => this.handleClick(item.documentLink, item.documentName)}>
-                            {this.checkFileType(item.documentName)} {item.documentName}
-                        </li>
 
+                    return (
+                        <Accordion defaultActiveKey="1">
+                            <Row className = {"folder text-primary border-bottom"}>
+                                <Col>
+                                    <Accordion.Toggle as={Button} variant="link text-dark" eventKey="0">
+                                        {this.checkFileType(item.documentName)} {item.documentName} <FaAngleDown/>
+                                    </Accordion.Toggle>
+                                </Col>
+                            </Row>
+                            <Accordion.Collapse eventKey="0">
+                                <Info documentID = {item.documentID} documentLink = {item.documentLink} documentName = {item.documentName}/>
+                            </Accordion.Collapse>
+                        </Accordion>
                     );
                 })}
-            </ul>
+            </section>
         )
     }
 }
 
-
-export class File extends Component{
+class Info extends Component {
     constructor(props){
         super(props);
         this.state= {
+            artist: {},
+            crew: {}
         }
     }
 
-    handleClick(){
-        console.log("Clicked")
+    downloadDocument(){
+        documentService.downloadDocument(this.props.documentLink, this.props.documentName);
+    }
+
+    viewHandler = async () => {
+        documentService.previewDocument(this.props.documentLink);
+    };
+
+    previewButton(){
+        if ((/\.(pdf)$/i).test(this.props.documentLink)) {
+            return (
+                <Button variant="outline-info" onClick={this.viewHandler}> Åpne </Button>
+            );
+        }
     }
 
     componentDidMount() {
+        documentService.getArtistInfoConnectedToDocument(this.props.documentID,(artistObj) => {
+            this.setState({artist: artistObj});
+        });
+
+        documentService.getCrewInfoConnectedToDocument(this.props.documentID,(crewObj) => {
+            this.setState({crew: crewObj});
+        });
+
+    }
+
+    associatedContact(){
+        //console.log("ID: " + this.props.documentID + " Artist: " + this.state.artist[0].contactName + " Crew: " + this.state.crew[0].contactName);
+        if(this.state.crew !== undefined && this.state.crew.contactName !== undefined){
+                return(
+                    <Row className ={"border-bottom"}>
+                        <Col className = {"font-weight-bold font-italic"}>Crew:</Col>
+                        <Col>{this.state.crew.contactName}</Col>
+                    </Row>
+                );
+
+        } else if(this.state.artist !== undefined && this.state.artist.contactName !== undefined ){
+            return(
+                <Row className ={"border-bottom"}>
+                    <Col className = {"font-weight-bold font-italic"}>Artist:</Col>
+                    <Col>{this.state.artist.contactName}</Col>
+                </Row>
+            );
+        } else {
+            return(
+                <Row className ={"border-bottom"}>
+                    <Col className = {"font-weight-bold font-italic"}>Dokumentet har ingen tilknytning</Col>
+                </Row>
+            );
+        }
     }
 
 
-    render(){
-        return(
-            <iframe src={'userStories.pdf'} width="100%" height="600" frameBorder="0"/>
+    render() {
+        return (
+            <Row className = {"bg-light padding-top-20 padding-bottom-20"}>
+                <Col size = {4}>
+                    <Button variant="primary" onClick = {() => this.downloadDocument()}> Last ned </Button>
+                    {this.previewButton()}
+                </Col>
+                <Col size = {5}>
+                    <Row>
+                        <Col className = {"padding-bottom-10"}>
+                            Tilkobling til:
+                        </Col>
+
+                    </Row>
+                    {this.associatedContact()}
+                </Col>
+                <Col size = {3} className={"text-right"}>
+                    <Button variant="danger"> Slett </Button>
+                </Col>
+            </Row>
         );
     }
-
 }
-
 
 
 
