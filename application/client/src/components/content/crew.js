@@ -76,7 +76,7 @@ export class CrewPanel extends Component{
 
                         <div className="padding-top-20">
                             {this.state.showRegisterNew?<AddCrewMember submit={this.submitFunction} toggleRegisterCrewMember={this.toggleRegisterNew} crewCategoryList={this.state.crewCategoryList} />:null}
-                            {this.state.showCrewCard?<CrewCard crewSelected={this.state.crewSelected}/>:null}
+                            {this.state.showCrewCard?<CrewCard crewSelected={this.state.crewSelected} crewCategoryList={this.state.crewCategoryList} />:null}
 
                         </div>
                     </div>
@@ -396,9 +396,11 @@ export class CrewCard extends Component{
 
         this.state = {
             crew : this.props.crewSelected,
+            crewCategoryList: this.props.crewCategoryList,
+            selectedCategoryID: this.props.crewSelected.categoryID,
             numberOfFilesChosenForUpload: 0,
             numberOfFilesAlreadyUploaded: 0,
-            descriptionInput: "",
+            descriptionInput: this.props.crewSelected.description,
             signedContract : false,
             payed : false,
         };
@@ -419,9 +421,19 @@ export class CrewCard extends Component{
 
                     <div className="col-3">
                         <label htmlFor="categorySelect">Kategori</label>
-                        <select className="form-control" id="genreSelect">
-                            <option>Blues</option>
-                            <option>Country</option>
+                        <select
+                            value={this.state.crew.categoryID}
+                            onChange={e =>
+                                this.setState({
+                                    selectedCategoryID: e.target.value,
+                                })
+                            }
+                        >
+                            {this.state.crewCategoryList.map(category => (
+                                <option key={category.crewCategoryID} value={this.state.crew.crewCategoryID}>
+                                    {category.crewCategoryName}
+                                </option>
+                            ))}
                         </select>
                     </div>
 
@@ -432,18 +444,10 @@ export class CrewCard extends Component{
                     <div className="col-12">
                         Beskrivelse<br/>
 
-                        <InputGroup className="mb-3">
-                            <FormControl
-                                placeholder=""
-                                aria-label=""
-                                aria-describedby="basic-addon2"
-                                value={this.state.descriptionInput}
-                                onChange={this.handleInputCrew}
-                            />
-                            <InputGroup.Append>
-                                <Button variant="outline-secondary" onClick={() => this.updateCrew()}>Oppdater beskrivelse</Button>
-                            </InputGroup.Append>
-                        </InputGroup>
+                        <div className="col-4">
+                            <input type="textfield" className="form-control" placeholder="Beskrivelse" value={this.state.crew.description} name="status" onChange={this.handleInputDescription}/>
+                        </div>
+
                     </div>
                 </div>
 
@@ -506,6 +510,9 @@ export class CrewCard extends Component{
     }
 
     componentDidMount() {
+        console.log("category id");
+        console.log(this.state.crew.crewCategoryName);
+        console.log(this.state.crew.crewCategoryID);
         /*
         let currentState = this.state;
         currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
@@ -557,11 +564,12 @@ export class CrewCard extends Component{
         this.setState({[event.target.name] : event.target.checked});
     }
 
-    handleInput = (event) =>{
+    handleInputDescription = (event) =>{
         /* Handles the description input for crew members */
-        let currentState = this.state;
-        currentState.descriptionInput = event.target.value;
-        this.setState(currentState);
+        this.setState({descriptionInput : event.target.name.trim()});
+
+        this.props.crew.description = this.state.descriptionInput;
+
     };
 
     sendEmail(){
