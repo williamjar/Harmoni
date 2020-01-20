@@ -46,7 +46,7 @@ export class CrewStore {
             response.data.map(data => {
 
                 this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.description,
-                    data.crewCategoryID, data.contactName, data.phone, data.email, data.isResponsible));
+                    data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible));
 
             });
 
@@ -70,11 +70,10 @@ export class CrewStore {
             response.data.map(data => {
 
                 this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.description,
-                    data.crewCategoryID, data.contactName, data.phone, data.email, data.isResponsible));
+                    data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible));
 
             });
 
-            console.log("all crew for current event: " + this.allCrewForCurrentEvent);
             callback();
         });
     }
@@ -97,7 +96,6 @@ export class CrewStore {
 
             });
 
-            console.log("all categories for organizer: " + this.allCrewCategoriesForOrganizer);
             callback();
         });
     }
@@ -112,7 +110,7 @@ export class CrewStore {
             "x-access-token": CookieStore.currentToken
         };
 
-        axios.get(axiosConfig.root + '/api/crew/event/' + eventID + '/categories/', {headers: header}).then(response =>  {
+        axios.get(axiosConfig.root + '/api/crew/event/' + eventID + '/categories', {headers: header}).then(response =>  {
 
             response.data.map(data => {
 
@@ -120,7 +118,6 @@ export class CrewStore {
 
             });
 
-            console.log("all categories for event: " + this.allCrewCategoriesForCurrentEvent);
             callback();
         });
     }
@@ -150,9 +147,6 @@ export class CrewStore {
 
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>{
                     console.log(response);
-                    console.log("isResponsible crewStore:");
-                    console.log(isResponsible);
-                    console.log(crewCategoryID);
 
                     let assignBody = {
                         "eventID": eventID,
