@@ -20,6 +20,7 @@ export class TabContent extends Component {
                 <div className="tabChildren">
                     {this.props.children}
                 </div>
+
                 <Row>
                     <Col xs={6} md={3}>
                         {
@@ -37,6 +38,7 @@ export class TabContent extends Component {
                         }
                     </Col>
                 </Row>
+
             </div>
         )
     }

@@ -17,6 +17,7 @@ import {MailService} from "../../store/mailService";
 import {OrganizerStore} from "../../store/organizerStore";
 import {DocumentService} from "../../store/documentService";
 import {Document} from "../../classes/document";
+import {Alert} from '../alerts.js';
 
 
 export class PerformerPanel extends Component{
@@ -39,27 +40,34 @@ export class PerformerPanel extends Component{
     render() {
         return (
             <div>
-                <div className="row">
-                    <div className="col-lg-8 col-md-12  border-right">
-                        <div className="row">
-                            <div className="col-8">
-                                <Search searchHandler={this.searchHandler} results={this.state.results} />
+                {this.state.performerList.length === 0?
+
+
+                    <img src="https://pngimage.net/wp-content/uploads/2018/05/colorful-graphic-design-png-3.png" alt=""/>
+
+                        :
+                    <div className="row">
+                        <div className="col-lg-6 col-md-12  border-right">
+                            <div className="row">
+                                <div className="col-8">
+                                    <Search searchHandler={this.searchHandler} results={this.state.results} />
+                                </div>
+                                <div className="col-4">
+                                    <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny</button>
+                                </div>
                             </div>
-                            <div className="col-4">
-                                <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny</button>
+
+                            <div className="padding-top-20">
+                                {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
+                                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
                             </div>
                         </div>
 
-                        <div className="padding-top-20">
-                            {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
-                            {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
+                        <div className="col-lg-6 col-md-12">
+                            <RegisteredPerformers performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
                         </div>
-                    </div>
+                    </div>}
 
-                    <div className="col-lg-4 col-md-12">
-                        <RegisteredPerformers performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
-                    </div>
-                </div>
             </div>
         );
     }
@@ -318,6 +326,7 @@ export class PerformerCard extends Component{
                 DocumentService.addDocument(EventStore.currentEvent.eventID, "Kontrakt", currentState.performer.artistID, null, 1, formData, (statusCode, returnData) => {
                     if (statusCode === 200){
                         console.log("Document was successfully uploaded");
+                        Alert.success("Dokumentet ble lastet opp");
                         this.state.performer.addDocument(new Document(returnData.documentID, returnData.documentLink, 1));
                         fileInput.value = '';
                         currentState.numberOfFilesAlreadyUploaded += 1;
@@ -325,6 +334,7 @@ export class PerformerCard extends Component{
                     }
                     else{
                         console.log("Error uploading document");
+                        Alert.danger("En feil skjedde under opplastning");
                     }
 
                 });
@@ -344,24 +354,26 @@ export class PerformerCard extends Component{
 
     addRider = () =>{
         /* Adds rider to performer on current event */
-        alert(this.state.riderInput);
-        RiderStore.createNewRiderElement((newRider) => {
-            RiderStore.allRidersForCurrentEvent.push(newRider); // Has been posted and returns a
+        if(this.state.riderInput.trim() !== ""){
+            RiderStore.createNewRiderElement((newRider) => {
+                RiderStore.allRidersForCurrentEvent.push(newRider); // Has been posted and returns a
 
-            let currentState = this.state;
-            currentState.riders = RiderStore.allRidersForCurrentEvent;
-            currentState.riderInput = "";
-            this.setState(currentState);
+                let currentState = this.state;
+                currentState.riders = RiderStore.allRidersForCurrentEvent;
+                currentState.riderInput = "";
+                this.setState(currentState);
 
+            }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
+        } else{
+            Alert.danger("Rider kan ikke være blank");
+        }
 
-
-
-        }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.riderInput /*Description*/);
     };
 
     handleOtherCheckboxes = (event) => {
         this.setState({[event.target.name] : event.target.checked});
     }
+
     handleInputRider = (event) =>{
         /* Handles the rider input for new riders to be added to state variable */
         let currentState = this.state;
@@ -390,7 +402,7 @@ export class PerformerCard extends Component{
         /* Save function to gather all information in the Performer Card that needs to be stored */
 
 
-        alert("save clicked");
+        Alert.success("Artist lagret");
 
         this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(rider => {
             if (rider.isModified){
@@ -581,8 +593,17 @@ export class RegisterPerformer extends Component{
                 this.props.submitFunction(artist); // Call to parent to update it's information in state.
                 }, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
         } else{
-            alert("Du har ikke fyllt inn alle feltene");
-            //TODO: add better alert system
+            if(this.state.name.trim() === ""){
+                Alert.warning("Navn må være fylt ut");
+            }
+
+            if(this.state.phone.trim() === ""){
+                Alert.warning("Telefon må være fylt ut");
+            }
+
+            if(this.state.email.trim() === ""){
+                Alert.warning("Email må være fylt ut");
+            }
         }
     };
 }
@@ -597,10 +618,13 @@ export class RegisteredPerformers extends Component{
     render(){
         return(
             <div>
-                <b className="card-title">Artister som er lagt til</b>
+                {this.props.performersAdded.length === 0?
+                <div>Ingen artister er lagt</div>
+                :<b className="card-title">Artister som er lagt til</b>}
 
+                <ul className="list-group">
                     {this.props.performersAdded.map(p =>
-                        <div className="card card-body pointer selection" onClick={() => this.showCard(p)}>
+                        <li className="list-group-item pointer selection" onClick={() => this.showCard(p)}>
                         <div className="row">
                             <div className="col-10">
                                 {p.contactName}
@@ -610,8 +634,9 @@ export class RegisteredPerformers extends Component{
                                 <button className="btn-danger rounded" onClick={() => this.unAssignArtist(p)}>Slett</button>
                             </div>
                         </div>
-                        </div>
+                        </li>
                     )}
+                   </ul>
 
             </div>
         )
