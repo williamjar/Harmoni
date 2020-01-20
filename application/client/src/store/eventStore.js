@@ -36,7 +36,7 @@ export class EventStore{
             "address" : null,
             "town" : null,
             "zipCode" : null,
-            "status" : 1,
+            "status" : 0,
             "description" : null,
             "publishDate" : null,
             "publishTime" : null,
@@ -132,25 +132,36 @@ export class EventStore{
         return axios.delete(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, {headers: header});
     }
 
-    //TODO: change local event to archived
-    static archiveEvent(eventID){
-
+    static archiveCurrentEvent(){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-
-        return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/3", {headers: header}).then( response => {});
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/2", {headers: header}).then( response => {});
     }
 
-    static publishEvent(eventID){
-
+    static publishCurrentEvent(){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/1", {headers: header}).then( response => {});
+    }
 
-        return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/2", {headers: header}).then( response => {});
+    static cancelCurrentEvent(){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/3", {headers: header}).then( response => {});
+    }
+
+    static planCurrentEvent(){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/0", {headers: header}).then( response => {});
     }
 
     static storeAllEventsForOrganizer(callback, organizerID){
