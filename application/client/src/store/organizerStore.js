@@ -105,7 +105,7 @@ export class OrganizerStore {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.get('api/contact/' + this.currentOrganizer.contactID, {headers: header});
+        return axios.delete('api/contact/' + this.currentOrganizer.contactID, {headers: header});
     }
 
 
