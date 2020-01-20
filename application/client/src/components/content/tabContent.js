@@ -85,11 +85,6 @@ export class TabContent extends Component {
         EventStore.cancelCurrentEvent().then(console.log('Event cancelled!'));
         this.setState({status : 3});
 
-        console.log(EventStore.currentEvent);
-
-        console.log(EventStore.currentEvent.artists);
-        console.log(EventStore.currentEvent.crewMembers);
-
         if (EventStore.currentEvent.artists.length > 0 || EventStore.currentEvent.crewMembers.length > 0){
             MailService.sendCancelNotice("Avlyst arrangement",
                 "Arrangementet " + EventStore.currentEvent.eventName + " har blitt avlyst.",
