@@ -24,7 +24,7 @@ import Button from "react-bootstrap/Button";
 import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "react-icons/all";
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
-import {Contracts, Documents} from "./components/contract";
+import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
 let history = createHashHistory();
 
 
@@ -88,7 +88,9 @@ export class App extends Component{
                                 <Route exact path="/opprett"  component={() => <Content page={<CreateEventSplash />} />} />
                                 <Route exact path="/artister" component={() => <Content page={<Search/>} />} />
                                 <Route exact path="/personell" component={Content}/>
-                                <Route exact path="/dokumenter" component={() => <Content page ={<Documents/>}/>}/>
+                                <Route exact path="/dokumenter" component={() => <Content page ={<MyDocuments/>}/>}/>
+                                <Route exact path="/dokumenter/:eventID" render={(props) => <Content page ={<FolderCategory{...props} />}/>}/>
+                                <Route exact path="/dokumenter/:eventID/:documentCategoryID" render={(props) => <Content page ={<Documents{...props} />}/>}/>
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage/>} />} />
                                 <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
                                 <Route exact path="/arrangementEdit/:id"  component={() => <Content page={<EventForm/>} />} />

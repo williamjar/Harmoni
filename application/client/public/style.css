@@ -29,6 +29,10 @@ body{
     padding-left: 10px;
 }
 
+.padding-bottom-10{
+    padding-bottom: 10px;
+}
+
 .margin-left-5{
     margin-left:5px;
 }
@@ -233,6 +237,15 @@ body{
     text-align: center;
 
 }
+
+.folder{
+}
+
+.folder:hover {
+    color: white;
+    background-color: #314b57;
+}
+
 
 /* Different mediums, Mobile etc */
 @media only screen and (max-width: 911px) {

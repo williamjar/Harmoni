@@ -91,7 +91,26 @@ module.exports = class documentationDao extends Dao {
 
 
 
+    getAllDocumentsByCategoryForEvent(eventID,documentCategoryID, callback){
+        var val = [eventID, documentCategoryID];
+        super.query("SELECT * from document where eventID = ? and documentCategoryID = ?",
+            val, callback);
+    }
+
+
     getDocumentsForArtist(eventID, artistID, callback){
         super.query("SELECT * FROM document where eventID = ? and artistID = ?", [eventID, artistID], callback);
+    }
+
+    getArtistInfoConnectedToDocument(documentID, callback){
+        var val = [documentID];
+        super.query("SELECT contact.contactID, contact.contactName, contact.phone, contact.email from contact join artist on contact.contactID = artist.contactID join document on artist.artistID = document.artistID where document.documentID = ?",
+            val, callback);
+    }
+
+    getCrewInfoConnectedToDocument(documentID, callback){
+        var val = [documentID];
+        super.query("SELECT contact.contactID, contact.contactName, contact.phone, contact.email from contact join crew on contact.contactID = crew.contactID join document on crew.crewID = document.crewID where document.documentID = ?",
+            val, callback);
     }
 };

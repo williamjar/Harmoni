@@ -2,14 +2,15 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Col, Row} from "react-bootstrap";
 import {NavLink} from "react-router-dom";
-import {FaFolder, FaFolderOpen} from "react-icons/all";
+import {FaFileImage, FaFilePowerpoint,FaFileExcel,FaFileArchive,FaFileWord, FaFilePdf, FaFileAlt, FaFolderOpen} from "react-icons/all";
 import { createHashHistory } from 'history';
 import {DocumentService as documentService} from "../store/documentService";
 import {DocumentCategory} from "../classes/documentCategory";
+import {OrganizerStore as organizerStore} from "../store/organizerStore";
+import {EventStore as eventStore} from "../store/eventStore";
+
 
 const history = createHashHistory();
-
-
 
 export class FolderItem extends Component{
     constructor(props){
@@ -18,13 +19,11 @@ export class FolderItem extends Component{
         }
     }
 
-    handleClick(){
-        console.log("Clicked")
-    }
+
 
     render(){
         return(
-            <div className={"card"} onClick={() => this.handleClick()}>
+            <div className={"card folder"}>
                 <div className={"card-body"}>
                     <FaFolderOpen/> {this.props.name}
                 </div>
@@ -33,45 +32,57 @@ export class FolderItem extends Component{
     }
 }
 
-/*
 
-export class FileItem extends Component{
-    constructor(props){
-        super(props);
-        this.state= {
-        }
-    }
 
-    handleClick(){
-        console.log("Clicked")
-    }
 
-    componentDidMount() {
-        this.checkFileType(this.props.fileName)
-    }
 
-    checkFileType(file){
-        //Velg hvilket icon
-    }
-
+export class MyDocuments extends Component{
 
     render(){
         return(
-            <div className={"card"} onClick={() => this.handleClick()}>
-                <div className={"card-header text-center"}>{this.props.fileName}</div>
-                <div className={"card-body"}>
-                    <p className={"card-text text-center"}>
-                        <FaFolderOpen size = {100}/>
-                    </p>
-                </div>
+            <div>
+                <FolderEvent>
+                </FolderEvent>
             </div>
         )
     }
 }
 
- */
+//---------------- Events ------------------
+export class FolderEvent extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            events: []
+        }
+    }
 
-export class Folders extends Component {
+    componentDidMount() {
+        this.setState({events: eventStore.allEventsForOrganizer});
+    }
+
+    handleClick(eventID){
+        history.push("/dokumenter/" + eventID);
+    }
+
+    render() {
+
+        return (
+            <Row>
+                {this.state.events.map((item) => {
+                    return (
+                        <Col className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.eventID)}>
+                            <FolderItem name = {item.eventName}/>
+                        </Col>
+                    );
+                })}
+            </Row>
+        );
+    }
+
+}
+
+export class FolderCategory extends Component {
     constructor(props){
         super(props);
         this.state= {
@@ -80,28 +91,23 @@ export class Folders extends Component {
     }
 
     componentDidMount() {
-        console.log("EventID " + this.props.eventID);
-        documentService.getAllDocumentCategoriesForEvent(this.props.eventID, (list) => {
+        documentService.getAllDocumentCategoriesForEvent(this.props.match.params.eventID, (list) => {
             this.setState({folderSpecs: list});
         });
+
     }
 
-    // Handles when the user
-    viewEvent = () => {
-        //history.push("/kontrakter/" + this.props.id");
-        history.push("/kontrakter");
-    };
+
+    handleClick(documentCategoryID){
+        history.push("/dokumenter/" + this.props.match.params.eventID + "/" + documentCategoryID);
+    }
 
     render() {
-
-        console.log(this.state.folderSpecs);
         return (
-
-
             <Row>
                 {this.state.folderSpecs.map((item) => {
                     return (
-                        <Col className = {"col-4"}>
+                        <Col className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.documentCategoryID)}>
                             <FolderItem name = {item.documentCategoryName}/>
                         </Col>
                     );
@@ -111,17 +117,110 @@ export class Folders extends Component {
     }
 }
 
-
-
 export class Documents extends Component{
+    constructor(props){
+        super(props);
+        this.state= {
+            document: [],
+            documentInfo: {}
+        }
+    }
+
+    //TODO: show information of file - render component
+    handleClick(eventID, documentCategoryID, documentName){
+        /*
+          console.log("Clicked document with id " + documentID);
+        documentService.getOneDocument(this.props.match.params.eventID, documentID,(document) => {
+            this.setState({documentInfo: document});
+        });
+        //TODO: get info from service
+        console.log(this.state.documentInfo.documentName);
+         */
+
+        documentService.downloadDocument(eventID, documentCategoryID, documentName);
+    }
+
+    componentDidMount() {
+        documentService.getAllDocumentsByCategoryForEvent(this.props.match.params.eventID, this.props.match.params.documentCategoryID,(list) => {
+            this.setState({document: list});
+        });
+    }
+
+    //Returns which icon should be displayed
+    checkFileType(fileName){
+        //Picture
+        if((/\.(ai)$/i).test(fileName) || (/\.(jpeg)$/i).test(fileName) || (/\.(jpg)$/i).test(fileName) || (/\.(png)$/i).test(fileName)){
+            return <FaFileImage size = {25}/>
+        }
+        //PDF
+        else if((/\.(pdf)$/i).test(fileName)){
+            console.log("pdf");
+            return <FaFilePdf size = {25}/>
+        }
+        //Powerpoint
+        else if((/\.(pptx)$/i).test(fileName) || (/\.(ppt)$/i).test(fileName)){
+            return <FaFilePowerpoint size = {25}/>
+        }
+        //Excel
+        else if((/\.(xlsx)$/i).test(fileName) || (/\.(xls)$/i).test(fileName)){
+            return <FaFileExcel size = {25}/>
+        }
+        //Word
+        else if((/\.(doc)$/i).test(fileName)){
+            return <FaFileWord size = {25}/>
+        }
+        //Compressed File
+        else if((/\.(rar)$/i).test(fileName) || (/\.(7z)$/i).test(fileName) || (/\.(zip)$/i).test(fileName)){
+            return <FaFileArchive size = {25}/>
+        }
+        else {
+            return <FaFileAlt size = {25}/>
+        }
+    }
 
     render(){
         return(
-            <div>
-                <Folders eventID = {45}>
+            <ul className={"list-group"}>
+                {this.state.document.map((item) => {
+                    return (
+                        <li className = {"list-group-item folder"} onClick={() => this.handleClick(this.props.match.params.eventID, item.documentCategoryID, item.documentName)}>
+                            {this.checkFileType(item.documentName)} {item.documentName}
+                        </li>
 
-                </Folders>
-            </div>
+                    );
+                })}
+            </ul>
         )
     }
 }
+
+
+export class File extends Component{
+    constructor(props){
+        super(props);
+        this.state= {
+        }
+    }
+
+    handleClick(){
+        console.log("Clicked")
+    }
+
+    componentDidMount() {
+    }
+
+
+    render(){
+        return(
+            <iframe src={'userStories.pdf'} width="100%" height="600" frameBorder="0"/>
+        );
+    }
+
+}
+
+
+
+
+
+
+

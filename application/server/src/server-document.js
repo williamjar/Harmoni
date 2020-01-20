@@ -1,4 +1,18 @@
-import {app, documentationDao, pictureDao, documentDao, organizerDao, multer, path, fs, uuidv4} from "./server";
+import {
+    app,
+    documentationDao,
+    pictureDao,
+    documentDao,
+    organizerDao,
+    multer,
+    path,
+    fs,
+    uuidv4,
+    artistDao
+} from "./server";
+
+
+
 
 function deleteFile(path) {
     try {
@@ -115,6 +129,7 @@ const uploadUserPicture = multer({
 const fileUpload = multer({storage: fileStorage});
 
 // PICTURE
+
 
 //Save picture to server
 app.post("/api/file/picture", uploadUserPicture.single('selectedFile'), (req, res) => {
@@ -251,6 +266,99 @@ app.post("/api/:eventID/documents/create/crew", (req, res) => {
         res.status(status);
         res.json(data);
     });
+});
+
+
+app.get("/api/event/:eventID/documents/categories", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getAllDocumentCategoriesForEvent(req.params.eventID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.get("/api/artist/documents/:documentID", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getArtistInfoConnectedToDocument(req.params.documentID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.get("/api/crew/documents/:documentID", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getCrewInfoConnectedToDocument(req.params.documentID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
+app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
+    console.log("/doc: fikk request fra klient");
+    documentationDao.getAllDocumentsByCategoryForEvent(req.params.eventID,req.params.documentCategoryID, (status, data) => {
+        console.log(data);
+        res.status(status);
+        res.json(data);
+    });
+});
+
+/*
+TODO: se i service klasse. Sender dokument navn men det er ikke det samme som selve filnavnet på serveren. Regex på path for å få riktig filnavn?
+ */
+app.get("/api/pdf/:eventID/:documentCategoryID/:documentName", (req, res) => {
+    var file = './resources/' + req.params.eventID + '/' + req.params.documentCategoryID + '/' + req.params.documentName;
+    fs.readFile(file, function(err, data){
+
+    if((/\.(jpeg)$/i).test(req.params.documentName) || (/\.(jpg)$/i).test(req.params.documentName)){
+        res.contentType("image/jpeg");
+    }
+    //Png image
+    else if((/\.(png)$/i).test(req.params.documentName)){
+        res.contentType("image/png");
+    }
+
+    //Postscript
+    else if((/\.(ai)$/i).test(req.params.documentName)){
+        res.contentType("application/postscript");
+    }
+
+    //PDF
+    else if((/\.(pdf)$/i).test(req.params.documentName)){
+        res.contentType("application/pdf");
+    }
+    //Powerpoint
+    else if((/\.(pptx)$/i).test(req.params.documentName) || (/\.(ppt)$/i).test(req.params.documentName)){
+        res.contentType("application/vnd.ms-powerpoint");
+    }
+    //Excel
+    else if((/\.(xlsx)$/i).test(req.params.documentName) || (/\.(xls)$/i).test(req.params.documentName)){
+        res.contentType("application/vnd.ms-excel");
+    }
+    //Word
+    else if((/\.(doc)$/i).test(req.params.documentName)){
+        res.contentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+    }
+
+    else if((/\.(rar)$/i).test(req.params.documentName)){
+        res.contentType("application/x-rar-compressed");
+    }
+
+    else if((/\.(7z)$/i).test(req.params.documentName)){
+        res.contentType("application/x-7z-compressed");
+    }
+    //Compressed File
+    else if((/\.(zip)$/i).test(req.params.documentName)){
+        res.contentType("application/zip");
+    }
+    else {
+        console.log("There are no MIME support to " + req.params.documentName);
+        res.contentType("");
+    }
+        res.send(data)
+    })
 });
 
 // TODO Her er det sikkert noe duplikat
