@@ -421,7 +421,6 @@ export class CrewView extends Component {
                             <Row>
                                 <Col> Kategori: {e.crewCategoryName}</Col>
                             </Row>
-                            {this.state.crewList.map(e => e.contactName)}
                             {this.state.crewList.filter(u=>u.crewCategoryName === e.crewCategoryName).map(u=> (
                                 <Row>
                                     <Col>Navn: {u.contactName}</Col>
