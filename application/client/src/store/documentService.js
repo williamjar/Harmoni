@@ -182,7 +182,6 @@ export class DocumentService {
         }).catch(res => console.log(res));
     }
 
-    //TODO: implement in file info
     static getArtistInfoConnectedToDocument(documentID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -190,7 +189,7 @@ export class DocumentService {
         };
 
         let artist;
-        axios.get(axiosConfig.root + '/mjau/' + documentID, {headers: header}).then(response => {
+        axios.get(axiosConfig.root + '/api/document/info/artist/' + documentID, {headers: header}).then(response => {
            if(response.data[0] !== undefined){
                console.log("Lengde artist: " + response.data.length);
                console.log("Data: " + response.data[0].contactName);
@@ -201,7 +200,6 @@ export class DocumentService {
         }).catch(res => console.log(res));
     }
 
-    //TODO: implement in file info
     static getCrewInfoConnectedToDocument(documentID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -209,7 +207,7 @@ export class DocumentService {
         };
 
         let crew;
-        axios.get(axiosConfig.root + '/pekk/' + documentID, {headers: header}).then(response => {
+        axios.get(axiosConfig.root + '/api/document/info/crew/' + documentID, {headers: header}).then(response => {
             if(response.data[0] !== undefined){
                 crew = new Contact(response.data[0].contactName,response.data[0].phone,response.data[0].email);
                 callback(crew);

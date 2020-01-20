@@ -297,7 +297,6 @@ class Info extends Component {
                 </Col>
                 <Col size = {3} className={"text-right"}>
                     <Button variant="danger"> Slett </Button>
-
                 </Col>
             </Row>
         );

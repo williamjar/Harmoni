@@ -278,7 +278,7 @@ app.get("/api/event/:eventID/documents/categories", (req, res) => {
     });
 });
 
-app.get("/mjau/:documentID", (req, res) => {
+app.get("/api/document/info/artist/:documentID", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getArtistInfoConnectedToDocument(req.params.documentID, (status, data) => {
         console.log(data);
@@ -287,7 +287,7 @@ app.get("/mjau/:documentID", (req, res) => {
     });
 });
 
-app.get("/pekk/:documentID", (req, res) => {
+app.get("/api/document/info/crew/:documentID", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getCrewInfoConnectedToDocument(req.params.documentID, (status, data) => {
         console.log(data);
