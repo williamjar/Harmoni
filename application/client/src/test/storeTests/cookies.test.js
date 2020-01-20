@@ -1,6 +1,7 @@
 import runSQLFile from '../../../../runsqlfile';
-//import {CookieStore} from "../../store/cookieStore";
-//import {LoginService} from "../../store/loginService";
+import {checkToken, getCurrentUserID as currentUserID} from "../../store/cookieStore";
+import {LoginService} from "../../store/loginService";
+import {RegisterOrganizerService} from "../../store/registerOrganizerService";
 const Connection = require('./connection');
 
 let assert = require('assert');
@@ -8,7 +9,7 @@ const mocha = require('mocha');
 
 const chai = require('chai');
 const chaiHTTP = require('chai-http');
-const app = require('../../../../server/src/server');
+//const app = require('../../../../server/src/server');
 
 const mysql = require("mysql");
 
@@ -17,28 +18,28 @@ chai.should();
 
 const pool = Connection.privatePool;
 
-mocha.describe('Cookie System', () => {
+mocha.describe('User system', function() {
+    this.timeout(10000);
     mocha.before(done => {
         runSQLFile("../create.sql", pool, () => {
-            runSQLFile("../testData.sql", pool, done);
-        });
-    });
-
-    /*mocha.it('Should login a registered user, and then the token should be correct', () => {
-        chai.request(app);
-        LoginService.loginOrganizer('test@test.com', 'passord2', () => {
-            assert.notEqual(CookieStore.currentUserID, -1);
-            CookieStore.checkToken('test@test.com', status =>{
-                assert.equal(status, true);
+            runSQLFile('../testData.sql', pool, () => {
+                RegisterOrganizerService.registerOrganizer('tester1', 'test@test.com', 'passord1', (statusCode, err) => {
+                    done();
+                });
             });
-        })
+        });
     });
 
-    mocha.it('Should not login a non-registered user, and the token should not be registered', () => {
-        LoginService.loginOrganizer('hallo@nei.no', 'Not registered', () => {
-            assert.equal(CookieStore.currentToken, null);
-            assert.equal(CookieStore.currentUserID, -1);
+    mocha.describe('Login system', () => {
+        mocha.it('Should login an existing organizer', () => {
+            LoginService.loginOrganizer('test@test.com', 'passord1', status => {
+                assert.equal(status, 200);
+            });
         });
-    });*/
-
+        mocha.it('should not login a non-existing user', () => {
+            LoginService.loginOrganizer('test@test.no', 'non-existing-pass', status => {
+                assert.notEqual(status, 200);
+            });
+        });
+    });
 });

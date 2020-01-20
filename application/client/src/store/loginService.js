@@ -1,5 +1,5 @@
 import axios from "axios";
-import {CookieStore} from "./cookieStore";
+import {setCurrentToken, setCurrentUserID} from "./cookieStore";
 
 const hash = require('./hashService');
 
@@ -27,8 +27,9 @@ export class LoginService {
                     })
                     .then(loginResponse => {
                         if (loginResponse.error) {
-                            CookieStore.currentToken = null;
-                            CookieStore.currentUserID = null;
+                            console.log(typeof setCurrentUserID);
+                            setCurrentToken(null);
+                            setCurrentUserID(-1);
                             console.log("Current token set to null");
                             callback(501);
                         } else {
@@ -39,18 +40,18 @@ export class LoginService {
                                 .then(emailResponse => {
                                     if (!(loginResponse.error && loginResponse.data.length > 0)) {
                                         console.log("UserID and Token set");
-                                        CookieStore.currentUserID = emailResponse[0].organizerID;
-                                        CookieStore.currentToken = loginResponse.jwt;
+                                        setCurrentUserID(emailResponse[0].organizerID);
+                                        setCurrentToken(loginResponse.jwt);
                                         //The user logs in
                                         callback(200);
                                     } else {
-                                        CookieStore.currentToken = null;
-                                        CookieStore.currentUserID = null;
+                                        setCurrentToken(null);
+                                        setCurrentUserID(-1);
                                         console.log("Current token set to null");
                                         //The user doesn't log in
                                         callback(500);
                                     }
-                                });
+                                })
                         }
                     }).catch(error => callback(501));
             }

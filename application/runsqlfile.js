@@ -3,7 +3,6 @@ let fs = require('fs');
 module.exports = function(filename, pool, done){
     console.log(__dirname);
     console.log("runsqlfile: reading file " + filename);
-    console.log(fs.readdirSync(".."));
     let sql = fs.readFileSync(filename, "utf-8");
     pool.getConnection((err, connection) => {
         if (err){

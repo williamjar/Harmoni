@@ -13,7 +13,7 @@ import {
     Modal
 } from 'react-bootstrap'
 import {OrganizerStore} from "../../store/organizerStore";
-import {CookieStore} from "../../store/cookieStore";
+import {getCurrentUserID} from "../../store/cookieStore";
 import {PictureService} from "../../store/pictureService";
 
 export class UserPage extends React.Component {
@@ -217,7 +217,7 @@ export class UserPage extends React.Component {
     }
 
     updateInfo(){
-       OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
+       OrganizerStore.getOrganizer(getCurrentUserID(), statusCode => {
             if (statusCode === 200){
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
 
@@ -253,7 +253,7 @@ export class UserPage extends React.Component {
     submitForm(){
         this.setState({savingInformation: true});
         if(this.validateUsername()) {
-            OrganizerStore.changeUsername(CookieStore.currentUserID, this.state.newUsername).then(r => {
+            OrganizerStore.changeUsername(getCurrentUserID(), this.state.newUsername).then(r => {
                 this.setState({savingInformation: false});
                 this.setState({username: this.state.newUsername});
             });}
@@ -268,7 +268,7 @@ export class UserPage extends React.Component {
 
 
         if (this.validatePassword()) {
-            OrganizerStore.changePassword(CookieStore.currentUserID, this.state.oldPassword, this.state.firstNewPassword, status => {
+            OrganizerStore.changePassword(getCurrentUserID(), this.state.oldPassword, this.state.firstNewPassword, status => {
                 console.log(status);
                 this.setState({savingInformation: false});
                 this.setState({

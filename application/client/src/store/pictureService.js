@@ -2,7 +2,7 @@ import axios from "axios";
 import {PictureElement} from "../classes/pictureElement";
 import {EventStore} from "./eventStore";
 import {OrganizerStore} from "./organizerStore";
-import {CookieStore} from "./cookieStore";
+import {getCurrentToken} from "./cookieStore";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -12,7 +12,7 @@ export class PictureService {
     getPicture(pictureID){
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
         axios.get(axiosConfig.root + '/api/organizer/picture/' + pictureID, {headers: header})
             .then(response => {
@@ -24,7 +24,7 @@ export class PictureService {
     updatePicture(pictureID, pictureLink){
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
         axios.post(axiosConfig.root + '/api/organizer/picture/insert/' + pictureID, {
             pictureLink: pictureLink
@@ -43,7 +43,7 @@ export class PictureService {
             .then(response => {
                 let databaseHeader = {
                     "Content-Type": "application/json",
-                    "x-access-token": CookieStore.currentToken
+                    "x-access-token": getCurrentToken()
                 };
 
                 const path = response.data.path;
@@ -75,7 +75,7 @@ export class PictureService {
     deletePicture(pictureID){
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
         axios.post(axiosConfig.root + '/api/organizer/picture/delete/' + pictureID, [], {headers: header})
             .catch(error => console.log(error));

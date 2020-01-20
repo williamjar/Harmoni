@@ -22,7 +22,7 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "react-icons/all";
-import {CookieStore} from "./store/cookieStore";
+import {validateToken} from "./store/cookieStore";
 import { createHashHistory } from 'history';
 let history = createHashHistory();
 
@@ -32,7 +32,7 @@ export class App extends Component{
         super(props);
 
         this.state = {
-            loggedIn : CookieStore.validateToken(),
+            loggedIn : validateToken(),
             mobileView : false,
         };
 
@@ -112,7 +112,7 @@ export class App extends Component{
         let currentState = this.state;
 
 
-        let validate = CookieStore.validateToken();
+        let validate = validateToken();
 
         if (!validate){
             sessionStorage.removeItem('loggedIn');

@@ -1,7 +1,7 @@
 import axios from "axios";
 import {Document} from "../classes/document.js"
 import {EventStore} from "./eventStore";
-import {CookieStore} from "./cookieStore";
+import {getCurrentToken} from "./cookieStore";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -10,7 +10,7 @@ export class DocumentService {
     getAllDocumentsForOrganizer(organizerID) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
         let allDocumentsByOrganizer = [];
         axios.get(axiosConfig.root + '/api/organizer/' + organizerID + '/documents', {headers: header}).then(response => {
@@ -27,7 +27,7 @@ export class DocumentService {
         let allDocumentsByEvent = [];
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
         axios.get(axiosConfig.root + '/api/events/' + eventID + '/documents', {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
@@ -46,7 +46,7 @@ export class DocumentService {
             .then(response => {
                 let databaseHeader = {
                     "Content-Type": "application/json",
-                    "x-access-token": CookieStore.currentToken
+                    "x-access-token": getCurrentToken()
                 };
 
                 const path = response.data.path;
@@ -85,7 +85,7 @@ export class DocumentService {
     updateDocument(documentID, eventID, name, link, artistID, crewID, categoryID) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
         return axios.put(axiosConfig.root + '/api/document/' + documentID, {
             "eventID":eventID,
@@ -100,7 +100,7 @@ export class DocumentService {
     deleteDocument(id) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
         return axios.delete(axiosConfig.root + '/api/document/' + id, {headers: header}).then(response => response.data);
     }

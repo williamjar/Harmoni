@@ -2,7 +2,7 @@ import {Genre} from "../classes/genre";
 import axios from "axios";
 import {TicketType} from "../classes/ticketType";
 import {CrewMember} from "../classes/crewMember";
-import {CookieStore} from "./cookieStore";
+import {getCurrentToken} from "./cookieStore";
 
 
 const axiosConfig = require("./axiosConfig");
@@ -16,7 +16,7 @@ export class TicketStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         let list = {
@@ -43,7 +43,7 @@ export class TicketStore {
     static getOneTicket(ticketTypeID, callback) {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         axios.get(axiosConfig.root + '/ticket/' + ticketTypeID, {headers: header}).then(response => {
@@ -62,7 +62,7 @@ export class TicketStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         axios.get(axiosConfig.root + '/api/ticket/allTickets/' + eventID, {headers: header}).then(response =>  {

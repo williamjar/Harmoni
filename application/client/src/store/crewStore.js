@@ -3,7 +3,7 @@ import {CrewMember} from "../classes/crewMember.js"
 import createWithBsPrefix from "react-bootstrap/esm/createWithBsPrefix";
 import {forEach} from "react-bootstrap/esm/ElementChildren";
 import {CrewCategory} from "../classes/crewCategory";
-import {CookieStore} from "./cookieStore";
+import {getCurrentToken} from "./cookieStore";
 
 let axiosConfig = require("./axiosConfig");
 
@@ -20,7 +20,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         axios.get(axiosConfig.root + '/api/crew/' + crewID,  {headers: header}).then(response => {
@@ -38,7 +38,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response =>  {
@@ -60,7 +60,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         axios.get(axiosConfig.root + '/api/crew/event/' + eventID, {headers: header}).then(response => {
@@ -86,7 +86,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         axios.get(axiosConfig.root + '/api/crew/categories/' +  organizerID, {headers: header}).then(response =>  {
@@ -109,7 +109,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         axios.get(axiosConfig.root + '/api/crew/event/' + eventID + '/categories/', {headers: header}).then(response =>  {
@@ -131,7 +131,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         let contactBody = {
@@ -173,7 +173,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         let contactBody = {
@@ -202,7 +202,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         axios.post(axiosConfig.root + '/api/crew-category', {
@@ -216,7 +216,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         axios.post(axiosConfig.root + '/api/crew/assign', {
@@ -232,7 +232,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         return axios.post(axiosConfig.root + '/api/document/crew',{
@@ -249,7 +249,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         return axios.put(axiosConfig.root + '/api/crew/' + id, {
@@ -264,7 +264,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         return axios.put(axiosConfig.root + '/api/responsible/' + isResponsible, {
@@ -280,7 +280,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         return axios.delete(axiosConfig.root + '/api/crew-category/' + crewCategoryID,  {headers: header})
@@ -292,7 +292,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         return axios.delete(axiosConfig.root + '/api/crew/' + crewID,  {headers: header})
@@ -304,7 +304,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         return axios.delete(axiosConfig.root + '/api/crew-category/' + crewCategoryID,  {headers: header})
@@ -316,7 +316,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         return axios.delete(axiosConfig.root + '/api/crew/assign/' + eventID + '/' + crewCategoryID + '/' + crewID,  {headers: header})
@@ -328,7 +328,7 @@ export class CrewStore {
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         return axios.delete(axiosConfig.root + '/api/crew/assign/' + crewID + '/' + crewCategoryID + '/' + crewID, {headers: header}).then(response => console.log(response));

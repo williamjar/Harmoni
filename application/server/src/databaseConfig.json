@@ -2,9 +2,9 @@
   "config": {
     "connectionLimit": 2,
     "host": "mysql.stud.iie.ntnu.no",
-    "user": "evengu",
-    "password": "O7KhlwWQ",
-    "database": "evengu",
+    "user": "joakimad",
+    "password": "LQliMP1A",
+    "database": "joakimad",
     "debug": false,
     "multipleStatements": true
   }

@@ -1,7 +1,7 @@
 import axios from "axios";
 import {Event} from "../classes/event.js";
 import {forEach} from "react-bootstrap/esm/ElementChildren";
-import {CookieStore} from "./cookieStore";
+import {getCurrentToken} from "./cookieStore";
 
 
 let axiosConfig = require("./axiosConfig");
@@ -23,7 +23,7 @@ export class EventStore{
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
         // ^ Unsure if callback is needed for this method ^
         //Call to create an event
@@ -60,7 +60,7 @@ export class EventStore{
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         return axios.get(axiosConfig.root + "/login", {headers: header}).then(response => {
@@ -77,7 +77,7 @@ export class EventStore{
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         let body = {
@@ -105,7 +105,7 @@ export class EventStore{
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         axios.get(axiosConfig.root + "/api/events", {headers: header}).then( response => {
@@ -130,7 +130,7 @@ export class EventStore{
     static deleteCurrentEvent() {
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
         return axios.delete(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, {headers: header});
     }
@@ -140,7 +140,7 @@ export class EventStore{
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/3", {headers: header}).then( response => {});
@@ -150,7 +150,7 @@ export class EventStore{
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         return axios.get(axiosConfig.root + "/api/events/" + eventID + "/status/2", {headers: header}).then( response => {});
@@ -160,7 +160,7 @@ export class EventStore{
 
         let header = {
             "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
+            "x-access-token": getCurrentToken()
         };
 
         axios.get(axiosConfig.root + "/api/events/organizer/" + organizerID, {headers: header}).then( response => {
