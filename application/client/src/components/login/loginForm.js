@@ -14,6 +14,7 @@ export class LoginForm extends React.Component {
             password : '',
             loginError : false,
             serverError: false,
+            userDoesNotExist: false,
             loggingIn: false
         };
 
@@ -63,8 +64,9 @@ export class LoginForm extends React.Component {
 
 
 
-                            <Form.Text className="text-danger" hidden={!this.state.loginError}>Feil brukernavn eller passord.</Form.Text>
-                            <Form.Text className="text-danger" hidden={!this.state.serverError}>Feil med oppkoblingen, prøv igjen senere.</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.state.loginError}>Feil brukernavn eller passord</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.state.serverError}>Feil med oppkoblingen, prøv igjen senere</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.state.userDoesNotExist}>Brukeren finnes ikke</Form.Text>
 
                             <Form.Text> Ny bruker? <NavLink to="/registrer"> Klikk <span className="NavLink">
                                 her for registrere deg
@@ -99,10 +101,15 @@ export class LoginForm extends React.Component {
             } else if(status===501){
                 this.setState({loggingIn: false});
                 this.setState({loginError: true});
+            } else if(status===502){
+                this.setState({loggingIn: false});
+                this.setState({userDoesNotExist: true});
             } else {
                 this.setState({loggingIn: false});
                 this.setState({serverError: true});
             }
+
+
 
         });
 

@@ -12,6 +12,21 @@ import {FaAngleDown} from "react-icons/all";
 import {TicketStore} from "../store/ticketStore";
 import {EventStore} from "../store/eventStore";
 
+
+/*
+    Static labels to guide the users witch type om information
+    they are supposed to fill inn.
+*/
+let nameTicekt = 'Navn billett';
+let priceTicket = 'Billett pris';
+let amountTicket = 'Antall billetter';
+let releaseDate = 'Slipp dato';
+let releaseTime ='Slipp klokkelsett';
+let endDate = 'Salg slutt dato';
+let endTime = 'Salg slutt klokkeslett';
+let description = 'Skriv inn informasjon om billetten';
+
+
 /*
     Component to share all the ticket components
 */
@@ -58,13 +73,15 @@ export class AddTicket extends Component{
                 <Card.Body>
                     <Accordion>
                         <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                                + Lag ny billett
+                                + Legg til en ny billett
                         </Accordion.Toggle>
                     <Accordion.Collapse eventKey="0">
                         <Card.Body>
+                            <p>Fyll inn alle informasjon om billetten</p>
                             <Form onSubmit={this.handleSubmit}>
                                 <Form.Row className="ticketStyle">
                                     <Col>
+                                        <Form.Text>{nameTicekt}</Form.Text>
                                         <Form.Control
                                             name = "ticketTypeName"
                                             placeholder = "Navn"
@@ -74,6 +91,7 @@ export class AddTicket extends Component{
                                         />
                                     </Col>
                                     <Col>
+                                        <Form.Text>{priceTicket}</Form.Text>
                                         <Form.Control
                                             name = "price"
                                             placeholder="Pris,-"
@@ -82,6 +100,7 @@ export class AddTicket extends Component{
                                         />
                                     </Col>
                                     <Col>
+                                        <Form.Text>{amountTicket}</Form.Text>
                                         <Form.Control
                                             name = "amount"
                                             placeholder="Antall"
@@ -92,6 +111,7 @@ export class AddTicket extends Component{
 
                                     </Col>
                                     <Col>
+                                        <Form.Text>{releaseDate}</Form.Text>
                                         <Form.Control
                                             type = "date"
                                             name = "releaseDate"
@@ -101,6 +121,7 @@ export class AddTicket extends Component{
 
                                     </Col>
                                     <Col>
+                                        <Form.Text>{endDate}</Form.Text>
                                         <Form.Control
                                             type ="date"
                                             name = "endDate"
@@ -110,6 +131,7 @@ export class AddTicket extends Component{
                                         />
                                     </Col>
                                     <Col >
+                                        <Form.Text>{releaseTime}</Form.Text>
                                         <Form.Control
                                             type = "time"
                                             name = "releaseTime"
@@ -118,6 +140,7 @@ export class AddTicket extends Component{
                                         />
                                     </Col>
                                     <Col >
+                                        <Form.Text>{endTime}</Form.Text>
                                         <Form.Control
                                             type = "time"
                                             name = "endTime"
@@ -131,6 +154,7 @@ export class AddTicket extends Component{
                                 </Form.Row>
                                 <Form.Row className="ticketStyle">
                                     <Col sm={6}>
+                                        <Form.Text>{description}</Form.Text>
                                         <Form.Control
                                             name = "description"
                                             placeholder="Beskrivelse"
@@ -192,6 +216,7 @@ export class ListTickets extends Component{
                                 <Form>
                                     <Form.Row className="ticketStyle" >
                                         <Col sm={2}>
+                                            <Form.Text>{nameTicekt}</Form.Text>
                                             <Form.Control
                                                 value={ticket.ticketTypeName}
                                                 readOnly
@@ -199,18 +224,21 @@ export class ListTickets extends Component{
 
                                         </Col>
                                         <Col sm={1}>
+                                            <Form.Text>{priceTicket}</Form.Text>
                                             <Form.Control
                                                 value={ticket.price}
                                                 readOnly
                                             />
                                         </Col>
                                         <Col sm={1}>
+                                            <Form.Text>{amountTicket}</Form.Text>
                                             <Form.Control
                                                 value={ticket.amount}
                                                 readOnly
                                             />
                                         </Col>
                                         <Col sm={2}>
+                                            <Form.Text>{releaseDate}</Form.Text>
                                             <Form.Control
                                                 value={ticket.releaseDate}
                                                 readOnly
@@ -218,18 +246,21 @@ export class ListTickets extends Component{
                                         </Col>
 
                                         <Col sm={2}>
+                                            <Form.Text>{endDate}</Form.Text>
                                             <Form.Control
                                                 value={ticket.endDate}
                                                 readOnly
                                             />
                                         </Col>
                                         <Col sm={1}>
+                                            <Form.Text>{releaseTime}</Form.Text>
                                             <Form.Control
                                                 value={ticket.releaseTime}
                                                 readOnly
                                             />
                                         </Col>
                                         <Col sm={1}>
+                                            <Form.Text>{endTime}</Form.Text>
                                             <Form.Control
                                                 value={ticket.endTime}
                                                 readOnly
@@ -241,6 +272,7 @@ export class ListTickets extends Component{
                                     </Form.Row>
                                     <Form.Row className="ticketStyle">
                                         <Col sm={6}>
+                                            <Form.Text>{description}</Form.Text>
                                             <Form.Control
                                                 value={ticket.description}
                                                 readOnly

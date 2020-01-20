@@ -16,7 +16,6 @@ const history = createHashHistory();
 
 // Parent component for editing and viewing all info about an event, divides information into tabs.
 export class EventForm extends Component{
-
     constructor(props) {
         super(props);
 
@@ -37,7 +36,7 @@ export class EventForm extends Component{
     saveClicked = () => {
         if(this.validateForm()){
             this.setState({edit: false});
-            EventStore.postCurrentEvent().then(console.log("Lagret"));
+            EventStore.editCurrentEvent().then(console.log("Lagret"));
         } else{
             console.log("start date can not be after end date");
         }
