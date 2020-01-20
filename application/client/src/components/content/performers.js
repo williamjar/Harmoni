@@ -341,7 +341,6 @@ export class PerformerCard extends Component{
     deleteRider = (rider) => {
         RiderStore.deleteRider(() => {
             let currentState = this.state;
-            currentState.riders.splice(rider, 1);
             RiderStore.allRidersForCurrentEvent.splice(rider, 1);
             this.setState(currentState);
         }, EventStore.currentEvent.eventID, rider.artistID, rider.riderID);
