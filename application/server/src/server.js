@@ -64,3 +64,6 @@ require('./server-email');
 
 app.listen(8080);
 console.log("The server is now running on port 8080");
+
+//For testing
+module.exports = app;
