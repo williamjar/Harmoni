@@ -72,12 +72,12 @@ export class CrewPanel extends Component{
 
                         <div className="padding-top-20">
                             {this.state.showRegisterNew?<AddCrewMember submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
-                            {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
+
                         </div>
                     </div>
 
                     <div className="col-lg-6 col-md-12">
-                        <AddedCrew performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
+                        <CrewView performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
                     </div>
                 </div>
 
@@ -463,7 +463,7 @@ export class AddCrewMember extends Component{
             description: "",
             isResponsible: false,
             crewCategoryID : 1,
-            showRegisterCrewType : false
+            showRegisterCrewType : false,
             selectedCategoryID: 1,
             crewCategoryList: []
         };
