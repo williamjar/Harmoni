@@ -140,7 +140,7 @@ export class RegisterForm extends React.Component {
 
                     </Container>
 
-                        <Form.Text> Har du allerede en bruker? <NavLink to="/"> Klikk her for å logge inn. <span className="NavLink"></span></NavLink></Form.Text>
+                        <Form.Text> Har du allerede en bruker? <NavLink to="/"> Klikk her for å logge inn. <span className="NavLink"/></NavLink></Form.Text>
 
                 </div>
                 </Card.Body>
