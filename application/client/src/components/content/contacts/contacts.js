@@ -1,7 +1,16 @@
 import React, {Component} from 'react';
 import {Search} from "../search";
-import {Button, ButtonGroup, Card, Col, Form, Row} from "react-bootstrap";
-import {FaAddressCard, FaAngleDown, FaEye} from "react-icons/all";
+import {Button, ButtonGroup, Card, Col, Form, Modal, Row} from "react-bootstrap";
+import {
+    FaAddressCard,
+    FaAngleDown,
+    FaCalendar,
+    FaEnvelopeSquare,
+    FaEye,
+    FaMusic,
+    FaPhone,
+    FaUserCircle
+} from "react-icons/all";
 import {EventCard} from "../dashboard/eventCard";
 import Table from "react-bootstrap/Table";
 import {ArtistService} from "../../../store/artistService";
@@ -69,8 +78,6 @@ export class Contacts extends React.Component {
                         <Form.Control as="select" size="sm" onChange={this.sortSelected}>
                             <option selected disabled>Sorter etter..</option>
                             <option value={0}>Navn</option>
-                            <option value={1}></option>
-                            <option value={2}></option>
                         </Form.Control>
                     </Col>
                 </Row>
@@ -105,24 +112,80 @@ export class ContactList extends React.Component {
     static getDerivedStateFromProps(props, state) {
         if(props.performers !== state.performers) {
             return {
-                performers: props.performers
+                performers: props.performers,
+                showContact: false,
             }
         }
         return null;
     }
+
+    viewPerformer = () => {
+        console.log("view clicked");
+        this.setState({showContact: true});
+    };
+
+    hidePerformer = () => {
+        this.setState({showContact: false});
+    };
 
     render() {
         return(
             <Table responsive>
                 <tbody>
                 {this.state.performers.map(performer => (
-                    <tr align='center' className="contact">
+                    <tr align='center' className="contact" onClick={this.viewPerformer}>
                         <td align="left">{performer.contactName}</td>
                         <td></td>
-                        <td align="right"><FaEye size={30} onClick={this.viewEvent}>Vis</FaEye></td>
+                        <td align="right"><FaEye size={30}>Vis</FaEye></td>
                     </tr>
                 ))}
                 </tbody>
+                <Modal show={this.state.showContact} onHide={this.hidePerformer}>
+                    <Modal.Header closeButton>
+                        <FaUserCircle size={35} className="mr-1"/>
+                        <Modal.Title>Artistnavn</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>Kontakt</h4>
+                        <Row>
+                            <Col xs={2}>
+                                <FaEnvelopeSquare/>
+                            </Col>
+                            <Col>
+                                sevald_marcus@hotmail.com
+                            </Col>
+                        </Row>
+                        <Row className="mb-4">
+                            <Col xs={2}>
+                                <FaPhone/>
+                            </Col>
+                            <Col>
+                                99251316
+                            </Col>
+                        </Row>
+                        <h4>Artistinfo</h4>
+                        <Row>
+                            <Col xs={1}>
+                                <FaMusic/>
+                            </Col>
+                            <Col>
+                                Rock
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={1}>
+                                <FaCalendar/>
+                            </Col>
+                            <Col>
+                                Test1, Test2, Test3
+                            </Col>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary">Rediger</Button>
+                        <Button variant="danger">Slett</Button>
+                    </Modal.Footer>
+                </Modal>
             </Table>
         )
     }
