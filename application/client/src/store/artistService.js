@@ -83,6 +83,8 @@ export class ArtistService {
             "email": email
         };
 
+        console.log(contactBody);
+
         axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
 
             let artistBody = {
@@ -94,10 +96,12 @@ export class ArtistService {
             console.log(response);
 
             axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(res => {
-                if (res.data.length > 0){
+                console.log(res);
+                if (res.data.insertId > -1){
                     console.log("artist");
                     console.log(res);
                     let artist = new Artist(res.data.insertId, name, phone, email, genreID, organizerID);
+                    console.log(artist);
                     callback(artist);
                     return artist;
                 }
@@ -105,7 +109,7 @@ export class ArtistService {
                     callback(null);
                     return null;
                 }
-            }).catch(() => callback(null));
+            }).catch(err => console.log(err));
         }).catch(err => console.log(err));
     }
 

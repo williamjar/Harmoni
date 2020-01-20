@@ -75,6 +75,7 @@ export class PerformerPanel extends Component{
                 let currentState = this.state;
                 currentState.performerList = list; //Receive a new array from database with assigned performer to event
                 currentState.performerSelected = {};
+                EventStore.currentEvent.artists = list;
                 this.setState(currentState);
                 this.toggleShowCard();
             }, EventStore.currentEvent.eventID);
@@ -86,6 +87,7 @@ export class PerformerPanel extends Component{
         let currentState = this.state;
         ArtistService.assignArtist(EventStore.currentEvent.eventID, selected.artistID).then(res => {
                 ArtistService.getArtistsForEvent((list) => {
+                    EventStore.currentEvent.artists = list;
                     let currentState = this.state;
                     currentState.performerList = list; //Receive a new array from database with assigned performer to event
                     this.setState(currentState);
@@ -110,6 +112,7 @@ export class PerformerPanel extends Component{
             let currentState = this.state;
             currentState.performerList = list;
             currentState.performerSelected = {};
+            EventStore.currentEvent.artists = list;
             this.setState(currentState);
         }, EventStore.currentEvent.eventID);
     };
