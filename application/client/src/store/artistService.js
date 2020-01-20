@@ -123,7 +123,7 @@ export class ArtistService {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        //TODO!!
+
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
             response.data.map(artist =>
                 allArtistByEvent.push(new Artist(artist.artistID, artist.contactName,
@@ -138,10 +138,6 @@ export class ArtistService {
         }).then(() => {
             callback(allArtistByEvent)
         });
-    }
-
-    static getArtistEventInfosForEvent(callback, eventID){
-        //TODO: do dis
     }
 
     static assignArtist(eventID, artistID) {
