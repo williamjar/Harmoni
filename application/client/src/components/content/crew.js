@@ -90,6 +90,10 @@ export class CrewPanel extends Component{
         )
     }
 
+    searchHandler = (crew) => {
+        this.setState({crewSelected : crew, showCrewCard : true});
+    }
+
     componentDidMount() {
         this.returnCrew();
         this.returnCrewCategories();
@@ -464,8 +468,6 @@ export class CrewCard extends Component{
 
                 <div className="row padding-top-20">
 
-
-
                     <div className="col-4">
                         <span className="btn btn-primary btn-file">
                             Legg til vedlegg <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/>
@@ -504,9 +506,12 @@ export class CrewCard extends Component{
     }
 
     componentDidMount() {
+        /*
         let currentState = this.state;
         currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
         this.setState(currentState);
+        */
+
     }
 
     //TODO: Change states that show if files are added to server
@@ -578,15 +583,6 @@ export class CrewCard extends Component{
 
     save = () => {
         /* Save function to gather all information in the Performer Card that needs to be stored */
-
-
-        Alert.success("Artist lagret");
-
-        this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(rider => {
-            if (rider.isModified){
-                RiderStore.updateRider(() => {rider.isModified = false}, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone ? 1 : 0, rider.description);
-            }
-        });
 
         //TODO: Send signed contract and if artist has been payed
     }
