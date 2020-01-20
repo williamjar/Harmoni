@@ -34,7 +34,10 @@ export class ArtistService {
         };
 
         axios.get(axiosConfig.root + '/api/event/'+ eventID + '/artist/' + artistID + '/artistEventInfo', {headers: header}).then(response => {
-                let artistEventInfo = new ArtistEventInfo(response.data.artistID, response.data.eventID, response.data.contractSigned === 1, response.data.hasBeenPaid === 1);
+            console.log(response);
+                let artistEventInfo = new ArtistEventInfo(response.data[0].artistID, response.data[0].eventID, response.data[0].contractSigned === 1, response.data[0].hasBeenPaid === 1);
+                console.log("getArtistEventInfo");
+                console.log(artistEventInfo);
                 callback(artistEventInfo);
             }
         );
@@ -42,6 +45,8 @@ export class ArtistService {
     }
 
     static updateArtistEventInfo(callback, artistID, eventID, contractSigned, hasBeenPaid){
+
+        console.log("updateArtistEventInfo has been paid: " + hasBeenPaid);
 
         let header = {
             "Content-Type": "application/json",

@@ -296,10 +296,12 @@ export class PerformerCard extends Component{
         let currentState = this.state;
         currentState.riders = RiderStore.allRidersForCurrentEvent;
         currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
-        this.setState(currentState);
+
         ArtistService.getArtistEventInfo((artistEventInfo) =>{
             currentState.signedContract = artistEventInfo.contractSigned;
             currentState.payed = artistEventInfo.hasBeenPaid;
+            console.log("artistEventInfo hasBeen Paid: " + artistEventInfo.hasBeenPaid);
+            this.setState(currentState);
         }, currentState.performer.artistID, EventStore.currentEvent.eventID);
     }
 
@@ -410,7 +412,7 @@ export class PerformerCard extends Component{
 
         //TODO: Send signed contract and if artist has been payed
 
-        artistService.updateArtistEventInfo(()=>{}, this.state.performerSelected.artistID, EventStore.currentEvent.eventID, this.state.signedContract ? 1:0, this.state.payed? 1:0);
+        artistService.updateArtistEventInfo(()=>{}, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.signedContract, this.state.payed);
     }
 }
 
