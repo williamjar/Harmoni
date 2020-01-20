@@ -209,7 +209,7 @@ export class CrewStore {
     }
 
     //assign a crew member to an event
-    static assignCrewMemberToEvent(callback, eventID, categoryID, crewID, isResponsible){
+    static assignCrewMemberToEvent(eventID, categoryID, crewID, isResponsible){
 
         let header = {
             "Content-Type": "application/json",
@@ -221,7 +221,7 @@ export class CrewStore {
             "crewCategoryID": categoryID,
             "crewID": crewID,
             "isResponsible": isResponsible
-        },  {headers: header}).then(response => console.log(response));
+        },  {headers: header}).then(response => response.data);
     }
 
     //add a document to a crew member

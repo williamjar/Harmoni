@@ -8,9 +8,6 @@ import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {CrewStore} from "../../store/crewStore";
 import {CookieStore} from "../../store/cookieStore";
-import Accordion from "react-bootstrap/Accordion";
-import Card from "react-bootstrap/Card";
-import ListGroup from "react-bootstrap/ListGroup";
 import {EventStore} from "../../store/eventStore";
 import {OrganizerStore} from "../../store/organizerStore";
 import Row from "react-bootstrap/Row";
@@ -18,7 +15,6 @@ import {DocumentService} from "../../store/documentService";
 import {Alert} from "../alerts";
 import {Document} from "../../classes/document";
 import {MailService} from "../../store/mailService";
-
 
 export class CrewTab extends Component{
     state = {
@@ -67,7 +63,7 @@ export class CrewPanel extends Component{
                     <div className="col-lg-6 col-md-12  border-right">
                         <div className="row">
                             <div className="col-8">
-                                <Search searchHandler={this.searchHandler} results={this.state.crewList} />
+                                <Search searchHandler={this.searchHandler} results={this.state.results} />
                             </div>
                             <div className="col-4">
                                 <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny</button>
@@ -76,13 +72,13 @@ export class CrewPanel extends Component{
 
                         <div className="padding-top-20">
                             {this.state.showRegisterNew?<AddCrewMember submit={this.submitFunction} toggleRegisterCrewMember={this.toggleRegisterNew} crewCategoryList={this.state.crewCategoryList} />:null}
-                            {this.state.showCrewCard?<CrewCard crewSelected={this.state.crewSelected} crewCategoryList={this.state.crewCategoryList} />:null}
+                            {this.state.showCrewCard?<CrewCard crewSelected={this.state.crewSelected} crewCategoryList={this.state.crewCategoryList}/>:null}
 
                         </div>
                     </div>
 
                     <div className="col-lg-6 col-md-12">
-                        <CrewView crewList={this.state.crewList} changeCard={this.changeCrewSelected} unAssignArtist={this.unAssignArtist}/>
+                        <CrewView crewList={this.state.crewList} changeCard={this.changeCrewSelected} unassignCrew={this.unassignCrew}/>
                     </div>
                 </div>
 
@@ -90,14 +86,50 @@ export class CrewPanel extends Component{
         )
     }
 
-    searchHandler = (crew) => {
-        this.setState({crewSelected : crew, showCrewCard : true});
-    }
+    unassignCrew = (crew) => {
+        //Unassign crew from event
+        CrewStore.unassignCrewMemberFromEvent(EventStore.currentEvent.eventID, crew.crewCategoryID, crew.crewID).then(res => {
+            CrewStore.storeAllCrewMembersForEvent((list) => {
+                // updates the arrays that shows the current crew members added to event
+                let currentState = this.state;
+                currentState.crewList = list; //Receive a new array from database with assigned crew member to event
+                currentState.crewSelected = {};
+                this.setState(currentState);
+                this.toggleShowCard();
+            }, EventStore.currentEvent.eventID);
+        });
+    };
+
+    searchHandler = (selected) => {
+        let currentState = this.state;
+        currentState.crewSelected = selected;
+        currentState.showCrewCard = true;
+        this.assignCrew(selected);
+        this.setState(currentState);
+        //this.setState({crewSelected : crew, showCrewCard : true});
+    };
+
+    //TODO: Fix categoryID for assignCrew
+    assignCrew = (selected) => {
+        //Assign crew to event
+        let currentState = this.state;
+        CrewStore.assignCrewMemberToEvent(EventStore.currentEvent.eventID, this.state.crewCategoryList[0].crewCategoryID, selected.crewID, selected.isResponsible).then(res => {
+                CrewStore.storeAllCrewMembersForEvent(() => {
+                    let currentState = this.state;
+                    currentState.crewList = CrewStore.allCrewForCurrentEvent; //Receive a new array from database with assigned crew to event
+                    this.setState(currentState);
+                }, EventStore.currentEvent.eventID);
+            }
+        );
+        currentState.crewSelected = selected;
+        this.setState(currentState);
+    };
 
     componentDidMount() {
         this.returnCrew();
         this.returnCrewCategories();
-    }
+        this.callBackSearchResult();
+    };
 
     toggleRegisterNew = () => {
         this.setState({showRegisterNew : !this.state.showRegisterNew, showCrewCard : false});
@@ -116,11 +148,21 @@ export class CrewPanel extends Component{
                 {
                     crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
                 })
-        }, OrganizerStore.currentOrganizer.organizerID); //OrganizerStore.currentOrganizer
+        }, CookieStore.currentUserID);
     };
 
     submitFunction = () => {
         this.returnCrew();
+    };
+
+    callBackSearchResult = () => {
+        /* Updates the array with all registered crew members added by organizer, not event specific.
+        *This is is to be used with search to search against */
+        CrewStore.storeAllCrewMembersForOrganizer(() => {
+            let currentState = this.state;
+            currentState.results = CrewStore.allCrewMembersForOrganizer;
+            this.setState(currentState);
+        },CookieStore.currentUserID);
     };
 
     changeCrewSelected = (crew) => {
@@ -180,7 +222,7 @@ export class AddCrewType extends Component{
             //Error message
             alert("Du kan ikke ha en blank kategori");
         } else{
-            CrewStore.addCategory(this.state.crewType, OrganizerStore.currentOrganizer.organizerID);
+            CrewStore.addCategory(this.state.crewType, CookieStore.currentUserID);
             alert(this.state.crewType);
             this.props.submit();
         }
@@ -213,7 +255,7 @@ export class AddToCrew extends Component{
                 {
                     crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
                 })
-        }, OrganizerStore.currentOrganizer.organizerID); //OrganizerStore.currentOrganizer
+        }, CookieStore.currentUserID); //OrganizerStore.currentOrganizer
     };
 
     handleCategoryChange(e){
@@ -327,9 +369,9 @@ export class AddToCrew extends Component{
 
     updateCrewSearch = () => {
         console.log("update crew search");
-        CrewStore.storeAllCrewMembersForOrganizer((list) => {
+        CrewStore.storeAllCrewMembersForOrganizer(() => {
             let currentState = this.state;
-            currentState.results = list;
+            currentState.results = CrewStore.allCrewMembersForOrganizer;
             this.setState(currentState);
             console.log("Searchable crew");
             console.log(this.state);
@@ -622,15 +664,15 @@ export class CrewView extends Component {
                         <b>{e.crewCategoryName}</b>
 
 
-                    {this.state.crewList.filter(u=>u.crewCategoryName === e.crewCategoryName).map(u=> (
-                        <li className="list-group-item pointer selection" onClick={() => {this.changeCrewSelected(u)}}>
+                    {this.state.crewList.filter(c=>c.crewCategoryName === e.crewCategoryName).map(c=> (
+                        <li className="list-group-item pointer selection" onClick={() => {this.changeCrewSelected(c)}}>
                             <div className="row">
                                 <div className="col-10">
-                                    {u.contactName}
+                                    {c.contactName}
                                 </div>
 
                                 <div className="col-2 text-right">
-                                    <button className="btn-danger rounded" onClick={() => {}}>Slett</button>
+                                    <button className="btn-danger rounded" onClick={() => this.unassignCrew(c)}>Slett</button>
                                 </div>
                             </div>
                         </li>
@@ -658,15 +700,10 @@ export class CrewView extends Component {
         this.props.changeCard(crew);
     };
 
-/*
-    returnOneCrewMember = () => {
-        console.log('runs returnCrew');
-        CrewStore.getCrewMember(1, (data) => {
-            this.setState(
-                { crewList : data})
-        });
-        console.log(this.state);
-    }; */
+    unassignCrew = (crew) => {
+    //Call to parent with crew object to remove from event.
+    this.props.unassignCrew(crew);
+    };
 
     returnCrewCategories = () => {
         CrewStore.storeAllCrewCategoriesForEvent(() => {
@@ -675,13 +712,9 @@ export class CrewView extends Component {
                     categoryList : CrewStore.allCrewCategoriesForCurrentEvent
                 })
         }, EventStore.currentEvent.eventID);
-        console.log("return categories for event");
-        console.log(CrewStore.allCrewCategoriesForCurrentEvent);
-        console.log(this.state.categoryList);
     };
 
     componentDidMount() {
-      //  this.returnOneCrewMember();
         this.returnCrewCategories();
 
     }
