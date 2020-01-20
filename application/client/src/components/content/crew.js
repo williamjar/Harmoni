@@ -47,7 +47,8 @@ export class CrewPanel extends Component{
         super(props);
 
         this.state = {
-            performerList : [],
+            crewList : [],
+            crewCategoryList : [],
             showArtistCard: false,
             performerSelected : {},
             results : [],
@@ -63,7 +64,7 @@ export class CrewPanel extends Component{
                     <div className="col-lg-6 col-md-12  border-right">
                         <div className="row">
                             <div className="col-8">
-                                <Search searchHandler={this.searchHandler} results={this.state.results} />
+                                <Search searchHandler={this.searchHandler} results={this.state.crewList} />
                             </div>
                             <div className="col-4">
                                 <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny</button>
@@ -71,13 +72,13 @@ export class CrewPanel extends Component{
                         </div>
 
                         <div className="padding-top-20">
-                            {this.state.showRegisterNew?<AddCrewMember submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
+                            {this.state.showRegisterNew?<AddCrewMember submit={this.submitFunction} toggleRegisterCrewMember={this.toggleRegisterNew} crewCategoryList={this.state.crewCategoryList} />:null}
 
                         </div>
                     </div>
 
                     <div className="col-lg-6 col-md-12">
-                        <CrewView performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
+                        <CrewView crewList={this.state.crewList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
                     </div>
                 </div>
 
@@ -85,12 +86,37 @@ export class CrewPanel extends Component{
         )
     }
 
+    componentDidMount() {
+        this.returnCrew();
+        this.returnCrewCategories();
+    }
+
     toggleRegisterNew = () => {
         this.setState({showRegisterNew : !this.state.showRegisterNew});
+    };º
+
+    returnCrew = () => {
+        CrewStore.storeAllCrewMembersForEvent(() => {
+            this.setState(
+                { crewList : CrewStore.allCrewForCurrentEvent })
+        }, EventStore.currentEvent.eventID);
+    };
+
+    returnCrewCategories = () => {
+        CrewStore.storeAllCrewCategoriesForOrganizer(() => {
+            console.log("return categories for organizer");
+            console.log(CrewStore.allCrewCategoriesForOrganizer);
+            this.setState(
+                {
+                    crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
+                })
+        }, OrganizerStore.currentOrganizer.organizerID); //OrganizerStore.currentOrganizer
+        console.log(" liste over pesonellkategorier:");
+        console.log( this.state.crewCategoryList.crewCategoryID);
     };
 
     submitFunction = () => {
-
+        this.returnCrew();
     };
 
     changeCurrentCrewMember = () => {
@@ -371,7 +397,7 @@ export class CrewView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            crewList: [],
+            crewList: this.props.crewList,
             categoryList: [],
             categoryName: ""
         }
@@ -395,6 +421,7 @@ export class CrewView extends Component {
                             <Row>
                                 <Col> Kategori: {e.crewCategoryName}</Col>
                             </Row>
+                            {this.state.crewList.map(e => e.contactName)}
                             {this.state.crewList.filter(u=>u.crewCategoryName === e.crewCategoryName).map(u=> (
                                 <Row>
                                     <Col>Navn: {u.contactName}</Col>
@@ -413,6 +440,18 @@ export class CrewView extends Component {
             )
         }
     }
+
+    static getDerivedStateFromProps(props, state) {
+        /* Updates the props based on parent state change
+        * sets the current performer to be displayed in card */
+        if(props.crewList!== state.crewList) {
+            return {
+                crewList: props.crewList
+            };
+        }
+        return null;
+    }
+
 /*
     returnOneCrewMember = () => {
         console.log('runs returnCrew');
@@ -422,15 +461,6 @@ export class CrewView extends Component {
         });
         console.log(this.state);
     }; */
-
-    returnCrew = () => {
-        CrewStore.storeAllCrewMembersForEvent(() => {
-            this.setState(
-                { crewList : CrewStore.allCrewForCurrentEvent })
-        }, EventStore.currentEvent.eventID);
-        console.log("member list:");
-        console.log(CrewStore.allCrewForCurrentEvent);
-    };
 
     returnCrewCategories = () => {
         CrewStore.storeAllCrewCategoriesForEvent(() => {
@@ -446,7 +476,6 @@ export class CrewView extends Component {
 
     componentDidMount() {
       //  this.returnOneCrewMember();
-        this.returnCrew();
         this.returnCrewCategories();
 
     }
@@ -466,9 +495,10 @@ export class AddCrewMember extends Component{
             crewCategoryID : 1,
             showRegisterCrewType : false,
             selectedCategoryID: 1,
-            crewCategoryList: []
+            crewCategoryList: [this.props.crewCategoryList]
         };
     }
+
 
     render() {
         return(
@@ -494,6 +524,7 @@ export class AddCrewMember extends Component{
                         <Form.Label>Beskrivelse</Form.Label>
                         <Form.Control type="text" placeholder="" onChange={this.handleDescriptionChange} />
                     </Form.Group>
+
                     <Form.Group controlId="fromGridCategory">
                         <Form.Label>Velg personell-type</Form.Label>
                         <select
@@ -511,6 +542,7 @@ export class AddCrewMember extends Component{
                             ))}
                         </select>
                     </Form.Group>
+
                     <Form.Group>
                         <Form.Label>Hovedansvarlig</Form.Label>
                         <input
@@ -527,6 +559,17 @@ export class AddCrewMember extends Component{
                 </Form.Group>
             </div>
         )
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        /* Updates the props based on parent state change
+        * sets the current performer to be displayed in card */
+        if(props.crewCategoryList!== state.crewCategoryList) {
+            return {
+                crewCategoryList: props.crewCategoryList
+            };
+        }
+        return null;
     }
 
     showRegisterCrewTypeForm = () => {
@@ -568,30 +611,19 @@ export class AddCrewMember extends Component{
 
     submitForm = () => {
 
-        CrewStore.createCrewMemberForEvent(this.state.name, this.state.phone, this.state.email, this.state.description, this.state.selectedCategoryID, (this.state.isResponsible ? 1 : 0), EventStore.currentEvent.eventID, CookieStore.currentUserID, () => {});
-        this.props.toggleRegisterCrewMember();
-        this.props.submit();
+        CrewStore.createCrewMemberForEvent(() => {
+            this.props.toggleRegisterCrewMember();
+            this.props.submit();
+        }, this.state.name, this.state.phone, this.state.email, this.state.description, this.state.selectedCategoryID, (this.state.isResponsible ? 1 : 0), EventStore.currentEvent.eventID, CookieStore.currentUserID,
+            );
     };
 
     cancelRegister = () => {
         this.props.toggleRegisterCrewMember();
     };
 
-    returnCrewCategories = () => {
-        CrewStore.storeAllCrewCategoriesForOrganizer(() => {
-            console.log("return categories for organizer");
-            console.log(CrewStore.allCrewCategoriesForOrganizer);
-            this.setState(
-                {
-                    crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
-                })
-        }, OrganizerStore.currentOrganizer.organizerID); //OrganizerStore.currentOrganizer
-        console.log(" liste over pesonellkategorier:");
-        console.log( this.state.crewCategoryList.crewCategoryID);
-    };
-
     componentDidMount() {
-        this.returnCrewCategories();
+
     }
 
 

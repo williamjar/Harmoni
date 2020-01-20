@@ -123,7 +123,7 @@ export class CrewStore {
     }
 
     //register a new crew member and set as assigned for current event
-    static createCrewMemberForEvent(name, phone, email, description, crewCategoryID, isResponsible, eventID, organizerID){
+    static createCrewMemberForEvent(callback, name, phone, email, description, crewCategoryID, isResponsible, eventID, organizerID){
         //TODO: Needs a Callback
 
         let header = {
@@ -157,7 +157,7 @@ export class CrewStore {
 
                     axios.post(axiosConfig.root + '/api/crew/assign', assignBody,{headers: header}).then(response =>{
                     console.log(response);
-                    //callback();
+                    callback();
                     });
             });
         });
