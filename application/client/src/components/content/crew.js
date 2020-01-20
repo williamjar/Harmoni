@@ -82,7 +82,7 @@ export class CrewPanel extends Component{
                     </div>
 
                     <div className="col-lg-6 col-md-12">
-                        <CrewView crewList={this.state.crewList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
+                        <CrewView crewList={this.state.crewList} changeCard={this.changeCrewSelected} unAssignArtist={this.unAssignArtist}/>
                     </div>
                 </div>
 
@@ -123,8 +123,8 @@ export class CrewPanel extends Component{
         this.returnCrew();
     };
 
-    changeCurrentCrewMember = () => {
-
+    changeCrewSelected = (crew) => {
+        this.setState({showCrewCard : true, crewSelected : crew});
     };
 }
 
@@ -497,9 +497,9 @@ export class CrewCard extends Component{
     static getDerivedStateFromProps(props, state) {
         /* Updates the props based on parent state change
         * sets the current performer to be displayed in card */
-        if(props.performerSelected !== state.performer) {
+        if(props.crewSelected !== state.crew) {
             return {
-                performer: props.performerSelected
+                crew: props.crewSelected
             };
         }
         return null;
@@ -615,7 +615,7 @@ export class CrewView extends Component {
 
 
                     {this.state.crewList.filter(u=>u.crewCategoryName === e.crewCategoryName).map(u=> (
-                        <li className="list-group-item pointer selection" onClick={() => {}}>
+                        <li className="list-group-item pointer selection" onClick={() => {this.changeCrewSelected(u)}}>
                             <div className="row">
                                 <div className="col-10">
                                     {u.contactName}
@@ -645,6 +645,10 @@ export class CrewView extends Component {
         }
         return null;
     }
+
+    changeCrewSelected = (crew) => {
+        this.props.changeCard(crew);
+    };
 
 /*
     returnOneCrewMember = () => {
