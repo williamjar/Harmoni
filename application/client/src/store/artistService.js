@@ -10,9 +10,7 @@ const axiosConfig = require("./axiosConfig");
 
 export class ArtistService {
 
-    static currentArtist;
-    static allArtistsForOrganizer;
-    static allArtistsForEventAndOrganizer;
+    // artistID, name, phone, email, genre, organizer
 
     static getArtist(artistID, callback) {
 
@@ -22,22 +20,22 @@ export class ArtistService {
         };
 
         axios.get(axiosConfig.root + '/api/artist/' + artistID, {headers: header}).then(response => {
-                this.currentArtist = new Artist(response.data[0].artistID, response.data[0].contactID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
+                let artist = new Artist(response.data[0].artistID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
                 callback(artist);
             }
         );
     }
 
-    static getArtistEventInfo(callback, artistID, eventID) {
+    static getArtistEventInfo(callback, artistID, eventID){
 
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        axios.get(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/artistEventInfo', {headers: header}).then(response => {
+        axios.get(axiosConfig.root + '/api/event/'+ eventID + '/artist/' + artistID + '/artistEventInfo', {headers: header}).then(response => {
                 console.log(response);
-                let artistEventInfo = new ArtistEventInfo(response.data[0].artistID, response.data[0].contactID, response.data[0].eventID, response.data[0].contractSigned === 1, response.data[0].hasBeenPaid === 1);
+                let artistEventInfo = new ArtistEventInfo(response.data[0].artistID, response.data[0].eventID, response.data[0].contractSigned === 1, response.data[0].hasBeenPaid === 1);
                 console.log("getArtistEventInfo");
                 console.log(artistEventInfo);
                 callback(artistEventInfo);
@@ -46,7 +44,7 @@ export class ArtistService {
 
     }
 
-    static updateArtistEventInfo(callback, artistID, eventID, contractSigned, hasBeenPaid) {
+    static updateArtistEventInfo(callback, artistID, eventID, contractSigned, hasBeenPaid){
 
         console.log("updateArtistEventInfo has been paid: " + hasBeenPaid);
 
@@ -60,7 +58,7 @@ export class ArtistService {
             "hasBeenPaid": hasBeenPaid ? 1 : 0
         };
 
-        axios.put(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/artistEventInfo', artistEventInfoBody, {headers: header}).then(response => {
+        axios.put(axiosConfig.root + '/api/event/'+ eventID + '/artist/' + artistID + '/artistEventInfo', artistEventInfoBody, {headers: header}).then(response => {
                 callback();
             }
         );
@@ -80,7 +78,7 @@ export class ArtistService {
             "email": email
         };
 
-        axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(contactRes => {
+        axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
 
             let artistBody = {
                 "genreID": genreID,
@@ -88,42 +86,44 @@ export class ArtistService {
                 "contactID": response.data.insertId
             };
             console.log("post contact");
-            console.log(contactRes);
+            console.log(response);
 
-            axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(artistRes => {
+            axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(res => {
                 console.log("artist");
-                console.log(artistRes);
-                this.currentArtist = new Artist(artistRes.data.insertId, contactRes.data.insertId, name, phone, email, genreID, organizerID);
-                callback();
+                console.log(res);
+                callback(new Artist(res.data.insertId, name, phone, email, genreID, organizerID));
             });
         });
     }
 
-    static deleteArtist() {
+    static deleteArtist(artistID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete('/api/artist/organizer/' + this.currentArtist, {headers: header}).then(response => response.data);
+        return axios.delete('/api/artist/organizer/' + artistID, {headers: header}).then(response => response.data);
     }
 
     static getArtistForOrganizer(callback, organizerID) {
+        let allArtistByOrganizer = [];
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
         axios.get(axiosConfig.root + '/api/artist/organizer/' + organizerID, {headers: header}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
-                    this.allArtistsForOrganizer.push(new Artist(response.data[i].artistID, response.data[i].contactID, response.data[i].contactName,
+                    allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].contactName,
                         response.data[i].phone, response.data[i].email, response.data[i].genreID,
                         response.data[i].organizerID));
                 }
-                callback();
+                callback(allArtistByOrganizer);
             }
-        )
+        );
+
     }
 
     static getArtistsForEvent(callback, eventID) {
+        let allArtistByEvent = [];
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -131,21 +131,21 @@ export class ArtistService {
 
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
             response.data.map(artist =>
-                this.allArtistsForEventAndOrganizer.push(new Artist(artist.artistID, artist.contactName,
+                allArtistByEvent.push(new Artist(artist.artistID, artist.contactName,
                     artist.phone, artist.email, artist.genreID,
                     artist.organizerID)));
         }).then(() => {
-            this.allArtistsForEventAndOrganizer.map(artist => {
+            allArtistByEvent.map(artist => {
                 axios.get(axiosConfig.root + '/api/artist/documents/' + eventID + '/' + artist.artistID, {headers: header}).then(response => {
                     response.data.map(document => artist.addDocument(new Document(document.documentID, document.documentLink, document.documentCategory)))
                 }).then(() => artist);
             });
         }).then(() => {
-            callback()
+            callback(allArtistByEvent)
         });
     }
 
-    static assignArtist(eventID) {
+    static assignArtist(eventID, artistID) {
 
         let header = {
             "Content-Type": "application/json",
@@ -154,18 +154,18 @@ export class ArtistService {
 
         return axios.post(axiosConfig.root + '/api/artist/assign', {
             "eventID": eventID,
-            "artistID": this.currentArtist.artistID
+            "artistID": artistID
         }, {headers: header}).then(response => response.data);
     }
 
-    static unAssignArtist(eventID) {
+    static unAssignArtist(eventID, artistID) {
 
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.delete(axiosConfig.root + '/api/artist/assign/' + eventID + '/' + this.currentArtist.artistID, {headers: header}).then(response => response.data);
+        return axios.delete(axiosConfig.root + '/api/artist/assign/' + eventID + '/' + artistID, {headers: header}).then(response => response.data);
     }
 
     static getAllGenres(callback) {
