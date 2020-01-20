@@ -395,17 +395,17 @@ export class CrewView extends Component {
                             <Row>
                                 <Col> Kategori: {e.crewCategoryName}</Col>
                             </Row>
-                                {this.state.crewList.filter(u=>u.crewCategoryName === e.crewCategoryName).map(u=> (
-                                        <Row>
-                                            <Col>Navn: {u.contactName}</Col>
-                                            <Col>Mobil: {u.phone}</Col>
-                                            <Col>E-post: {u.email}</Col>
-                                            <Col>Beskrivelse: {u.description}</Col>
-                                            <Col>Personell-type: {u.crewCategoryName}</Col>
-                                            <Col>Hovedsansvarlig? {u.isResponsible}</Col>
-                                            <Col></Col>
-                                        </Row>
-                                ))}
+                            {this.state.crewList.filter(u=>u.crewCategoryName === e.crewCategoryName).map(u=> (
+                                <Row>
+                                    <Col>Navn: {u.contactName}</Col>
+                                    <Col>Mobil: {u.phone}</Col>
+                                    <Col>E-post: {u.email}</Col>
+                                    <Col>Beskrivelse: {u.description}</Col>
+                                    <Col>Personell-type: {u.crewCategoryName}</Col>
+                                    <Col>Hovedsansvarlig? {u.isResponsible}</Col>
+                                    <Col></Col>
+                                </Row>
+                            ))}
                         </ListGroup.Item>
                     ))}
                     </ListGroup>
@@ -441,6 +441,7 @@ export class CrewView extends Component {
         }, EventStore.currentEvent.eventID);
         console.log("return categories for event");
         console.log(CrewStore.allCrewCategoriesForCurrentEvent);
+        console.log(this.state.categoryList);
     };
 
     componentDidMount() {
