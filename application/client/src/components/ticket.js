@@ -294,7 +294,6 @@ export class TicketAll extends Component {
     /*
         List all tickets from the database to one spesific event.
     */
-
     listTickets = () => {
         console.log(EventStore.currentEvent.eventID);
         TicketStore.getAllTicketsForEvent( EventStore.currentEvent.eventID, () => {
@@ -308,7 +307,6 @@ export class TicketAll extends Component {
         Deletes ticket in the database and nd notifies the user
         with an alert message.
     */
-
     deleteTicket = (event) => {
         console.log('Button clicked');
         console.log(EventStore.currentEvent.eventID);

@@ -122,6 +122,12 @@ export class Menu extends Component{
                         <FaFileSignature/> Mine dokumenter
                     </li>
                     </NavLink>
+                    <NavLink className="" to="/bug">
+                        <li className="list-group-item nav-link">
+                            Tilbakemeldinger.
+                        </li>
+                    </NavLink>
+
                 </div>
 
             </ul>
