@@ -2,6 +2,9 @@ import axios from "axios";
 import {Artist} from "../classes/artist.js"
 import {CookieStore} from "./cookieStore";
 import {Genre} from "../classes/genre";
+import {Document} from "../classes/document";
+import {Artist as artist} from "../classes/artist";
+import {ArtistEventInfo} from "../classes/artistEventInfo";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -21,6 +24,40 @@ export class ArtistService {
                 callback(artist);
             }
         );
+    }
+
+    static getArtistEventInfo(callback, artistID, eventID){
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        axios.get(axiosConfig.root + '/api/event/'+ eventID + '/artist/' + artistID + '/artistEventInfo', {headers: header}).then(response => {
+                let artistEventInfo = new ArtistEventInfo(response.data.artistID, response.data.eventID, response.data.contractSigned === 1, response.data.hasBeenPaid === 1);
+                callback(artistEventInfo);
+            }
+        );
+
+    }
+
+    static updateArtistEventInfo(callback, artistID, eventID, contractSigned, hasBeenPaid){
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let artistEventInfoBody = {
+            "contractSigned": contractSigned ? 1 : 0,
+            "hasBeenPaid": hasBeenPaid ? 1 : 0
+        };
+
+        axios.put(axiosConfig.root + '/api/event/'+ eventID + '/artist/' + artistID + '/artistEventInfo', artistEventInfoBody, {headers: header}).then(response => {
+                callback();
+            }
+        );
+
     }
 
     // OrganizerID == innlogget bruker.
@@ -49,8 +86,7 @@ export class ArtistService {
             axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(res => {
                 console.log("artist");
                 console.log(res);
-                callback();
-                return new Artist(res.data.insertId, name, phone, email, genreID, organizerID);
+                callback(new Artist(res.data.insertId, name, phone, email, genreID, organizerID));
             });
         });
     }
@@ -87,30 +123,25 @@ export class ArtistService {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
+        //TODO!!
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
-                for (let i = 0; i < response.data.length; i++) {
-                    allArtistByEvent.push(new Artist(response.data[i].artistID, response.data[i].contactName,
-                        response.data[i].phone, response.data[i].email, response.data[i].genreID,
-                        response.data[i].organizerID));
-                }
-            callback(allArtistByEvent);
-            }
-        );
-
+            response.data.map(artist =>
+                allArtistByEvent.push(new Artist(artist.artistID, artist.contactName,
+                    artist.phone, artist.email, artist.genreID,
+                    artist.organizerID)));
+        }).then(() => {
+            allArtistByEvent.map(artist => {
+                axios.get(axiosConfig.root + '/api/artist/documents/' + eventID + '/' + artist.artistID, {headers: header}).then(response => {
+                    response.data.map(document => artist.addDocument(new Document(document.documentID, document.documentLink, document.documentCategory)))
+                }).then(() => artist);
+            });
+        }).then(() => {
+            callback(allArtistByEvent)
+        });
     }
 
-    static addDocumentToArtist(eventID, name, link, artistID, categoryID) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        return axios.post(axiosConfig.root + '/api/document/artist', {
-            "eventID": eventID,
-            "documentName": name,
-            "documentLink": link,
-            "artistID": artistID,
-            "documentCategoryID": categoryID
-        }, {headers: header}).then(response => response.data);
+    static getArtistEventInfosForEvent(callback, eventID){
+        //TODO: do dis
     }
 
     static assignArtist(eventID, artistID) {

@@ -23,6 +23,12 @@ export class Artist extends Contact{
         this.documents.push(document);
     }
 
+    addDocuments(documents){
+        for (let i = 0; i < documents.length; i++){
+            this.documents.push(documents[i]);
+        }
+    }
+
     static getTestArtists(){
         let artistOne = new Artist(0,
             super.getTestContacts()[1].contactName,

@@ -82,4 +82,16 @@ module.exports = class documentationDao extends Dao {
             callback
         );
     }
+
+    getAllDocumentCategoriesForEvent(eventID, callback){
+        var val = [eventID];
+        super.query("SELECT DISTINCT documentCategory.documentCategoryID, documentCategory.documentCategoryName from documentCategory left join document on documentCategory.documentCategoryID = document.documentCategoryID where document.eventID = ?",
+            val, callback);
+    }
+
+
+
+    getDocumentsForArtist(eventID, artistID, callback){
+        super.query("SELECT * FROM document where eventID = ? and artistID = ?", [eventID, artistID], callback);
+    }
 };
