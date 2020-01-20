@@ -109,7 +109,7 @@ export class App extends Component{
         }
         else {
             return(
-                <div className="Login-Container center-v">
+                <div className="Login-Container">
 
                     <HashRouter>
                         <Route exact path="/" component={() => <LoginForm logIn={() => this.handleLogin()}/>} />

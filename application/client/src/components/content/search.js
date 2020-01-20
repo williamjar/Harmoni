@@ -31,7 +31,7 @@ export class Search extends Component{
 
     render() {
         return(
-            <div className="search" >
+            <div className="search" onBlur={this.toggleShowResults} >
                 <InputGroup>
                     <FormControl
                         placeholder="Søk"
@@ -39,6 +39,8 @@ export class Search extends Component{
                         aria-describedby="basic-addon2"
                         onChange={this.handleSearchInput}
                         className="rounded-pill"
+
+
                     />
                 </InputGroup>
 
@@ -76,11 +78,13 @@ export class Search extends Component{
         return null;
     }
 
+    toggleShowResults = () => {
+        setTimeout(() => {this.setState({showSearchResults: !this.state.showSearchResults})}, 150);
+    };
+
 
     searchHandler(input){
-        let currentState = this.state;
-        currentState.showSearchResults = false; //Hide search results after selection
-        this.setState(currentState);
+        setTimeout(() => {this.setState({showSearchResults: false})}, 180);
         this.props.searchHandler(input); // Sends object of selection to parent method.
     }
 
