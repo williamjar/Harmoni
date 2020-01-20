@@ -18,6 +18,7 @@ import {Search} from "../search";
 import {EventStore} from "../../../store/eventStore";
 import {CookieStore} from "../../../store/cookieStore";
 import {createHashHistory} from "history";
+import {TicketStore} from "../../../store/ticketStore";
 
 const history = createHashHistory();
 
@@ -31,7 +32,7 @@ export class Dashboard extends React.Component {
         this.state = {
             active: "all",
             events: [],
-            sortBy: 0
+            sortBy: 0,
         };
     }
 
@@ -155,17 +156,35 @@ export class Dashboard extends React.Component {
                 return a>b ? 1 : a<b ? -1 : 0;
             });
         } else if(this.state.sortBy == 1) {
-            /*return [].concat(events).sort((a,b) => {
-            });
-            */
-            return events;
-        } else if(this.state.sortBy == 2) {
             let sorted = [].concat(events).sort((a,b) => {
-                return (a.town > b.town ? 1 : a.town < b.town ? -1 : 0);
+                let price1 = null;
+                let price2 = null;
+                function getPrices(callback) {
+                    TicketStore.getAllTickets(a.eventID, () => price1 = Math.min.apply(Math, TicketStore.allTickets.map(ticket => {
+                        return ticket.price;
+                    })));
+                    TicketStore.getAllTickets(b.eventID, () => price2 = Math.min.apply(Math, TicketStore.allTickets.map(ticket => {
+                        return ticket.price;
+                    })));
+                    callback();
+                }
+                console.log( getPrices(() => {
+                    return price1 > price2 ? 1 : price1 < price2 ? -1 : 0
+                }))
             });
+            console.log(events);
             console.log(sorted);
             return sorted;
+        } else if(this.state.sortBy == 2) {
+            return [].concat(events).sort((a,b) => {
+                return (a.town > b.town ? 1 : a.town < b.town ? -1 : 0);
+            });
         }
+    };
+
+    getPrice = (event) => {
+        let price = null;
+        return price;
     };
 
     // Stores all the organizer's events before rendering the page
