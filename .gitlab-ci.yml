@@ -12,7 +12,6 @@ variables:
 # Install node libraries
 before_script:
   - cd application/client
-  - npm cache clean --force
   - npm install
 
 # Run JEST test

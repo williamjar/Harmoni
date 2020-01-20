@@ -7,17 +7,21 @@ import {getCurrentToken} from "./cookieStore";
 
 let axiosConfig = require("./axiosConfig");
 
-export class CrewStore {
+let allCrewMembersForOrganizer = [];
+let allCrewCategoriesForOrganizer = [];
+let allCrewCategoryForCurrentEvent = [];
+let allCrewForCurrentEvent = [];
 
-    static allCrewMembersForOrganizer = [];
-    static allCrewCategoriesForOrganizer = [];
-    static allCrewCategoryForCurrentEvent = [];
-    static allCrewForCurrentEvent = [];
+export
+
+
+
+
+export class CrewStore {
 
 
     //get a crew member
     static getCrewMember(crewID, callback){
-
         let header = {
             "Content-Type": "application/json",
             "x-access-token": getCurrentToken()
@@ -32,27 +36,7 @@ export class CrewStore {
 
 
     //store/get all crew members for an organizer
-    static storeAllCrewMembersForOrganizer(callback, organizerID){
 
-        this.allCrewMembersForOrganizer = [];
-
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": getCurrentToken()
-        };
-
-        axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response =>  {
-
-            response.data.map(data => {
-
-                this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.description,
-                    data.crewCategoryID, data.contactName, data.phone, data.email, data.isResponsible));
-
-            });
-
-            callback();
-        });
-    }
 
     //store/get all crew members for an event
     static storeAllCrewMembersForEvent(callback, eventID) {
