@@ -36,7 +36,7 @@ export class EventForm extends Component{
     saveClicked = () => {
         if(this.validateForm()){
             this.setState({edit: false});
-            EventStore.postCurrentEvent().then(console.log("Lagret"));
+            EventStore.editCurrentEvent().then(console.log("Lagret"));
         } else{
             console.log("start date can not be after end date");
         }
