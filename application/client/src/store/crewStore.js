@@ -45,7 +45,7 @@ export class CrewStore {
 
             response.data.map(data => {
 
-                this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.description,
+                this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.description, data.crewCategoryID,
                     data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible));
 
             });
@@ -70,7 +70,7 @@ export class CrewStore {
             response.data.map(data => {
 
                 this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.description,
-                    data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible));
+                    data.crewCategoryID, data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible));
 
             });
 
