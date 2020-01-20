@@ -1,34 +1,34 @@
-drop table bug;
+drop table if exists bug;
 
-drop table document;
+drop table if exists document;
 
-drop table documentCategory;
+drop table if exists documentCategory;
 
-drop table event_artist;
+drop table if exists event_artist;
 
-drop table event_crewCategory_crew;
+drop table if exists event_crewCategory_crew;
 
-drop table crew;
+drop table if exists crew;
 
-drop table crewCategory;
+drop table if exists crewCategory;
 
-drop table riderElement;
+drop table if exists riderElement;
 
-drop table artist;
+drop table if exists artist;
 
-drop table genre;
+drop table if exists genre;
 
-drop table ticketType;
+drop table if exists ticketType;
 
-drop table event;
+drop table if exists event;
 
-drop table eventType;
+drop table if exists eventType;
 
-drop table organizer;
+drop table if exists organizer;
 
-drop table contact;
+drop table if exists contact;
 
-drop table picture;
+drop table if exists picture;
 
 CREATE TABLE bug(
     bugID INT AUTO_INCREMENT PRIMARY KEY,
@@ -166,7 +166,7 @@ CREATE TABLE riderElement(
 
 
 ALTER TABLE event
-ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID),
+ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID) ON DELETE CASCADE,
 ADD FOREIGN KEY (eventTypeID) REFERENCES eventType(eventTypeID),
 ADD FOREIGN KEY (pictureID) REFERENCES picture(pictureID);
 
