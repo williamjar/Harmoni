@@ -314,7 +314,7 @@ export class DocumentService {
 
     static previewDocument(documentLink) {
         if((/\.(pdf)$/i).test(documentLink)){
-            axios.get(axiosConfig.root + '/document/preview/' + documentLink, {
+            axios.get(axiosConfig.root + '/file/preview/' + documentLink, {
                 method: "GET",
                 responseType: "blob"
                 //Force to receive data in a Blob Format

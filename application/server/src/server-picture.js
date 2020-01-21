@@ -35,14 +35,3 @@ app.get("/api/picture/:pictureID", (require, response) => {
         response.json(data);
     }, require.params.pictureID);
 });
-
-
-app.get("/bilde/:path*", (req, res) => {
-    console.log("Forbanna drit");
-    console.log("PATH: " + req.params.path + req.params['0']);
-    if(req.params.path + req.params['0'] !== '' || req.params.path + req.params['0'] !== null){
-        var file = fs.createReadStream("./" + req.params.path + req.params['0']);
-        file.pipe(res);
-    }
-    console.log("Error: path is null")
-});

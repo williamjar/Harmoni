@@ -216,11 +216,13 @@ export class UserPage extends React.Component {
 
             this.setState({[name]: value,});
         }
+
     }
 
     handleSubmit(event) {
         event.preventDefault();
         this.submitForm();
+        window.location.reload()
     }
 
 
