@@ -5,13 +5,15 @@ import {Genre} from "./genre";
 
 export class Artist extends Contact {
 
-    constructor(artistID, contactID, name, phone, email, genre, organizer) {
+    constructor(artistID, contactID, name, phone, email, genre, organizer, hasBeenPaid, contractSigned) {
         super(contactID, name, phone, email);
         this.artistID = artistID;
         this.genre = genre;
         this.organizer = organizer;
         this.events = [];
         this.documents = [];
+        this.hasBeenPaid = hasBeenPaid;
+        this.contractSigned = contractSigned;
     }
 
     addEvent(event) {

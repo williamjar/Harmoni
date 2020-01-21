@@ -146,6 +146,19 @@ body{
     zoom: 80%;
 }
 
+.log-out{
+    position: absolute;
+    bottom:0px;
+    padding-bottom: 10px;
+    padding-top:10px;
+    background: midnightblue;
+    color:white;
+    width: 100%;
+}
+
+.log-out:hover{
+    filter: brightness(150%);
+}
 
 
 .Nav-Menu .user-nav{
@@ -154,7 +167,7 @@ body{
     text-align: left;
     color:black;
     padding:20px;
-    bottom: 0px;
+    bottom: 40px;
     background: lightgrey;
 }
 
@@ -347,6 +360,10 @@ body{
     overflow-y: auto;
     margin-top:15px;
     background:lightgrey;
+}
+
+.category-results{
+    background: lightgrey !important;
 }
 
 .max-w-50{

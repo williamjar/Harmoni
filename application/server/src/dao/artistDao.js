@@ -7,7 +7,7 @@ module.exports = class artistDao extends Dao {
     }
 
     getAllForOrganizer(callback, organizerID) {
-        super.query('SELECT * FROM artist, contact WHERE organizerID = ? AND artist.contactID = contact.contactID', [organizerID], callback);
+        super.query('SELECT * FROM artist, contact, event_artist WHERE organizerID = ? AND artist.contactID = contact.contactID AND artist.artistID=event_artist.artistID', [organizerID], callback);
     }
 
     getAllForEvent(callback, eventID) {
