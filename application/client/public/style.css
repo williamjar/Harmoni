@@ -466,4 +466,23 @@ search-result-item{
     }
 }
 
+/* contact info */
+.contact:hover {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 18px;
+}
+
+.addButton {
+    color: forestgreen;
+}
+
+.addButton:hover {
+    color: green;
+}
+
+.artists {
+    min-height: 100vh;
+}
+
 
