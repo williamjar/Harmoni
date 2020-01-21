@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
     Accordion,
@@ -99,7 +98,7 @@ export class Dashboard extends React.Component {
                 <Row className="mb-2">
                     <Col xs={2}>
                         <Form.Control as="select" size="sm" onChange={this.sortSelected}>
-                            <option selected disabled>Sorter etter..</option>
+                            <option disabled>Sorter etter..</option>
                             <option value={0}>Dato</option>
                             <option value={1}>Navn</option>
                             {/*<option value={1}>Pris</option>*/}

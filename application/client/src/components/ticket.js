@@ -50,21 +50,21 @@ export class Ticket extends Component{
 export class TicketAll extends Component {
 
     constructor(props) {
-        let dt = new Date();
         super(props);
         this.state = {
             ticketTypeName: '',
             price : '',
             amount : '',
-            releaseDate : dt,
-            endDate : dt,
-            releaseTime : dt.getTime(),
-            endTime : dt.getTime(),
+            releaseDate : '',
+            endDate : null,
+            releaseTime : '',
+            endTime : null,
             description : '',
             ticketList : [],
             savingInformation: false,
             loading: false,
-            dateError: false
+            dateError: false,
+            noEndSellingDate: false
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -138,8 +138,6 @@ export class TicketAll extends Component {
 
                                     <Col/>
                                     <Col/>
-
-
                                     <Col>
                                         <Form.Text>{endDate}</Form.Text>
                                         <Form.Control
@@ -193,6 +191,7 @@ export class TicketAll extends Component {
                                         <Form.Control
                                             name = "price"
                                             placeholder="Pris"
+                                            max="1000000"
                                             type="number"
                                             onChange = {this.handleInputChange}
                                             value = {this.state.price}
@@ -204,6 +203,7 @@ export class TicketAll extends Component {
                                             name = "amount"
                                             placeholder="Antall tilgj."
                                             type="number"
+                                            max="1000000"
                                             onChange = {this.handleInputChange}
                                             value = {this.state.amount}
                                         />
@@ -238,24 +238,26 @@ export class TicketAll extends Component {
                                     </Col>
                                     <Col/>
                                     <Col/>
-
-                                    <Col>
+                                    <Col hiddem={this.state.noEndSellingDate}>
                                         <Form.Text>{endDate}</Form.Text>
                                         <Form.Control
                                             type ="date"
                                             name = "endDate"
                                             onChange={this.handleInputChange}
+                                            disabled={this.state.noEndSellingDate}
                                         />
                                     </Col>
 
-                                    <Col >
+                                    <Col>
                                         <Form.Text>{endTime}</Form.Text>
                                         <Form.Control
                                             type = "time"
                                             name = "endTime"
                                             onChange={this.handleInputChange}
+                                            disabled={this.state.noEndSellingDate}
                                         />
                                     </Col>
+
                                 </Row>
                                 <Row className="ticketStyle">
                                 <Col>
@@ -265,6 +267,19 @@ export class TicketAll extends Component {
                                 </Button>
                                     <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Sluttdato for salg av billett kan ikke være før startdato</Form.Text>
                                 </Col>
+                                    <Col/>
+                                    <Col/>
+
+                                    <Col >
+                                        <Form.Check
+                                            type="checkbox"
+                                            name="noEndSellingDate"
+                                            label="Ønsker ikke å sette en sluttdato for salg"
+                                            value={this.state.noEndSellingDate}
+                                            onChange={this.handleInputChange}
+                                        />
+                                    </Col>
+                                    <Col/>
                                 </Row>
                             </Form>
                         </Card>
@@ -287,6 +302,8 @@ export class TicketAll extends Component {
     }
 
     validateDate(){
+        if(this.state.noEndSellingDate) return true;
+
         if(this.state.releaseDate===this.state.endDate){
             return this.state.releaseTime < this.state.endTime;
         }
@@ -323,12 +340,21 @@ export class TicketAll extends Component {
             this.state.endTime, this.state.description, statusCode => {
                 if (statusCode === 200){
                     TicketStore.getAllTicketsForEvent(EventStore.currentEvent.eventID, () => {
-                        this.setState({ticketList: TicketStore.allTicketsCurrentEvent})
+                        this.setState({ticketList: TicketStore.allTicketsCurrentEvent});
+
+
                     });
                 }else{
                     alert("Det oppsto et problem. Vennligs prøv igjen.");
                 }
             });
+
+       this.setState( {
+            ticketTypeName: '',
+            price : '',
+            amount : '',
+            description : '',
+        });
 
     };
 
@@ -340,7 +366,7 @@ export class TicketAll extends Component {
         this.setState({loading:true});
         TicketStore.getAllTicketsForEvent( EventStore.currentEvent.eventID, () => {
             this.setState(
-                { ticketList : TicketStore.allTicketsCurrentEvent})
+                { ticketList : TicketStore.allTicketsCurrentEvent});
             this.setState({loading: false});
         });
     };
@@ -366,7 +392,6 @@ export class TicketAll extends Component {
 
 
     formatDateToSql(date) {
-        console.log("ikke formatert:" + date);
         let d = new Date(date);
         let month = "" + (d.getMonth() +1);
         let day = "" + (d.getDate());
@@ -379,7 +404,6 @@ export class TicketAll extends Component {
             day = "0" + day;
         }
 
-        console.log("Formatted date" + [year, month, day].join("-"));
         return [year, month, day].join("-");
     }
 
