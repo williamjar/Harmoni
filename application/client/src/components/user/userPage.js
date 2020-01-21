@@ -56,6 +56,7 @@ export class UserPage extends React.Component {
         }
     }
 
+
     render() {
         return (
             <Card className={"border-0"}>
