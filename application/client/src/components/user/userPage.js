@@ -37,11 +37,12 @@ export class UserPage extends React.Component {
 
 
     checkIfUserHasPicture(){
-        PictureService.previewPicture(this.state.profilePicture, (url) => {
-            this.setState({link: url})
-        });
-        if(this.state.profilePicture !== ''){
-           return(<img src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
+        if(this.state.profilePicture !== '' || this.state.profilePicture !== null){
+            PictureService.previewPicture(this.state.profilePicture, (url) => {
+                this.setState({link: url})
+            });
+
+            return(<img src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
         }else {
             return(<img width={"200px"} src={require('./profile.png')} alt={"Bildet kunne ikke lastes inn"}/>);
         }

@@ -306,10 +306,14 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
 });
 
 app.get("/document/preview/:path*", (req, res) => {
-    console.log("PATH: " + req.params.path + req.params['0']);
-    var file = fs.createReadStream("./" + req.params.path + req.params['0']);
-    file.pipe(res);
+    if(req.params.path + req.params['0'] !== '' || req.params.path + req.params['0'] !== null){
+        var file = fs.createReadStream("./" + req.params.path + req.params['0']);
+        file.pipe(res);
+    }
+    console.log("Error: path is null")
 });
+
+
 /*
 app.get("/document/preview", (req, res) => {
     console.log("TEST");
