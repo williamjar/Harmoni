@@ -53,7 +53,7 @@ export class PerformerPanel extends Component{
 
                             <div className="padding-top-20">
                                 {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
-                                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected}/>:null}
+                                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} refreshFunction={this.refreshList}/>:null}
                             </div>
                         </div>
 
@@ -75,21 +75,27 @@ export class PerformerPanel extends Component{
                 let currentState = this.state;
                 currentState.performerList = list; //Receive a new array from database with assigned performer to event
                 currentState.performerSelected = {};
+                EventStore.currentEvent.artists = list;
                 this.setState(currentState);
                 this.toggleShowCard();
             }, EventStore.currentEvent.eventID);
         });
     };
 
+    refreshList = () => {
+        ArtistService.getArtistsForEvent((list) => {
+            EventStore.currentEvent.artists = list;
+            let currentState = this.state;
+            currentState.performerList = list; //Receive a new array from database with assigned performer to event
+            this.setState(currentState);
+        }, EventStore.currentEvent.eventID);
+    }
+
     assignArtist = (selected) => {
         //Assign performer to event
         let currentState = this.state;
         ArtistService.assignArtist(EventStore.currentEvent.eventID, selected.artistID).then(res => {
-                ArtistService.getArtistsForEvent((list) => {
-                    let currentState = this.state;
-                    currentState.performerList = list; //Receive a new array from database with assigned performer to event
-                    this.setState(currentState);
-                }, EventStore.currentEvent.eventID);
+             this.refreshList();
             }
         );
         currentState.performerSelected = selected;
@@ -99,9 +105,15 @@ export class PerformerPanel extends Component{
     changeCurrentPerformer = (performer) => {
         //Changes the current performer to be showed in performer card
         let currentState = this.state;
-        currentState.performerSelected = performer;
-        currentState.showArtistCard = true;
-        this.setState(currentState);
+
+        ArtistService.getArtistEventInfo((artistEventInfo) =>{
+            currentState.performerSelected = performer;
+            performer.hasBeenPaid = artistEventInfo.hasBeenPaid;
+            performer.contractSigned = artistEventInfo.contractSigned;
+            currentState.showArtistCard = true;
+            this.setState(currentState);
+        }, performer.artistID, EventStore.currentEvent.eventID);
+
     };
 
     componentDidMount() {
@@ -109,8 +121,9 @@ export class PerformerPanel extends Component{
         ArtistService.getArtistsForEvent((list) => {
             let currentState = this.state;
             currentState.performerList = list;
-            currentState.performerSelected = {};
+            EventStore.currentEvent.artists = list;
             this.setState(currentState);
+
         }, EventStore.currentEvent.eventID);
     };
 
@@ -176,8 +189,10 @@ export class PerformerCard extends Component{
             numberOfFilesChosenForUpload: 0,
             numberOfFilesAlreadyUploaded: 0,
             riders : [],
-            signedContract : false,
-            payed : false,
+            contractSigned : false,
+            hasBeenPaid : false,
+            genre : "",
+            genreList : [],
         };
     }
 
@@ -196,9 +211,10 @@ export class PerformerCard extends Component{
 
                     <div className="col-3">
                         <label htmlFor="genreSelect">Sjanger</label>
-                        <select className="form-control" id="genreSelect">
-                            <option>Blues</option>
-                            <option>Country</option>
+                        <select className="form-control" id="genreSelect" value={this.state.genre} onChange={this.genreHandler}>
+                            {this.state.genreList.map(e =>
+                                <option>{e.genreName}</option>
+                            )}
                         </select>
                     </div>
 
@@ -233,16 +249,16 @@ export class PerformerCard extends Component{
                 <div className="row padding-top-20">
                     <div className="col-4">
                         <div className="form-check">
-                            <input className="form-check-input" name="signedContract" type="checkbox" checked={this.state.signedContract} id="signedContract"/>
-                            <label className="form-check-label" htmlFor="signedContract">
+                            <input className="form-check-input" name="contractSigned" type="checkbox" checked={this.state.contractSigned} id="signedContract" onChange={this.handleOtherCheckboxes}/>
+                            <label className="form-check-label" htmlFor="contractSigned">
                                 Signert kontrakt
                             </label>
                         </div>
                     </div>
                     <div className="col-4">
                         <div className="form-check">
-                            <input className="form-check-input" name="payed" type="checkbox" checked={this.state.payed} id="performerPayed" onChange={this.handleOtherCheckboxes}/>
-                            <label className="form-check-label" htmlFor="performerPayed">
+                            <input className="form-check-input" name="hasBeenPaid" type="checkbox" checked={this.state.hasBeenPaid} id="performerPayed" onChange={this.handleOtherCheckboxes}/>
+                            <label className="form-check-label" htmlFor="hasBeenPaid">
                                 Betalt
                             </label>
                         </div>
@@ -261,6 +277,7 @@ export class PerformerCard extends Component{
                        {this.state.numberOfFilesAdded > 1 ? <div className="padding-left-5">{this.state.numberOfFilesAdded + " files added"}</div>: null}
 
                    </div>
+
 
                    <div className="col-4">
                        Filer lagt til fra før: {this.state.numberOfFilesAlreadyUploaded}
@@ -283,25 +300,38 @@ export class PerformerCard extends Component{
         /* Updates the props based on parent state change
         * sets the current performer to be displayed in card */
         if(props.performerSelected !== state.performer) {
+            console.log("different");
             return {
-                performer: props.performerSelected
+                performer: props.performerSelected,
+                hasBeenPaid : props.performerSelected.hasBeenPaid,
+                contractSigned : props.performerSelected.contractSigned,
             };
         }
         return null;
     }
 
+    genreHandler = (event) => {
+      this.setState({genre : event.target.value});
+    };
+
+    updateArtist = () => {
+        this.setState({hasBeenPaid : this.state.performer.hasBeenPaid, contractSigned : this.state.performer.contractSigned});
+    };
+
     componentDidMount() {
         //Fetches all riders for current artist and event and stores them in state
         let currentState = this.state;
+
+        this.setState({hasBeenPaid : this.state.performer.hasBeenPaid, contractSigned : this.state.performer.contractSigned});
         currentState.riders = RiderStore.allRidersForCurrentEvent;
         currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
 
-        ArtistService.getArtistEventInfo((artistEventInfo) =>{
-            currentState.signedContract = artistEventInfo.contractSigned;
-            currentState.payed = artistEventInfo.hasBeenPaid;
-            console.log("artistEventInfo hasBeen Paid: " + artistEventInfo.hasBeenPaid);
-            this.setState(currentState);
-        }, currentState.performer.artistID, EventStore.currentEvent.eventID);
+        ArtistService.getAllGenres((res) => {
+           this.setState({genreList : res});
+
+        });
+
+
     }
 
     //TODO: Change states that show if files are added to server
@@ -399,19 +429,18 @@ export class PerformerCard extends Component{
 
     save = () => {
         /* Save function to gather all information in the Performer Card that needs to be stored */
-
-
         Alert.success("Artist lagret");
-
         this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(rider => {
             if (rider.isModified){
                 RiderStore.updateRider(() => {rider.isModified = false}, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone ? 1 : 0, rider.description);
             }
         });
 
-        //TODO: Send signed contract and if artist has been payed
+        //TODO: Send signed contract and if artist has been hasBeenPaid
+        artistService.updateArtistEventInfo(()=>{
+            this.props.refreshFunction();
+        }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.contractSigned, this.state.hasBeenPaid);
 
-        artistService.updateArtistEventInfo(()=>{}, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.signedContract, this.state.payed);
     }
 }
 
@@ -491,7 +520,8 @@ export class RegisterPerformer extends Component{
           name : "",
           phone : "",
           email : "",
-          genre : "",  //Genre should be set from start
+          genre : "",
+          genreList : [],
         };
     }
 
@@ -519,8 +549,9 @@ export class RegisterPerformer extends Component{
                         <Form.Group as={Col} controlId="formGridState">
                             <Form.Label>Sjanger</Form.Label>
                             <Form.Control as="select" onChange={this.handleGenreChange}>
-                                <option>Country</option>
-                                <option>Blues</option>
+                                {this.state.genreList.map(genre =>
+                                <option>{genre.genreName}</option>
+                                )}
                             </Form.Control>
                         </Form.Group>
                     </Form.Row>
@@ -542,6 +573,12 @@ export class RegisterPerformer extends Component{
                     </Row>
             </div>
         )
+    }
+
+    componentDidMount() {
+        ArtistService.getAllGenres((res) => {
+            this.setState({genreList : res});
+    });
     }
 
     handleNameChange = (event) => {
@@ -586,11 +623,12 @@ export class RegisterPerformer extends Component{
     submitForm = () => {
         if(this.state.name.trim() !== "" && this.state.phone.trim() !== "" && this.state.email.trim() !== ""){
             /* Should check if valid as email address, not able to put type to email because it fucked eveything up */
-            let genreID = 1;
+            let tempList = this.state.genreList.filter(e => e.genreName === this.state.genre);
+            let genreID = tempList[0].genreID;
+
             console.log(this.state.email);
             ArtistService.createArtist((artist) => {
-                console.log("received artist");
-                console.log(artist);
+
                 this.props.submitFunction(artist); // Call to parent to update it's information in state.
                 }, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
         } else{
@@ -631,7 +669,7 @@ export class RegisteredPerformers extends Component{
                                 {p.contactName}
                             </div>
 
-                            <div className="col-2">
+                            <div className="col-2 text-right">
                                 <button className="btn-danger rounded" onClick={() => this.unAssignArtist(p)}>Slett</button>
                             </div>
                         </div>

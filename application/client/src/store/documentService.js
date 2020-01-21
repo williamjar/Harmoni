@@ -142,6 +142,21 @@ export class DocumentService {
             .catch(err => console.error(err));
     }
 
+    static getAllDocumentCategories(callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        axios.get(axiosConfig.root + "/api/document/categories", {headers: header})
+            .then(response => {
+                console.log(response.data);
+                let categories = response.data.map(dataPiece => new DocumentCategory(dataPiece.documentCategoryID, dataPiece.documentCategoryName));
+                console.log(categories);
+                callback(categories);
+            }).catch(callback(null)).catch(err => console.log(err));
+    }
+
     static getAllDocumentCategoriesForEvent(eventID, callback) {
         let header = {
             "Content-Type": "application/json",

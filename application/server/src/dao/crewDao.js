@@ -3,7 +3,7 @@ const Dao = require('./dao.js');
 module.exports = class crewDao extends Dao {
 
     getOne(callback, list) {
-        super.query('SELECT contactName,phone,email,crewID,description FROM crew JOIN contact ON crew.contactID = contact.contactID WHERE crewID = ?', list, callback);
+        super.query('SELECT * FROM crew JOIN contact ON crew.contactID = contact.contactID WHERE crewID = ?', list, callback);
     }
 
     createOne(callback, list) {
@@ -40,7 +40,7 @@ module.exports = class crewDao extends Dao {
     }
 
     getAllCategoriesForEvent(callback, eventID){
-        super.query('SELECT * FROM crewCategory JOIN event_crewCategory_crew on crewCategory.crewCategoryID = event_crewCategory_crew.crewCategoryID WHERE eventID = ? ', [eventID], callback)
+        super.query('SELECT DISTINCT crewCategory.crewCategoryID, crewCategoryName FROM crewCategory JOIN event_crewCategory_crew on crewCategory.crewCategoryID = event_crewCategory_crew.crewCategoryID WHERE eventID = ? ', [eventID], callback)
     }
 
     getAllCategories(callback, organizerID) {

@@ -11,9 +11,11 @@ import {FaFileSignature} from "react-icons/all";
 import logo from './logo.jpeg';
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
-import Navbar from "react-bootstrap/Navbar";
+import {FaSignOutAlt} from "react-icons/all";
+
 import {FaBars} from "react-icons/all";
 import {FaUserCog} from "react-icons/all";
+import {FaBullhorn} from "react-icons/all";
 import { createHashHistory } from 'history';
 import {PictureService} from "../../store/pictureService";
 let history = createHashHistory();
@@ -81,7 +83,19 @@ export class NavBar extends Component{
                 </div>
 
                 <Menu/>
+
                 <UserProfileButton/>
+
+                <div className="center font-italic purple log-out" onClick={() => {
+                    sessionStorage.setItem('token', null);
+                    sessionStorage.removeItem('loggedIn');
+                    CookieStore.setCurrentToken(null);
+                    CookieStore.setCurrentUserID(-1);
+                    history.push("/");
+                    this.props.logOut();
+                }}>
+                    Logg av <FaSignOutAlt size={20}/>
+                </div>
 
             </div>
         )
@@ -123,6 +137,12 @@ export class Menu extends Component{
                         <FaFileSignature/> Mine dokumenter
                     </li>
                     </NavLink>
+                    <NavLink className="" to="/bug">
+                        <li className="list-group-item nav-link">
+                            <FaBullhorn/> Rapporter feil
+                        </li>
+                    </NavLink>
+
                 </div>
 
             </ul>
@@ -173,6 +193,7 @@ export class UserProfileButton extends Component{
                                 Arrangør
                             </div>
                         </div>
+
                     </div>
                 </div>
             </NavLink>

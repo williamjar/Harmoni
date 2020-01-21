@@ -4,7 +4,7 @@ const Dao = require("./dao.js");
 module.exports = class documentationDao extends Dao {
     getAllDocumentCategories(callback){
         super.query(
-            "select documentCategoryName from documentCategory",
+            "select * from documentCategory",
             [],
             callback
         );
