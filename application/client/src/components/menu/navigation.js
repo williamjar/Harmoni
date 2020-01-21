@@ -11,9 +11,11 @@ import {FaFileSignature} from "react-icons/all";
 import logo from './logo.jpeg';
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
-import Navbar from "react-bootstrap/Navbar";
+import {FaSignOutAlt} from "react-icons/all";
+
 import {FaBars} from "react-icons/all";
 import {FaUserCog} from "react-icons/all";
+import {FaBullhorn} from "react-icons/all";
 import { createHashHistory } from 'history';
 let history = createHashHistory();
 
@@ -80,7 +82,19 @@ export class NavBar extends Component{
                 </div>
 
                 <Menu/>
+
                 <UserProfileButton/>
+
+                <div className="center font-italic purple log-out" onClick={() => {
+                    sessionStorage.setItem('token', null);
+                    sessionStorage.removeItem('loggedIn');
+                    CookieStore.setCurrentToken(null);
+                    CookieStore.setCurrentUserID(-1);
+                    history.push("/");
+                    this.props.logOut();
+                }}>
+                    Logg av <FaSignOutAlt size={20}/>
+                </div>
 
             </div>
         )
@@ -122,6 +136,12 @@ export class Menu extends Component{
                         <FaFileSignature/> Mine dokumenter
                     </li>
                     </NavLink>
+                    <NavLink className="" to="/bug">
+                        <li className="list-group-item nav-link">
+                            <FaBullhorn/> Rapporter feil
+                        </li>
+                    </NavLink>
+
                 </div>
 
             </ul>
@@ -148,15 +168,16 @@ export class UserProfileButton extends Component{
             <NavLink to="/brukerprofil">
                 <div className="user-nav">
                     <div className="row no-gutters">
-                        <div className="col-lg-3">
+                        <div className="col-lg-4">
                             <img src="https://s3.us-east-2.amazonaws.com/upload-icon/uploads/icons/png/19339625881548233621-512.png" width={50} alt=""/>
                         </div>
-                        <div className="col-lg-9">
+                        <div className="col-lg-8">
                             <div className="padding-left-15">
                                 <b>{this.state.username}</b><br/>
                                 Arrangør
                             </div>
                         </div>
+
                     </div>
                 </div>
             </NavLink>

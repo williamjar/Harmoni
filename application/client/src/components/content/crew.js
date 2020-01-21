@@ -584,7 +584,7 @@ export class CrewCard extends Component{
     save = () => {
         /* Save function to gather all information in the Performer Card that needs to be stored */
 
-        //TODO: Send signed contract and if artist has been payed
+        //TODO: Send signed contract and if artist has been hasBeenPaid
     }
 }
 

@@ -1,11 +1,11 @@
 import {Organizer} from "./organizer";
 
 export class Bug{
-    constructor(bugID, bugDate, description, organizer){
+    constructor(bugID, date, description, organizer){
         this.bugID = bugID;
-        this.bugDate = bugDate;
+        this.date = date;
         this.description = description;
-        this.organizer = organizer;
+        this.organizerID = organizer;
     }
 
     static getTestBugs(){

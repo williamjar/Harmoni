@@ -25,9 +25,12 @@ import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "
 import {Alert} from './components/alerts'
 
 
+
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
 import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
+import {BugReview} from "./components/bugReview";
+import {Contacts} from "./components/content/contacts/contacts";
 let history = createHashHistory();
 
 
@@ -37,9 +40,11 @@ export class App extends Component{
         super(props);
 
         this.state = {
-            loggedIn : CookieStore.validateToken(),
+            loggedIn : false,
             mobileView : false,
         };
+
+        this.handleLogin();
 
     }
 
@@ -69,8 +74,6 @@ export class App extends Component{
         } else{
             this.turnOnMobileView();
         }
-
-        this.handleLogin();
     };
 
     componentWillUnmount() {
@@ -86,7 +89,12 @@ export class App extends Component{
                     <HashRouter>
                         <div className="row no-gutters">
 
-                                {!this.state.mobileView?<div className="col-lg-2"><NavBar /></div>:<div className="col-12"><MobileMenu/></div>}
+                                {!this.state.mobileView ?
+                                    <div className="col-lg-2"><NavBar logOut={() => {
+                                        this.setState({loggedIn: false});
+                                    }
+                                    }/></div> :
+                                    <div className="col-12"><MobileMenu/></div>}
                                 {this.state.mobileView?
                                     <div className="margin-bottom-30"><br/> </div>:null
                                 }
@@ -95,7 +103,7 @@ export class App extends Component{
                             <div className="col-lg-10 col-sm-12">
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
                                 <Route exact path="/opprett"  component={() => <SimpleContent page={<CreateEventSplash />} />} />
-                                <Route exact path="/artister" component={() => <Content page={<Search/>} />} />
+                                <Route exact path="/artister" component={() => <Content page={<Contacts/>} />} />
                                 <Route exact path="/personell" component={Content}/>
                                 <Route exact path="/dokumenter" component={() => <Content page ={<MyDocuments/>}/>}/>
                                 <Route exact path="/dokumenter/:eventID" render={(props) => <Content page ={<FolderCategory{...props} />}/>}/>
@@ -103,6 +111,7 @@ export class App extends Component{
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage/>} />} />
                                 <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
                                 <Route exact path="/arrangementEdit/:id"  component={() => <Content page={<EventForm/>} />} />
+                                <Route exact path="/bug" component={() => <Content page={<BugReview/>}/>}/>
                             </div>
                         </div>
                     </HashRouter>
@@ -125,25 +134,29 @@ export class App extends Component{
     handleLogin = () => {
         let currentState = this.state;
 
-
-        let validate = CookieStore.validateToken();
-
-        if (!validate){
-            sessionStorage.removeItem('loggedIn');
-            history.push("/");
-        }
-        else{
-            sessionStorage.setItem('loggedIn', 'true');
+        if (sessionStorage.getItem('token') !== CookieStore.currentToken && CookieStore.currentToken !== null){
+            sessionStorage.setItem('token', CookieStore.currentToken);
         }
 
-        if (sessionStorage.getItem('loggedIn')){
-            currentState.loggedIn = true;
-        }
-        else{
-            currentState.loggedIn = false;
-        }
+        CookieStore.validateToken(validate => {
+            if (!validate){
+                sessionStorage.removeItem('loggedIn');
+                history.push("/");
+            }
+            else{
+                sessionStorage.setItem('loggedIn', 'true');
+            }
 
-        this.setState(currentState);
+            if (sessionStorage.getItem('loggedIn')){
+                console.log("User logged in");
+                currentState.loggedIn = true;
+            }
+            else{
+                currentState.loggedIn = false;
+            }
+
+            this.setState(currentState);
+        });
     }
 
 }
