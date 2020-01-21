@@ -51,6 +51,7 @@ export class TabContent extends Component {
         )
     }
 
+
     // Updates the state when the received props from parent changes
     static getDerivedStateFromProps(props, state) {
 
