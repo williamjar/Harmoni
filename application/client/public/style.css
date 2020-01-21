@@ -464,7 +464,6 @@ search-result-item{
 
 /* contact info */
 .contact:hover {
-    color: green;
     width: 50px !important;
     height: 50px !important;
     font-size: 18px;

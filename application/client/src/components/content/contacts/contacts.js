@@ -27,7 +27,7 @@ export class Contacts extends React.Component {
         this.state = {
             active: "all",
             performers: [],
-            genres: ["ROCK", "POP", "BLUES", "HIP HOP", "EDM", "JAZZ", "COUNTRY", "KLASSISK", "ANNET"]
+            genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"]
         };
     }
 
@@ -81,18 +81,23 @@ export class Contacts extends React.Component {
                         </Form.Control>
                     </Col>
                 </Row>
-                {this.state.genres.map(genre => { return(
-                    <Accordion id={genre} defaultActiveKey="0">
-                        <Row className="no-gutters primary-color-dark">
-                            <p>{genre}</p>
-                            <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
-                        </Row>
-                        <Accordion.Collapse eventKey="0">
-                            <Row className="no-gutters">
-                                <ContactList performers={this.state.performers}/>
-                            </Row>
-                        </Accordion.Collapse>
-                    </Accordion>)
+                {this.state.genres.map((genre, i) => {
+                    if(this.state.performers.find(performer => {return performer.genre === i + 1})) {
+                        return(
+                            <Accordion id={genre} defaultActiveKey="0">
+                                <Row className="no-gutters primary-color-dark">
+                                    <p>{genre}</p>
+                                    <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
+                                </Row>
+                                <Accordion.Collapse eventKey="0">
+                                    <Row className="no-gutters">
+                                        <ContactList performers={this.state.performers.filter(performer => performer.genre === i + 1)}/>
+                                    </Row>
+                                </Accordion.Collapse>
+                            </Accordion>)
+                    } else {
+                        return null;
+                    }
                 })}
             </Card>
         )
@@ -105,23 +110,28 @@ export class ContactList extends React.Component {
         super(props);
 
         this.state = {
-            performers: this.props.performers
+            performers: this.props.performers,
+            showContact: false,
+            currentPerformer: null,
+            genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"]
         }
     }
 
     static getDerivedStateFromProps(props, state) {
         if(props.performers !== state.performers) {
             return {
-                performers: props.performers,
-                showContact: false,
+                performers: props.performers
             }
         }
         return null;
     }
 
-    viewPerformer = () => {
+    viewPerformer = (e) => {
         console.log("view clicked");
-        this.setState({showContact: true});
+        this.setState({
+            showContact: true,
+            currentPerformer: this.state.performers.find(performer => {return performer.artistID === parseInt(e.target.id)})
+        });
     };
 
     hidePerformer = () => {
@@ -133,34 +143,34 @@ export class ContactList extends React.Component {
             <Table responsive>
                 <tbody>
                 {this.state.performers.map(performer => (
-                    <tr align='center' className="contact" onClick={this.viewPerformer}>
-                        <td align="left">{performer.contactName}</td>
-                        <td></td>
-                        <td align="right"><FaEye size={30}>Vis</FaEye></td>
+                    <tr align='center' className="contact pointer" onClick={this.viewPerformer} id={performer.artistID}>
+                        <td align="left" id={performer.artistID}>{performer.contactName}</td>
+                        <td id={performer.artistID}></td>
+                        <td align="right" id={performer.artistID}><FaEye size={30}>Vis</FaEye></td>
                     </tr>
                 ))}
                 </tbody>
                 <Modal show={this.state.showContact} onHide={this.hidePerformer}>
                     <Modal.Header closeButton>
                         <FaUserCircle size={35} className="mr-1"/>
-                        <Modal.Title>Artistnavn</Modal.Title>
+                        <Modal.Title>{this.state.currentPerformer !== null ? this.state.currentPerformer.contactName : null}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <h4>Kontakt</h4>
                         <Row>
-                            <Col xs={2}>
+                            <Col xs={1}>
                                 <FaEnvelopeSquare/>
                             </Col>
                             <Col>
-                                sevald_marcus@hotmail.com
+                                {this.state.currentPerformer !== null ? <a href={"mailto:" + this.state.currentPerformer.email}>{this.state.currentPerformer.email}</a> : null}
                             </Col>
                         </Row>
                         <Row className="mb-4">
-                            <Col xs={2}>
+                            <Col xs={1}>
                                 <FaPhone/>
                             </Col>
                             <Col>
-                                99251316
+                                {this.state.currentPerformer !== null ? this.state.currentPerformer.phone : null}
                             </Col>
                         </Row>
                         <h4>Artistinfo</h4>
@@ -169,7 +179,7 @@ export class ContactList extends React.Component {
                                 <FaMusic/>
                             </Col>
                             <Col>
-                                Rock
+                                {this.state.currentPerformer !== null && this.state.currentPerformer.genre !== null ? this.state.genres[this.state.currentPerformer.genre] : null}
                             </Col>
                         </Row>
                         <Row>
@@ -177,7 +187,6 @@ export class ContactList extends React.Component {
                                 <FaCalendar/>
                             </Col>
                             <Col>
-                                Test1, Test2, Test3
                             </Col>
                         </Row>
                     </Modal.Body>
