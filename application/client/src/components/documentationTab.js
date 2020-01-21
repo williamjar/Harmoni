@@ -8,8 +8,8 @@ import {EventStore} from "../store/eventStore";
 
 export class DocumentationTab extends Component{
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             description: '',
             selectedFile: ''
@@ -27,10 +27,13 @@ export class DocumentationTab extends Component{
     onSubmit = (e) => {
         e.preventDefault();
         const {description, selectedFile} = this.state;
+
+        const selectedCategory = document.getElementById("categorySelect").value;
+
         let formData = new FormData();
         formData.append('description', description);
         formData.append('selectedFile', selectedFile);
-        DocumentService.addDocument(EventStore.currentEvent.eventID, "Kontrakt", null, null, 1, formData, statusCode => {
+        DocumentService.addDocument(EventStore.currentEvent.eventID, selectedCategory, null, null, 1, formData, statusCode => {
             if (statusCode === 200){
                 alert("Document was added!");
             }
@@ -50,6 +53,17 @@ export class DocumentationTab extends Component{
                     value={description}
                     onChange={this.onChange}
                 />
+                <select id="categorySelect">
+                    <option value={1}>
+                        Kontrakter
+                    </option>
+                    <option value={2}>
+                        Riders
+                    </option>
+                    <option value={3}>
+                        Annet
+                    </option>
+                </select>
                 <input
                     type="file"
                     name="selectedFile"
