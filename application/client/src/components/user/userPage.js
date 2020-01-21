@@ -5,6 +5,7 @@ import {CookieStore} from "../../store/cookieStore";
 import {PictureService} from "../../store/pictureService";
 import {MegaValidator} from "../../megaValidator";
 import {LoginService} from "../../store/loginService";
+import {DocumentService as documentService} from "../../store/documentService";
 
 export class UserPage extends React.Component {
     constructor(props) {
@@ -22,7 +23,8 @@ export class UserPage extends React.Component {
             newProfilePicture: '',
             savingInformation: false,
             showPasswordAlert: false,
-            mode: 1
+            mode: 1,
+            link: ""
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -31,8 +33,28 @@ export class UserPage extends React.Component {
 
     componentDidMount() {
         this.updateInfo();
+        /*
+        PictureService.previewPicture(this.state.profilePicture, function (blob) {
+            const fileReaderInstance = new FileReader();
+            fileReaderInstance.readAsDataURL(blob);
+            fileReaderInstance.onload = () => {
+                let base64data = fileReaderInstance.result;
+                console.log(base64data);
+            };
+        }
+
+        );*/
+
+
     }
 
+    //Plasseres i img
+    viewHandler = async () => {
+        PictureService.previewPicture(this.state.profilePicture, (url) => {
+            this.setState({link: url})
+        });
+        //<img src={require('./meme.jpg')}  alt={"test"}/>
+    };
 
     render() {
         return (
@@ -53,7 +75,9 @@ export class UserPage extends React.Component {
                     <Row>
                         <Col>
                             <Card className={"p-2 card border-0"}>
-                                <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} />
+                                <Button onClick = {() => this.viewHandler()}>TEST MEG</Button>
+                                <p>{this.state.link}</p>
+                                <img id="myimage" src = {this.state.link} alt={"FAM"}/>
 
                                 <Form onSubmit={this.handleSubmit}>
 

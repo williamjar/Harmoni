@@ -1,4 +1,4 @@
-import {app,pictureDao} from "./server";
+import {app, fs, pictureDao} from "./server";
 
 //Insert picture
 app.post("/api/picture/insert", (request, response) => {
@@ -34,4 +34,12 @@ app.get("/api/picture/:pictureID", (require, response) => {
         response.status(status);
         response.json(data);
     }, require.params.pictureID);
+});
+
+
+app.get("/bilde/:path*", (req, res) => {
+    console.log("Forbanna drit");
+    console.log("PATH: " + req.params.path + req.params['0']);
+    var file = fs.createReadStream("./" + req.params.path + req.params['0']);
+    file.pipe(res);
 });

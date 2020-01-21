@@ -70,6 +70,77 @@ export class PictureService {
             .catch(err => callback(500));
     }
 
+/*
+   static previewPicture(pictureLink, callback){
+            axios.get(axiosConfig.root + '/bilde/' + pictureLink, {
+                method: "GET",
+                responseType: "blob"
+                //Force to receive data in a Blob Format
+            }).then(response => {
+                //Create a Blob from the PDF Stream
+                console.log(response.data);
+                const blob = new Blob([response.data], {
+                    type: "image/jpg"
+                });
+
+                callback(blob);
+            })
+    }
+ */
+
+
+    static previewPicture(pictureLink, callback){
+            axios.get(axiosConfig.root + '/bilde/' + pictureLink, {
+                method: "GET",
+                responseType: "blob"
+                //Force to receive data in a Blob Format
+            }).then(response => {
+                //Create a Blob from the PDF Stream
+                console.log(response.data);
+                const blob = new Blob([response.data], {
+                    type: "image/jpg"
+                });
+                //Build a URL from the file
+                console.log(blob);
+                const fileURL = URL.createObjectURL(blob);
+                console.log("HER KOMMER FIL URL " + fileURL);
+                //Open the URL on new Window
+                callback(fileURL);
+                //window.open(fileURL);
+            })
+                .catch(error => {
+                    console.log(error);
+                });
+    }
+
+    /*
+     static previewPicture(pictureLink){
+        if((/\.(jpg)$/i).test(pictureLink)){
+            axios.get(axiosConfig.root + '/bilde/' + pictureLink, {
+                method: "GET",
+                responseType: "blob"
+                //Force to receive data in a Blob Format
+            }).then(response => {
+                //Create a Blob from the PDF Stream
+                console.log(response.data);
+                const file = new Blob([response.data], {
+                    type: "image/jpg"
+                });
+                //Build a URL from the file
+                const fileURL = URL.createObjectURL(file);
+                console.log("HER KOMMER FIL URL " + fileURL);
+                //Open the URL on new Window
+                window.open(fileURL);
+            })
+                .catch(error => {
+                    console.log(error);
+                });
+        } else {
+            console.log("Can only preview png, jpg or jpeg images");
+        }
+    }
+     */
+
 
     //Delete picture
     deletePicture(pictureID){
