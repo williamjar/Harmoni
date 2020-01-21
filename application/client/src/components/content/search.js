@@ -57,8 +57,6 @@ export class Search extends Component{
                             <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>{show.eventName}</div>
                         ):null}
 
-
-
                 </div>
             </div>
         )
