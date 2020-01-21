@@ -98,18 +98,18 @@ export class Dashboard extends React.Component {
                                         onClick={this.filterEvents}>Kansellerte</Button>
                             </ButtonGroup>
                         </Col>
-                    </Row>
-                    <Row className="mb-2">
-                        <Col xs={2}>
-                            <Form.Control as="select" size="sm" onChange={this.sortSelected}>
-                                <option selected disabled>Sorter etter..</option>
-                                <option value={0}>Dato</option>
-                                <option value={1}>Navn</option>
-                                {/*<option value={1}>Pris</option>*/}
-                                <option value={2}>Sted</option>
-                            </Form.Control>
-                        </Col>
-                    </Row>
+                </Row>
+                <Row className="mb-2">
+                    <Col xs={2}>
+                        <Form.Control as="select" size="sm" onChange={this.sortSelected}>
+                            <option disabled>Sorter etter..</option>
+                            <option value={0}>Dato</option>
+                            <option value={1}>Navn</option>
+                            {/*<option value={1}>Pris</option>*/}
+                        <option value={2}>Sted</option>
+                        </Form.Control>
+                    </Col>
+                </Row>
 
                 {this.state.active === "all" || this.state.active === "published" ?
                     <Accordion id="publishedEvents" defaultActiveKey="0">
