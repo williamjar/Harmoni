@@ -1,4 +1,4 @@
-import {app, loginDao,organizerDao, SECRET, jwt} from "./server";
+import {app, loginDao, organizerDao, SECRET, jwt} from "./server";
 import {CookieStore} from "../../client/src/store/cookieStore";
 
 let privateKey = SECRET.privateKey;
@@ -80,23 +80,31 @@ app.post("/token", (req, res) => {
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
     let token;
-    if (req.headers["x-access-token"]){
+    if (req.headers["x-access-token"]) {
         token = req.headers["x-access-token"];
         console.log("Token in /api " + token);
         try {
-            jwt.verify(token, publicKey);
-            let email = jwt.decode(token, publicKey).email;
-            console.log('Token OK for: ' + email);
-            let newToken = jwt.sign(
-                {
-                    exp: Math.floor(Date.now() / 1000) + (TOKEN_LENGTH),
-                    email: email
-                }, privateKey, {
-                    algorithm: "RS512",
-                });
-            console.log("Token after /api " + newToken);
-            CookieStore.setCurrentToken(newToken);
-            next();
+            console.log("here we go");
+            jwt.verify(token, publicKey, (err) => {
+                if (err) {
+                    console.log("Token not ok");
+                    res.status(401);
+                    res.json({error: "Not authorized"});
+                } else {
+                    let email = jwt.decode(token, publicKey);
+                    console.log('Token OK for: ' + email);
+                    let newToken = jwt.sign(
+                        {
+                            exp: Math.floor(Date.now() / 1000) + (TOKEN_LENGTH),
+                            email: email
+                        }, privateKey, {
+                            algorithm: "RS512",
+                        });
+                    console.log("Token after /api " + newToken);
+                    CookieStore.setCurrentToken(newToken);
+                    next();
+                }
+            });
         } catch (e) {
             console.log('Token not OK');
             res.status(401);
@@ -104,6 +112,7 @@ app.use('/api', (req, res, next) => {
         }
     } else {
         res.json({error: "No token given for /api"});
+        console.log("Token not OK");
     }
 });
 
