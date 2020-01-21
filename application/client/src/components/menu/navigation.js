@@ -90,6 +90,7 @@ export class NavBar extends Component{
                     sessionStorage.removeItem('loggedIn');
                     CookieStore.setCurrentToken(null);
                     CookieStore.setCurrentUserID(-1);
+                    history.push("/");
                     this.props.logOut();
                 }}>
                     Logg av <FaSignOutAlt size={20}/>
