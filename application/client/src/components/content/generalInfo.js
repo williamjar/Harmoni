@@ -121,9 +121,10 @@ export class InfoForm extends Component {
                                 <Col>
                                     <Form.Label>Type arrangement</Form.Label>
                                     <Form.Control as="select">
-                                        <option value={1}>Konsert</option>
-                                        <option value={2}>Festival</option>
-                                        <option value={3}>Konkurranse</option>
+                                        {
+                                            EventStore.eventCategories.map((eventType,index) => (
+                                            <option value={index}>{eventType}</option>
+                                        ))}
                                     </Form.Control>
                                 </Col>
                             </Row>

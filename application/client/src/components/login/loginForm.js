@@ -108,12 +108,7 @@ export class LoginForm extends React.Component {
                 this.setState({loggingIn: false});
                 this.setState({serverError: true});
             }
-
-
-
         });
-
-
     }
 
     // Database control functions to display the proper error message to the user.

@@ -1,4 +1,4 @@
-import {app,eventDao} from "./server";
+import {app, eventDao} from "./server";
 
 //Get all events
 app.get("/api/events", (request, response) => {
@@ -46,16 +46,22 @@ app.get("/api/events/organizer/:organizerID", (request, response) => {
     }, request.params.organizerID);
 });
 
-//TO-DO: Check if this endpoint works with localStorage
-//ANSWER: IT DOES NOT
-
 //Get all events by status
 app.get("/api/events/status/:organizerID/:status", (request, response) => {
-    console.log("Express: Request to get all events for organizer " + request.params.organizerID+ " with status " + request.params.status);
+    console.log("Express: Request to get all events for organizer " + request.params.organizerID + " with status " + request.params.status);
     eventDao.getByStatusForOrganizer((status, data) => {
         response.status(status);
         response.json(data);
     }, request.params.status, request.params.organizerID);
+});
+
+// Get all event types
+app.get("/api/events/type", (request, response) => {
+    console.log("Get all event categories from the DB");
+    eventDao.getAllEventTypes((status, data) => {
+        response.status(status);
+        response.json(data);
+    });
 });
 
 //Delete an event
