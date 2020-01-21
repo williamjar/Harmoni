@@ -21,6 +21,7 @@ export class OrganizerStore {
 
         axios.get(axiosConfig.root + '/api/organizer/' + organizerID, {headers: header})
             .then(response => {
+                console.log("Setting organizer to " + organizerID);
                     this.currentOrganizer = new Organizer(response.data[0].organizerID, response.data[0].contactID, response.data[0].contactName, response.data[0].phone,
                         response.data[0].email, response.data[0].username, response.data[0].pictureLink);
                     console.log(this.currentOrganizer);

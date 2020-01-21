@@ -28,6 +28,7 @@ import {Alert} from './components/alerts'
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
 import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
+import {OrganizerStore} from "./store/organizerStore";
 let history = createHashHistory();
 
 
@@ -36,11 +37,12 @@ export class App extends Component{
     constructor(props) {
         super(props);
 
+        console.log("APP constructor");
+
         this.state = {
-            loggedIn : CookieStore.validateToken(),
+            loggedIn : false,
             mobileView : false,
         };
-
     }
 
     turnOffMobileView = () => {
@@ -56,6 +58,9 @@ export class App extends Component{
     };
 
     componentDidMount = () => {
+
+        console.log("Component mounted");
+
         window.addEventListener('resize', () =>{
             if(window.innerWidth > 991){
                 this.turnOffMobileView();
@@ -80,6 +85,7 @@ export class App extends Component{
     }
 
     render(){
+        console.log("Logged in? " + this.state.loggedIn);
         if (this.state.loggedIn){
             return (
                 <div className="App">
@@ -125,25 +131,38 @@ export class App extends Component{
     handleLogin = () => {
         let currentState = this.state;
 
+        CookieStore.validateToken(validate => {
+            console.log(CookieStore.currentUserID);
+            console.log(CookieStore.currentToken);
+            console.log(validate);
+            if (!validate){
+                sessionStorage.removeItem('loggedIn');
+                history.push("/");
+            }
+            else{
+                console.log("Session storage has been set");
+                sessionStorage.setItem('loggedIn', 'true');
+            }
 
-        let validate = CookieStore.validateToken();
+            if (sessionStorage.getItem('loggedIn')){
+                console.log("Session storage has been got");
+                currentState.loggedIn = true;
+            }
+            else{
+                currentState.loggedIn = false;
+            }
 
-        if (!validate){
-            sessionStorage.removeItem('loggedIn');
-            history.push("/");
-        }
-        else{
-            sessionStorage.setItem('loggedIn', 'true');
-        }
+            this.setState(currentState);
 
-        if (sessionStorage.getItem('loggedIn')){
-            currentState.loggedIn = true;
-        }
-        else{
-            currentState.loggedIn = false;
-        }
-
-        this.setState(currentState);
+            OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
+                if (statusCode === 200){
+                    console.log("Organizer has been set");
+                }
+                else{
+                    console.log("Error");
+                }
+            });
+        });
     }
 
 }
