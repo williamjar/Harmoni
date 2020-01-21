@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Row, Col} from 'react-bootstrap'
+import {Row, Col, Card} from 'react-bootstrap'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { NavLink } from 'react-router-dom';
@@ -15,6 +15,7 @@ import Navbar from "react-bootstrap/Navbar";
 import {FaBars} from "react-icons/all";
 import {FaUserCog} from "react-icons/all";
 import { createHashHistory } from 'history';
+import {PictureService} from "../../store/pictureService";
 let history = createHashHistory();
 
 export class MobileMenu extends Component{
@@ -135,7 +136,9 @@ export class UserProfileButton extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            username: ''
+            username: '',
+            profilePicture: '',
+            link: ''
         };
     }
 
@@ -143,14 +146,24 @@ export class UserProfileButton extends Component{
         this.updateInfo();
     }
 
+    checkIfUserHasPicture(){
+        PictureService.previewPicture(this.state.profilePicture, (url) => {
+            this.setState({link: url})
+        });
+        if(this.state.profilePicture !== ''){
+            return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
+        }else {
+            return(<img width={50} src={require('../user/profile.png')} alt={"Bildet kunne ikke lastes inn"}/>);
+        }
+    }
+
+
     render() {
         return(
             <NavLink to="/brukerprofil">
                 <div className="user-nav">
                     <div className="row no-gutters">
-                        <div className="col-lg-3">
-                            <img src="https://s3.us-east-2.amazonaws.com/upload-icon/uploads/icons/png/19339625881548233621-512.png" width={50} alt=""/>
-                        </div>
+                        {this.checkIfUserHasPicture()}
                         <div className="col-lg-9">
                             <div className="padding-left-15">
                                 <b>{this.state.username}</b><br/>
@@ -166,9 +179,13 @@ export class UserProfileButton extends Component{
     updateInfo(){
         OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
             if (statusCode === 200){
-                var databaseUsername = OrganizerStore.currentOrganizer.username;
+                let databaseUsername = OrganizerStore.currentOrganizer.username;
+                let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
+
+
                 this.setState(this.setState({
-                    username: databaseUsername
+                    username: databaseUsername,
+                    profilePicture: databaseImage
                 }));
             }
         });

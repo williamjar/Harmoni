@@ -33,28 +33,19 @@ export class UserPage extends React.Component {
 
     componentDidMount() {
         this.updateInfo();
-        /*
-        PictureService.previewPicture(this.state.profilePicture, function (blob) {
-            const fileReaderInstance = new FileReader();
-            fileReaderInstance.readAsDataURL(blob);
-            fileReaderInstance.onload = () => {
-                let base64data = fileReaderInstance.result;
-                console.log(base64data);
-            };
-        }
-
-        );*/
-
-
     }
 
-    //Plasseres i img
-    viewHandler = async () => {
+
+    checkIfUserHasPicture(){
         PictureService.previewPicture(this.state.profilePicture, (url) => {
             this.setState({link: url})
         });
-        //<img src={require('./meme.jpg')}  alt={"test"}/>
-    };
+        if(this.state.profilePicture !== ''){
+           return(<img src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
+        }else {
+            return(<img width={"200px"} src={require('./profile.png')} alt={"Bildet kunne ikke lastes inn"}/>);
+        }
+    }
 
     render() {
         return (
@@ -75,10 +66,7 @@ export class UserPage extends React.Component {
                     <Row>
                         <Col>
                             <Card className={"p-2 card border-0"}>
-                                <Button onClick = {() => this.viewHandler()}>TEST MEG</Button>
-                                <p>{this.state.link}</p>
-                                <img id="myimage" src = {this.state.link} alt={"FAM"}/>
-
+                                {this.checkIfUserHasPicture()}
                                 <Form onSubmit={this.handleSubmit}>
 
                                     <Form.Group>
