@@ -77,7 +77,9 @@ app.post("/api/crew/assign", (request, response) => {
         request.body.eventID,
         request.body.crewCategoryID,
         request.body.crewID,
-        request.body.isResponsible
+        request.body.isResponsible,
+        request.body.contractSigned,
+        request.body.hasBeenPaid
     ];
     crewDao.assignOne((status, data) => {
         response.status(status);
@@ -116,18 +118,15 @@ app.put("/api/crew/:crewID", (request, response) => {
     }, val);
 });
 
-app.put("/api/crew/:crewID/event/:eventID", (request, response) => {
+app.put("/crew/:crewID/event/:eventID", (request, response) => {
     console.log("update responsibility and contracts for crew");
     let val = [
         request.body.isResponsible,
         request.body.contractSigned,
         request.body.hasBeenPaid,
-        request.params.eventID,
         request.body.crewCategoryID,
+        request.params.eventID,
         request.params.crewID,
-
-
-
     ];
 
     crewDao.updateOneForEvent((status,data) => {

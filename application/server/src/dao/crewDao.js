@@ -15,7 +15,7 @@ module.exports = class crewDao extends Dao {
     }
 
     updateOneForEvent(callback, list){
-        super.query('UPDATE event_crewCategory_Crew SET crewCategoryID = ?, isResponsible = ?, contractSigned = ?, hasBeenPaid = ? WHERE eventID = ? AND crewID = ?', list, callback);
+        super.query('UPDATE event_crewCategory_crew SET isResponsible = ?, contractSigned = ?, hasBeenPaid = ?, crewCategoryID = ? WHERE eventID = ? AND crewID = ?', list, callback);
     }
 
     deleteOne(callback, contactID) {
