@@ -32,7 +32,7 @@ export class BugReview extends Component {
     render(){
         return(
                 <Card.Body>
-                    <FormGroup controlId="ControlTextarea">
+                    <FormGroup controlId="ControlTextarea" className="bugWindow">
                         <FormLabel>
                             {reportBugs}
                         </FormLabel>
@@ -46,11 +46,11 @@ export class BugReview extends Component {
                             />
                         </Row>
                         <Row>
-                            <Button variant="success" onClick={this.handleSubmit}>Publiser</Button>
+                            <Button className="bugButton" variant="success" onClick={this.handleSubmit}>Publiser</Button>
                         </Row>
-
                     </FormGroup>
-                    <FormGroup >
+
+                    <FormGroup className="bugWindow">
                         <FormLabel>{listBugs}</FormLabel>
                             <ListGroup>
                                 {this.state.bugList.map( bug => (
