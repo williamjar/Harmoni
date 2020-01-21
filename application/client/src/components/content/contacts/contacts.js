@@ -35,6 +35,10 @@ export class Contacts extends React.Component {
         ArtistService.getArtistForOrganizer((res) => this.setState({performers: res}), CookieStore.currentUserID);
     }
 
+    filterPerformers = (e) => {
+        this.setState({active: e.target.name});
+    };
+
     render() {
         console.log(this.state.performers);
         return(
@@ -122,7 +126,8 @@ export class ContactList extends React.Component {
         super(props);
 
         this.state = {
-            performers: this.props.performers,
+            unsorted: this.props.performers,
+            performers: [],
             showContact: false,
             currentPerformer: null,
             genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"]
@@ -130,9 +135,9 @@ export class ContactList extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if(props.performers !== state.performers) {
+        if(props.unsorted !== state.unsorted) {
             return {
-                performers: props.performers
+                unsorted: props.unsorted
             }
         }
         return null;
@@ -150,9 +155,21 @@ export class ContactList extends React.Component {
         this.setState({showContact: false});
     };
 
+    sortPerformers = (performers) => {
+        let sorted = [].concat(performers).sort((a,b) => {
+            return a.contactName>b.contactName ? 1 : a.contactName<b.contactName ? -1 : 0;
+        });
+        this.setState({performers: sorted});
+    };
+
+    componentDidMount() {
+        this.sortPerformers(this.props.performers);
+    }
+
     render() {
         return(
             <Table responsive>
+                {console.log(this.state.performers)}
                 <tbody>
                 {this.state.performers.map(performer => (
                     <tr align='center' className="contact pointer" onClick={this.viewPerformer} id={performer.artistID} key={performer.artistID}>
