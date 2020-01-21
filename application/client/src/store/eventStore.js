@@ -52,7 +52,7 @@ export class EventStore {
 
         axios.post(axiosConfig.root + "/api/events", body, {headers: header}).then(response => {
             //Create an event from the insertID returned from the query and the organizerID, the rest is null
-            this.currentEvent = new Event(response.data.insertId, eventName, today, today, startTime, endTime, null, null, null, 0, null, null, null, organizerID, null);
+            this.currentEvent = new Event(response.data.insertId, eventName, today, today, startTime, endTime, null, null, null, 0, null, null, null, organizerID, 0, null);
             callback();
         }).catch(console.log("Error in eventStore"));
     }
@@ -72,7 +72,7 @@ export class EventStore {
                 response.data[0].endTime, response.data[0].address, response.data[0].town,
                 response.data[0].zipCode, response.data[0].status, response.data[0].description,
                 response.data[0].publishDate, response.data[0].publishTime, response.data[0].organizerID,
-                response.data[0].pictureID);
+                response.data[0].eventTypeName, response.data[0].pictureID);
         });
     }
 
@@ -98,6 +98,7 @@ export class EventStore {
             "publishDate": this.currentEvent.publishDate,
             "publishTime": this.currentEvent.publishTime,
             "organizerID": this.currentEvent.organizer,
+            "eventTypeID": this.currentEvent.eventType,
             "pictureID": this.currentEvent.picture
         };
 
@@ -119,7 +120,7 @@ export class EventStore {
                     response.data[i].endTime, response.data[i].address, response.data[i].town,
                     response.data[i].zipCode, response.data[i].status, response.data[i].description,
                     response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
-                    response.data[i].picture));
+                    response.data[i].eventTypeName, response.data[i].picture));
             }
 
             if (response.error) {
@@ -192,7 +193,7 @@ export class EventStore {
                     response.data[i].endTime, response.data[i].address, response.data[i].town,
                     response.data[i].zipCode, response.data[i].status, response.data[i].description,
                     response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
-                    response.data[i].picture));
+                    response.data[i].eventTypeName, response.data[i].picture));
             }
 
             console.log("EventStore: allEventsForOrganizer: " + this.allEventsForOrganizer);
@@ -208,8 +209,11 @@ export class EventStore {
         };
 
         axios.get(axiosConfig.root + "/api/event-type", {headers: header}).then(response => {
-            response.data.map(eventType =>
-                EventStore.eventCategories.push(eventType.eventTypeName));
+            this.eventCategories = [];
+            for (let i = 0; i < response.data.length; i++) {
+                this.eventCategories.push(response.data[i].eventTypeName);
+                console.log(response.data[i].eventTypeName);
+            }
         }).then(res => console.log("GET EVENT CAT: " + res));
     }
 

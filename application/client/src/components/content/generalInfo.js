@@ -63,6 +63,7 @@ export class InfoForm extends Component {
             zipCode: EventStore.currentEvent.zipCode,
             town: EventStore.currentEvent.town,
             description: EventStore.currentEvent.description,
+            eventType: EventStore.currentEvent.eventType,
             savingInformation: false,
             dateError: false
         };
@@ -120,7 +121,7 @@ export class InfoForm extends Component {
                                 </Col>
                                 <Col>
                                     <Form.Label>Type arrangement</Form.Label>
-                                    <Form.Control as="select">
+                                    <Form.Control as="select" value={this.state.eventType} name="eventType" onChange={this.handleChange}>
                                         {
                                             EventStore.eventCategories.map((eventType,index) => (
                                             <option value={index}>{eventType}</option>
@@ -206,7 +207,7 @@ export class InfoForm extends Component {
                                                 <Form.Label>Kategori:</Form.Label>
                                             </Col>
                                         </Row>
-                                        Musikk
+                                        {EventStore.eventCategories[EventStore.currentEvent.eventType]}
                                     </Col>
                                 </Row>
                                 <Row className="mb-4">
@@ -315,6 +316,7 @@ export class InfoForm extends Component {
             EventStore.currentEvent.zipCode = this.state.zipCode;
             EventStore.currentEvent.town = this.state.town;
             EventStore.currentEvent.description = this.state.description;
+            EventStore.currentEvent.eventType = this.state.eventType;
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql
     formatDate(date) {

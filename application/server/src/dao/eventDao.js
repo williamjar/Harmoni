@@ -11,7 +11,7 @@ module.exports = class eventDao extends Dao {
     }
 
     getOne(callback, eventID) {
-        super.query('SELECT * FROM event WHERE eventID = ?', [eventID], callback);
+        super.query('SELECT * FROM event LEFT JOIN eventType ON event.eventTypeID = eventType.eventTypeID WHERE eventID = ?', [eventID], callback);
     }
 
     createOne(callback, list) {
