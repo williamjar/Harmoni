@@ -56,25 +56,27 @@ export class Contacts extends React.Component {
                         <Col>
                             <ButtonGroup size="sm">
                                 <Button name="all" variant="secondary" active={this.state.active === "all"}
-                                        onClick={this.filterEvents}>Alle</Button>
-                                <Button name="planning" variant="secondary" active={this.state.active === "planning"}
-                                        onClick={this.filterEvents}>Rock</Button>
-                                <Button name="published" variant="secondary" active={this.state.active === "published"}
-                                        onClick={this.filterEvents}>Pop</Button>
-                                <Button name="archived" variant="secondary" active={this.state.active === "archived"}
-                                        onClick={this.filterEvents}>Blues</Button>
-                                <Button name="cancelled" variant="secondary" active={this.state.active === "cancelled"}
-                                        onClick={this.filterEvents}>Rap/Hip hop</Button>
-                                <Button name="cancelled" variant="secondary" active={this.state.active === "cancelled"}
-                                        onClick={this.filterEvents}>EDM</Button>
-                                <Button name="cancelled" variant="secondary" active={this.state.active === "cancelled"}
-                                        onClick={this.filterEvents}>Jazz</Button>
-                                <Button name="cancelled" variant="secondary" active={this.state.active === "cancelled"}
-                                        onClick={this.filterEvents}>Country</Button>
-                                <Button name="cancelled" variant="secondary" active={this.state.active === "cancelled"}
-                                        onClick={this.filterEvents}>Klassisk</Button>
-                                <Button name="cancelled" variant="secondary" active={this.state.active === "cancelled"}
-                                        onClick={this.filterEvents}>Annet</Button>
+                                        onClick={this.filterPerformers}>Alle</Button>
+                                <Button name="Pop" variant="secondary" active={this.state.active === "Pop"}
+                                        onClick={this.filterPerformers}>Pop</Button>
+                                <Button name="Rock" variant="secondary" active={this.state.active === "Rock"}
+                                        onClick={this.filterPerformers}>Rock</Button>
+                                <Button name="Metal" variant="secondary" active={this.state.active === "Metal"}
+                                        onClick={this.filterPerformers}>Metal</Button>
+                                <Button name="Blues" variant="secondary" active={this.state.active === "Blues"}
+                                        onClick={this.filterPerformers}>Blues</Button>
+                                <Button name="Hip Hop" variant="secondary" active={this.state.active === "Hip Hop"}
+                                        onClick={this.filterPerformers}>Hip Hop</Button>
+                                <Button name="Electronic Dance Music" variant="secondary" active={this.state.active === "Electronic Dance Music"}
+                                        onClick={this.filterPerformers}>EDM</Button>
+                                <Button name="Jazz" variant="secondary" active={this.state.active === "Jazz"}
+                                        onClick={this.filterPerformers}>Jazz</Button>
+                                <Button name="Country" variant="secondary" active={this.state.active === "Country"}
+                                        onClick={this.filterPerformers}>Country</Button>
+                                <Button name="Klassisk" variant="secondary" active={this.state.active === "Klassisk"}
+                                        onClick={this.filterPerformers}>Klassisk</Button>
+                                <Button name="Annet" variant="secondary" active={this.state.active === "Annet"}
+                                        onClick={this.filterPerformers}>Annet</Button>
                             </ButtonGroup>
                         </Col>
                     </Row>
@@ -87,7 +89,7 @@ export class Contacts extends React.Component {
                         </Col>
                     </Row>
                     {this.state.performers.length !== null ? this.state.genres.map((genre, i) => {
-                        if(this.state.performers.find(performer => {return performer.genre === i + 1})) {
+                        if(this.state.performers.find(performer => {return performer.genre === i + 1}) && (this.state.active === genre || this.state.active === "all")) {
                             return(
                                 <Accordion id={genre} defaultActiveKey="0">
                                     <Row className="no-gutters primary-color-dark">
