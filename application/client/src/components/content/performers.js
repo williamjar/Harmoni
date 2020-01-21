@@ -53,7 +53,7 @@ export class PerformerPanel extends Component{
 
                             <div className="padding-top-20">
                                 {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
-                                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} refreshFunction={this.refreshList}/>:null}
+                                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} />:null}
                             </div>
                         </div>
 
@@ -82,22 +82,18 @@ export class PerformerPanel extends Component{
         });
     };
 
-    refreshList = () => {
-        ArtistService.getArtistsForEvent((list) => {
-            EventStore.currentEvent.artists = list;
-            let currentState = this.state;
-            currentState.performerList = list; //Receive a new array from database with assigned performer to event
-            this.setState(currentState);
-        }, EventStore.currentEvent.eventID);
-    }
-
     assignArtist = (selected) => {
         //Assign performer to event
         let currentState = this.state;
         ArtistService.assignArtist(EventStore.currentEvent.eventID, selected.artistID).then(res => {
-             this.refreshList();
-            }
-        );
+            ArtistService.getArtistsForEvent((list) => {
+                EventStore.currentEvent.artists = list;
+                let currentState = this.state;
+                currentState.performerList = list; //Receive a new array from database with assigned performer to event
+                this.setState(currentState);
+            }, EventStore.currentEvent.eventID);
+
+        }).catch(res => console.log(res));
         currentState.performerSelected = selected;
         this.setState(currentState);
     };
@@ -113,11 +109,11 @@ export class PerformerPanel extends Component{
             currentState.showArtistCard = true;
             this.setState(currentState);
         }, performer.artistID, EventStore.currentEvent.eventID);
-
     };
 
     componentDidMount() {
         this.callBackSearchResult();
+
         ArtistService.getArtistsForEvent((list) => {
             let currentState = this.state;
             currentState.performerList = list;
@@ -147,8 +143,6 @@ export class PerformerPanel extends Component{
     };
 
     submitFunction = (artist) => {
-        console.log("artist mottatt");
-        console.log(artist);
         this.assignArtist(artist);
         this.callBackSearchResult();
         this.toggleRegisterNew();
@@ -305,8 +299,11 @@ export class PerformerCard extends Component{
                 performer: props.performerSelected,
                 hasBeenPaid : props.performerSelected.hasBeenPaid,
                 contractSigned : props.performerSelected.contractSigned,
+                genre : props.performerSelected.genre,
             };
         }
+
+
         return null;
     }
 
@@ -314,24 +311,17 @@ export class PerformerCard extends Component{
       this.setState({genre : event.target.value});
     };
 
-    updateArtist = () => {
-        this.setState({hasBeenPaid : this.state.performer.hasBeenPaid, contractSigned : this.state.performer.contractSigned});
-    };
-
     componentDidMount() {
         //Fetches all riders for current artist and event and stores them in state
         let currentState = this.state;
 
-        this.setState({hasBeenPaid : this.state.performer.hasBeenPaid, contractSigned : this.state.performer.contractSigned});
+        this.setState({hasBeenPaid : this.state.performer.hasBeenPaid, contractSigned : this.state.performer.contractSigned, genre : this.state.performer.genre});
         currentState.riders = RiderStore.allRidersForCurrentEvent;
-        currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
+        //currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
 
         ArtistService.getAllGenres((res) => {
            this.setState({genreList : res});
-
         });
-
-
     }
 
     //TODO: Change states that show if files are added to server
@@ -438,7 +428,6 @@ export class PerformerCard extends Component{
 
         //TODO: Send signed contract and if artist has been hasBeenPaid
         artistService.updateArtistEventInfo(()=>{
-            this.props.refreshFunction();
         }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.contractSigned, this.state.hasBeenPaid);
 
     }
@@ -681,6 +670,11 @@ export class RegisteredPerformers extends Component{
         )
     }
 
+    componentDidMount() {
+        console.log("list received");
+        console.log(this.props.performersAdded);
+    }
+
     unAssignArtist = (artist) => {
         //Call to parent with performer object to remove from event.
         this.props.unAssignArtist(artist);
@@ -690,27 +684,4 @@ export class RegisteredPerformers extends Component{
         //Call to parent with selected performer to show performer card
         this.props.changeCard(performer);
     };
-}
-
-export class PerformersView extends Component {
-    /* View component of registered artist to event */
-
-    render() {
-        return(
-            <div>
-                <b>Artister som er lagt til</b>
-                <div className="card card-body">
-                    <div className="row">
-                        <div className="col-10">
-                            Lorde
-                        </div>
-
-                        <div className="col-2">
-                            <button className="btn-primary rounded mr-2">Vis artist</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    }
 }
