@@ -32,18 +32,19 @@ export class UserPage extends React.Component {
     }
 
     componentDidMount() {
-        this.updateInfo();
+        this.updateInfo((profilePicture) => {
+            if(profilePicture !== null && profilePicture !== ''){
+                PictureService.previewPicture(profilePicture, (url) => {
+                    this.setState({link: url})
+                });
+            }
+        });
 
     }
 
 
     checkIfUserHasPicture(){
         if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
-            console.log("Denne skal ikke kjøre");
-            PictureService.previewPicture(this.state.profilePicture, (url) => {
-                this.setState({link: url})
-            });
-
             return(<img width={"200px"} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
         }else {
             return(<img width={"200px"} src={require('./profile.png')} alt={"Bildet kunne ikke lastes inn"}/>);
@@ -228,7 +229,7 @@ export class UserPage extends React.Component {
     }
 
 
-    updateInfo() {
+    updateInfo(callback) {
         OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
             if (statusCode === 200) {
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
@@ -254,6 +255,7 @@ export class UserPage extends React.Component {
                     phonenumber: databasePhone,
                     profilePicture: databaseImage
                 }));
+                callback(databaseImage);
             } else {
                 //console.log("We have an error!");
             }

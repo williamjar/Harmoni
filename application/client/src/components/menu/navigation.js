@@ -143,17 +143,17 @@ export class UserProfileButton extends Component{
     }
 
     componentDidMount() {
-        this.updateInfo();
+        this.updateInfo((profilePicture) => {
+            if(profilePicture !== null && profilePicture !== ''){
+                PictureService.previewPicture(profilePicture, (url) => {
+                    this.setState({link: url})
+                });
+            }
+        })
     }
 
     checkIfUserHasPicture(){
         if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
-            console.log("This should not run");
-            console.log(this.state.profilePicture);
-            PictureService.previewPicture(this.state.profilePicture, (url) => {
-                this.setState({link: url})
-            });
-            //return(<img width={50} src={require('../user/profile.png')} alt={"test"}/>);
             return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
         }else {
             return(<img width={50} src={require('../user/profile.png')} alt={"test"}/>);
@@ -179,7 +179,7 @@ export class UserProfileButton extends Component{
         )
     }
 
-    updateInfo(){
+    updateInfo(callback){
         OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
             if (statusCode === 200){
                 let databaseUsername = OrganizerStore.currentOrganizer.username;
@@ -190,6 +190,7 @@ export class UserProfileButton extends Component{
                     username: databaseUsername,
                     profilePicture: databaseImage
                 }));
+                callback(databaseImage);
             }
         });
     }
