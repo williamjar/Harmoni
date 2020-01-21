@@ -4,6 +4,7 @@ import {Button, Col, Row} from "react-bootstrap";
 import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
 import {Alert} from '../alerts.js';
+import {MailService} from "../../store/mailService";
 
 const history = createHashHistory();
 
@@ -24,23 +25,23 @@ export class TabContent extends Component {
                     {this.props.children}
                 </div>
                 <Row>
-                    <Col xs={6} md={3}>
+                    <Col>
                         <div>
-                            <Button className="mr-1" onClick={this.props.onClick}>Neste</Button>
+                            <Button className="float-right mr-1" onClick={this.props.onClick}>Neste</Button>
 
-                            <Button hidden={!(this.state.status === 1)} variant="danger" onClick={() => {
+                            <Button hidden={!(this.state.status === 1)} variant="danger" className="mr-2" onClick={() => {
                                 if (window.confirm('Er du sikker på at du vil kansellere dette arrangementet?')) this.cancelEvent();
                             }}>Kanseller</Button>
 
-                            <Button hidden={this.state.status === 1} variant="danger" onClick={() => {
+                            <Button hidden={this.state.status === 1} variant="danger" className="mr-2" onClick={() => {
                                 if (window.confirm('Er du sikker på at du vil slette dette arrangementet? Dette kan ikke reverseres!')) this.deleteEvent()
-                            }}>Slett</Button>
+                            }}>Slett arrangement</Button>
 
-                            <Button hidden={!(this.state.status === 0)} className="mr-1" variant="success" onClick={() => {
+                            <Button hidden={!(this.state.status === 0)} className="mr-2" variant="success" onClick={() => {
                                 if (window.confirm('Er du sikker på at du vil publisere dette arrangementet?')) this.publishEvent()
                             }}>Publiser</Button>
 
-                            <Button hidden={!(this.state.status === 3)} className="mr-1" variant="success" onClick={() => {
+                            <Button hidden={!(this.state.status === 3)} className="mr-2" variant="success" onClick={() => {
                                 if (window.confirm('Er du sikker på at du vil gjenopta dette arrangementet?')) this.planEvent();
                             }}>Gjenoppta</Button>
                         </div>
@@ -49,6 +50,7 @@ export class TabContent extends Component {
             </div>
         )
     }
+
 
     // Updates the state when the received props from parent changes
     static getDerivedStateFromProps(props, state) {
@@ -82,7 +84,15 @@ export class TabContent extends Component {
 
     cancelEvent = () => {
         EventStore.cancelCurrentEvent().then(console.log('Event cancelled!'));
-        this.setState({status : 3})
+        this.setState({status : 3});
+
+        if (EventStore.currentEvent.artists.length > 0 || EventStore.currentEvent.crewMembers.length > 0){
+            MailService.sendCancelNotice("Avlyst arrangement",
+                "Arrangementet " + EventStore.currentEvent.eventName + " har blitt avlyst.",
+                EventStore.currentEvent.artists, EventStore.currentEvent.crewMembers, null, () => {
+                    Alert.info("Mail har blitt sendt til alle involverte om avlysningen");
+            });
+        }
         Alert.danger("Arrangementet har blitt kansellert")
     };
 

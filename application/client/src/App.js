@@ -32,6 +32,7 @@ import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./
 import {BugReview} from "./components/bugReview";
 
 
+import {Contacts} from "./components/content/contacts/contacts";
 let history = createHashHistory();
 
 
@@ -99,7 +100,7 @@ export class App extends Component{
                             <div className="col-lg-10 col-sm-12">
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
                                 <Route exact path="/opprett"  component={() => <SimpleContent page={<CreateEventSplash />} />} />
-                                <Route exact path="/artister" component={() => <Content page={<Search/>} />} />
+                                <Route exact path="/artister" component={() => <Content page={<Contacts/>} />} />
                                 <Route exact path="/personell" component={Content}/>
                                 <Route exact path="/dokumenter" component={() => <Content page ={<MyDocuments/>}/>}/>
                                 <Route exact path="/dokumenter/:eventID" render={(props) => <Content page ={<FolderCategory{...props} />}/>}/>

@@ -4,7 +4,10 @@ import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {PictureService} from "../../store/pictureService";
 import {MegaValidator} from "../../megaValidator";
-import {LoginService} from "../../store/loginService";
+import * as hash from "../../store/hashService";
+import {createHashHistory} from "history";
+
+let history = createHashHistory();
 
 export class UserPage extends React.Component {
     constructor(props) {
@@ -126,7 +129,7 @@ export class UserPage extends React.Component {
                                             <Accordion.Collapse eventKey="1">
                                                 <Card.Body>
                                                     <Form.Group>
-                                                        <Form.Control maxLength="8" type="number" name="newPhonenumber"
+                                                        <Form.Control maxLength="8" type="tel" name="newPhonenumber"
                                                                       placeholder={this.state.phonenumber}
                                                                       value={this.state.newPhonenumber}
                                                                       onChange={this.handleInputChange}/>
@@ -179,7 +182,7 @@ export class UserPage extends React.Component {
                                         </Card>
                                     </Form>
 
-                                   <DeleteUserForm/>
+                                    <DeleteUserForm/>
                                 </Accordion>
                             </Card>
                         </Col>
@@ -317,10 +320,10 @@ export class SubmitButton extends React.Component {
 
 export class DeleteUserForm extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            password : '',
+            password: '',
             savingInformation: false,
             confirmDeleteUser: false,
             errorDeleting: false
@@ -333,8 +336,8 @@ export class DeleteUserForm extends React.Component {
 
 
     render() {
-            return (
-                <Form onSubmit={this.handleSubmit}>
+        return (
+            <Form onSubmit={this.handleSubmit}>
                 <Card>
                     <Card.Header>
                         <Accordion.Toggle as={Button} className="text-danger" variant="link" eventKey="3">
@@ -350,16 +353,19 @@ export class DeleteUserForm extends React.Component {
                                               onChange={this.handleInputChange}/>
                             </Form.Group>
                             <Form.Group>
-                            <Form.Check name="confirmDeleteUser" value={this.state.confirmDeleteUser}  onChange={this.handleInputChange} type="checkbox" id="custom-switch" label="Bekreft at du ønsker å slette denne brukerprofilen (ikke reverserbart)"/>
+                                <Form.Check name="confirmDeleteUser" value={this.state.confirmDeleteUser}
+                                            onChange={this.handleInputChange} type="checkbox" id="custom-switch"
+                                            label="Bekreft at du ønsker å slette denne brukerprofilen (ikke reverserbart)"/>
                             </Form.Group>
                             <Form.Group>
-                                <Button type="submit" variant="danger" disabled={!this.state.confirmDeleteUser}>Slett brukerprofil</Button>
+                                <Button type="submit" variant="danger" disabled={!this.state.confirmDeleteUser}>Slett
+                                    brukerprofil</Button>
                             </Form.Group>
                         </Card.Body>
                     </Accordion.Collapse>
                 </Card>
             </Form>
-            )
+        )
     }
 
     handleSubmit(event) {
@@ -377,29 +383,31 @@ export class DeleteUserForm extends React.Component {
 
     }
 
-    submitForm(){
-        if(this.checkPassword()){
+    submitForm() {
+        if (this.checkPassword()) {
 
             alert("Brukeren er slettet");
-        }  else {
+        } else {
             alert("feil passord");
         }
     }
 
 
-    checkPassword(){
-        LoginService.loginOrganizer(OrganizerStore.currentOrganizer.email, this.state.password, status => {
+    checkPassword() {
 
-            if (status===200) {
+        hash.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
+            console.log("Password ? " + res);
+            if (res) {
                 OrganizerStore.deleteCurrentOrganizer();
-
+                CookieStore.currentToken = null;
+                CookieStore.currentUserID = null;
+                // TODO Proper logout here
+                window.location.reload();
             } else {
                 this.setState({errorDeleting: true});
                 return false;
             }
-
         });
     }
-
 }
 
