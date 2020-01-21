@@ -15,6 +15,7 @@ import {FaSignOutAlt} from "react-icons/all";
 
 import {FaBars} from "react-icons/all";
 import {FaUserCog} from "react-icons/all";
+import {FaBullhorn} from "react-icons/all";
 import { createHashHistory } from 'history';
 let history = createHashHistory();
 
@@ -128,6 +129,12 @@ export class Menu extends Component{
                         <FaFileSignature/> Mine dokumenter
                     </li>
                     </NavLink>
+                    <NavLink className="" to="/bug">
+                        <li className="list-group-item nav-link">
+                            <FaBullhorn/> Rapporter feil
+                        </li>
+                    </NavLink>
+
                 </div>
 
             </ul>

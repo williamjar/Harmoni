@@ -112,7 +112,7 @@ export class Dashboard extends React.Component {
                     <Accordion id="publishedEvents" defaultActiveKey="0">
                     <Row className="no-gutters">
                         <p>Publisert</p>
-                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
+                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
@@ -126,7 +126,7 @@ export class Dashboard extends React.Component {
                     <Accordion id="plannedEvents" defaultActiveKey="0">
                     <Row className="no-gutters">
                         <p>Under planlegging</p>
-                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
+                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
                     </Row>
                     <Accordion.Collapse eventKey="0">
                         <Row className="no-gutters">
@@ -140,7 +140,7 @@ export class Dashboard extends React.Component {
                     <Accordion id="archivedEvents" defaultActiveKey="1">
                     <Row className="no-gutters">
                         <p>Arkivert</p>
-                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
+                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
                     </Row>
                     <Accordion.Collapse eventKey={this.state.active === "archived" ? "1" : "0"}>
                         <Row className="no-gutters">
@@ -155,7 +155,7 @@ export class Dashboard extends React.Component {
                     <Accordion id="cancelledEvents" defaultActiveKey="1">
                     <Row className="no-gutters">
                         <p>Kansellert</p>
-                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
+                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
                     </Row>
                     <Accordion.Collapse eventKey={this.state.active === "cancelled" ? "1" : "0"}>
                         <Row className="no-gutters">
