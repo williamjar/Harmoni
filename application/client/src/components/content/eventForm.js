@@ -6,11 +6,13 @@ import {PerformerPanel, PerformersView} from "./performers";
 import {GeneralInfo} from "./generalInfo";
 import {CrewPanel, CrewTab} from "./crew";
 import {DocumentationTab} from "../documentationTab";
-import {DocList} from "../docView";
 import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
 import {RiderStore} from "../../store/riderStore";
 import {CookieStore} from "../../store/cookieStore";
+import NavLink from "react-bootstrap/NavLink";
+import {FolderCategory, FolderEvent, FolderItem} from "../contract";
+import Button from "react-bootstrap/Button";
 
 const history = createHashHistory();
 
@@ -69,7 +71,9 @@ export class EventForm extends Component{
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editalbe={this.state.edit}>
                         <div className="padding-bottom-20">
                         <DocumentationTab editable={true}/>
-                        <DocList/>
+                            <Button className={"mr-1"} onClick={() => {
+                                history.push("/dokumenter/" + EventStore.currentEvent.eventID)
+                            }}>Gå til arrangementets dokumenter</Button>
                         </div>
                     </TabContent>
                 </Tab>

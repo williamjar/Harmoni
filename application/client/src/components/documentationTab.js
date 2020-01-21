@@ -7,6 +7,7 @@ import {DocumentService} from "../store/documentService";
 import {EventStore} from "../store/eventStore";
 import {Col} from "react-bootstrap";
 import {DocumentCategory} from "../classes/documentCategory";
+import Button from "react-bootstrap/Button";
 
 export class DocumentationTab extends Component{
 
@@ -72,7 +73,7 @@ export class DocumentationTab extends Component{
         const {description, selectedFile} = this.state;
         return (
             <div>
-                <select id='categorySelect'>
+                <select id='categorySelect' className={"mr-1"}>
                     {this.state.documentCategories.map(category => (
                         <option key={category.documentCategoryID} value={category.documentCategoryID}>
                             {category.documentCategoryName}
@@ -85,7 +86,9 @@ export class DocumentationTab extends Component{
                     name="selectedFile"
                     onChange={this.onChange}
                 />
-                <button type="button" onClick={this.onSubmit}>Last opp fil</button>
+                <Button type="button" className={"mr-1"} onClick={this.onSubmit}>Last opp fil</Button>
+
+
             </div>
 
         )

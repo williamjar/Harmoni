@@ -25,9 +25,14 @@ import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "
 import {Alert} from './components/alerts'
 
 
+
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
 import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
+import {BugReview} from "./components/bugReview";
+
+
+import {Contacts} from "./components/content/contacts/contacts";
 let history = createHashHistory();
 
 
@@ -95,7 +100,7 @@ export class App extends Component{
                             <div className="col-lg-10 col-sm-12">
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
                                 <Route exact path="/opprett"  component={() => <SimpleContent page={<CreateEventSplash />} />} />
-                                <Route exact path="/artister" component={() => <Content page={<Search/>} />} />
+                                <Route exact path="/artister" component={() => <Content page={<Contacts/>} />} />
                                 <Route exact path="/personell" component={Content}/>
                                 <Route exact path="/dokumenter" component={() => <Content page ={<MyDocuments/>}/>}/>
                                 <Route exact path="/dokumenter/:eventID" render={(props) => <Content page ={<FolderCategory{...props} />}/>}/>
@@ -103,6 +108,7 @@ export class App extends Component{
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage/>} />} />
                                 <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
                                 <Route exact path="/arrangementEdit/:id"  component={() => <Content page={<EventForm/>} />} />
+                                <Route exact path="/bug" component={() => <Content page={<BugReview/>}/>}/>
                             </div>
                         </div>
                     </HashRouter>

@@ -47,6 +47,6 @@ export class EventCard extends React.Component {
     formatDate = (d) => {
         let options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
         let date = new Date(d);
-        return date.toLocaleDateString("nb-NO", options).toLocaleUpperCase();
+        return date.toLocaleDateString("nb-NO", options).toLocaleLowerCase();
     }
 }
