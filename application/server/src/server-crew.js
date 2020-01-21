@@ -116,18 +116,18 @@ app.put("/api/crew/:crewID", (request, response) => {
     }, val);
 });
 
-
-app.put("/api/responsible/:isResponsible", (request, response) => {
-    console.log("set a crew member to be responsible");
-
+app.put("/api/crew/:crewID/event/:eventID", (request, response) => {
+    console.log("update responsibility and contracts for crew");
     let val = [
-        request.params.isResponsible,
-        request.body.eventID,
+        request.params.eventID,
         request.body.crewCategoryID,
-        request.body.crewID
+        request.params.crewID,
+        request.body.isResponsible,
+        request.body.contractSigned,
+        request.body.hasBeenPaid
     ];
 
-    crewDao.setResponsible((status, data) => {
+    crewDao.updateOneForEvent((status,data) => {
         response.status(status);
         response.json(data);
     }, val)

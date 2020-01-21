@@ -11,11 +11,15 @@ module.exports = class crewDao extends Dao {
     }
 
     updateOne(callback, list) {
-        super.query('UPDATE crew set description = ? WHERE crewID = ? ', list, callback);
+        super.query('UPDATE crew SET description = ?  WHERE crewID = ? ', list, callback);
+    }
+
+    updateOneForEvent(callback, list){
+        super.query('UPDATE event_crewCategory_Crew SET crewCategoryID = ?, isResponsible = ?, contractSigned = ?, hasBeenPaid = ? WHERE eventID = ? AND crewID = ?', list, callback);
     }
 
     deleteOne(callback, contactID) {
-        super.query('DELETE FROM crew where crewID = ?', [contactID], callback);
+        super.query('DELETE FROM crew WHERE crewID = ?', [contactID], callback);
     }
 
     getAllForOrganizer(callback, organizerID) {
@@ -24,10 +28,6 @@ module.exports = class crewDao extends Dao {
 
     addDocument(callback, list) {
         super.query('INSERT INTO document (eventID,documentName,documentLink,crewID,documentCategoryID) VALUES (?, ?, ?, ?, ?)', list, callback);
-    }
-
-    setResponsible(callback, list) {
-        super.query('UPDATE event_crewCategory_crew SET isResponsible = ? WHERE eventID = ? AND crewCategoryID = ? AND crewID = ?', list, callback);
     }
 
     getAllCategoriesForEvent(callback, eventID){
@@ -39,7 +39,7 @@ module.exports = class crewDao extends Dao {
     }
 
     getAllForEvent(callback, list) {
-        super.query('SELECT * FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE event_crewCategory_crew.eventID = ?', list, callback);
+        super.query('SELECT DISTINCT * FROM crew JOIN contact ON crew.contactID = contact.contactID JOIN event_crewCategory_crew ON crew.crewID = event_crewCategory_crew.crewID JOIN crewCategory ON event_crewCategory_crew.crewCategoryID = crewCategory.crewCategoryID WHERE event_crewCategory_crew.eventID = ?', list, callback);
     }
 
     createOneCategory(callback, list) {
@@ -51,7 +51,7 @@ module.exports = class crewDao extends Dao {
     }
 
     assignOne(callback, list) {
-        super.query('INSERT INTO event_crewCategory_crew VALUES (?,?,?,?)', list, callback);
+        super.query('INSERT INTO event_crewCategory_crew VALUES (?,?,?,?,?,?)', list, callback);
     }
 
     unAssignOne(callback, eventID, crewCategoryID, crewID) {
