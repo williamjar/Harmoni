@@ -225,7 +225,6 @@ export class TicketAll extends Component {
                                         />
                                     </Col>
 
-
                                 </Row>
                                 <Row className="ticketStyle">
                                     <Col>
