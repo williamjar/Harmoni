@@ -125,9 +125,10 @@ export class PerformerPanel extends Component{
             performer.contractSigned = artistEventInfo.contractSigned;
             currentState.showArtistCard = true;
             this.setState(currentState);
+            this.setGenreCurrentPerformer(performer);
         }, performer.artistID, EventStore.currentEvent.eventID);
 
-        this.setGenreCurrentPerformer(performer);
+
     };
 
     componentDidMount() {
