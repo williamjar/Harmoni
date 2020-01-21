@@ -73,108 +73,115 @@ export class Dashboard extends React.Component {
     }
 
     render() {
-        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
-            OrganizerStore.archiveOldEvents();
-        });
-        return (
-            <Card className={"border-0 justify-content-md-center m-4"}>
-                <h3 className={"mt-4 mb-4"}>Arrangementer</h3>
-                <Search searchHandler={this.searchHandler} results={this.state.events}/>
-                <Row className="filterMenu mb-2 mt-2">
-                    <Col>
-                        <ButtonGroup size="sm">
-                            <Button name="all" variant="secondary" active={this.state.active === "all"}
-                                    onClick={this.filterEvents}>Alle</Button>
-                            <Button name="planning" variant="secondary" active={this.state.active === "planning"}
-                                    onClick={this.filterEvents}>Under Planlegging</Button>
-                            <Button name="published" variant="secondary" active={this.state.active === "published"}
-                                    onClick={this.filterEvents}>Publisert</Button>
-                            <Button name="archived" variant="secondary" active={this.state.active === "archived"}
-                                    onClick={this.filterEvents}>Arkiverte</Button>
-                            <Button name="cancelled" variant="secondary" active={this.state.active === "cancelled"}
-                                    onClick={this.filterEvents}>Kansellerte</Button>
+        if (CookieStore.currentUserID > -1){
+            OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
+                if (statusCode === 200){
+                    OrganizerStore.archiveOldEvents();
+                }
+            });
+            return (
+                <Card className={"border-0 justify-content-md-center m-4"}>
+                    <h3 className={"mt-4 mb-4"}>Arrangementer</h3>
+                    <Search searchHandler={this.searchHandler} results={this.state.events}/>
+                    <Row className="filterMenu mb-2 mt-2">
+                        <Col>
+                            <ButtonGroup size="sm">
+                                <Button name="all" variant="secondary" active={this.state.active === "all"}
+                                        onClick={this.filterEvents}>Alle</Button>
+                                <Button name="planning" variant="secondary" active={this.state.active === "planning"}
+                                        onClick={this.filterEvents}>Under Planlegging</Button>
+                                <Button name="published" variant="secondary" active={this.state.active === "published"}
+                                        onClick={this.filterEvents}>Publisert</Button>
+                                <Button name="archived" variant="secondary" active={this.state.active === "archived"}
+                                        onClick={this.filterEvents}>Arkiverte</Button>
+                                <Button name="cancelled" variant="secondary" active={this.state.active === "cancelled"}
+                                        onClick={this.filterEvents}>Kansellerte</Button>
                             </ButtonGroup>
                         </Col>
-                </Row>
-                <Row className="mb-2">
-                    <Col xs={2}>
-                        <Form.Control as="select" size="sm" onChange={this.sortSelected}>
-                            <option selected disabled>Sorter etter..</option>
-                            <option value={0}>Dato</option>
-                            <option value={1}>Navn</option>
-                            {/*<option value={1}>Pris</option>*/}
-                        <option value={2}>Sted</option>
-                        </Form.Control>
-                    </Col>
-                </Row>
+                    </Row>
+                    <Row className="mb-2">
+                        <Col xs={2}>
+                            <Form.Control as="select" size="sm" onChange={this.sortSelected}>
+                                <option selected disabled>Sorter etter..</option>
+                                <option value={0}>Dato</option>
+                                <option value={1}>Navn</option>
+                                {/*<option value={1}>Pris</option>*/}
+                                <option value={2}>Sted</option>
+                            </Form.Control>
+                        </Col>
+                    </Row>
 
-                {this.state.active === "all" || this.state.active === "published" ?
-                    <Accordion id="publishedEvents" defaultActiveKey="0">
-                    <Row className="no-gutters">
-                        <p>Publisert</p>
-                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
-                    </Row>
-                    <Accordion.Collapse eventKey="0">
-                        <Row className="no-gutters">
-                            {this.state.published.length > 0 ?
-                                <EventView events={this.state.published}/> :
-                                <NoEvents message="Du har ingen planlagte arrangement"/>}
-                        </Row>
-                    </Accordion.Collapse>
-                </Accordion> : null}
-                {this.state.active === "all" || this.state.active === "planning" ?
-                    <Accordion id="plannedEvents" defaultActiveKey="0">
-                    <Row className="no-gutters">
-                        <p>Under planlegging</p>
-                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
-                    </Row>
-                    <Accordion.Collapse eventKey="0">
-                        <Row className="no-gutters">
-                            {this.state.planning.length > 0 ?
-                                <EventView events={this.state.planning}/> :
-                                <NoEvents message="Du har ingen arrangement under planlegging"/>}
-                        </Row>
-                    </Accordion.Collapse>
-                </Accordion> : null}
-                {this.state.active === "all" || this.state.active === "archived" ?
-                    <Accordion id="archivedEvents" defaultActiveKey="1">
-                    <Row className="no-gutters">
-                        <p>Arkivert</p>
-                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
-                    </Row>
-                    <Accordion.Collapse eventKey={this.state.active === "archived" ? "1" : "0"}>
-                        <Row className="no-gutters">
-                            {this.state.archived.length > 0 ?
-                                <EventView events={this.state.archived}/> :
-                                <NoEvents message="Du har ingen arkiverte arrangement"/>}
-                        </Row>
-                    </Accordion.Collapse>
-                </Accordion> : null}
+                    {this.state.active === "all" || this.state.active === "published" ?
+                        <Accordion id="publishedEvents" defaultActiveKey="0">
+                            <Row className="no-gutters">
+                                <p>Publisert</p>
+                                <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
+                            </Row>
+                            <Accordion.Collapse eventKey="0">
+                                <Row className="no-gutters">
+                                    {this.state.published.length > 0 ?
+                                        <EventView events={this.state.published}/> :
+                                        <NoEvents message="Du har ingen planlagte arrangement"/>}
+                                </Row>
+                            </Accordion.Collapse>
+                        </Accordion> : null}
+                    {this.state.active === "all" || this.state.active === "planning" ?
+                        <Accordion id="plannedEvents" defaultActiveKey="0">
+                            <Row className="no-gutters">
+                                <p>Under planlegging</p>
+                                <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
+                            </Row>
+                            <Accordion.Collapse eventKey="0">
+                                <Row className="no-gutters">
+                                    {this.state.planning.length > 0 ?
+                                        <EventView events={this.state.planning}/> :
+                                        <NoEvents message="Du har ingen arrangement under planlegging"/>}
+                                </Row>
+                            </Accordion.Collapse>
+                        </Accordion> : null}
+                    {this.state.active === "all" || this.state.active === "archived" ?
+                        <Accordion id="archivedEvents" defaultActiveKey="1">
+                            <Row className="no-gutters">
+                                <p>Arkivert</p>
+                                <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
+                            </Row>
+                            <Accordion.Collapse eventKey={this.state.active === "archived" ? "1" : "0"}>
+                                <Row className="no-gutters">
+                                    {this.state.archived.length > 0 ?
+                                        <EventView events={this.state.archived}/> :
+                                        <NoEvents message="Du har ingen arkiverte arrangement"/>}
+                                </Row>
+                            </Accordion.Collapse>
+                        </Accordion> : null}
 
-                {this.state.active === "all" || this.state.active === "cancelled" ?
-                    <Accordion id="cancelledEvents" defaultActiveKey="1">
-                    <Row className="no-gutters">
-                        <p>Kansellert</p>
-                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
-                    </Row>
-                    <Accordion.Collapse eventKey={this.state.active === "cancelled" ? "1" : "0"}>
-                        <Row className="no-gutters">
-                            {this.state.cancelled.length > 0 ?
-                                <EventView events={this.state.cancelled}/> :
-                                <NoEvents message="Du har ingen kansellerte arrangement"/>}
-                        </Row>
-                    </Accordion.Collapse>
-                </Accordion> : null}
+                    {this.state.active === "all" || this.state.active === "cancelled" ?
+                        <Accordion id="cancelledEvents" defaultActiveKey="1">
+                            <Row className="no-gutters">
+                                <p>Kansellert</p>
+                                <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
+                            </Row>
+                            <Accordion.Collapse eventKey={this.state.active === "cancelled" ? "1" : "0"}>
+                                <Row className="no-gutters">
+                                    {this.state.cancelled.length > 0 ?
+                                        <EventView events={this.state.cancelled}/> :
+                                        <NoEvents message="Du har ingen kansellerte arrangement"/>}
+                                </Row>
+                            </Accordion.Collapse>
+                        </Accordion> : null}
 
-                <Row>
-                    <Col className="pull-right" size={12}>
-                        <div onClick={this.addEventClicked} align="right">
-                            <FaPlusCircle className="ml-2" size={60}/>
-                        </div>
-                    </Col>
-                </Row>
-            </Card>
-        )
+                    <Row>
+                        <Col className="pull-right" size={12}>
+                            <div onClick={this.addEventClicked} align="right">
+                                <FaPlusCircle className="ml-2" size={60}/>
+                            </div>
+                        </Col>
+                    </Row>
+                </Card>
+            )
+        }
+        else{
+            return null;
+        }
     }
 
     searchHandler(event) {

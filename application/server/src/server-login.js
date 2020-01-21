@@ -94,6 +94,7 @@ app.use('/api', (req, res, next) => {
                 }, privateKey, {
                     algorithm: "RS512",
                 });
+            jwt.verify(newToken, publicKey);
             console.log("Token after /api " + newToken);
             CookieStore.setCurrentToken(newToken);
             next();

@@ -19,6 +19,10 @@ export class OrganizerStore {
             "x-access-token": CookieStore.currentToken
         };
 
+        console.log(CookieStore.currentToken);
+
+        console.log("Getting organizer");
+
         axios.get(axiosConfig.root + '/api/organizer/' + organizerID, {headers: header})
             .then(response => {
                 console.log("Setting organizer to " + organizerID);

@@ -10,8 +10,12 @@ export class CookieStore{
     static currentUserID = -1;
 
     static setCurrentToken(newToken){
-        sessionStorage.setItem('token', newToken);
-        this.currentToken = newToken;
+        try{
+            this.currentToken = newToken;
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
 
     static setCurrentUserID(newID){
@@ -19,8 +23,6 @@ export class CookieStore{
     }
 
     static validateToken(callback){
-
-        console.log(sessionStorage);
 
         if (sessionStorage.getItem("loggedIn")){
             this.currentToken = sessionStorage.getItem("token");

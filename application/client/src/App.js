@@ -27,7 +27,7 @@ import {Alert} from './components/alerts'
 
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
-import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
+import {MyDocuments, Documents, FolderCategory} from "./components/contract";
 import {OrganizerStore} from "./store/organizerStore";
 let history = createHashHistory();
 
@@ -86,6 +86,7 @@ export class App extends Component{
 
     render(){
         console.log("Logged in? " + this.state.loggedIn);
+
         if (this.state.loggedIn){
             return (
                 <div className="App">
@@ -131,10 +132,11 @@ export class App extends Component{
     handleLogin = () => {
         let currentState = this.state;
 
+        if (sessionStorage.getItem('token') !== CookieStore.currentToken && CookieStore.currentToken !== null){
+            sessionStorage.setItem('token', CookieStore.currentToken);
+        }
+
         CookieStore.validateToken(validate => {
-            console.log(CookieStore.currentUserID);
-            console.log(CookieStore.currentToken);
-            console.log(validate);
             if (!validate){
                 sessionStorage.removeItem('loggedIn');
                 history.push("/");
@@ -153,15 +155,6 @@ export class App extends Component{
             }
 
             this.setState(currentState);
-
-            OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
-                if (statusCode === 200){
-                    console.log("Organizer has been set");
-                }
-                else{
-                    console.log("Error");
-                }
-            });
         });
     }
 
