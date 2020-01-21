@@ -59,6 +59,6 @@ module.exports = class eventDao extends Dao {
     }
 
     getAllEventTypes(callback) {
-        super.query('SELECT * FROM eventType', callback);
+        super.query('SELECT * FROM eventType', [], callback);
     }
 };
