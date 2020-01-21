@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Organizer} from "../classes/organizer.js"
+import {Organizer} from "../classes/organizer.js";
 import {CookieStore} from "./cookieStore";
 import {sha512} from "./hashService";
 import {DocumentCategory} from "../classes/documentCategory";

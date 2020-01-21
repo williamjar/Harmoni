@@ -7,5 +7,14 @@
     "database": "evengu",
     "debug": false,
     "multipleStatements": true
+  },
+  "testConfig": {
+    "connectionLimit": 2,
+    "host": "mysql.stud.iie.ntnu.no",
+    "user": "joakimad",
+    "password": "LQliMP1A",
+    "database": "joakimad",
+    "debug": false,
+    "multipleStatements": true
   }
 }

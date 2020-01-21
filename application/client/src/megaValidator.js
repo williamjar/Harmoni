@@ -49,6 +49,9 @@ export class MegaValidator {
     }
 
     static validateFile(file) {
+        if(file===undefined){
+            return false;
+        }
         return (/\.(gif|jpeg|jpg|png)$/i).test(file.name);
 
     }

@@ -66,7 +66,7 @@ export function getOrganizerID(email, callback) {
     };
     axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header})
         .then(res => {
-            if (Object.keys(res.data).length) {
+            if (res.data.length > 0) {
                 let organizerID = res.data[0].organizerID;
                 callback(organizerID);
             } else {

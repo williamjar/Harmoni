@@ -20,10 +20,15 @@ export class ArtistService {
         };
 
         axios.get(axiosConfig.root + '/api/artist/' + artistID, {headers: header}).then(response => {
-                let artist = new Artist(response.data[0].artistID, response.data[0].contactID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
-                callback(artist);
+                if (response.data.length > 0){
+                    let artist = new Artist(response.data[0].artistID,response.data[0].contactID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
+                    callback(artist);
+                }
+                else{
+                    callback(null);
+                }
             }
-        );
+        ).catch(err => console.log(err));
     }
 
     static getArtistEventInfo(callback, artistID, eventID) {
@@ -79,6 +84,7 @@ export class ArtistService {
         };
 
         axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(contactRes => {
+            console.log(contactBody);
 
             let artistBody = {
                 "genreID": genreID,
@@ -89,11 +95,21 @@ export class ArtistService {
             console.log(contactRes);
 
             axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(artistRes => {
-                console.log("artist");
                 console.log(artistRes);
-                callback(new Artist(artistRes.data.insertId, contactRes.data.insertId, name, phone, email, genreID, organizerID));
-            });
-        });
+                if (artistRes.data.insertId > -1){
+                    console.log("artist");
+                    console.log(res);
+                    let artist = (new Artist(artistRes.data.insertId, contactRes.data.insertId, name, phone, email, genreID, organizerID));
+                    console.log(artist);
+                    callback(artist);
+                    return artist;
+                }
+                else{
+                    callback(null);
+                    return null;
+                }
+            }).catch(err => console.log(err));
+        }).catch(err => console.log(err));
     }
 
     static deleteArtist(artistID) {

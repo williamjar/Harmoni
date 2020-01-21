@@ -31,10 +31,4 @@ class BugService{
         }, {headers: header})
             .catch(error => console.log(error))
     }
-
-
-
 }
-
-export let bugService = new BugService();
-
