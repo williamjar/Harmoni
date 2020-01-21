@@ -98,7 +98,6 @@ export class ArtistService {
                 console.log(artistRes);
                 if (artistRes.data.insertId > -1){
                     console.log("artist");
-                    console.log(res);
                     let artist = (new Artist(artistRes.data.insertId, contactRes.data.insertId, name, phone, email, genreID, organizerID));
                     console.log(artist);
                     callback(artist);
