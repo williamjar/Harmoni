@@ -119,12 +119,15 @@ app.put("/api/crew/:crewID", (request, response) => {
 app.put("/api/crew/:crewID/event/:eventID", (request, response) => {
     console.log("update responsibility and contracts for crew");
     let val = [
+        request.body.isResponsible,
+        request.body.contractSigned,
+        request.body.hasBeenPaid,
         request.params.eventID,
         request.body.crewCategoryID,
         request.params.crewID,
-        request.body.isResponsible,
-        request.body.contractSigned,
-        request.body.hasBeenPaid
+
+
+
     ];
 
     crewDao.updateOneForEvent((status,data) => {
