@@ -4,6 +4,7 @@ import {Button, Col, Row} from "react-bootstrap";
 import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
 import {Alert} from '../alerts.js';
+import {MailService} from "../../store/mailService";
 
 const history = createHashHistory();
 
@@ -82,7 +83,15 @@ export class TabContent extends Component {
 
     cancelEvent = () => {
         EventStore.cancelCurrentEvent().then(console.log('Event cancelled!'));
-        this.setState({status : 3})
+        this.setState({status : 3});
+
+        if (EventStore.currentEvent.artists.length > 0 || EventStore.currentEvent.crewMembers.length > 0){
+            MailService.sendCancelNotice("Avlyst arrangement",
+                "Arrangementet " + EventStore.currentEvent.eventName + " har blitt avlyst.",
+                EventStore.currentEvent.artists, EventStore.currentEvent.crewMembers, null, () => {
+                    Alert.info("Mail har blitt sendt til alle involverte om avlysningen");
+            });
+        }
         Alert.danger("Arrangementet har blitt kansellert")
     };
 

@@ -61,18 +61,26 @@ const fileStorage = multer.diskStorage({
         const eventID = req.params.eventID;
         const documentCategoryID = req.params.documentCategoryID;
 
-        ensureFolderExists('./resources/' + eventID, 0o744, err => {
-            if (err) {
-                console.log("Could not create folder for event " + eventID);
-            } else {
-                ensureFolderExists('./resources/' + eventID + '/' + documentCategoryID, 0o744, err => {
+        ensureFolderExists("./resources", 0o744, err => {
+            if (err){
+                console.log("Could now create resource folder for user");
+            }
+            else{
+                ensureFolderExists('./resources/' + eventID, 0o744, err => {
                     if (err) {
-                        console.log("Could not create folder for event " + eventID + " - category " + documentCategoryID);
+                        console.log("Could not create resource folder for event " + eventID);
+                        console.log(err);
                     } else {
-                        console.log("Destination set for ./resources/" + eventID + "/" + documentCategoryID);
-                        cb(null, './resources/' + eventID + '/' + documentCategoryID);
+                        ensureFolderExists('./resources/' + eventID + '/' + documentCategoryID, 0o744, err => {
+                            if (err) {
+                                console.log("Could not create folder for event " + eventID + " - category " + documentCategoryID);
+                            } else {
+                                console.log("Destination set for ./resources/" + eventID + "/" + documentCategoryID);
+                                cb(null, './resources/' + eventID + '/' + documentCategoryID);
+                            }
+                        })
                     }
-                })
+                });
             }
         });
     },
@@ -393,6 +401,14 @@ app.get("/api/document/download/:path*", (req, res) => {
     }
         res.send(data)
     })
+});
+
+app.get("/api/document/categories", (request, response) => {
+    console.log("Request for all document categories");
+    documentationDao.getAllDocumentCategories((status, data) => {
+        response.status(status);
+        response.json(data);
+    });
 });
 
 // TODO Her er det sikkert noe duplikat

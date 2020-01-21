@@ -1,8 +1,8 @@
 import axios from "axios";
-import {Artist} from "../classes/artist";
+import {Artist} from "../classes/artist.js"
+import {CookieStore} from "./cookieStore";
 import {Genre} from "../classes/genre";
 import {Document} from "../classes/document";
-import {CookieStore} from "./cookieStore";
 import {Artist as artist} from "../classes/artist";
 import {ArtistEventInfo} from "../classes/artistEventInfo";
 
@@ -21,7 +21,7 @@ export class ArtistService {
 
         axios.get(axiosConfig.root + '/api/artist/' + artistID, {headers: header}).then(response => {
                 if (response.data.length > 0){
-                    let artist = new Artist(response.data[0].artistID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
+                    let artist = new Artist(response.data[0].artistID,response.data[0].contactID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
                     callback(artist);
                 }
                 else{
@@ -31,16 +31,16 @@ export class ArtistService {
         ).catch(err => console.log(err));
     }
 
-    static getArtistEventInfo(callback, artistID, eventID){
+    static getArtistEventInfo(callback, artistID, eventID) {
 
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        axios.get(axiosConfig.root + '/api/event/'+ eventID + '/artist/' + artistID + '/artistEventInfo', {headers: header}).then(response => {
-            console.log(response);
-                let artistEventInfo = new ArtistEventInfo(response.data[0].artistID, response.data[0].eventID, response.data[0].contractSigned === 1, response.data[0].hasBeenPaid === 1);
+        axios.get(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/artistEventInfo', {headers: header}).then(response => {
+                console.log(response);
+                let artistEventInfo = new ArtistEventInfo(response.data[0].artistID, response.data[0].contactID, response.data[0].eventID, response.data[0].contractSigned === 1, response.data[0].hasBeenPaid === 1);
                 console.log("getArtistEventInfo");
                 console.log(artistEventInfo);
                 callback(artistEventInfo);
@@ -49,7 +49,7 @@ export class ArtistService {
 
     }
 
-    static updateArtistEventInfo(callback, artistID, eventID, contractSigned, hasBeenPaid){
+    static updateArtistEventInfo(callback, artistID, eventID, contractSigned, hasBeenPaid) {
 
         console.log("updateArtistEventInfo has been paid: " + hasBeenPaid);
 
@@ -63,7 +63,7 @@ export class ArtistService {
             "hasBeenPaid": hasBeenPaid ? 1 : 0
         };
 
-        axios.put(axiosConfig.root + '/api/event/'+ eventID + '/artist/' + artistID + '/artistEventInfo', artistEventInfoBody, {headers: header}).then(response => {
+        axios.put(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/artistEventInfo', artistEventInfoBody, {headers: header}).then(response => {
                 callback();
             }
         );
@@ -83,21 +83,23 @@ export class ArtistService {
             "email": email
         };
 
-        axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
+        axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(contactRes => {
+            console.log(contactBody);
 
             let artistBody = {
                 "genreID": genreID,
                 "organizerID": organizerID,
-                "contactID": response.data.insertId
+                "contactID": contactRes.data.insertId
             };
             console.log("post contact");
-            console.log(response);
+            console.log(contactRes);
 
-            axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(res => {
-                if (res.data.length > 0){
+            axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(artistRes => {
+                console.log(artistRes);
+                if (artistRes.data.insertId > -1){
                     console.log("artist");
-                    console.log(res);
-                    let artist = new Artist(res.data.insertId, name, phone, email, genreID, organizerID);
+                    let artist = (new Artist(artistRes.data.insertId, contactRes.data.insertId, name, phone, email, genreID, organizerID));
+                    console.log(artist);
                     callback(artist);
                     return artist;
                 }
@@ -105,7 +107,7 @@ export class ArtistService {
                     callback(null);
                     return null;
                 }
-            }).catch(() => callback(null));
+            }).catch(err => console.log(err));
         }).catch(err => console.log(err));
     }
 
@@ -125,14 +127,13 @@ export class ArtistService {
         };
         axios.get(axiosConfig.root + '/api/artist/organizer/' + organizerID, {headers: header}).then(response => {
                 for (let i = 0; i < response.data.length; i++) {
-                    allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].contactName,
+                    allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].contactID, response.data[i].contactName,
                         response.data[i].phone, response.data[i].email, response.data[i].genreID,
                         response.data[i].organizerID));
                 }
                 callback(allArtistByOrganizer);
             }
         );
-
     }
 
     static getArtistsForEvent(callback, eventID) {
@@ -144,7 +145,7 @@ export class ArtistService {
 
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
             response.data.map(artist =>
-                allArtistByEvent.push(new Artist(artist.artistID, artist.contactName,
+                allArtistByEvent.push(new Artist(artist.artistID, artist.contactID, artist.contactName,
                     artist.phone, artist.email, artist.genreID,
                     artist.organizerID)));
         }).then(() => {
