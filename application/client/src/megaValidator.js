@@ -11,9 +11,7 @@ export class MegaValidator {
     }
 
     static validateUsername(oldUsername, newUsername) {
-        console.log(newUsername);
         let illegalCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-        console.log(illegalCharacters.test(newUsername));
         if (illegalCharacters.test(newUsername)) {
             return false;
         } else {
@@ -51,6 +49,9 @@ export class MegaValidator {
     }
 
     static validateFile(file) {
+        if(file===undefined){
+            return false;
+        }
         return (/\.(gif|jpeg|jpg|png)$/i).test(file.name);
 
     }

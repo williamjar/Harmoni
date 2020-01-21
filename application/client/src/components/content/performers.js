@@ -40,7 +40,6 @@ export class PerformerPanel extends Component{
     render() {
         return (
             <div>
-
                     <div className="row">
                         <div className="col-lg-6 col-md-12  border-right">
                             <div className="row">
@@ -76,6 +75,7 @@ export class PerformerPanel extends Component{
                 let currentState = this.state;
                 currentState.performerList = list; //Receive a new array from database with assigned performer to event
                 currentState.performerSelected = {};
+                EventStore.currentEvent.artists = list;
                 this.setState(currentState);
                 this.toggleShowCard();
             }, EventStore.currentEvent.eventID);
@@ -87,6 +87,7 @@ export class PerformerPanel extends Component{
         let currentState = this.state;
         ArtistService.assignArtist(EventStore.currentEvent.eventID, selected.artistID).then(res => {
                 ArtistService.getArtistsForEvent((list) => {
+                    EventStore.currentEvent.artists = list;
                     let currentState = this.state;
                     currentState.performerList = list; //Receive a new array from database with assigned performer to event
                     this.setState(currentState);
@@ -111,6 +112,7 @@ export class PerformerPanel extends Component{
             let currentState = this.state;
             currentState.performerList = list;
             currentState.performerSelected = {};
+            EventStore.currentEvent.artists = list;
             this.setState(currentState);
         }, EventStore.currentEvent.eventID);
     };
@@ -356,7 +358,7 @@ export class PerformerCard extends Component{
         /* Adds rider to performer on current event */
         if(this.state.riderInput.trim() !== ""){
             RiderStore.createNewRiderElement((newRider) => {
-                RiderStore.allRidersForCurrentEvent.push(newRider); // Has been posted and returns a
+                RiderStore.addToAllRidersForCurrentArtistAndEvent(newRider); // Has been posted and returns a
 
                 let currentState = this.state;
                 currentState.riders = RiderStore.allRidersForCurrentEvent;
@@ -632,7 +634,7 @@ export class RegisteredPerformers extends Component{
                                 {p.contactName}
                             </div>
 
-                            <div className="col-2">
+                            <div className="col-2 text-right">
                                 <button className="btn-danger rounded" onClick={() => this.unAssignArtist(p)}>Slett</button>
                             </div>
                         </div>
