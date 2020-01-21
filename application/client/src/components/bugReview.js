@@ -15,7 +15,7 @@ import {Alert} from "../components/alerts";
 
 
 let reportBugs = "Hjelp oss med å finne feil i systemet";
-let listBugs = "Feil du tidligere har raportert inn";
+let listBugs = "Feil du alt har rapportert inn";
 
 export class BugReview extends Component {
     constructor(props) {

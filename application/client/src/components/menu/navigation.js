@@ -14,6 +14,7 @@ import {CookieStore} from "../../store/cookieStore";
 import Navbar from "react-bootstrap/Navbar";
 import {FaBars} from "react-icons/all";
 import {FaUserCog} from "react-icons/all";
+import {FaBullhorn} from "react-icons/all";
 import { createHashHistory } from 'history';
 let history = createHashHistory();
 
@@ -124,7 +125,7 @@ export class Menu extends Component{
                     </NavLink>
                     <NavLink className="" to="/bug">
                         <li className="list-group-item nav-link">
-                            Tilbakemeldinger.
+                            <FaBullhorn/> Rapporter feil
                         </li>
                     </NavLink>
 
