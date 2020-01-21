@@ -147,19 +147,14 @@ export class UserProfileButton extends Component{
     }
 
     checkIfUserHasPicture(){
-       /*
-        PictureService.previewPicture(this.state.profilePicture, (url) => {
-            this.setState({link: url})
-        });
-        */
-        if(this.state.profilePicture !== '' && this.state.profilePicture !== null){
+        if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
             console.log("This should not run");
             console.log(this.state.profilePicture);
             PictureService.previewPicture(this.state.profilePicture, (url) => {
                 this.setState({link: url})
             });
-            return(<img width={50} src={require('../user/profile.png')} alt={"test"}/>);
-            //return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
+            //return(<img width={50} src={require('../user/profile.png')} alt={"test"}/>);
+            return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
         }else {
             return(<img width={50} src={require('../user/profile.png')} alt={"test"}/>);
         }
