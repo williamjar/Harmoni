@@ -44,6 +44,8 @@ export class App extends Component{
             mobileView : false,
         };
 
+        this.handleLogin();
+
     }
 
     turnOffMobileView = () => {
@@ -72,8 +74,6 @@ export class App extends Component{
         } else{
             this.turnOnMobileView();
         }
-
-        this.handleLogin();
     };
 
     componentWillUnmount() {
@@ -89,7 +89,12 @@ export class App extends Component{
                     <HashRouter>
                         <div className="row no-gutters">
 
-                                {!this.state.mobileView?<div className="col-lg-2"><NavBar /></div>:<div className="col-12"><MobileMenu/></div>}
+                                {!this.state.mobileView ?
+                                    <div className="col-lg-2"><NavBar logOut={() => {
+                                        this.setState({loggedIn: false});
+                                    }
+                                    }/></div> :
+                                    <div className="col-12"><MobileMenu/></div>}
                                 {this.state.mobileView?
                                     <div className="margin-bottom-30"><br/> </div>:null
                                 }
@@ -139,12 +144,11 @@ export class App extends Component{
                 history.push("/");
             }
             else{
-                console.log("Session storage has been set");
                 sessionStorage.setItem('loggedIn', 'true');
             }
 
             if (sessionStorage.getItem('loggedIn')){
-                console.log("Session storage has been got");
+                console.log("User logged in");
                 currentState.loggedIn = true;
             }
             else{

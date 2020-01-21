@@ -30,18 +30,14 @@ export class CookieStore{
                 let email = jwt.decode(sessionStorage.getItem(('token')), publicKey).email;
 
                 this.checkToken(email, statusCode => {
-                    console.log("Token verified in CookieStore");
-                    console.log(statusCode);
                     callback(statusCode === 200);
                 });
             }
             catch (err) {
-                console.log("Token not verified in CookieStore");
                 callback(false);
             }
         }
         else{
-            console.log("Token doesn't exist");
             callback(false);
         }
     }
@@ -61,7 +57,6 @@ export class CookieStore{
         }
 
         return axios.post("http://localhost:8080/token", JSON.stringify(body), {headers: header}).then(res => res.data).then(res => {
-            console.log(res);
                 if (res.error){
                     this.currentToken = null;
                     this.currentUserID = -1;
@@ -70,7 +65,6 @@ export class CookieStore{
                 else{
                     sessionStorage.setItem("token", res.jwt);
                     this.currentToken = res.jwt;
-                    console.log("Token set to " + this.currentToken);
                 }
             }
         ).then(() => {

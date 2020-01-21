@@ -85,7 +85,13 @@ export class NavBar extends Component{
 
                 <UserProfileButton/>
 
-                <div className="center font-italic purple log-out">
+                <div className="center font-italic purple log-out" onClick={() => {
+                    sessionStorage.setItem('token', null);
+                    sessionStorage.removeItem('loggedIn');
+                    CookieStore.setCurrentToken(null);
+                    CookieStore.setCurrentUserID(-1);
+                    this.props.logOut();
+                }}>
                     Logg av <FaSignOutAlt size={20}/>
                 </div>
 
