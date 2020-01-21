@@ -328,8 +328,7 @@ export class PerformerCard extends Component{
 
         ArtistService.getAllGenres((res) => {
            this.setState({genreList : res});
-           console.log("Return genres");
-           console.log(this.state.genreList);
+
         });
 
 
@@ -521,7 +520,8 @@ export class RegisterPerformer extends Component{
           name : "",
           phone : "",
           email : "",
-          genre : "",  //Genre should be set from start
+          genre : "",
+          genreList : [],
         };
     }
 
@@ -549,8 +549,9 @@ export class RegisterPerformer extends Component{
                         <Form.Group as={Col} controlId="formGridState">
                             <Form.Label>Sjanger</Form.Label>
                             <Form.Control as="select" onChange={this.handleGenreChange}>
-                                <option>Country</option>
-                                <option>Blues</option>
+                                {this.state.genreList.map(genre =>
+                                <option>{genre.genreName}</option>
+                                )}
                             </Form.Control>
                         </Form.Group>
                     </Form.Row>
@@ -572,6 +573,12 @@ export class RegisterPerformer extends Component{
                     </Row>
             </div>
         )
+    }
+
+    componentDidMount() {
+        ArtistService.getAllGenres((res) => {
+            this.setState({genreList : res});
+    });
     }
 
     handleNameChange = (event) => {
@@ -616,11 +623,12 @@ export class RegisterPerformer extends Component{
     submitForm = () => {
         if(this.state.name.trim() !== "" && this.state.phone.trim() !== "" && this.state.email.trim() !== ""){
             /* Should check if valid as email address, not able to put type to email because it fucked eveything up */
-            let genreID = 1;
+            let tempList = this.state.genreList.filter(e => e.genreName === this.state.genre);
+            let genreID = tempList[0].genreID;
+
             console.log(this.state.email);
             ArtistService.createArtist((artist) => {
-                console.log("received artist");
-                console.log(artist);
+
                 this.props.submitFunction(artist); // Call to parent to update it's information in state.
                 }, this.state.name, this.state.phone, this.state.email, genreID, CookieStore.currentUserID);
         } else{
