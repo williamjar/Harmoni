@@ -615,6 +615,13 @@ export class RegisterPerformer extends Component{
             let tempList = this.state.genreList.filter(e => e.genreName === this.state.genre);
             let genreID = tempList[0].genreID;
 
+            console.log("AAAAAAA");
+            console.log(tempList);
+
+
+            console.log("genre LIST ");
+            console.log(this.state.genreList);
+
             console.log(this.state.email);
             ArtistService.createArtist((artist) => {
 
