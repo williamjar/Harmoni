@@ -68,7 +68,7 @@ export class Dashboard extends React.Component {
                 planning: EventStore.allEventsForOrganizer.filter(event => event.status === 0),
                 archived: EventStore.allEventsForOrganizer.filter(event => event.status === 2),
                 cancelled: EventStore.allEventsForOrganizer.filter(event => event.status === 3)
-            })
+            });
         }, CookieStore.currentUserID);
     }
 
