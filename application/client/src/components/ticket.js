@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import {Row, Spinner} from 'react-bootstrap';
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Accordion from "react-bootstrap/Accordion";
@@ -17,14 +18,14 @@ import {EventStore} from "../store/eventStore";
     Static labels to guide the users witch type om information
     they are supposed to fill inn.
 */
-let nameTicekt = 'Navn billett';
-let priceTicket = 'Billett pris';
-let amountTicket = 'Antall billetter';
-let releaseDate = 'Slipp dato';
-let releaseTime ='Slipp klokkelsett';
-let endDate = 'Salg slutt dato';
-let endTime = 'Salg slutt klokkeslett';
-let description = 'Skriv inn informasjon om billetten';
+let nameTicekt = 'Billettnavn';
+let priceTicket = 'Billettpris';
+let amountTicket = 'Antall tilgj. billetter';
+let releaseDate = 'Start salgsdato';
+let releaseTime ='Start salgstid';
+let endDate = 'Slutt salgsdato';
+let endTime = 'Slutt salgstid';
+let description = 'Beskrivelse';
 
 
 /*
@@ -33,13 +34,12 @@ let description = 'Skriv inn informasjon om billetten';
 export class Ticket extends Component{
     render(){
         return(
-            <Card>
+            <Card className={"border-0"}>
                 <Form>
                     <TicketAll/>
                 </Form>
             </Card>
         );
-
     }
 }
 
@@ -50,127 +50,150 @@ export class Ticket extends Component{
 export class TicketAll extends Component {
 
     constructor(props) {
+        let dt = new Date();
         super(props);
         this.state = {
             ticketTypeName: '',
             price : '',
             amount : '',
-            releaseDate : '',
-            endDate : '',
-            releaseTime : '',
-            endTime : '',
+            releaseDate : dt,
+            endDate : dt,
+            releaseTime : dt.getTime(),
+            endTime : dt.getTime(),
             description : '',
-            ticketList : []
+            ticketList : [],
+            savingInformation: false,
+            loading: false,
+            dateError: false
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     render() {
+        if(this.state.loading){
+            return(<Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>);
+        }
+
         return(
-            <Card.Body>
-                <ListGroup>
+            <Card className={"border-0 mb-3 p-4"}>
                     {this.state.ticketList.map(ticket => (
-                        <ListGroup.Item>
+                        <Card className={"shadow mb-3"}>
+                            <Card.Body>
                             <Form>
-                                <Form.Row className="ticketStyle" >
-                                    <Col sm={2}>
+                                <Row className="ticketStyle" >
+                                    <Col>
                                         <Form.Text>{nameTicekt}</Form.Text>
                                         <Form.Control
                                             value={ticket.ticketTypeName}
                                             readOnly
+                                            plaintext
                                         />
 
                                     </Col>
-                                    <Col sm={1}>
+                                    <Col>
                                         <Form.Text>{priceTicket}</Form.Text>
                                         <Form.Control
                                             value={ticket.price}
                                             readOnly
+                                            plaintext
                                         />
                                     </Col>
-                                    <Col sm={1}>
+                                    <Col>
                                         <Form.Text>{amountTicket}</Form.Text>
                                         <Form.Control
                                             value={ticket.amount}
                                             readOnly
+                                            plaintext
                                         />
                                     </Col>
-                                    <Col sm={2}>
+                                    <Col>
                                         <Form.Text>{releaseDate}</Form.Text>
                                         <Form.Control
-                                            value={ticket.releaseDate}
+                                            value={this.formatDate(ticket.releaseDate)}
                                             readOnly
+                                            plaintext
                                         />
                                     </Col>
 
-                                    <Col sm={2}>
-                                        <Form.Text>{endDate}</Form.Text>
-                                        <Form.Control
-                                            value={ticket.endDate}
-                                            readOnly
-                                        />
-                                    </Col>
-                                    <Col sm={1}>
+                                    <Col>
                                         <Form.Text>{releaseTime}</Form.Text>
                                         <Form.Control
                                             value={ticket.releaseTime}
                                             readOnly
+                                            plaintext
                                         />
                                     </Col>
-                                    <Col sm={1}>
-                                        <Form.Text>{endTime}</Form.Text>
-                                        <Form.Control
-                                            value={ticket.endTime}
-                                            readOnly
-                                        />
-                                    </Col>
+                                </Row>
+
+                                <Row className="ticketStyle">
                                     <Col>
-                                        <h5><FaCalendar/></h5>
-                                    </Col>
-                                </Form.Row>
-                                <Form.Row className="ticketStyle">
-                                    <Col sm={6}>
                                         <Form.Text>{description}</Form.Text>
                                         <Form.Control
                                             value={ticket.description}
                                             readOnly
+                                            plaintext
                                         />
                                     </Col>
-                                </Form.Row>
-                                <Form.Row className="ticketStyle">
-                                    <Col sm={6}>
-                                        <button id={ticket.ticketTypeID} onClick={this.deleteTicket}>Slett billett</button>
+
+                                    <Col/>
+                                    <Col/>
+
+
+                                    <Col>
+                                        <Form.Text>{endDate}</Form.Text>
+                                        <Form.Control
+                                            value={this.formatDate(ticket.endDate)}
+                                            readOnly
+                                            plaintext
+                                        />
                                     </Col>
-                                </Form.Row>
+
+                                    <Col>
+                                        <Form.Text>{endTime}</Form.Text>
+                                        <Form.Control
+                                            value={ticket.endTime}
+                                            readOnly
+                                            plaintext
+                                        />
+                                    </Col>
+
+                                </Row>
+                                <Row className="ticketStyle">
+                                    <Col>
+                                        <Button variant="danger" id={ticket.ticketTypeID} onClick={this.deleteTicket}>Fjern billett</Button>
+                                    </Col>
+
+                                </Row>
                             </Form>
-                        </ListGroup.Item>
+                            </Card.Body>
+                        </Card>
                     ))}
-                </ListGroup>
+
+
                 <Accordion>
                     <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                        + Legg til en ny billett
+                        + Opprett ny billettype til arrangmentet
                     </Accordion.Toggle>
                     <Accordion.Collapse eventKey="0">
-                        <Card.Body>
-                            <p>Fyll inn alle informasjon om billetten</p>
+                        <Card className={"border-0"}>
                             <Form onSubmit={this.handleSubmit}>
-                                <Form.Row className="ticketStyle">
+                                <Row className="ticketStyle">
                                     <Col>
                                         <Form.Text>{nameTicekt}</Form.Text>
                                         <Form.Control
                                             name = "ticketTypeName"
-                                            placeholder = "Navn"
+                                            placeholder = "Billettnavn"
                                             value = {this.state.ticketTypeName}
                                             onChange = {this.handleInputChange}
-
                                         />
                                     </Col>
                                     <Col>
                                         <Form.Text>{priceTicket}</Form.Text>
                                         <Form.Control
                                             name = "price"
-                                            placeholder="Pris,-"
+                                            placeholder="Pris"
+                                            type="number"
                                             onChange = {this.handleInputChange}
                                             value = {this.state.price}
                                         />
@@ -179,12 +202,11 @@ export class TicketAll extends Component {
                                         <Form.Text>{amountTicket}</Form.Text>
                                         <Form.Control
                                             name = "amount"
-                                            placeholder="Antall"
+                                            placeholder="Antall tilgj."
+                                            type="number"
                                             onChange = {this.handleInputChange}
                                             value = {this.state.amount}
-
                                         />
-
                                     </Col>
                                     <Col>
                                         <Form.Text>{releaseDate}</Form.Text>
@@ -192,18 +214,6 @@ export class TicketAll extends Component {
                                             type = "date"
                                             name = "releaseDate"
                                             onChange={this.handleInputChange}
-                                            value = {this.state.releaseDate}
-                                        />
-
-                                    </Col>
-                                    <Col>
-                                        <Form.Text>{endDate}</Form.Text>
-                                        <Form.Control
-                                            type ="date"
-                                            name = "endDate"
-                                            onChange={this.handleInputChange}
-                                            value = {this.state.endDate}
-
                                         />
                                     </Col>
                                     <Col >
@@ -212,41 +222,55 @@ export class TicketAll extends Component {
                                             type = "time"
                                             name = "releaseTime"
                                             onChange={this.handleInputChange}
-                                            value = {this.state.releaseTime}
                                         />
                                     </Col>
+
+
+                                </Row>
+                                <Row className="ticketStyle">
+                                    <Col>
+                                        <Form.Text>{description}</Form.Text>
+                                        <Form.Control
+                                            name = "description"
+                                            placeholder="Beskrivelse"
+                                            onChange={this.handleInputChange}
+                                        />
+                                    </Col>
+                                    <Col/>
+                                    <Col/>
+
+                                    <Col>
+                                        <Form.Text>{endDate}</Form.Text>
+                                        <Form.Control
+                                            type ="date"
+                                            name = "endDate"
+                                            onChange={this.handleInputChange}
+                                        />
+                                    </Col>
+
                                     <Col >
                                         <Form.Text>{endTime}</Form.Text>
                                         <Form.Control
                                             type = "time"
                                             name = "endTime"
                                             onChange={this.handleInputChange}
-                                            value = {this.state.endTime}
                                         />
                                     </Col>
-                                    <Col>
-                                        <h5><FaCalendar/></h5>
-                                    </Col>
-                                </Form.Row>
-                                <Form.Row className="ticketStyle">
-                                    <Col sm={6}>
-                                        <Form.Text>{description}</Form.Text>
-                                        <Form.Control
-                                            name = "description"
-                                            placeholder="Beskrivelse"
-                                            onChange={this.handleInputChange}
-                                            value = {this.state.description}
-                                        />
-                                    </Col>
-                                </Form.Row>
-                                <Button eventKey="1" variant="primary" size="sm" type="submit" onClick={this.handleSubmit}>
-                                    Lagre billett
+                                </Row>
+                                <Row className="ticketStyle">
+                                <Col>
+
+                                <Button variant="success" type="submit"  disabled={!this.validateForm()} onClick={this.handleSubmit}>
+                                    Legg til billett
                                 </Button>
+                                    <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Sluttdato for salg av billett kan ikke være før startdato</Form.Text>
+                                </Col>
+                                </Row>
                             </Form>
-                        </Card.Body>
+                        </Card>
                     </Accordion.Collapse>
                 </Accordion>
-            </Card.Body>
+            </Card>
         );
     }
     /*
@@ -256,15 +280,33 @@ export class TicketAll extends Component {
         this.listTickets();
     }
 
+    validateForm(){
+
+        return this.validateDate() && this.state.ticketTypeName !== '' && this.state.price !== '' && this.state.amount !== '' && this.state.releaseDate !== null && this.state.endDate !== null;
+
+    }
+
+    validateDate(){
+        if(this.state.releaseDate===this.state.endDate){
+            return this.state.releaseTime < this.state.endTime;
+        }
+
+        return this.state.releaseDate < this.state.endDate;
+    }
+
+    formatDate = (d) => {
+        let options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+        let date = new Date(d);
+        return date.toLocaleDateString("nb-NO", options).toLocaleLowerCase();
+    }
+
     /*
         Updates all the states when changed.
     */
     handleInputChange(event) {
-        console.log(this.state.ticketTypeName);
         let target = event.target;
         let value = target.type === 'checkbox' ? target.checked : target.value;
         let name = target.name;
-        console.log(name + " verdi: " + value);
         this.setState({[name]: value,});
 
     }
@@ -277,15 +319,14 @@ export class TicketAll extends Component {
         event.preventDefault();
         TicketStore.addTicket(EventStore.currentEvent.eventID,
             this.state.ticketTypeName, this.state.price, this.state.amount,
-            this.state.releaseDate, this.state.releaseTime, this.state.endDate,
+            this.formatDateToSql(this.state.releaseDate), this.state.releaseTime, this.formatDateToSql(this.state.endDate),
             this.state.endTime, this.state.description, statusCode => {
                 if (statusCode === 200){
                     TicketStore.getAllTicketsForEvent(EventStore.currentEvent.eventID, () => {
                         this.setState({ticketList: TicketStore.allTicketsCurrentEvent})
                     });
-                    alert("Billetten ble publisert");
                 }else{
-                    alert("Det oppsto et problem. Prøv igjen, eller ta kontakt med oss!");
+                    alert("Det oppsto et problem. Vennligs prøv igjen.");
                 }
             });
 
@@ -296,12 +337,12 @@ export class TicketAll extends Component {
     */
 
     listTickets = () => {
-        console.log(EventStore.currentEvent.eventID);
+        this.setState({loading:true});
         TicketStore.getAllTicketsForEvent( EventStore.currentEvent.eventID, () => {
             this.setState(
                 { ticketList : TicketStore.allTicketsCurrentEvent})
+            this.setState({loading: false});
         });
-        console.log(this.state.ticketList);
     };
 
     /*
@@ -310,20 +351,38 @@ export class TicketAll extends Component {
     */
 
     deleteTicket = (event) => {
-        console.log('Button clicked');
-        console.log(EventStore.currentEvent.eventID);
-        console.log(event.target.id);
         TicketStore.deleteTicket(EventStore.currentEvent.eventID, event.target.id, statusCode => {
             if (statusCode === 200){
-                alert("Billetten ble slettet!");
+
+                this.setState({savingInformation: false});
                 this.listTickets();
             }
             else{
                 alert("Det oppsto et problem. Prøv igjen, eller ta kontakt med oss!");
             }
-        }).then(r => console.log('done'));
+        }).then();
 
     }
+
+
+    formatDateToSql(date) {
+        console.log("ikke formatert:" + date);
+        let d = new Date(date);
+        let month = "" + (d.getMonth() +1);
+        let day = "" + (d.getDate());
+        let year = d.getFullYear();
+
+        if(month.length < 2) {
+            month = "0" + month;
+        }
+        if(day.length < 2) {
+            day = "0" + day;
+        }
+
+        console.log("Formatted date" + [year, month, day].join("-"));
+        return [year, month, day].join("-");
+    }
+
 
 }
 

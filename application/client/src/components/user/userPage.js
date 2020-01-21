@@ -126,7 +126,7 @@ export class UserPage extends React.Component {
                                             <Accordion.Collapse eventKey="1">
                                                 <Card.Body>
                                                     <Form.Group>
-                                                        <Form.Control maxLength="8" type="number" name="newPhonenumber"
+                                                        <Form.Control maxLength="8" type="tel" name="newPhonenumber"
                                                                       placeholder={this.state.phonenumber}
                                                                       value={this.state.newPhonenumber}
                                                                       onChange={this.handleInputChange}/>
