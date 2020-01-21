@@ -111,63 +111,63 @@ export class Dashboard extends React.Component {
                         </Col>
                     </Row>
 
-                    {this.state.active === "all" || this.state.active === "published" ?
-                        <Accordion id="publishedEvents" defaultActiveKey="0">
-                            <Row className="no-gutters">
-                                <p>Publisert</p>
-                                <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
-                            </Row>
-                            <Accordion.Collapse eventKey="0">
-                                <Row className="no-gutters">
-                                    {this.state.published.length > 0 ?
-                                        <EventView events={this.state.published}/> :
-                                        <NoEvents message="Du har ingen planlagte arrangement"/>}
-                                </Row>
-                            </Accordion.Collapse>
-                        </Accordion> : null}
-                    {this.state.active === "all" || this.state.active === "planning" ?
-                        <Accordion id="plannedEvents" defaultActiveKey="0">
-                            <Row className="no-gutters">
-                                <p>Under planlegging</p>
-                                <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
-                            </Row>
-                            <Accordion.Collapse eventKey="0">
-                                <Row className="no-gutters">
-                                    {this.state.planning.length > 0 ?
-                                        <EventView events={this.state.planning}/> :
-                                        <NoEvents message="Du har ingen arrangement under planlegging"/>}
-                                </Row>
-                            </Accordion.Collapse>
-                        </Accordion> : null}
-                    {this.state.active === "all" || this.state.active === "archived" ?
-                        <Accordion id="archivedEvents" defaultActiveKey="1">
-                            <Row className="no-gutters">
-                                <p>Arkivert</p>
-                                <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
-                            </Row>
-                            <Accordion.Collapse eventKey={this.state.active === "archived" ? "1" : "0"}>
-                                <Row className="no-gutters">
-                                    {this.state.archived.length > 0 ?
-                                        <EventView events={this.state.archived}/> :
-                                        <NoEvents message="Du har ingen arkiverte arrangement"/>}
-                                </Row>
-                            </Accordion.Collapse>
-                        </Accordion> : null}
+                {this.state.active === "all" || this.state.active === "published" ?
+                    <Accordion id="publishedEvents" defaultActiveKey="0">
+                    <Row className="no-gutters">
+                        <p>Publisert</p>
+                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
+                    </Row>
+                    <Accordion.Collapse eventKey="0">
+                        <Row className="no-gutters">
+                            {this.state.published.length > 0 ?
+                                <EventView events={this.state.published}/> :
+                                <NoEvents message="Du har ingen planlagte arrangement"/>}
+                        </Row>
+                    </Accordion.Collapse>
+                </Accordion> : null}
+                {this.state.active === "all" || this.state.active === "planning" ?
+                    <Accordion id="plannedEvents" defaultActiveKey="0">
+                    <Row className="no-gutters">
+                        <p>Under planlegging</p>
+                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
+                    </Row>
+                    <Accordion.Collapse eventKey="0">
+                        <Row className="no-gutters">
+                            {this.state.planning.length > 0 ?
+                                <EventView events={this.state.planning}/> :
+                                <NoEvents message="Du har ingen arrangement under planlegging"/>}
+                        </Row>
+                    </Accordion.Collapse>
+                </Accordion> : null}
+                {this.state.active === "all" || this.state.active === "archived" ?
+                    <Accordion id="archivedEvents" defaultActiveKey="1">
+                    <Row className="no-gutters">
+                        <p>Arkivert</p>
+                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
+                    </Row>
+                    <Accordion.Collapse eventKey={this.state.active === "archived" ? "1" : "0"}>
+                        <Row className="no-gutters">
+                            {this.state.archived.length > 0 ?
+                                <EventView events={this.state.archived}/> :
+                                <NoEvents message="Du har ingen arkiverte arrangement"/>}
+                        </Row>
+                    </Accordion.Collapse>
+                </Accordion> : null}
 
-                    {this.state.active === "all" || this.state.active === "cancelled" ?
-                        <Accordion id="cancelledEvents" defaultActiveKey="1">
-                            <Row className="no-gutters">
-                                <p>Kansellert</p>
-                                <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0"/>
-                            </Row>
-                            <Accordion.Collapse eventKey={this.state.active === "cancelled" ? "1" : "0"}>
-                                <Row className="no-gutters">
-                                    {this.state.cancelled.length > 0 ?
-                                        <EventView events={this.state.cancelled}/> :
-                                        <NoEvents message="Du har ingen kansellerte arrangement"/>}
-                                </Row>
-                            </Accordion.Collapse>
-                        </Accordion> : null}
+                {this.state.active === "all" || this.state.active === "cancelled" ?
+                    <Accordion id="cancelledEvents" defaultActiveKey="1">
+                    <Row className="no-gutters">
+                        <p>Kansellert</p>
+                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
+                    </Row>
+                    <Accordion.Collapse eventKey={this.state.active === "cancelled" ? "1" : "0"}>
+                        <Row className="no-gutters">
+                            {this.state.cancelled.length > 0 ?
+                                <EventView events={this.state.cancelled}/> :
+                                <NoEvents message="Du har ingen kansellerte arrangement"/>}
+                        </Row>
+                    </Accordion.Collapse>
+                </Accordion> : null}
 
                     <Row>
                         <Col className="pull-right" size={12}>
