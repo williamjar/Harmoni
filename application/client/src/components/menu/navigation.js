@@ -152,7 +152,9 @@ export class UserProfileButton extends Component{
             this.setState({link: url})
         });
         */
-        if(this.state.profilePicture !== '' || this.state.profilePicture !== null){
+        if(this.state.profilePicture !== '' && this.state.profilePicture !== null){
+            console.log("This should not run");
+            console.log(this.state.profilePicture);
             PictureService.previewPicture(this.state.profilePicture, (url) => {
                 this.setState({link: url})
             });
