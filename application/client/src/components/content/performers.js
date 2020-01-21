@@ -34,6 +34,7 @@ export class PerformerPanel extends Component{
             performerSelected : {},
             results : [],
             showRegisterNew : false,
+            genrePerformerSelected : "",
         }
     }
 
@@ -53,7 +54,7 @@ export class PerformerPanel extends Component{
 
                             <div className="padding-top-20">
                                 {this.state.showRegisterNew?<RegisterPerformer submitFunction={this.submitFunction} toggleRegister={this.toggleRegisterNew} />:null}
-                                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} />:null}
+                                {this.state.showArtistCard?<PerformerCard performerSelected={this.state.performerSelected} genre={this.state.genrePerformerSelected} genreHandler={this.genreHandler} refreshPerformers={this.refreshPerformers}/>:null}
                             </div>
                         </div>
 
@@ -66,6 +67,28 @@ export class PerformerPanel extends Component{
         );
     }
 
+    genreHandler = (genre) => {
+        this.setState({genrePerformerSelected : genre});
+    };
+
+    refreshPerformers = () => {
+        ArtistService.getArtistsForEvent((list) => {
+            EventStore.currentEvent.artists = list;
+            let currentState = this.state;
+            currentState.performerList = list; //Receive a new array from database with assigned performer to event
+            this.setState(currentState);
+        }, EventStore.currentEvent.eventID);
+    };
+
+    setGenreCurrentPerformer = (performer) => {
+        ArtistService.getAllGenres((res) => {
+            res.map(e => {
+                if(e.genreID === performer.genre){
+                    this.setState({ genrePerformerSelected : e.genreName});
+                }
+            });
+        });
+    };
 
     unAssignArtist = (artist) => {
         // Unassign performer from event
@@ -86,13 +109,7 @@ export class PerformerPanel extends Component{
         //Assign performer to event
         let currentState = this.state;
         ArtistService.assignArtist(EventStore.currentEvent.eventID, selected.artistID).then(res => {
-            ArtistService.getArtistsForEvent((list) => {
-                EventStore.currentEvent.artists = list;
-                let currentState = this.state;
-                currentState.performerList = list; //Receive a new array from database with assigned performer to event
-                this.setState(currentState);
-            }, EventStore.currentEvent.eventID);
-
+           this.refreshPerformers();
         }).catch(res => console.log(res));
         currentState.performerSelected = selected;
         this.setState(currentState);
@@ -109,6 +126,8 @@ export class PerformerPanel extends Component{
             currentState.showArtistCard = true;
             this.setState(currentState);
         }, performer.artistID, EventStore.currentEvent.eventID);
+
+        this.setGenreCurrentPerformer(performer);
     };
 
     componentDidMount() {
@@ -119,8 +138,9 @@ export class PerformerPanel extends Component{
             currentState.performerList = list;
             EventStore.currentEvent.artists = list;
             this.setState(currentState);
-
         }, EventStore.currentEvent.eventID);
+
+
     };
 
     toggleRegisterNew = () => {
@@ -167,6 +187,8 @@ export class PerformerPanel extends Component{
         currentState.showArtistCard = true;
         this.assignArtist(selected);
         this.setState(currentState);
+
+        this.setGenreCurrentPerformer(selected);
     };
 
 }
@@ -185,7 +207,7 @@ export class PerformerCard extends Component{
             riders : [],
             contractSigned : false,
             hasBeenPaid : false,
-            genre : "",
+            genre : this.props.genre,
             genreList : [],
         };
     }
@@ -294,34 +316,38 @@ export class PerformerCard extends Component{
         /* Updates the props based on parent state change
         * sets the current performer to be displayed in card */
         if(props.performerSelected !== state.performer) {
-            console.log("different");
             return {
                 performer: props.performerSelected,
                 hasBeenPaid : props.performerSelected.hasBeenPaid,
                 contractSigned : props.performerSelected.contractSigned,
-                genre : props.performerSelected.genre,
             };
         }
 
+        if(props.genre !== state.genre){
+            return {
+                genre : props.genre
+            }
+        }
 
         return null;
     }
 
     genreHandler = (event) => {
-      this.setState({genre : event.target.value});
+      this.props.genreHandler(event.target.value);
     };
 
     componentDidMount() {
         //Fetches all riders for current artist and event and stores them in state
         let currentState = this.state;
 
+
+        ArtistService.getAllGenres((res) => {
+            this.setState({genreList : res});
+        });
         this.setState({hasBeenPaid : this.state.performer.hasBeenPaid, contractSigned : this.state.performer.contractSigned, genre : this.state.performer.genre});
         currentState.riders = RiderStore.allRidersForCurrentEvent;
         //currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
 
-        ArtistService.getAllGenres((res) => {
-           this.setState({genreList : res});
-        });
     }
 
     //TODO: Change states that show if files are added to server
@@ -364,10 +390,15 @@ export class PerformerCard extends Component{
     };
 
     deleteRider = (rider) => {
+        // For instant update
+        let temp = this.state;
+        temp.riders.splice(rider, 1);
+        this.setState(temp);
+
+        //Update database
         RiderStore.deleteRider(() => {
-            let currentState = this.state;
-            RiderStore.allRidersForCurrentEvent.splice(rider, 1);
-            this.setState(currentState);
+
+
         }, EventStore.currentEvent.eventID, rider.artistID, rider.riderID);
     };
 
@@ -422,13 +453,30 @@ export class PerformerCard extends Component{
         Alert.success("Artist lagret");
         this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(rider => {
             if (rider.isModified){
-                RiderStore.updateRider(() => {rider.isModified = false}, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone ? 1 : 0, rider.description);
+                RiderStore.updateRider(() => {
+                    rider.isModified = false;
+                    console.log("Modified");
+                    console.log(rider);
+
+                }, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone ? 1 : 0, rider.description);
             }
         });
 
         //TODO: Send signed contract and if artist has been hasBeenPaid
         artistService.updateArtistEventInfo(()=>{
         }, this.state.performer.artistID, EventStore.currentEvent.eventID, this.state.contractSigned, this.state.hasBeenPaid);
+
+        let genreID = 0;
+
+        this.state.genreList.map(e => {
+           if(e.genreName === this.state.genre){
+               genreID = e.genreID;
+           }
+        });
+
+        artistService.updateArtistGenre(() => {
+            this.props.refreshPerformers();
+        }, this.state.performer.artistID, genreID,CookieStore.currentUserID, this.state.performer.contactID);
 
     }
 }
@@ -458,7 +506,7 @@ export class Rider extends Component{
 
                     <div className="col-2">
                         <div className="form-check">
-                            <input className="form-check-input" type="checkbox" checked={this.state.taskDone} name="taskDone" onChange={this.handleInput}/>
+                            <input className="form-check-input" type="checkbox" checked={this.state.taskDone} name="taskDone" onChange={this.handleCheckBoxInput}/>
                                 <label className="form-check-label" htmlFor="riderCompleted">
                                     Utført
                                 </label>
@@ -466,7 +514,7 @@ export class Rider extends Component{
                     </div>
 
                     <div className="col-4">
-                        <input type="text" className="form-control" placeholder="Status"value={this.state.status} name="status" onChange={this.handleInput}/>
+                        <input type="text" className="form-control" placeholder="Status" value={this.state.status} name="status" onChange={this.handleStatusInput}/>
                     </div>
 
                     <div className="col-1">
@@ -478,17 +526,26 @@ export class Rider extends Component{
         )
     }
 
+    componentDidMount() {
+        this.setState({taskDone : this.props.riderObject.isDone, status : this.props.riderObject.status});
+    }
 
 
-    handleInput = (event) =>{
-        /* Gets the input from the status and checkbox and updates state */
-        this.setState({[event.target.name] : event.target.name.trim() === "status"? event.target.value: event.target.checked});
-
+    handleStatusInput = (event) => {
+        this.setState({status : event.target.value});
         this.props.riderObject.status = this.state.status;
-        this.props.riderObject.isDone = this.state.taskDone;
-
         this.props.riderObject.isModified = true;
     };
+
+    handleCheckBoxInput = (event) => {
+        this.setState({taskDone : event.target.checked});
+        this.props.riderObject.isDone = this.state.taskDone;
+        this.props.riderObject.isModified = true;
+
+        console.log("checkbox");
+        console.log(this.state.taskDone);
+    };
+
 
     deleteRider = () => {
         this.props.deleteRider(this.props.riderObject);
@@ -566,7 +623,7 @@ export class RegisterPerformer extends Component{
 
     componentDidMount() {
         ArtistService.getAllGenres((res) => {
-            this.setState({genreList : res});
+            this.setState({genreList : res, genre : res[0].genreName});
     });
     }
 
@@ -615,12 +672,10 @@ export class RegisterPerformer extends Component{
             let tempList = this.state.genreList.filter(e => e.genreName === this.state.genre);
             let genreID = tempList[0].genreID;
 
-            console.log("AAAAAAA");
+
+            console.log("temp list");
             console.log(tempList);
 
-
-            console.log("genre LIST ");
-            console.log(this.state.genreList);
 
             console.log(this.state.email);
             ArtistService.createArtist((artist) => {
