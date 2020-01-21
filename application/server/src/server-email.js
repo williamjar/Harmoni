@@ -16,7 +16,11 @@ app.post("/api/email", (request, response) => {
     let html = request.body.html;
     let attachmentLinks = request.body.attachmentLinks;
 
-    let fileNames = attachmentLinks.map(link => link.split("_").slice(-1)[0]);
+    let fileNames = null;
+
+    if (attachmentLinks !== null){
+        fileNames = attachmentLinks.map(link => link.split("_").slice(-1)[0]);
+    }
 
     console.log(attachmentLinks);
     console.log(fileNames);
@@ -31,12 +35,16 @@ app.post("/api/email", (request, response) => {
         }
     });
 
-    let attachments = attachmentLinks.map((link, index) => {
-        return {
-            filename: fileNames[index],
-            path: "./" + link
-        }
-    });
+    let attachments = null;
+
+    if (attachmentLinks !== null){
+        attachments = attachmentLinks.map((link, index) => {
+            return {
+                filename: fileNames[index],
+                path: "./" + link
+            }
+        });
+    }
 
     transporter.sendMail({
         from: harmonyUsername,

@@ -1,10 +1,10 @@
 import {Contact} from "./contact";
 
 
-export class Organizer extends Contact{
+export class Organizer extends Contact {
 
-    constructor(organizerID, name, phone, email, username, pictureLink){
-        super(name, phone, email);
+    constructor(organizerID, contactID, name, phone, email, username, pictureLink) {
+        super(contactID, name, phone, email);
         this.organizerID = organizerID;
         this.username = username;
         this.pictureLink = pictureLink;
@@ -13,23 +13,23 @@ export class Organizer extends Contact{
         this.crewCategories = [];
     }
 
-    addEvent(event){
+    addEvent(event) {
         this.events.push(event);
     }
 
-    checkPassword(username, password){
+    checkPassword(username, password) {
         return username === 'admin';
     }
 
-    addContact(contact){
+    addContact(contact) {
         this.contacts.push(contact);
     }
 
-    addCrewCategory(category){
+    addCrewCategory(category) {
         this.crewCategories.push(category);
     }
 
-    static getTestOrganizer(){
+    static getTestOrganizer() {
         let organizer = new Organizer(0,
             super.getTestContacts()[0].contactName, super.getTestContacts()[0].phone, super.getTestContacts()[0].email,
             'OrganisatorFirmaet AS', null);
