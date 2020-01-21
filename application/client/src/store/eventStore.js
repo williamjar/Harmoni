@@ -207,7 +207,7 @@ export class EventStore {
             "x-access-token": CookieStore.currentToken
         };
 
-        axios.get(axiosConfig.root + "/api/events/type", {headers: header}).then(response => {
+        axios.get(axiosConfig.root + "/api/event-type", {headers: header}).then(response => {
             response.data.map(eventType =>
                 EventStore.eventCategories.push(eventType.eventTypeName));
         }).then(res => console.log("GET EVENT CAT: " + res));

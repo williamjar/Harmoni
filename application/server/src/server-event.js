@@ -9,6 +9,15 @@ app.get("/api/events", (request, response) => {
     });
 });
 
+// Get all event types
+app.get("/api/event-type", (request, response) => {
+    console.log("Get all event categories from the DB");
+    eventDao.getAllEventTypes((status, data) => {
+        response.status(status);
+        response.json(data);
+    });
+});
+
 //Get one event
 app.get("/api/events/:eventID", (request, response) => {
     console.log("Express: Request for all events");
@@ -53,15 +62,6 @@ app.get("/api/events/status/:organizerID/:status", (request, response) => {
         response.status(status);
         response.json(data);
     }, request.params.status, request.params.organizerID);
-});
-
-// Get all event types
-app.get("/api/events/type", (request, response) => {
-    console.log("Get all event categories from the DB");
-    eventDao.getAllEventTypes((status, data) => {
-        response.status(status);
-        response.json(data);
-    });
 });
 
 //Delete an event
