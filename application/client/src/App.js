@@ -25,9 +25,13 @@ import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "
 import {Alert} from './components/alerts'
 
 
+
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
 import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
+import {BugReview} from "./components/bugReview";
+
+
 import {Contacts} from "./components/content/contacts/contacts";
 let history = createHashHistory();
 
@@ -104,6 +108,7 @@ export class App extends Component{
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage/>} />} />
                                 <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
                                 <Route exact path="/arrangementEdit/:id"  component={() => <Content page={<EventForm/>} />} />
+                                <Route exact path="/bug" component={() => <Content page={<BugReview/>}/>}/>
                             </div>
                         </div>
                     </HashRouter>

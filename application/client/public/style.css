@@ -486,3 +486,17 @@ search-result-item{
 }
 
 
+.bugWindow{
+    width: 70%;
+    margin: auto;
+    padding-top: 15px;
+    padding-bottom: 30px;
+
+}
+
+.bugButton{
+    margin: auto;
+    padding-top: 10px;
+    text-align: center;
+}
+
