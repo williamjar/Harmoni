@@ -400,7 +400,8 @@ export class DeleteUserForm extends React.Component {
                 OrganizerStore.deleteCurrentOrganizer();
                 CookieStore.currentToken = null;
                 CookieStore.currentUserID = null;
-                history.push('/');
+                // TODO Proper logout here
+                window.location.reload();
             } else {
                 this.setState({errorDeleting: true});
                 return false;
