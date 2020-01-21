@@ -1,15 +1,19 @@
-import {CookieStore} from "./cookieStore";
+import {Genre} from "../classes/genre";
 import axios from "axios";
 import {TicketType} from "../classes/ticketType";
+import {CrewMember} from "../classes/crewMember";
+import {CookieStore} from "./cookieStore";
+
 
 const axiosConfig = require("./axiosConfig");
 
 export class TicketStore {
 
+    static allTicketsCurrentEvent = [];
     static allTickets = [];
 
     //Adds ticket
-    static addTicket(eventID, name, price, amount, releaseDate, releaseTime,  endDate, endTime, description ) {
+    static addTicket(eventID, name, price, amount, releaseDate, releaseTime,  endDate, endTime, description, callback) {
 
         let header = {
             "Content-Type": "application/json",
@@ -30,9 +34,14 @@ export class TicketStore {
 
         };
 
-
         axios.post(axiosConfig.root + '/api/ticket/insert', list, {headers: header}).then(response => {
             console.log(response);
+            if (response.status === 200){
+                callback(200);
+            }
+            else{
+                callback(501);
+            }
         });
     }
 
@@ -53,9 +62,9 @@ export class TicketStore {
     }
 
     //return all tickets to an event in a list.
-    static  getAllTickets(eventID, callback) {
+    static getAllTicketsForEvent(eventID, callback) {
 
-        this.allTickets = [];
+        this.allTicketsCurrentEvent = [];
 
         let header = {
             "Content-Type": "application/json",
@@ -64,9 +73,29 @@ export class TicketStore {
 
         axios.get(axiosConfig.root + '/api/ticket/allTickets/' + eventID, {headers: header}).then(response =>  {
             for (let i = 0; i < response.data.length; i++) {
-                this.allTickets.push(new TicketType(response.data[i].ticketTypeID, response.data[i].ticketTypeName , response.data[i].price, response.data[i].amount, response.data[i].releaseDate,
+                this.allTicketsCurrentEvent.push(new TicketType(response.data[i].ticketTypeID, response.data[i].ticketTypeName , response.data[i].price, response.data[i].amount, response.data[i].releaseDate,
                                                 response.data[i].releaseTime, response.data[i].hasEndDate, response.data[i].endDate,
                                                 response.data[i].endTime, response.data[i].description));
+            }
+            callback();
+        });
+
+    }
+
+    static getAllTickets(callback) {
+
+        this.allTickets = [];
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        axios.get(axiosConfig.root + '/api/ticket', {headers: header}).then(response =>  {
+            for (let i = 0; i < response.data.length; i++) {
+                this.allTickets.push(new TicketType(response.data[i].ticketTypeID, response.data[i].ticketTypeName , response.data[i].price, response.data[i].amount, response.data[i].releaseDate,
+                    response.data[i].releaseTime, response.data[i].hasEndDate, response.data[i].endDate,
+                    response.data[i].endTime, response.data[i].description));
             }
             callback();
         });
@@ -96,12 +125,20 @@ export class TicketStore {
 
 
     //delete a ticket from an event
-    static deleteTicket(eventID ,ticketTypeID) {
+    static deleteTicket(eventID ,ticketTypeID, callback) {
         console.log('Running deleteTicket');
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete(axiosConfig.root + '/api/ticket/' + eventID + '/' + ticketTypeID , {headers: header}).then(response => response.data);
+        return axios.delete(axiosConfig.root + '/api/ticket/' + eventID + '/' + ticketTypeID , {headers: header}).then(response => {
+            console.log(response);
+            if (response.status === 200){
+                callback(200);
+            }
+            else{
+                callback(501);
+            }
+        });
     }
 }

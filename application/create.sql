@@ -117,6 +117,8 @@ CREATE TABLE artist(
 CREATE TABLE event_artist(
     eventID INT,
     artistID INT,
+    contractSigned tinyint default 0 not null,
+    hasBeenPaid    tinyint default 0 not null,
     PRIMARY KEY(eventID, artistID)
 );
 
@@ -164,7 +166,7 @@ CREATE TABLE riderElement(
 
 
 ALTER TABLE event
-ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID),
+ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID) ON DELETE CASCADE,
 ADD FOREIGN KEY (eventTypeID) REFERENCES eventType(eventTypeID),
 ADD FOREIGN KEY (pictureID) REFERENCES picture(pictureID);
 

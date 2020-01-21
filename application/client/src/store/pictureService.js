@@ -1,8 +1,8 @@
 import axios from "axios";
 import {PictureElement} from "../classes/pictureElement";
-import {CookieStore} from "./cookieStore";
 import {EventStore} from "./eventStore";
 import {OrganizerStore} from "./organizerStore";
+import {CookieStore} from "./cookieStore";
 
 const axiosConfig = require("./axiosConfig");
 
@@ -68,6 +68,46 @@ export class PictureService {
                     });
             })
             .catch(err => callback(500));
+    }
+
+
+    static previewPicture(pictureLink, callback){
+
+            axios.get(axiosConfig.root + '/file/preview/' + pictureLink, {
+                method: "GET",
+                responseType: "blob"
+                //Force to receive data in a Blob Format
+            }).then(response => {
+                //Create a Blob from the image Stream
+                console.log(response.data);
+                let blob;
+                if((/\.(jpg)$/i).test(pictureLink)){
+                    blob = new Blob([response.data], {
+                        type: "image/jpg"
+                    });
+                }
+                else if((/\.(jpeg)$/i).test(pictureLink)){
+                    blob = new Blob([response.data], {
+                        type: "image/jpeg"
+                    });
+                }
+                else if((/\.(png)$/i).test(pictureLink)){
+                    blob = new Blob([response.data], {
+                        type: "image/png"
+                    });
+                } else {
+                    blob = null
+                }
+                //Build a URL from the file
+                console.log(blob);
+                const fileURL = URL.createObjectURL(blob);
+                console.log("HER KOMMER FIL URL " + fileURL);
+                //Open the URL on new Window
+                callback(fileURL);
+            })
+                .catch(error => {
+                    console.log(error);
+                });
     }
 
 

@@ -18,7 +18,7 @@ export class EventCard extends React.Component {
 
     // Sends the user to the event-screen when clicking "vis"
     viewEvent = () => {
-        EventStore.currentEvent = this.props.event;
+        EventStore.setCurrentEvent(this.props.event);
         RiderStore.storeAllRidersForEvent(() => {
             console.log("Here comes the sun, nananana");
             console.log(RiderStore.allRidersForCurrentEvent);
@@ -31,8 +31,8 @@ export class EventCard extends React.Component {
 
         return(
             <tr align='center'>
-                <td align="left">{this.state.date}</td>
-                <td>{this.props.event.eventName} - {this.props.event.town}</td>
+                <td align="left">{this.formatDate(this.props.event.startDate)}</td>
+                <td>{this.props.event.eventName} {this.props.event.town !== "" && this.props.event.town !== null ? " - " + this.props.event.town : null}</td>
                 <td align="right"><Button variant="outline-secondary" onClick={this.viewEvent}>Vis </Button></td>
             </tr>
         )
@@ -47,6 +47,6 @@ export class EventCard extends React.Component {
     formatDate = (d) => {
         let options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
         let date = new Date(d);
-        return date.toLocaleDateString("nb-NO", options).toLocaleUpperCase();
+        return date.toLocaleDateString("nb-NO", options).toLocaleLowerCase();
     }
 }

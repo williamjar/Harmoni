@@ -72,7 +72,6 @@ app.post("/token", (req, res) => {
                 }, privateKey, {
                     algorithm: "RS512",
                 });
-            CookieStore.currentToken = newToken;
             res.json({jwt: newToken, for: decoded.email});
         }
     })
@@ -83,27 +82,29 @@ app.use('/api', (req, res, next) => {
     let token;
     if (req.headers["x-access-token"]){
         token = req.headers["x-access-token"];
+        console.log("Token in /api " + token);
+        try {
+            jwt.verify(token, publicKey);
+            let email = jwt.decode(token, publicKey).email;
+            console.log('Token OK for: ' + email);
+            let newToken = jwt.sign(
+                {
+                    exp: Math.floor(Date.now() / 1000) + (TOKEN_LENGTH),
+                    email: email
+                }, privateKey, {
+                    algorithm: "RS512",
+                });
+            jwt.verify(newToken, publicKey);
+            console.log("Token after /api " + newToken);
+            CookieStore.setCurrentToken(newToken);
+            next();
+        } catch (e) {
+            console.log('Token not OK');
+            res.status(401);
+            res.json({error: e});
+        }
     } else {
-        token = CookieStore.currentToken;
-    }
-    console.log("Token in /api " + token);
-    try {
-        jwt.verify(token, publicKey);
-        let email = jwt.decode(token, publicKey).email;
-        console.log('Token OK for: ' + email);
-        CookieStore.currentToken = jwt.sign(
-            {
-                exp: Math.floor(Date.now() / 1000) + (TOKEN_LENGTH),
-                email: email
-            }, privateKey, {
-                algorithm: "RS512",
-            });
-        console.log("Token after /api " + CookieStore.currentToken);
-        next();
-    } catch (e) {
-        console.log('Token not OK');
-        res.status(401);
-        res.json({error: e});
+        res.json({error: "No token given for /api"});
     }
 });
 

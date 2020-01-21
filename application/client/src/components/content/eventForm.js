@@ -6,11 +6,13 @@ import {PerformerPanel, PerformersView} from "./performers";
 import {GeneralInfo} from "./generalInfo";
 import {CrewPanel, CrewTab} from "./crew";
 import {DocumentationTab} from "../documentationTab";
-import {DocList} from "../docView";
 import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
 import {RiderStore} from "../../store/riderStore";
 import {CookieStore} from "../../store/cookieStore";
+import NavLink from "react-bootstrap/NavLink";
+import {FolderCategory, FolderEvent, FolderItem} from "../contract";
+import Button from "react-bootstrap/Button";
 
 const history = createHashHistory();
 
@@ -21,7 +23,7 @@ export class EventForm extends Component{
 
         this.state = {
             activeTab: 0,
-            edit: false,
+            editMode: false,
         };
 
     }
@@ -36,7 +38,7 @@ export class EventForm extends Component{
     saveClicked = () => {
         if(this.validateForm()){
             this.setState({edit: false});
-            EventStore.postCurrentEvent().then(console.log("Lagret"));
+            EventStore.editCurrentEvent().then(console.log("Lagret"));
         } else{
             console.log("start date can not be after end date");
         }
@@ -48,7 +50,7 @@ export class EventForm extends Component{
                 <Tab eventKey="0" title="Generelt" >
                     <TabContent>
                         <div className="padding-bottom-20">
-                            <GeneralInfo/>
+                            <GeneralInfo editMode={this.state.editMode}/>
                         </div>
                     </TabContent>
                 </Tab>
@@ -66,11 +68,13 @@ export class EventForm extends Component{
                         </div>
                     </TabContent>
                 </Tab>
-                <Tab eventKey="3" title="Dokumentasjon">
+                <Tab eventKey="3" title="Dokumenter">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editalbe={this.state.edit}>
                         <div className="padding-bottom-20">
                         <DocumentationTab editable={true}/>
-                        <DocList/>
+                            <Button className={"mr-1"} onClick={() => {
+                                history.push("/dokumenter/" + EventStore.currentEvent.eventID)
+                            }}>Gå til arrangementets dokumenter</Button>
                         </div>
                     </TabContent>
                 </Tab>

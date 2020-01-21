@@ -1,7 +1,7 @@
 import axios from "axios";
 import {Event} from "../classes/event.js";
-import {CookieStore} from "../store/cookieStore.js";
 import {forEach} from "react-bootstrap/esm/ElementChildren";
+import {CookieStore} from "./cookieStore";
 
 let axiosConfig = require("./axiosConfig");
 
@@ -12,6 +12,10 @@ export class EventStore{
     static allEvents = [];
 
     static allEventsForOrganizer = [];
+
+    static setCurrentEvent(newEvent){
+        this.currentEvent = newEvent;
+    }
 
     static createEvent(callback, eventName, organizerID){
 
@@ -33,11 +37,11 @@ export class EventStore{
             "endDate" : today,
             "startTime" : startTime,
             "endTime" : endTime,
-            "address" : null,
-            "town" : null,
+            "address" : "",
+            "town" : "",
             "zipCode" : null,
             "status" : 0,
-            "description" : null,
+            "description" : "",
             "publishDate" : null,
             "publishTime" : null,
             "organizerID" : organizerID,
@@ -70,7 +74,7 @@ export class EventStore{
         });
     }
 
-    static postCurrentEvent(){
+    static editCurrentEvent(){
 
         let header = {
             "Content-Type": "application/json",
@@ -190,7 +194,6 @@ export class EventStore{
             callback();
         });
     }
-
     static formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),

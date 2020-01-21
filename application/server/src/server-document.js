@@ -61,18 +61,26 @@ const fileStorage = multer.diskStorage({
         const eventID = req.params.eventID;
         const documentCategoryID = req.params.documentCategoryID;
 
-        ensureFolderExists('./resources/' + eventID, 0o744, err => {
-            if (err) {
-                console.log("Could not create folder for event " + eventID);
-            } else {
-                ensureFolderExists('./resources/' + eventID + '/' + documentCategoryID, 0o744, err => {
+        ensureFolderExists("./resources", 0o744, err => {
+            if (err){
+                console.log("Could now create resource folder for user");
+            }
+            else{
+                ensureFolderExists('./resources/' + eventID, 0o744, err => {
                     if (err) {
-                        console.log("Could not create folder for event " + eventID + " - category " + documentCategoryID);
+                        console.log("Could not create resource folder for event " + eventID);
+                        console.log(err);
                     } else {
-                        console.log("Destination set for ./resources/" + eventID + "/" + documentCategoryID);
-                        cb(null, './resources/' + eventID + '/' + documentCategoryID);
+                        ensureFolderExists('./resources/' + eventID + '/' + documentCategoryID, 0o744, err => {
+                            if (err) {
+                                console.log("Could not create folder for event " + eventID + " - category " + documentCategoryID);
+                            } else {
+                                console.log("Destination set for ./resources/" + eventID + "/" + documentCategoryID);
+                                cb(null, './resources/' + eventID + '/' + documentCategoryID);
+                            }
+                        })
                     }
-                })
+                });
             }
         });
     },
@@ -278,7 +286,7 @@ app.get("/api/event/:eventID/documents/categories", (req, res) => {
     });
 });
 
-app.get("/api/artist/documents/:documentID", (req, res) => {
+app.get("/api/document/info/artist/:documentID", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getArtistInfoConnectedToDocument(req.params.documentID, (status, data) => {
         console.log(data);
@@ -287,7 +295,7 @@ app.get("/api/artist/documents/:documentID", (req, res) => {
     });
 });
 
-app.get("/api/crew/documents/:documentID", (req, res) => {
+app.get("/api/document/info/crew/:documentID", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getCrewInfoConnectedToDocument(req.params.documentID, (status, data) => {
         console.log(data);
@@ -303,6 +311,14 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
         res.status(status);
         res.json(data);
     });
+});
+
+app.get("/file/preview/:path*", (req, res) => {
+    if(req.params.path + req.params['0'] !== '' && req.params.path + req.params['0'] !== null){
+        var file = fs.createReadStream("./" + req.params.path + req.params['0']);
+        file.pipe(res);
+    }
+    console.log("Error: path is null")
 });
 
 app.get("/api/document/download/:path*", (req, res) => {
@@ -380,6 +396,14 @@ app.get("/api/document/download/:path*", (req, res) => {
     }
         res.send(data)
     })
+});
+
+app.get("/api/document/categories", (request, response) => {
+    console.log("Request for all document categories");
+    documentationDao.getAllDocumentCategories((status, data) => {
+        response.status(status);
+        response.json(data);
+    });
 });
 
 // TODO Her er det sikkert noe duplikat

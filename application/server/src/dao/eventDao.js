@@ -6,7 +6,7 @@ module.exports = class eventDao extends Dao {
         super.query('SELECT * FROM event', [], callback);
     }
 
-    getAllForOrganizer(callback, organizerID){
+    getAllForOrganizer(callback, organizerID) {
         super.query('SELECT * FROM event WHERE organizerID = ?', [organizerID], callback);
     }
 
@@ -14,11 +14,11 @@ module.exports = class eventDao extends Dao {
         super.query('SELECT * FROM event WHERE eventID = ?', [eventID], callback);
     }
 
-    createOne(callback, list){
+    createOne(callback, list) {
         super.query('INSERT INTO event VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', list, callback);
     }
 
-    updateOne(callback, list){
+    updateOne(callback, list) {
         super.query('UPDATE event SET eventName = ?, startDate = ?, endDate = ?, startTime = ?, endTime = ?, address = ?, town = ?, zipCode = ?, status = ?, description = ?, publishDate = ?, publishTime = ?, eventTypeID = ?, pictureID = ? WHERE eventID = ?', list, callback);
     }
 
@@ -30,7 +30,7 @@ module.exports = class eventDao extends Dao {
         super.query('DELETE FROM event WHERE eventID = ?', [eventID], callback);
     }
 
-    setStatus(callback, eventID, status){
+    setStatus(callback, eventID, status) {
         super.query('UPDATE event SET status = ? WHERE eventID = ?', [status, eventID], callback);
     }
 
@@ -38,7 +38,7 @@ module.exports = class eventDao extends Dao {
         super.query('SELECT COUNT(*) FROM event WHERE status = ? AND organizerID = ?', [status, organizerID], callback);
     }
 
-    getXOfStatusAfterDateForOrganizer(callback, status, x, date, organizerID){
+    getXOfStatusAfterDateForOrganizer(callback, status, x, date, organizerID) {
         super.query('SELECT * FROM event WHERE status = ? AND publishDate < ? AND organizerID = ? LIMIT ?', [status, date, organizerID, x], callback);
     }
 
@@ -50,7 +50,11 @@ module.exports = class eventDao extends Dao {
         super.query('UPDATE document SET eventID = ? WHERE documentID = ?', [eventID, documentID], callback);
     }
 
-    getAllDocuments(callback, eventID){
+    getAllDocuments(callback, eventID) {
         super.query('SELECT * FROM document WHERE eventID = ?', [eventID], callback);
+    }
+
+    archiveOldEvents(callback, organizerID) {
+        super.query('UPDATE event SET status = 2 WHERE organizerID = ? AND status = 1 AND endDate <= CURRENT_DATE() AND endTime < CURRENT_TIME()', [organizerID], callback);
     }
 };

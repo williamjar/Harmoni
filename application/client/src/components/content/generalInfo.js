@@ -25,19 +25,19 @@ export class GeneralInfo extends Component{
             <div>
                 <div className="row">
                     <div className="col-7 border-right">
-                        <InfoForm/>
+                        <InfoForm editMode={this.props.editMode}/>
                     </div>
                     <div className="col-5">
                         <Card.Body>
                             <Image src={EventStore.currentEvent.picture != null ? lorde : placeholder} alt="event image" fluid className="mb-2"/>
-                            {this.state.editable ? <Button>Last opp bilde</Button> : null}
+                             <Button type={"file"} variant={"secondary"}>Last opp bilde</Button>
                         </Card.Body>
                     </div>
                 </div>
                 <Row className="mb-3">
                     <Col>
                         <Card className="mb-2 border-0">
-                            <Card.Title>Legg til billetter</Card.Title>
+                            <Card.Title>Billetter</Card.Title>
                             <Ticket/>
                         </Card>
                     </Col>
@@ -53,7 +53,7 @@ export class InfoForm extends Component {
         super(props);
 
         this.state = {
-            edit: true,
+            edit: this.props.editMode,
             eventName: EventStore.currentEvent.eventName,
             startDate: EventStore.currentEvent.startDate,
             endDate: EventStore.currentEvent.endDate,
@@ -111,7 +111,7 @@ export class InfoForm extends Component {
                                 <Col xs="5">
                                     <FaCalendarAlt className="mr-1"/>
                                     <Form.Label>Start</Form.Label>
-                                    <Form.Control type="date" value={this.formatDate(this.state.startDate)} name="startDate" onChange={this.handleChange}/>
+                                    <Form.Control type="date" placeholder={this.formatDateFromSql(this.state.startDate)} value={this.formatDateFromSql(this.state.startDate)} name="startDate" onChange={this.handleChange}/>
                                 </Col>
                                 <Col xs="3">
                                     <FaClock className="mr-1"/>
@@ -131,7 +131,7 @@ export class InfoForm extends Component {
                                 <Col xs="5">
                                     <FaCalendarAlt className="mr-1"/>
                                     <Form.Label>Slutt</Form.Label>
-                                    <Form.Control type="date" value={this.formatDate(this.state.endDate)} name="endDate" onChange={this.handleChange}/>
+                                    <Form.Control type="date" placeholder={this.formatDateFromSql(this.state.endDate)} value={this.formatDateFromSql(this.state.endDate)} name="endDate" onChange={this.handleChange}/>
                                 </Col>
                                 <Col xs="3">
                                     <FaClock className="mr-1"/>
@@ -163,7 +163,7 @@ export class InfoForm extends Component {
                             <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Arrangementet kan ikke starte etter det har sluttet!</Form.Text>
                         </Form.Group>
                         <Form.Group>
-                            <Button type="submit" variant="primary">Lagre</Button>
+                            <Button type="submit" variant="success">Lagre</Button>
                         </Form.Group>
                     </Card.Body>
 
@@ -269,7 +269,7 @@ export class InfoForm extends Component {
                                 </Row>
                             </Form.Group>
                             <Form.Group>
-                                <Button variant="success" onClick={() => this.editMode()}>Rediger</Button>
+                                <Button variant="info" onClick={() => this.editMode()}>Rediger informasjon</Button>
                             </Form.Group>
                         </Card.Body>
 
@@ -282,8 +282,6 @@ export class InfoForm extends Component {
 
 
     validateForm(){
-
-        console.log("startdato" + this.state.startDate + "sluttdato" + this.state.endDate);
         if(this.state.startDate===this.state.endDate){
             return this.state.startTime < this.state.endTime;
         }
@@ -292,7 +290,6 @@ export class InfoForm extends Component {
     }
 
     editMode(){
-        console.log("edit er sant");
         this.setState({edit:true});
     }
 
@@ -301,7 +298,6 @@ export class InfoForm extends Component {
         this.setState({dateError: false})
         if(this.validateForm()){
             this.save();
-            EventStore.postCurrentEvent().then(console.log("Lagret"));
             this.setState({edit:false});
         } else{
             this.setState({dateError: true})
@@ -310,8 +306,8 @@ export class InfoForm extends Component {
 
     save(){
             EventStore.currentEvent.eventName = this.state.eventName;
-            EventStore.currentEvent.startDate = this.state.startDate;
-            EventStore.currentEvent.endDate = this.state.endDate;
+            EventStore.currentEvent.startDate = this.formatDate(this.state.startDate);
+            EventStore.currentEvent.endDate = this.formatDate(this.state.endDate);
             EventStore.currentEvent.startTime = this.state.startTime;
             EventStore.currentEvent.endTime = this.state.endTime;
             EventStore.currentEvent.address = this.state.address;
@@ -322,7 +318,7 @@ export class InfoForm extends Component {
     // Converts a javascript date to a format compatible with both datepicker and mysql
     formatDate(date) {
         let d = new Date(date);
-        let month = "" + (d.getMonth() + 1);
+        let month = "" + (d.getMonth() +1);
         let day = "" + (d.getDate());
         let year = d.getFullYear();
 
@@ -335,6 +331,22 @@ export class InfoForm extends Component {
 
         return [year, month, day].join("-");
     }
+
+
+    formatDateFromSql(date){
+        //2019-12-31T23:00:00.000Z
+        var newDate = date.split('T');
+
+        var convertedDate = newDate[0];
+
+
+        return convertedDate;
+
+
+    }
+
+
+
 }
 
 
