@@ -121,7 +121,7 @@ export class InfoForm extends Component {
                                 </Col>
                                 <Col>
                                     <Form.Label>Type arrangement</Form.Label>
-                                    <Form.Control as="select" value={this.state.eventType} name="eventType" onChange={this.handleChange}>
+                                    <Form.Control as="select" value={this.state.eventType} name="eventType" onChange={console.log(this.state.eventType)}>
                                         {
                                             EventStore.eventCategories.map((eventType,index) => (
                                             <option value={index}>{eventType}</option>
