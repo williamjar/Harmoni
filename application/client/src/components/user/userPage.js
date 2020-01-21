@@ -4,6 +4,8 @@ import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {PictureService} from "../../store/pictureService";
 import {MegaValidator} from "../../megaValidator";
+import {LoginService} from "../../store/loginService";
+import {DocumentService as documentService} from "../../store/documentService";
 import * as hash from "../../store/hashService";
 import {createHashHistory} from "history";
 
@@ -25,7 +27,8 @@ export class UserPage extends React.Component {
             newProfilePicture: '',
             savingInformation: false,
             showPasswordAlert: false,
-            mode: 1
+            mode: 1,
+            link: ""
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -33,9 +36,24 @@ export class UserPage extends React.Component {
     }
 
     componentDidMount() {
-        this.updateInfo();
+        this.updateInfo((profilePicture) => {
+            if(profilePicture !== null && profilePicture !== ''){
+                PictureService.previewPicture(profilePicture, (url) => {
+                    this.setState({link: url})
+                });
+            }
+        });
+
     }
 
+
+    checkIfUserHasPicture(){
+        if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
+            return(<img width={"200px"} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
+        }else {
+            return(<img width={"200px"} src={require('./profile.png')} alt={"Bildet kunne ikke lastes inn"}/>);
+        }
+    }
 
     render() {
         return (
@@ -56,8 +74,7 @@ export class UserPage extends React.Component {
                     <Row>
                         <Col>
                             <Card className={"p-2 card border-0"}>
-                                <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} />
-
+                                {this.checkIfUserHasPicture()}
                                 <Form onSubmit={this.handleSubmit}>
 
                                     <Form.Group>
@@ -203,11 +220,13 @@ export class UserPage extends React.Component {
 
             this.setState({[name]: value,});
         }
+
     }
 
     handleSubmit(event) {
         event.preventDefault();
         this.submitForm();
+        window.location.reload()
     }
 
 
@@ -216,7 +235,7 @@ export class UserPage extends React.Component {
     }
 
 
-    updateInfo() {
+    updateInfo(callback) {
         OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
             if (statusCode === 200) {
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
@@ -242,6 +261,7 @@ export class UserPage extends React.Component {
                     phonenumber: databasePhone,
                     profilePicture: databaseImage
                 }));
+                callback(databaseImage);
             } else {
                 //console.log("We have an error!");
             }

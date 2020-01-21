@@ -23,7 +23,6 @@ export class OrganizerStore {
             .then(response => {
                     this.currentOrganizer = new Organizer(response.data[0].organizerID, response.data[0].contactID, response.data[0].contactName, response.data[0].phone,
                         response.data[0].email, response.data[0].username, response.data[0].pictureLink);
-                    console.log(this.currentOrganizer);
                     callback(200);
                 }
             ).catch(err => callback(500));
@@ -42,10 +41,8 @@ export class OrganizerStore {
 
     static changePassword(organizerID, oldPassword, newPassword, callback) {
         return hash.verifyPassword(organizerID, oldPassword, rightPassword => {
-            console.log("Right password " + rightPassword);
             if (rightPassword) {
                 let newHashed = hash.sha512(newPassword, hash.generateSalt(16));
-                console.log("newHashed = " + newHashed);
 
                 let header = {
                     "Content-Type": "application/json",
@@ -57,7 +54,6 @@ export class OrganizerStore {
                 }, {headers: header}).catch(error => console.log(error));
                 callback(200);
             } else {
-                console.log("Password verification failed");
                 callback(500);
             }
         });
@@ -115,7 +111,6 @@ export class OrganizerStore {
     static archiveOldEvents() {
         axios.put(axiosConfig.root + '/api/archive/' + this.currentOrganizer.organizerID).then(response => {
             if (response) {
-                console.log(response.data.changedRows + " events moved to archive");
             }
         });
     }

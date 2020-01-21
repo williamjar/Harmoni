@@ -39,13 +39,14 @@ export class ArtistService {
         };
 
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/artistEventInfo', {headers: header}).then(response => {
-                console.log(response);
-                let artistEventInfo = new ArtistEventInfo(response.data[0].artistID, response.data[0].contactID, response.data[0].eventID, response.data[0].contractSigned === 1, response.data[0].hasBeenPaid === 1);
+                console.log("response data");
+                console.log(response.data);
+                let artistEventInfo = new ArtistEventInfo(response.data[0].artistID, response.data[0].eventID, response.data[0].contractSigned === 1, response.data[0].hasBeenPaid === 1);
                 console.log("getArtistEventInfo");
                 console.log(artistEventInfo);
                 callback(artistEventInfo);
             }
-        );
+        ).catch(fail => console.log("Error get artist event info " + fail));
 
     }
 
@@ -126,10 +127,11 @@ export class ArtistService {
             "x-access-token": CookieStore.currentToken
         };
         axios.get(axiosConfig.root + '/api/artist/organizer/' + organizerID, {headers: header}).then(response => {
+
                 for (let i = 0; i < response.data.length; i++) {
                     allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].contactID, response.data[i].contactName,
                         response.data[i].phone, response.data[i].email, response.data[i].genreID,
-                        response.data[i].organizerID));
+                        response.data[i].organizerID, response.data[i].hasBeenPaid === 1, response.data[i].contractSigned === 1));
                 }
                 callback(allArtistByOrganizer);
             }
