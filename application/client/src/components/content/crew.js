@@ -14,6 +14,7 @@ import {DocumentService} from "../../store/documentService";
 import {Alert} from "../alerts";
 import {Document} from "../../classes/document";
 import {MailService} from "../../store/mailService";
+import {ArtistService} from "../../store/artistService";
 
 
 export class CrewPanel extends Component{
@@ -26,6 +27,7 @@ export class CrewPanel extends Component{
             crewCategoryList : [],
             showCrewCard: false,
             crewSelected : {},
+            crewCategorySelected : {},
             results : [],
             showRegisterNew : false,
         }
@@ -47,8 +49,8 @@ export class CrewPanel extends Component{
                         </div>
 
                         <div className="padding-top-20">
-                            {this.state.showRegisterNew?<AddCrewMember submit={this.submitFunction} toggleRegisterCrewMember={this.toggleRegisterNew} crewCategoryList={this.state.crewCategoryList} />:null}
-                            {this.state.showCrewCard?<CrewCard submit={this.submitFunction} crewSelected={this.state.crewSelected} crewCategoryList={this.state.crewCategoryList}/>:null}
+                            {this.state.showRegisterNew?<AddCrewMember submitFunction={this.submitFunction} toggleRegisterCrewMember={this.toggleRegisterNew} crewCategoryList={this.state.crewCategoryList} />:null}
+                            {this.state.showCrewCard?<CrewCard submitFunction={this.submitFunction} crewSelected={this.state.crewSelected} crewCategoryList={this.state.crewCategoryList} crewCategoryID={this.state.crewCategorySelected} categoryHandler={this.categoryHandler}/>:null}
 
                         </div>
                     </div>
@@ -81,9 +83,11 @@ export class CrewPanel extends Component{
         let currentState = this.state;
         currentState.crewSelected = selected;
         currentState.showCrewCard = true;
-        this.assignCrew(selected);
         this.setState(currentState);
-        //this.setState({crewSelected : crew, showCrewCard : true});
+    };
+
+    categoryHandler = (category) => {
+        this.setState({crewCategorySelected : category});
     };
 
     //TODO: Fix categoryID for assignCrew
@@ -95,10 +99,9 @@ export class CrewPanel extends Component{
                 let currentState = this.state;
                 currentState.crewList = CrewStore.allCrewForCurrentEvent; //Receive a new array from database with assigned crew to event
                 this.setState(currentState);
+                currentState.crewSelected = selected;
             }, EventStore.currentEvent.eventID);
         });
-        currentState.crewSelected = selected;
-        this.setState(currentState);
     };
 
     componentDidMount() {
@@ -133,6 +136,12 @@ export class CrewPanel extends Component{
         this.setState(currentState);
     };
 
+    setCategoryCurrentCrew = () => {
+        this.setState({
+            crewCategorySelected : this.state.crewSelected.crewCategoryID
+        })
+    };
+
     refreshCrewList = () => {
         CrewStore.storeAllCrewMembersForEvent(() => {
             this.setState(
@@ -149,7 +158,14 @@ export class CrewPanel extends Component{
         }, CookieStore.currentUserID);
     };
 
-    submitFunction = () => {
+    submitFunction = (selected) => {
+        let currentState = this.state;
+        currentState.crewSelected = selected;
+        this.setState(currentState);
+        this.refreshCrewList();
+    };
+
+    submitFunction2 = () => {
         this.refreshCrewList();
         this.refreshCrewCategories();
     };
@@ -169,6 +185,7 @@ export class CrewPanel extends Component{
         currentState.crewSelected = crew;
         currentState.showCrewCard = true;
         this.setState(currentState);
+        this.setCategoryCurrentCrew();
     };
 }
 
@@ -240,10 +257,11 @@ export class CrewCard extends Component{
         this.state = {
             crew : this.props.crewSelected,
             crewCategoryList : this.props.crewCategoryList,
-            selectedCategoryID : this.props.crewSelected.crewCategoryID,
+            crewCategoryID : this.props.crewSelected.crewCategoryID,
+            crewCategoryName : this.props.crewSelected.crewCategoryName,
+            description : this.props.crewSelected.description,
             numberOfFilesChosenForUpload : 0,
             numberOfFilesAlreadyUploaded : 0,
-            description : this.props.crewSelected.description,
             isResponsible : false,
             contractSigned : false,
             hasBeenPaid : false
@@ -263,24 +281,14 @@ export class CrewCard extends Component{
                         {this.state.crew.email}
                     </div>
 
-                    <div className="col-3">
+                    <div className="col-4">
                         <label htmlFor="categorySelect">Kategori</label>
-                        <select
-                            value={this.state.crew.categoryID}
-                            onChange={e =>
-                                this.setState({
-                                    selectedCategoryID: e.target.value,
-                                })
-                            }
-                        >
-                            {this.state.crewCategoryList.map(category => (
-                                <option key={category.crewCategoryID} value={this.state.selectedCategoryID}>
-                                    {category.crewCategoryName}
-                                </option>
-                            ))}
+                        <select className="form-control" id="categorySelect" value={this.state.crewCategoryID} onChange={this.categoryHandler}>
+                            {this.state.crewCategoryList.map(e =>
+                                <option key={e.crewCategoryID} value={e.crewCategoryID}>{e.crewCategoryName}</option>
+                            )}
                         </select>
                     </div>
-
 
                 </div>
                 <hr></hr>
@@ -356,13 +364,22 @@ export class CrewCard extends Component{
         if(props.crewSelected !== state.crew) {
             return {
                 crew: props.crewSelected,
-                selectedCategoryID : props.crewSelected.crewCategoryID,
+                crewCategoryID : props.crewSelected.crewCategoryID,
+                crewCategoryName : props.crewSelected.crewCategoryName,
                 description : props.crewSelected.description,
                 isResponsible : props.crewSelected.isResponsible,
                 signedContract : props.crewSelected.signedContract,
                 hasBeenPaid: props.crewSelected.hasBeenPaid
             };
         }
+        if(props.crewSelected.crewCategoryID !== state.crewCategoryID){
+            console.log("props ID");
+            console.log(props.crewSelected.crewCategoryID);
+            return {
+                crewCategoryID : props.crewSelected.crewCategoryID
+            }
+        }
+
         return null;
     }
 
@@ -377,16 +394,15 @@ export class CrewCard extends Component{
 
     }
 
+    categoryHandler = (event) => {
+        console.log("CATEGORYID");
+        console.log(this.state.crewCategoryID);
+        console.log(this.state.crewCategoryName);
+        this.props.categoryHandler(event.target.value);
+    }
+
     handleCheckboxes = (event) => {
         this.setState({[event.target.name] : event.target.checked});
-
-        console.log("hasBeenPaid");
-        console.log(this.state.hasBeenPaid);
-        console.log("contractSigned");
-        console.log(this.state.contractSigned);
-        console.log("isResponsible");
-        console.log(this.state.isResponsible);
-
     }
 
     handleInputDescription = (event) =>{
@@ -412,8 +428,8 @@ export class CrewCard extends Component{
             hasBeenPaid : (this.state.hasBeenPaid ? 1 : 0)
         }, () => {
             CrewStore.unassignCrewMemberFromEvent(EventStore.currentEvent.eventID, this.props.crewSelected.crewCategoryID, this.props.crewSelected.crewID, () => {
-                CrewStore.assignCrewMemberToEvent(EventStore.currentEvent.eventID, 7, this.props.crewSelected.crewID, this.state.isResponsible, this.state.contractSigned, this.state.hasBeenPaid , () => {
-                    this.props.submit();
+                CrewStore.assignCrewMemberToEvent(EventStore.currentEvent.eventID, this.state.crewCategoryID, this.props.crewSelected.crewID, this.state.isResponsible, this.state.contractSigned, this.state.hasBeenPaid , (crew) => {
+                    this.props.submitFunction(crew);
                     console.log("ON SUBMIT");
                     console.log("hasBeenPaid");
                     console.log(this.state.hasBeenPaid);
@@ -746,11 +762,10 @@ export class AddCrewMember extends Component{
 
     submitForm = () => {
         if(this.state.name.trim() !== "" && this.state.phone.trim() !== "" && this.state.email.trim() !== ""){
-            CrewStore.createCrewMemberForEvent(() => {
+            CrewStore.createCrewMemberForEvent((crew) => {
                 this.props.toggleRegisterCrewMember();
-                this.props.submit();
+                this.props.submitFunction(crew);
             }, this.state.name, this.state.phone, this.state.email, this.state.description, this.state.selectedCategoryID, (this.state.isResponsible ? 1 : 0), EventStore.currentEvent.eventID, CookieStore.currentUserID);
-        this.props.submit();
         }
         else{
             if(this.state.name.trim() === ""){
