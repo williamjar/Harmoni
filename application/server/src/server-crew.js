@@ -38,14 +38,6 @@ app.get("/api/crew/event/:eventID", (request, response) => {
     }, val);
 });
 
-app.get("/api/crew/event/:eventID/categories/:crewID", (request, response) => {
-    console.log("request for all crew categories attached to a crew member for an event");
-    crewDao.getAllCategoriesForOneForEvent((status,data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.crewID, request.params.eventID);
-});
-
 app.get("/api/crew/event/:eventID/categories", (request, response) => {
     console.log("request for all crew categories for an event");
     crewDao.getAllCategoriesForEvent((status,data) => {
@@ -85,7 +77,9 @@ app.post("/api/crew/assign", (request, response) => {
         request.body.eventID,
         request.body.crewCategoryID,
         request.body.crewID,
-        request.body.isResponsible
+        request.body.isResponsible,
+        request.body.contractSigned,
+        request.body.hasBeenPaid
     ];
     crewDao.assignOne((status, data) => {
         response.status(status);
@@ -124,18 +118,18 @@ app.put("/api/crew/:crewID", (request, response) => {
     }, val);
 });
 
-
-app.put("/api/responsible/:isResponsible", (request, response) => {
-    console.log("set a crew member to be responsible");
-
+app.put("/api/crew/:crewID/event/:eventID", (request, response) => {
+    console.log("update responsibility and contracts for crew");
     let val = [
-        request.params.isResponsible,
-        request.body.eventID,
+        request.body.isResponsible,
+        request.body.contractSigned,
+        request.body.hasBeenPaid,
         request.body.crewCategoryID,
-        request.body.crewID
+        request.params.eventID,
+        request.params.crewID,
     ];
 
-    crewDao.setResponsible((status, data) => {
+    crewDao.updateOneForEvent((status,data) => {
         response.status(status);
         response.json(data);
     }, val)
