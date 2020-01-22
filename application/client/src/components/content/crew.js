@@ -372,11 +372,11 @@ export class CrewCard extends Component{
                 hasBeenPaid: props.crewSelected.hasBeenPaid
             };
         }
-        if(props.crewSelected.crewCategoryID !== state.crewCategoryID){
+        if(props.crewCategoryID !== state.crewCategoryID){
             console.log("props ID");
-            console.log(props.crewSelected.crewCategoryID);
+            console.log(props.crewCategoryID);
             return {
-                crewCategoryID : props.crewSelected.crewCategoryID
+                crewCategoryID : props.crewCategoryID
             }
         }
 
@@ -397,7 +397,12 @@ export class CrewCard extends Component{
     categoryHandler = (event) => {
         console.log("CATEGORYID");
         console.log(this.state.crewCategoryID);
-        console.log(this.state.crewCategoryName);
+        console.log(event.target.value);
+        console.log("Props category:");
+        console.log(this.props.crewCategoryID);
+        this.setState({
+            crewCategoryID : event.target.value
+        })
         this.props.categoryHandler(event.target.value);
     }
 
