@@ -27,7 +27,9 @@ export class Contacts extends React.Component {
         this.state = {
             active: "all",
             performers: [],
-            genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"]
+            currentPerformer: null,
+            showContact: false,
+            genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"],
         };
     }
 
@@ -37,6 +39,14 @@ export class Contacts extends React.Component {
 
     filterPerformers = (e) => {
         this.setState({active: e.target.name});
+    };
+
+    searchHandler = (selected) => {
+        this.setState({currentPerformer: selected, show: true}, () => console.log(selected));
+    };
+
+    hidePerformer = () => {
+        this.setState({show: false});
     };
 
     render() {
@@ -51,7 +61,7 @@ export class Contacts extends React.Component {
                         <Col>
                         </Col>
                     </Row>
-                    <Search searchHandler results/>
+                    <Search searchHandler={this.searchHandler} results={this.state.performers}/>
                     <Row className="filterMenu mb-2 mt-2">
                         <Col>
                             <ButtonGroup size="sm">
@@ -117,6 +127,8 @@ export class Contacts extends React.Component {
                         </div>
                     </Col>
                 </Row>
+                {console.log(this.state.currentPerformer)}
+                {this.state.currentPerformer !== null ? <ContactInfo show={this.state.show} contact={this.state.currentPerformer} onHide={this.hidePerformer}/> : null}
             </div>
         )
     }
@@ -171,62 +183,117 @@ export class ContactList extends React.Component {
     render() {
         return(
             <Table responsive>
-                {console.log(this.state.performers)}
                 <tbody>
                 {this.state.performers.map(performer => (
                     <tr align='center' className="contact pointer" onClick={this.viewPerformer} id={performer.artistID} key={performer.artistID}>
                         <td align="left" id={performer.artistID}>{performer.contactName}</td>
                         <td id={performer.artistID}></td>
-                        <td align="right" id={performer.artistID}><FaEye size={30}>Vis</FaEye></td>
+                        <td align="right" id={performer.artistID}><FaEye size={30} id={performer.artistID}>Vis</FaEye></td>
                     </tr>
                 ))}
                 </tbody>
-                <Modal show={this.state.showContact} onHide={this.hidePerformer}>
-                    <Modal.Header closeButton>
-                        <FaUserCircle size={35} className="mr-1"/>
-                        <Modal.Title>{this.state.currentPerformer !== null ? this.state.currentPerformer.contactName : null}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <h5>Kontakt</h5>
-                        <Row>
-                            <Col xs={1}>
-                                <FaEnvelopeSquare/>
-                            </Col>
-                            <Col>
-                                {this.state.currentPerformer !== null ? <a href={"mailto:" + this.state.currentPerformer.email}>{this.state.currentPerformer.email}</a> : null}
-                            </Col>
-                        </Row>
-                        <Row className="mb-4">
-                            <Col xs={1}>
-                                <FaPhone/>
-                            </Col>
-                            <Col>
-                                {this.state.currentPerformer !== null ? this.state.currentPerformer.phone : null}
-                            </Col>
-                        </Row>
-                        <h5>Artistinfo</h5>
-                        <Row>
-                            <Col xs={1}>
-                                <FaMusic/>
-                            </Col>
-                            <Col>
-                                {this.state.currentPerformer !== null && this.state.currentPerformer.genre !== null ? this.state.genres[this.state.currentPerformer.genre] : null}
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={1}>
-                                <FaCalendar/>
-                            </Col>
-                            <Col>
-                            </Col>
-                        </Row>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary">Rediger</Button>
-                        <Button variant="danger">Slett</Button>
-                    </Modal.Footer>
-                </Modal>
+                {this.state.currentPerformer !== null ? <ContactInfo show={this.state.showContact} contact={this.state.currentPerformer} onHide={this.hidePerformer}/> : null}
             </Table>
+        )
+    }
+}
+
+export class ContactInfo extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            show: this.props.show,
+            contact: this.props.contact,
+            contactName: this.props.contact.contactName,
+            email: this.props.contact.email,
+            phone: this.props.contact.phone,
+            genre: this.props.contact.genre,
+            genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"],
+            editable: false,
+        }
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.contact !== this.state.contact || nextProps.show !== this.state.show);
+    }
+
+    componentDidUpdate(props) {
+        this.setState({
+            show: this.props.show,
+            contact: this.props.contact,
+            email: this.state.contact.email,
+            phone: this.state.contact.phone,
+            genre: this.state.contact.genre
+        });
+    }
+
+    editClicked = () => {
+        this.setState({editable: true, show: false}, () => this.setState({show: true}));
+    };
+
+    saveClicked = () => {
+
+    };
+
+    handleChange = (e) => {
+        this.setState({[e.target.name]: e.target.value, show: false}, () => this.setState({show: true}));
+    };
+
+    render() {
+        return(
+            <Modal show={this.state.show} onHide={this.props.onHide}>
+                <Modal.Header closeButton>
+                    <FaUserCircle size={35} className="mr-1"/>
+                    <Modal.Title>{this.state.editable ? <Form.Control name="contactName" type="text" value={this.state.contactName}
+                    onChange={this.handleChange}/> : this.state.contactName}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h5>Kontakt</h5>
+                    <Row>
+                        <Col xs={1}>
+                            <FaEnvelopeSquare/>
+                        </Col>
+                        <Col>
+                            {this.state.editable ? <Form.Control name="email" type="text" value={this.state.email}
+                            onChange={this.handleChange}/> : <a href={"mailto:" + this.state.email}>{this.state.email}</a>}
+                        </Col>
+                    </Row>
+                    <Row className="mb-4">
+                        <Col xs={1}>
+                            <FaPhone/>
+                        </Col>
+                        <Col>
+                            {this.state.editable ? <Form.Control name="phone" type="text" value={this.state.phone}
+                            onChange={this.handleChange}/> : this.state.phone}
+                        </Col>
+                    </Row>
+                    <h5>Artistinfo</h5>
+                    <Row>
+                        <Col xs={1}>
+                            <FaMusic/>
+                        </Col>
+                        <Col>
+                            {this.state.editable ? <Form.Control name="genre" as="select" value={this.state.genres[this.state.genre - 1]}
+                            onChange={this.handleChange}>{
+                                this.state.genres.map(genre => {return <option>{genre}</option>})
+                            }</Form.Control> : this.state.genres[this.state.genre - 1]}
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={1}>
+                            <FaCalendar/>
+                        </Col>
+                        <Col>
+                        </Col>
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    {this.state.editable ? <Button variant="success">Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}
+                    <Button variant="danger">Slett</Button>
+                </Modal.Footer>
+            </Modal>
         )
     }
 }

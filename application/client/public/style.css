@@ -470,7 +470,10 @@ search-result-item{
 .contact:hover {
     width: 50px !important;
     height: 50px !important;
-    font-size: 18px;
+    font-weight: bold;
+    color: #00aaee;
+    border-left: #00aaee;
+    border-left-style: solid;
 }
 
 .addButton {
