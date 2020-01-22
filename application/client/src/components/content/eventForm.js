@@ -51,7 +51,9 @@ export class EventForm extends Component{
                     <TabContent>
                         <div className="padding-bottom-20">
                             <GeneralInfo editMode={this.state.editMode}/>
-                            <Map/>
+                            <Map
+                                position = {{lat: 66.4857, lng: 13.5622}} //Glomfjord!
+                            />
                         </div>
                     </TabContent>
                 </Tab>
