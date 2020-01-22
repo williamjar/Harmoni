@@ -47,7 +47,6 @@ export class UserPage extends React.Component {
 
     }
 
-
     checkIfUserHasPicture(){
         if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
             return(<img width={"200px"} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
@@ -417,16 +416,17 @@ export class DeleteUserForm extends React.Component {
         }
     }
 
-
     checkPasswordAndDeleteCurrentUser() {
 
         hash.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
             console.log("Password ? " + res);
             if (res) {
                 OrganizerStore.deleteCurrentOrganizer();
-                CookieStore.currentToken = null;
-                CookieStore.currentUserID = null;
-                // TODO Proper logout here
+                sessionStorage.setItem('token', null);
+                sessionStorage.removeItem('loggedIn');
+                CookieStore.setCurrentToken(null);
+                CookieStore.setCurrentUserID(-1);
+                history.push("/");
                 window.location.reload();
             } else {
                 this.setState({errorDeleting: true});

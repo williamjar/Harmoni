@@ -1,38 +1,21 @@
 import React from 'react';
 import {Component} from 'react';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Menu, MobileMenu, NavBar, UserProfileButton} from "./components/menu/navigation";
 import {Content, SimpleContent} from "./components/content/content";
 import {HashRouter, NavLink, Route} from 'react-router-dom';
-import {PerformerCard, PerformersTab} from "./components/content/performers";
 import {Dashboard} from "./components/content/dashboard/dashboard";
 import {LoginForm} from "./components/login/loginForm";
 import {RegisterForm} from "./components/login/registerForm";
 import {CreateEventSplash} from "./components/content/CreateEventSplash";
 import {UserPage} from "./components/user/userPage";
-import {Search} from "./components/content/search";
-
-import {GetTicket} from "./components/ticket";
 import {EventForm} from "./components/content/eventForm";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
-import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "react-icons/all";
-import {Alert} from './components/alerts'
-
-
-
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
 import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
 import {BugReview} from "./components/bugReview";
 import {Contacts} from "./components/content/contacts/contacts";
 let history = createHashHistory();
-
 
 export class App extends Component{
 
@@ -45,7 +28,6 @@ export class App extends Component{
         };
 
         this.handleLogin();
-
     }
 
     turnOffMobileView = () => {
@@ -99,7 +81,6 @@ export class App extends Component{
                                     <div className="margin-bottom-30"><br/> </div>:null
                                 }
 
-
                             <div className="col-lg-10 col-sm-12">
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
                                 <Route exact path="/opprett"  component={() => <SimpleContent page={<CreateEventSplash />} />} />
@@ -131,6 +112,10 @@ export class App extends Component{
         }
     }
 
+    logoutUser = () => {
+        this.setState({loggedIn: false});
+    };
+
     handleLogin = () => {
         let currentState = this.state;
 
@@ -158,9 +143,6 @@ export class App extends Component{
             this.setState(currentState);
         });
     }
-
 }
-
-
 
 export default App;
