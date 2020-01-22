@@ -22,8 +22,8 @@ module.exports = class artistDao extends Dao {
         super.query('INSERT INTO artist (genreID, organizerID, contactID) values(?, ?, ?)', list, callback);
     }
 
-    updateOne(callback, genreID, artistID){
-        super.query('UPDATE artist SET genreID = ? WHERE artistID = ?', [genreID, artistID], callback);
+    updateOne(callback, list){
+        super.query('UPDATE artist SET genreID = ? WHERE artistID = ?', list, callback);
     }
 
     deleteOne(callback, artistID) {
