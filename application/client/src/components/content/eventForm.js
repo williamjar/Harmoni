@@ -28,7 +28,6 @@ export class EventForm extends Component{
 
     }
 
-
     // Handles when the user wants to edit the event
     editClicked = () => {
         this.setState({edit: true})

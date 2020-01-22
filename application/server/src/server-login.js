@@ -1,4 +1,4 @@
-import {app, loginDao,organizerDao, SECRET, jwt} from "./server";
+import {app, loginDao, organizerDao, SECRET, jwt} from "./server";
 import {CookieStore} from "../../client/src/store/cookieStore";
 
 let privateKey = SECRET.privateKey;
@@ -80,7 +80,7 @@ app.post("/token", (req, res) => {
 app.use('/api', (req, res, next) => {
     console.log("Testing /api");
     let token;
-    if (req.headers["x-access-token"]){
+    if (req.headers["x-access-token"]) {
         token = req.headers["x-access-token"];
         console.log("Token in /api " + token);
         try {
