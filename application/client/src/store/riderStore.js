@@ -10,7 +10,7 @@ export class RiderStore {
     static allRidersForCurrentEvent = [];
 
     static addToAllRidersForCurrentArtistAndEvent(rider){
-        this.allRidersForCurrentArtistAndEvent.push(rider);
+        this.allRidersForCurrentEvent.push(rider);
     }
 
     //get a rider element

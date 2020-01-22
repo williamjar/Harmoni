@@ -71,6 +71,27 @@ export class ArtistService {
 
     }
 
+    static updateArtistGenre(callback, artistID, genreID, organizerID, contactID){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let artistGenreBody = {
+            "genreID" : genreID,
+            "organizerID" : organizerID,
+            "contactID" : contactID,
+        };
+
+        console.log("update artist genre");
+        console.log(artistGenreBody);
+
+
+        axios.put(axiosConfig.root +"/api/artist/" +artistID, artistGenreBody, {headers: header}).then(response => {
+            callback();
+        })
+    }
+
     // OrganizerID == innlogget bruker.
     static createArtist(callback, name, phone, email, genreID, organizerID) {
         let header = {
