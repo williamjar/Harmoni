@@ -91,9 +91,6 @@ export class InfoForm extends Component {
 
 
     render() {
-        EventStore.getEventCategories();
-        console.log("Event type: " + EventStore.currentEvent.eventType);
-        console.log("State type: " + this.state.eventType);
         if(this.state.edit){
             return(
                 <div>
@@ -125,7 +122,9 @@ export class InfoForm extends Component {
                                         <Col>
                                             <Form.Label>Type arrangement</Form.Label>
                                             <Form.Control as="select" value={this.state.eventType} name="eventType" onChange={this.handleChange}>
-                                                 {EventStore.eventCategories.map((cat,i) => (
+                                                 {EventStore.getEventCategories()}
+                                                {
+                                                     EventStore.eventCategories.map((cat,i) => (
                                                         <option value={i+1}>{cat}</option>
                                                     ))
                                                 }
