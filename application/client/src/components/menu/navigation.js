@@ -54,6 +54,7 @@ export class MobileMenu extends Component{
 
                         <div className="log-out-mobile pointer" onClick={() => {
                             sessionStorage.setItem('token', null);
+                            sessionStorage.setItem('currentEvent', null);
                             sessionStorage.removeItem('loggedIn');
                             CookieStore.setCurrentToken(null);
                             CookieStore.setCurrentUserID(-1);

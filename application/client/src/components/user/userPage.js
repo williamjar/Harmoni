@@ -369,6 +369,7 @@ export class DeleteUserForm extends React.Component {
             if (res) {
                 OrganizerStore.deleteCurrentOrganizer();
                 sessionStorage.setItem('token', null);
+                sessionStorage.setItem('currentEvent', null);
                 sessionStorage.removeItem('loggedIn');
                 CookieStore.setCurrentToken(null);
                 CookieStore.setCurrentUserID(-1);
