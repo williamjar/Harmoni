@@ -39,10 +39,8 @@ export class BugStore extends Component {
            "x-access-token": CookieStore.currentToken
        };
        axios.get(axiosConfig.root + '/api/bug/organizer/' + organizerID, {headers: header}).then( response => {
-           for (let i = 0; i < response.data.length; i++){
-               this.allBugsReportedByOrganizer.push(new Bug(response.data[i].bugID, response.data[i].date, response.data[i].description, response.data[i].organizerID));
-           }
-           callback()
+           this.allBugsReportedByOrganizer = response.map(bug => new Bug(bug.bugID, bug.date, bug.description, bug.organizerID));
+           callback();
        });
    }
 
