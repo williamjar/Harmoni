@@ -19,7 +19,6 @@ import {FaBullhorn} from "react-icons/all";
 import { createHashHistory } from 'history';
 import {PictureService} from "../../store/pictureService";
 let history = createHashHistory();
-import {Link} from "../user/userPage"
 
 
 export class MobileMenu extends Component{
