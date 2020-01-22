@@ -241,6 +241,24 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     });
 });
 
+/*
+app.delete("/api/documents/category/:documentCategoryID", (req, res) => {
+    documentationDao.deleteDocumentCategory(req.params.documentCategoryID, (status, data) => {
+        res.status(status);
+        res.json(data);
+    });
+});
+
+deleteDocumentCategory(documentCategoryID, callback){
+    var val = [documentCategoryID];
+    super.query(
+        "delete from document where eventID = ? and documentID = ?;",
+        val,
+        callback
+    );
+}
+ */
+
 app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID, (status, data) => {
         res.status(status);

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Col, Row} from "react-bootstrap";
 import {NavLink} from "react-router-dom";
-import {FaAngleDown,FaFileImage, FaFilePowerpoint,FaFileExcel,FaFileArchive,FaFileWord, FaFilePdf, FaFileAlt, FaFolderOpen} from "react-icons/all";
+import {FaFileUpload,FaAngleDown,FaFileImage, FaFilePowerpoint,FaFileExcel,FaFileArchive,FaFileWord, FaFilePdf, FaFileAlt, FaFolderOpen} from "react-icons/all";
 import { createHashHistory } from 'history';
 import {DocumentService as documentService} from "../store/documentService";
 import {DocumentCategory} from "../classes/documentCategory";
@@ -106,17 +106,33 @@ export class FolderCategory extends Component {
         history.push("/dokumenter/" + this.props.match.params.eventID + "/" + documentCategoryID);
     }
 
+    check(){
+        if(this.state.folderSpecs.length === 0){
+           return(
+               <section className={"icon-center"}>
+                   <FaFileUpload size={200}/>
+                   <h1 className={"padding-top-10"}>Ingen opplastede dokumenter</h1>
+               </section>
+           );
+        }
+    }
+
     render() {
         return (
-            <Row>
-                {this.state.folderSpecs.map((item) => {
-                    return (
-                        <Col className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.documentCategoryID)}>
-                            <FolderItem name = {item.documentCategoryName}/>
-                        </Col>
-                    );
-                })}
-            </Row>
+            <div>
+                {this.check()}
+                <Row>
+
+                    {this.state.folderSpecs.map((item) => {
+                        return (
+                            <Col className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.documentCategoryID)}>
+                                <FolderItem name = {item.documentCategoryName}/>
+                            </Col>
+                        );
+                    })}
+                </Row>
+            </div>
+
         );
     }
 }
@@ -167,15 +183,26 @@ export class Documents extends Component{
         }
     }
 
-    handleDelete(documentID){
-        //sletter fra liste
-    }
+    deleteDocument = (documentID, documentLink, documentCategoryID) => {
+        let document =  this.state.document.find(e => e.documentID === documentID);
+        let index = this.state.document.indexOf(document);
+        let currentState = this.state;
+        currentState.document.splice(index, 1);
+        this.setState(currentState);
+
+        documentService.deleteDocument(documentID, documentLink);
+
+        if(this.state.document.length === 0){
+            history.push('/dokumenter');
+        }
+
+
+    };
 
     render(){
         return(
             <section>
                 {this.state.document.map((item) => {
-
                     return (
                         <Accordion defaultActiveKey="1">
                             <Row className = {"folder text-primary border-bottom"}>
@@ -186,7 +213,7 @@ export class Documents extends Component{
                                 </Col>
                             </Row>
                             <Accordion.Collapse eventKey="0">
-                                <Info documentID = {item.documentID} documentLink = {item.documentLink} documentName = {item.documentName}/>
+                                <Info eventID = {this.props.match.params.eventID} documentCategoryID = {this.props.match.params.documentCategoryID} deleteDocument = {this.deleteDocument} documentID = {item.documentID} documentLink = {item.documentLink} documentName = {item.documentName}/>
                             </Accordion.Collapse>
                         </Accordion>
                     );
@@ -200,21 +227,26 @@ class Info extends Component {
     constructor(props){
         super(props);
         this.state= {
+            documentID: this.props.documentID,
+            documentLink: this.props.documentLink,
+            documentName: this.props.documentName,
+            eventID: this.props.eventID,
+            documentCategoryID: this.props.documentCategoryID,
             artist: {},
             crew: {}
         }
     }
 
     downloadDocument(){
-        documentService.downloadDocument(this.props.documentLink, this.props.documentName);
+        documentService.downloadDocument(this.state.documentLink, this.state.documentName);
     }
 
     viewHandler = async () => {
-        documentService.previewDocument(this.props.documentLink);
+        documentService.previewDocument(this.state.documentLink);
     };
 
     previewButton(){
-        if ((/\.(pdf)$/i).test(this.props.documentLink)) {
+        if ((/\.(pdf)$/i).test(this.state.documentLink)) {
             return (
                 <Button variant="outline-info" onClick={this.viewHandler}> Åpne </Button>
             );
@@ -222,11 +254,11 @@ class Info extends Component {
     }
 
     componentDidMount() {
-        documentService.getArtistInfoConnectedToDocument(this.props.documentID,(artistObj) => {
+        documentService.getArtistInfoConnectedToDocument(this.state.documentID,(artistObj) => {
             this.setState({artist: artistObj});
         });
 
-        documentService.getCrewInfoConnectedToDocument(this.props.documentID,(crewObj) => {
+        documentService.getCrewInfoConnectedToDocument(this.state.documentID,(crewObj) => {
             this.setState({crew: crewObj});
         });
 
@@ -259,7 +291,7 @@ class Info extends Component {
 
     deleteDocument = (e) => {
         e.preventDefault();
-        documentService.deleteDocument(this.props.documentID, this.props.documentLink, () => {
+        documentService.deleteDocument(this.state.documentID, this.state.documentLink, () => {
             this.forceUpdate()
         });
 
@@ -284,7 +316,7 @@ class Info extends Component {
                     {this.associatedContact()}
                 </Col>
                 <Col size = {3} className={"text-right"}>
-                    <Button onClick = {this.deleteDocument} variant="danger"> Slett </Button>
+                    <Button onClick = {() => this.props.deleteDocument(this.state.documentID, this.state.documentLink, this.state.documentCategoryID)} variant="danger"> Slett </Button>
                 </Col>
             </Row>
         );
