@@ -26,6 +26,10 @@ body{
     padding:20px;
 }
 
+.padding-25{
+    padding:25px;
+}
+
 .padding-right-20{
     padding-right: 20px !important;
 }
@@ -118,6 +122,18 @@ body{
     background:#e9ecef;
 }
 
+.hover-grey:hover{
+    background:grey !important;
+}
+
+.background-red {
+    background:red !important;
+}
+
+.background-yellow {
+    background: yellow !important;
+}
+
 /* Navigation */
 .logoImg img{
      width: 75px !important;
@@ -154,6 +170,24 @@ body{
     background: midnightblue;
     color:white;
     width: 100%;
+}
+
+.drop-shadow-mobile-menu {
+    -webkit-box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
+    -moz-box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
+    box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
+}
+
+.log-out-mobile{
+    width: 100%;
+    background:lightgrey;
+    padding: 40px;
+    text-align: center;
+}
+
+.log-out-mobile:hover{
+    background: #314b57;
+    color:white;
 }
 
 .log-out:hover{
@@ -246,7 +280,7 @@ body{
 }
 
 .simple-content{
-    max-width: 50%;
+    max-width: 60%;
 }
 
 .content{

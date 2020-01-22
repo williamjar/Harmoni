@@ -9,6 +9,7 @@ import placeholder from './placeholder.jpg'
 import {Ticket, TicketView} from "../ticket";
 import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
+import {CheckList} from "./checklist";
 
 const history = createHashHistory();
 
@@ -23,18 +24,11 @@ export class GeneralInfo extends Component{
     render(){
         return(
             <div>
-                <div className="row">
-                    <div className="col-7 border-right">
-                        <InfoForm editMode={this.props.editMode}/>
-                    </div>
-                    <div className="col-5">
-                        <Card.Body>
-                            <Image src={EventStore.currentEvent.picture != null ? lorde : placeholder} alt="event image" fluid className="mb-2"/>
-                            <Button type={"file"} variant={"secondary"}>Last opp bilde</Button>
-                        </Card.Body>
-                    </div>
-                </div>
-                <Row className="mb-3">
+
+                <InfoForm editMode={this.props.editMode}/>
+
+
+                <Row>
                     <Col>
                         <Card className="mb-2 border-0">
                             <Card.Title>Billetter</Card.Title>
@@ -64,8 +58,10 @@ export class InfoForm extends Component {
             zipCode: EventStore.currentEvent.zipCode,
             town: EventStore.currentEvent.town,
             description: EventStore.currentEvent.description,
+            eventType: EventStore.currentEvent.eventType,
             savingInformation: false,
-            dateError: false
+            dateError: false,
+            issueList: []
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -73,8 +69,10 @@ export class InfoForm extends Component {
     }
 
 
+
     // Updates the state and the event store object when form input is changed
     handleChange(event){
+        this.updateIssueList();
         this.setState({savingInformation:false});
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -88,24 +86,24 @@ export class InfoForm extends Component {
         this.submitForm();
     }
 
+    componentDidMount() {
+        this.updateIssueList();
+    }
 
     render() {
         if(this.state.edit){
             return(
-                <div>
+                    <Row>
+                    <Col>
                     <Card className="mb-2 border-0">
                         <Form onSubmit={this.handleSubmit}>
                             <Card.Body>
                                 <Row>
-                                    <Col xs="4">
-                                        {this.state.edit === false ? <Card.Title>
-                                            {this.state.eventName}
-                                        </Card.Title> : <Form.Control type="text" value={this.state.eventName} name="eventName" onChange={this.handleChange}/>}
-                                    </Col>
                                     <Col>
-
+                                    <Form.Control size="lg" type="text" value={this.state.eventName} name="eventName" placeholder="Tittel" onChange={this.handleChange}/>
                                     </Col>
                                 </Row>
+                                <br/>
                                 <Form.Group>
                                     <Row className="mb-2">
                                         <Col xs="5">
@@ -120,11 +118,11 @@ export class InfoForm extends Component {
                                         </Col>
                                         <Col>
                                             <Form.Label>Type arrangement</Form.Label>
-                                            <Form.Control as="select" value={this.state.eventType}>
-                                                {
-                                                    EventStore.eventCategories.map((eventType) => (
-                                                        <option name="eventType" value={eventType} onChange={this.handleChange} >{eventType}</option>
-                                                    ))}
+                                            <Form.Control as="select" value={this.state.eventType} name="eventType" onChange={this.handleChange}>
+                                                {EventStore.eventCategories.map((cat,i) => (
+                                                    <option value={i+1}>{cat}</option>
+                                                ))
+                                                }
                                             </Form.Control>
                                         </Col>
                                     </Row>
@@ -148,7 +146,7 @@ export class InfoForm extends Component {
                                         </Col>
                                         <Col xs="3">
                                             <Form.Label>Postnummer</Form.Label>
-                                            <Form.Control type="text" value={this.state.zipCode} name="zipCode" onChange={this.handleChange}/>
+                                            <Form.Control style={{width : '4.5rem'}} type="tel" maxLength="4" value={this.state.zipCode} name="zipCode" onChange={this.handleChange}/>
                                         </Col>
                                         <Col xs="3">
                                             <Form.Label>Poststed</Form.Label>
@@ -163,21 +161,34 @@ export class InfoForm extends Component {
                                     </Row>
                                     <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Arrangementet kan ikke starte etter det har sluttet!</Form.Text>
                                 </Form.Group>
+                                <Row>
+                                    <Col>
                                 <Form.Group>
                                     <Button type="submit" variant="success">Lagre</Button>
                                 </Form.Group>
+                                    </Col>
+                                </Row>
                             </Card.Body>
-
                         </Form>
                     </Card>
-                </div>
+                    </Col>
+                        <Col>
+                            <CheckList issueList={this.state.issueList}/>
+                        </Col>
+                    </Row>
+
             )}
         else{
             return (
-                <div>
+                <Row>
+                    <Col>
                     <Card className="mb-2 border-0">
-                        <Card.Title className={"h3"}>{EventStore.currentEvent.eventName}</Card.Title>
                         <Card.Body>
+                            <Row>
+                                <Col>
+                                    <Card.Title className={"h2 font-weight-bold"}>{EventStore.currentEvent.eventName}</Card.Title>
+                                </Col>
+                            </Row>
                             <Form.Group>
                                 <Row className="mb-2">
                                     <Col xs="5">
@@ -206,7 +217,7 @@ export class InfoForm extends Component {
                                                 <Form.Label>Kategori:</Form.Label>
                                             </Col>
                                         </Row>
-                                        {EventStore.eventCategories[EventStore.currentEvent.eventType - 1]}
+                                        {EventStore.eventCategories[EventStore.currentEvent.eventType-1]}
                                     </Col>
                                 </Row>
                                 <Row className="mb-4">
@@ -275,10 +286,57 @@ export class InfoForm extends Component {
                         </Card.Body>
 
                     </Card>
+                    </Col>
 
-                </div>
+                    <Col>
+                        <Card>
+                            <Card.Body>
+                                <Image src={EventStore.currentEvent.picture != null ? lorde : placeholder} alt="event image" fluid className="mb-2"/>
+                                <Button type={"file"} variant={"secondary"}>Last opp bilde</Button>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+
+                </Row>
             );
         }
+    }
+
+
+    updateIssueList(){
+        let list = [];
+
+        if(this.state.eventName===null) {
+            list.push("Mangler tittel");
+        } else if (this.state.eventName.length <= 1) {
+            list.push("Mangler tittel");
+        }
+
+        if(this.state.description===null){
+            list.push("Mangler beskrivelse");
+        } else if(this.state.description.length<=1){
+            list.push("Mangler beskrivelse");
+        }
+
+        if(this.state.address===null || this.state.zipCode===null || this.state.town===null) {
+            list.push("Addresse er ikke satt");
+        } else if(this.state.address.length<=1 || this.state.zipCode.length<=1 || this.state.town.length<=1) {
+            list.push("Addresse er ikke satt");
+        }
+
+        if(this.state.startDate===null || this.state.endDate===null){
+            list.push("Dato er ikke satt");
+        } else if(this.state.startDate.length<=1 || this.state.endDate.length<=1){
+            list.push("Dato er ikke satt");
+        }
+
+        if(this.state.startTime===null || this.state.endTime===null){
+            list.push("Tidspunkt er ikke satt");
+        } else if (this.state.startTime.length<=1 || this.state.endTime.length<=1){
+            list.push("Tidspunkt eventet er ikke satt");
+        }
+
+        this.setState({issueList: list})
     }
 
 
@@ -317,10 +375,12 @@ export class InfoForm extends Component {
         EventStore.currentEvent.endDate = this.formatDate(this.state.endDate);
         EventStore.currentEvent.startTime = this.state.startTime;
         EventStore.currentEvent.endTime = this.state.endTime;
+        EventStore.currentEvent.eventType = this.state.eventType;
         EventStore.currentEvent.address = this.state.address;
         EventStore.currentEvent.zipCode = this.state.zipCode;
         EventStore.currentEvent.town = this.state.town;
         EventStore.currentEvent.description = this.state.description;
+        console.log("SAVED EVENT: " + EventStore.currentEvent.toString());
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql
     formatDate(date) {
@@ -335,25 +395,16 @@ export class InfoForm extends Component {
         if(day.length < 2) {
             day = "0" + day;
         }
-
         return [year, month, day].join("-");
     }
 
 
     formatDateFromSql(date){
         //2019-12-31T23:00:00.000Z
-        var newDate = date.split('T');
-
-        var convertedDate = newDate[0];
-
-
+        let newDate = date.split('T');
+        let convertedDate = newDate[0];
         return convertedDate;
-
-
     }
-
-
-
 }
 
 
