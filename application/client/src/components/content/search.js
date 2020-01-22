@@ -49,12 +49,31 @@ export class Search extends Component{
 
                     {(this.state.showSearchResults && this.props.results[0] !== undefined && this.props.results[0].contactName !==  undefined &&  this.state.results.length !== 0)?
                         this.state.results.filter(e => e.contactName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map((show, index) =>
-                        <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>{show.contactName}</div>
+                        <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>
+                            <div className="row no-gutters">
+                                <div className="col-12">
+                                    {show.contactName}
+                                </div>
+                            </div>
+
+                        </div>
                         ):null}
 
                     {(this.state.showSearchResults && this.props.results[0] !== undefined && this.props.results[0].eventName != undefined) ?
                         this.state.results.filter(e => e.eventName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map((show, index) =>
-                            <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>{show.eventName}</div>
+                            <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>
+                                <div className="row no-gutters">
+                                    <div className="col-lg-5 col-sm-4">
+                                    {show.eventName}
+                                    </div>
+                                    <div className="col-lg-5 text-right col-sm-5">
+                                        {show.startDate.substr(0,10)}
+                                    </div>
+                                    <div className="col-lg-2 text-right col-sm-3">
+                                        {show.town === null ? "Ikke registrert sted":show.town}
+                                    </div>
+                                </div>
+                            </div>
                         ):null}
 
                 </div>
