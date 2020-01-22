@@ -198,7 +198,7 @@ export class InfoForm extends Component {
                                 PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path) => {
                                     if (statusCode === 200 && path) {
                                         const totalPath = '../../../../server/' + path;
-                                        PictureService.previewPicture(totalPath, link => {
+                                        PictureService.previewPicture(path, link => {
                                             EventStore.currentEvent.picture = link;
                                             this.setState({serverFile: link});
                                             console.log("Image uploaded");
