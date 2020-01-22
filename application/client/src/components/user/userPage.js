@@ -4,6 +4,8 @@ import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {PictureService} from "../../store/pictureService";
 import {MegaValidator} from "../../megaValidator";
+import {LoginService} from "../../store/loginService";
+import {DocumentService as documentService} from "../../store/documentService";
 import * as hash from "../../store/hashService";
 import {createHashHistory} from "history";
 
@@ -25,7 +27,8 @@ export class UserPage extends React.Component {
             newProfilePicture: '',
             savingInformation: false,
             showPasswordAlert: false,
-            mode: 1
+            mode: 1,
+            link: ""
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -35,7 +38,6 @@ export class UserPage extends React.Component {
     componentDidMount() {
         this.updateInfo();
     }
-
 
     render() {
         return (
@@ -56,19 +58,6 @@ export class UserPage extends React.Component {
                     <Row>
                         <Col>
                             <Card className={"p-2 card border-0"}>
-                                <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} />
-
-                                <Form onSubmit={this.handleSubmit}>
-
-                                    <Form.Group>
-                                        <FormControl name="newProfilePicture" type="file"
-                                                     onChange={this.handleInputChange}/>
-                                    </Form.Group>
-                                    <Form.Group>
-                                        <Button hidden={this.state.savingInformation}  variant="secondary" type="submit">Last opp profilbilde</Button>
-                                        <Button hidden={!this.state.savingInformation} disabled variant="secondary" type="submit"><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>Laster opp profilbilde</Button>
-                                    </Form.Group>
-                                </Form>
                                 <Card.Title>Brukerprofil</Card.Title>
                                 <Table borderless>
                                     <tbody>
@@ -129,7 +118,7 @@ export class UserPage extends React.Component {
                                             <Accordion.Collapse eventKey="1">
                                                 <Card.Body>
                                                     <Form.Group>
-                                                        <Form.Control maxLength="8" type="number" name="newPhonenumber"
+                                                        <Form.Control maxLength="8" type="tel" name="newPhonenumber"
                                                                       placeholder={this.state.phonenumber}
                                                                       value={this.state.newPhonenumber}
                                                                       onChange={this.handleInputChange}/>
@@ -181,7 +170,6 @@ export class UserPage extends React.Component {
                                             </Accordion.Collapse>
                                         </Card>
                                     </Form>
-
                                     <DeleteUserForm/>
                                 </Accordion>
                             </Card>
@@ -197,12 +185,14 @@ export class UserPage extends React.Component {
         const target = event.target;
         if (target.name === 'newProfilePicture') {
             this.setState({newProfilePicture: target.files[0]});
+            this.setState({profilePictureUploaded: true});
         } else {
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
 
             this.setState({[name]: value,});
         }
+
     }
 
     handleSubmit(event) {
@@ -216,7 +206,7 @@ export class UserPage extends React.Component {
     }
 
 
-    updateInfo() {
+    updateInfo(callback) {
         OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
             if (statusCode === 200) {
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
@@ -242,6 +232,7 @@ export class UserPage extends React.Component {
                     phonenumber: databasePhone,
                     profilePicture: databaseImage
                 }));
+                callback(databaseImage);
             } else {
                 //console.log("We have an error!");
             }
@@ -278,25 +269,6 @@ export class UserPage extends React.Component {
                 this.setState({showPasswordAlert: true});
             });
         }
-
-        if (MegaValidator.validateFile(this.state.newProfilePicture)) {
-            console.log("Image validated");
-            let formData = new FormData();
-            formData.append('description', this.state.newProfilePicture.name);
-            formData.append('selectedFile', this.state.newProfilePicture);
-            PictureService.insertPicture(OrganizerStore.currentOrganizer.organizerID, formData, (statusCode, link) => {
-                console.log("Image uploaded with status " + statusCode);
-                this.setState({savingInformation: false});
-                if (statusCode === 200 && link) {
-                    const totalPath = __dirname + '../../../../server/' + link;
-                    this.state.profilePicture = totalPath;
-                }
-            });
-        } else {
-            console.log("Image not validated");
-            this.setState({savingInformation: false});
-        }
-        // code for submitting profile picture here, you can access it with this.state.new.profilePicture
     }
 }
 
@@ -384,24 +356,23 @@ export class DeleteUserForm extends React.Component {
     }
 
     submitForm() {
-        if (this.checkPassword()) {
+        if (this.checkPasswordAndDeleteCurrentUser()) {
 
-            alert("Brukeren er slettet");
         } else {
-            alert("feil passord");
         }
     }
 
-
-    checkPassword() {
+    checkPasswordAndDeleteCurrentUser() {
 
         hash.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
             console.log("Password ? " + res);
             if (res) {
                 OrganizerStore.deleteCurrentOrganizer();
-                CookieStore.currentToken = null;
-                CookieStore.currentUserID = null;
-                // TODO Proper logout here
+                sessionStorage.setItem('token', null);
+                sessionStorage.removeItem('loggedIn');
+                CookieStore.setCurrentToken(null);
+                CookieStore.setCurrentUserID(-1);
+                history.push("/");
                 window.location.reload();
             } else {
                 this.setState({errorDeleting: true});
@@ -410,4 +381,101 @@ export class DeleteUserForm extends React.Component {
         });
     }
 }
+
+export class ProfilePictureForm extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            newProfilePicture: '',
+            profilePictureUploaded: true,
+            savingInformation: false
+        };
+
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+
+    }
+
+
+    componentDidMount() {
+        /*
+        this.updateInfo((profilePicture) => {
+            if(profilePicture !== null && profilePicture !== ''){
+                PictureService.previewPicture(profilePicture, (url) => {
+                    this.setState({link: url})
+                });
+            }
+        });
+        \
+         */
+    }
+
+
+    checkIfUserHasPicture(){
+        if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
+            return(<img width={"200px"} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
+        }else {
+            return(<img width={"200px"} src={require('./profile.png')} alt={"Bildet kunne ikke lastes inn"}/>);
+        }
+    }
+
+
+    render() {
+        return (
+            <Form onSubmit={this.handleSubmit}>
+                <Card className={"border-0"}>
+                    <Form onSubmit={this.handleSubmit}>
+                        <Form.Group>
+                            <FormControl name="newProfilePicture" type="file"
+                                         onChange={this.handleInputChange}/>
+                        </Form.Group>
+                        <Form.Group>
+                            <Button hidden={this.state.savingInformation} disabled={!this.state.profilePictureUploaded} variant="secondary" type="submit">Last opp profilbilde</Button>
+                            <Button hidden={!this.state.savingInformation} disabled variant="secondary" type="submit"><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>Laster opp profilbilde</Button>
+                        </Form.Group>
+                    </Form>
+                </Card>
+            </Form>
+        )
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.submitForm();
+    }
+
+    handleInputChange(event) {
+        this.setState({savingInformation: false});
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+        console.log(this.state.confirmDeleteUser);
+        this.setState({[name]: value,});
+
+    }
+
+    submitForm() {
+        if (MegaValidator.validateFile(this.state.newProfilePicture) && this.state.profilePictureUploaded) {
+            console.log("Image validated");
+            let formData = new FormData();
+            formData.append('description', this.state.newProfilePicture.name);
+            formData.append('selectedFile', this.state.newProfilePicture);
+            PictureService.insertPicture(OrganizerStore.currentOrganizer.organizerID, formData, (statusCode, link) => {
+                console.log("Image uploaded with status " + statusCode);
+                this.setState({savingInformation: false});
+                if (statusCode === 200 && link) {
+                    const totalPath = __dirname + '../../../../server/' + link;
+                    this.state.profilePicture = totalPath;
+                    this.setState({profilePictureUploaded: false});
+                }
+            });
+        } else {
+            console.log("Image not validated");
+            this.setState({savingInformation: false});
+        }
+    }
+
+}
+
 

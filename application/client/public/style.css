@@ -146,6 +146,19 @@ body{
     zoom: 80%;
 }
 
+.log-out{
+    position: absolute;
+    bottom:0px;
+    padding-bottom: 10px;
+    padding-top:10px;
+    background: midnightblue;
+    color:white;
+    width: 100%;
+}
+
+.log-out:hover{
+    filter: brightness(150%);
+}
 
 
 .Nav-Menu .user-nav{
@@ -154,7 +167,7 @@ body{
     text-align: left;
     color:black;
     padding:20px;
-    bottom: 0px;
+    bottom: 40px;
     background: lightgrey;
 }
 
@@ -202,7 +215,6 @@ body{
     border-radius: 0px !important;
     color:black;
     font-family: Roboto !important;
-
     padding-top: 25px !important;
     padding-bottom: 25px !important;
 }
@@ -349,6 +361,10 @@ body{
     background:lightgrey;
 }
 
+.category-results{
+    background: lightgrey !important;
+}
+
 .max-w-50{
     max-width: 50%;
 }
@@ -454,17 +470,31 @@ search-result-item{
         background-position: 0px 0px ;
         background-size: 500% auto;
     }
+
+    .content{
+        overflow-y: scroll;
+        height: 100vh;
+        padding: 0px 0 0 0 !important;
+        margin:0 auto;
+    }
+
+    .simple-content{
+        max-width: 100% !important;
+    }
+
 }
 
 @media only screen and (min-width: 600px) and (max-width: 1400px){
     body{
         /* background: #314b57 !important; */
-
         background-repeat: no-repeat;
         background-position: 0px 0px ;
         background-size: 230% auto;
     }
+
 }
+
+
 
 /* contact info */
 .contact:hover {
@@ -488,4 +518,18 @@ search-result-item{
     min-height: 100vh;
 }
 
+
+.bugWindow{
+    width: 70%;
+    margin: auto;
+    padding-top: 15px;
+    padding-bottom: 30px;
+
+}
+
+.bugButton{
+    margin: auto;
+    padding-top: 10px;
+    text-align: center;
+}
 
