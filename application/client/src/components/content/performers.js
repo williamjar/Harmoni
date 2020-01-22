@@ -128,7 +128,6 @@ export class PerformerPanel extends Component{
             this.setGenreCurrentPerformer(performer);
         }, performer.artistID, EventStore.currentEvent.eventID);
 
-
     };
 
     componentDidMount() {
@@ -255,12 +254,20 @@ export class PerformerCard extends Component{
                             </InputGroup.Append>
                         </InputGroup>
 
-                        {this.state.riders.filter((rider) => rider.artistID === this.state.performer.artistID).map(e =>
-                            <Rider description={e.description} isDone={e.isDone} status={e.status} riderObject={e} deleteRider={this.deleteRider}/>
+
+
+                        {this.state.riders.map(e =>
+                        {if(e.artistID === this.state.performer.artistID){
+                            return <Rider description={e.description} isDone={e.isDone} status={e.status} riderObject={e} deleteRider={this.deleteRider}/>
+
+                        } else {
+                            return null
+                        }}
                         )}
 
 
-                    </div>
+
+                            </div>
                 </div>
 
                 <div className="row padding-top-20">
@@ -339,14 +346,13 @@ export class PerformerCard extends Component{
 
     componentDidMount() {
         //Fetches all riders for current artist and event and stores them in state
-        let currentState = this.state;
-
+        this.setState({riders : RiderStore.allRidersForCurrentEvent});
 
         ArtistService.getAllGenres((res) => {
             this.setState({genreList : res});
         });
         this.setState({hasBeenPaid : this.state.performer.hasBeenPaid, contractSigned : this.state.performer.contractSigned, genre : this.state.performer.genre});
-        currentState.riders = RiderStore.allRidersForCurrentEvent;
+
         //currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
 
     }
@@ -391,14 +397,16 @@ export class PerformerCard extends Component{
     };
 
     deleteRider = (rider) => {
+
         // For instant update
-        let temp = this.state;
-        temp.riders.splice(rider, 1);
-        this.setState(temp);
 
         //Update database
         RiderStore.deleteRider(() => {
 
+            let currentState = this.state;
+            let index = currentState.riders.indexOf(rider);
+            currentState.riders.splice(index, 1);
+            this.setState(currentState, () => {  RiderStore.allRidersForCurrentEvent = currentState.riders;});
 
         }, EventStore.currentEvent.eventID, rider.artistID, rider.riderID);
     };
@@ -533,9 +541,11 @@ export class Rider extends Component{
 
 
     handleStatusInput = (event) => {
-        this.setState({status : event.target.value});
-        this.props.riderObject.status = this.state.status;
-        this.props.riderObject.isModified = true;
+        this.setState({status : event.target.value}, () => {
+            this.props.riderObject.status = this.state.status;
+            this.props.riderObject.isModified = true;
+        });
+
     };
 
     handleCheckBoxInput = (event) => {
@@ -550,7 +560,6 @@ export class Rider extends Component{
 
     deleteRider = () => {
         this.props.deleteRider(this.props.riderObject);
-
     }
 
 }
