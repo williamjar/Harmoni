@@ -28,6 +28,7 @@ export class EventCard extends React.Component {
 
     };
 
+
     render() {
 
         return(
