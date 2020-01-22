@@ -38,7 +38,7 @@ app.post("/api/artist", (request, response) => {
 });
 
 app.get("/api/artist/documents/:eventID/:artistID", (request, response) => {
-    console.log("Request to get all documents for an artist");
+    console.log("Request to get all documents for an artist by event");
     documentationDao.getDocumentsForArtist(request.params.eventID, request.params.artistID, (status, data) => {
         response.status(status);
         response.json(data);

@@ -52,6 +52,8 @@ app.get('/products/:id', function (req, res) {
 // login must be first
 require('./server-login.js');
 
+require('./server-artistVersions');
+
 require('./server-artist.js');
 require('./server-bug.js');
 require('./server-contact.js');

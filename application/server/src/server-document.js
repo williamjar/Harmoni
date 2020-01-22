@@ -385,11 +385,18 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
 
 app.get("/file/preview/:path*", (req, res) => {
     console.log("Path");
-    if(req.params.path + req.params['0'] !== '' && req.params.path + req.params['0'] !== null){
-        var file = fs.createReadStream("./" + req.params.path + req.params['0']);
-        file.pipe(res);
+    const path = req.params.path + req.params['0'];
+    if(path !== '' && path !== null){
+        fs.access("./" + path, (err) => {
+            if (err){
+                console.log("File doesn't exist in file system");
+            }
+            else{
+                let file = fs.createReadStream("./" + path);
+                file.pipe(res);
+            }
+        });
     }
-    console.log("Error: path is null");
 });
 
 app.get("/api/document/download/:path*", (req, res) => {

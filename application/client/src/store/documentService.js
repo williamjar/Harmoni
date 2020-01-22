@@ -28,6 +28,33 @@ export class DocumentService {
         });
     }
 
+    //Used only for the artists own page
+    static getAllDocumentsForArtist(artistID, eventID, token, callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": token
+        };
+
+        axios.get(axiosConfig.root + "/artistapi/artist/documents/" + eventID + "/" + artistID,{headers: header})
+            .then(response => {
+                if (response.data){
+                    const documents = response.data.map(document => {
+                        return {
+                            documentID: document.documentID,
+                            documentLink: document.documentLink,
+                            documentName: document.documentLink.split("_").splice(-1)[0]
+                        };
+                    });
+                    callback(200, documents);
+                }
+                else{
+                    callback(500);
+                }
+            });
+
+
+    }
+
 //TODO: Delete? change Document params if not
     getAllDocumentsForOrganizer(organizerID) {
         let header = {
@@ -62,44 +89,53 @@ export class DocumentService {
 
     static addDocument(eventID, category, artistID, crewID, documentCategoryID, file, callback){
         console.log(eventID + "," + documentCategoryID);
-        console.log(file);
+        console.log(file.get("selectedFile"));
 
-          axios.post('http://localhost:8080/api/file/document/' + eventID + '/' + documentCategoryID, file)
+        let header = {
+            "x-access-token": CookieStore.currentToken
+        };
+
+          axios.post('http://localhost:8080/api/file/document/' + eventID + '/' + documentCategoryID, file, {headers: header})
             .then(response => {
                 let databaseHeader = {
                     "Content-Type": "application/json",
                     "x-access-token": CookieStore.currentToken
                 };
 
-                const path = response.data.path;
-                const name = response.data.name.split("_")[1];
-
-                //eventID, documentName, link, artistID, crewID, categoryID
-                let body = {
-                    eventID: eventID,
-                    documentName: name,
-                    documentLink: path,
-                    artistID: artistID,
-                    crewID: crewID,
-                    documentCategoryID: documentCategoryID
-                };
-
-                console.log(body);
-
-                axios.post('http://localhost:8080/api/document', JSON.stringify(body), {headers: databaseHeader}).then(() => {
-                    console.log(response.status);
+                if (!response.data.error){
                     console.log(response.data);
-                    if (response.status === 200 && response.data.name){
-                        let returnData = {
-                            "documentLink": path,
-                            "documentID": response.data.insertId
-                        };
-                        callback(200, returnData);
-                    }
-                    else{
-                        callback(501, {"error": "An error occurred regarding saving file information to DB."});
-                    }
-                });
+
+                    const path = response.data.path;
+                    const name = response.data.name.split("_")[1];
+
+                    //eventID, documentName, link, artistID, crewID, categoryID
+                    let body = {
+                        eventID: eventID,
+                        documentName: name,
+                        documentLink: path,
+                        artistID: artistID,
+                        crewID: crewID,
+                        documentCategoryID: documentCategoryID
+                    };
+
+                    console.log(body);
+
+                    axios.post('http://localhost:8080/api/document', JSON.stringify(body), {headers: databaseHeader}).then(() => {
+                        console.log(response.status);
+                        console.log(response.data);
+                        if (response.status === 200 && response.data.name){
+                            let returnData = {
+                                "documentLink": path,
+                                "documentID": response.data.insertId
+                            };
+                            callback(200, returnData);
+                        }
+                        else{
+                            callback(501, {"error": "An error occurred regarding saving file information to DB."});
+                        }
+                    });
+                }
+
         });
     }
 

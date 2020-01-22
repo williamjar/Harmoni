@@ -43,6 +43,16 @@ export class CookieStore{
         }
     }
 
+    static validateArtistToken(token, callback){
+        try{
+            jwt.verify(token, publicKey);
+            return true;
+        }
+        catch (e) {
+            return false;
+        }
+    }
+
     static checkToken(email, callback){
         let header = {
             'x-access-token': this.currentToken,
