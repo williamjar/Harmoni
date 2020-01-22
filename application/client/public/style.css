@@ -139,13 +139,19 @@ body{
 }
 
 /* Navigation */
+
+.logoImg{
+    width: auto;
+}
+
 .logoImg img{
-     width: 250px !important;
+     max-width: 100% !important;
+
  }
 
 .logoImg-mobile img{
-    width: 75px !important;
-    padding:10px 0 0 20px;
+    width: 150px !important;
+
 }
 
 .Nav-Menu{
