@@ -398,6 +398,8 @@ export class PerformerCard extends Component{
 
     deleteRider = (rider) => {
 
+
+
         // For instant update
 
         //Update database
@@ -497,6 +499,7 @@ export class Rider extends Component{
     constructor(props){
         super(props);
 
+        console.log(this.props.riderObject.isDone);
         this.state = {
             taskDone: this.props.riderObject.isDone,
             status : this.props.riderObject.status,
@@ -549,12 +552,13 @@ export class Rider extends Component{
     };
 
     handleCheckBoxInput = (event) => {
-        this.setState({taskDone : event.target.checked});
-        this.props.riderObject.isDone = this.state.taskDone;
+        console.log(event.target.checked);
+        this.props.riderObject.isDone = event.target.checked;
         this.props.riderObject.isModified = true;
+        this.setState({taskDone : this.props.riderObject.isDone});
 
-        console.log("checkbox");
-        console.log(this.state.taskDone);
+
+
     };
 
 
