@@ -15,38 +15,39 @@ const MapsComponent =
     )((props) =>
         <GoogleMap
             defaultZoom={8}
-            defaultCenter={{ lat: -34.397, lng: 150.644 }}
+            defaultCenter={props.position}
         >
-            {props.isMarkerShown && <Marker position={{ lat: -34.397, lng: 150.644 }} onClick={props.onMarkerClick} />}
+            {props.isMarkerShown && <Marker position= {props.position} onClick={props.onMarkerClick} />}
         </GoogleMap>
-    )
+
+    );
 
 export class Map extends Component{
 
     state = {
-        isMarkerShown: false,
-    }
+        isMarkerShown: true,
+    };
 
     componentDidMount(){
-        this.delayedShowMarker()
     }
 
+    /*
     delayedShowMarker = () => {
         setTimeout(() => {
             this.setState({isMarkerShown: false})
         }, 3000)
-    }
+    }*/
 
     handleMarkerClick = () => {
-        this.setState({ isMarkerShown: false})
-        this.delayedShowMarker()
-    }
+        console.error("A marker has been clicked, consider this a warning...");
+    };
 
     render(){
         return(
             <MapsComponent
                 isMarkerShown = {this.state.isMarkerShown}
                 onMarkerClick = {this.handleMarkerClick}
+                position = {{lat: 66.4857, lng: 13.5622}}
             />
         )
     }
