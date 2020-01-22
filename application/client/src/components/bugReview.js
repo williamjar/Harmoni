@@ -36,21 +36,25 @@ export class BugReview extends Component {
                         {reportBugs}
                     </FormLabel>
                     <Row>
+                        <Col>
                         <FormControl
-                            as="textarea" rows="3"
+                            as="textarea" rows="5"
                             name="description"
                             placeholder="Skriv din tilbakemelding her"
                             value={this.state.description}
                             onChange={this.handleInputChange}
                         />
+                        </Col>
                     </Row>
                     <Row>
-                        <Button className="bugButton" variant="success" onClick={this.handleSubmit}>Publiser</Button>
+                        <Col size={12} className="text-right">
+                        <Button className="bugButton btn-lg" variant="success" onClick={this.handleSubmit}>Publiser</Button>
+                        </Col>
                     </Row>
                 </FormGroup>
 
                 <FormGroup className="bugWindow">
-                    <FormLabel>{listBugs}</FormLabel>
+                    <FormLabel className="bugLabel w-100 padding-top-10 padding-bottom-10">{listBugs}</FormLabel>
                     <ListGroup>
                         {this.state.bugList.map(bug => (
                             <ListGroup.Item key={bug.bugID}>
@@ -58,11 +62,11 @@ export class BugReview extends Component {
                                     <Col sm={8}>
                                         {bug.description}
                                     </Col>
-                                    <Col sm={2}>
+                                    <Col sm={2} >
                                         {this.formatDate(bug.date)}
                                     </Col>
-                                    <Col sm={1}>
-                                        <button id={bug.bugID} onClick={this.deleteBug}>Slett</button>
+                                    <Col sm={2}>
+                                        <button id={bug.bugID} onClick={this.deleteBug} className="btn btn-danger">Slett</button>
                                     </Col>
                                 </Row>
 
