@@ -204,10 +204,10 @@ export class Documents extends Component{
             <section>
                 {this.state.document.map((item) => {
                     return (
-                        <Accordion defaultActiveKey="1">
-                            <Row className = {"folder text-primary border-bottom"}>
+                        <Accordion defaultActiveKey="1" >
+                            <Row className = {"w-100 text-primary border-bottom"}>
                                 <Col>
-                                    <Accordion.Toggle as={Button} variant="link text-dark" eventKey="0">
+                                    <Accordion.Toggle as={Button} variant="link text-dark" eventKey="0" className={"folder"}>
                                         {this.checkFileType(item.documentName)} {item.documentName} <FaAngleDown/>
                                     </Accordion.Toggle>
                                 </Col>
@@ -303,7 +303,7 @@ class Info extends Component {
         return (
             <Row className = {"bg-light padding-top-20 padding-bottom-20"}>
                 <Col size = {4}>
-                    <Button variant="primary" onClick = {() => this.downloadDocument()}> Last ned </Button>
+                    <Button variant="primary" className="margin-right-10" onClick = {() => this.downloadDocument()}> Last ned </Button>
                     {this.previewButton()}
                 </Col>
                 <Col size = {5}>

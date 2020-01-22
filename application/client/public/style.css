@@ -37,6 +37,14 @@ body{
     padding-right: 20px !important;
 }
 
+.padding-right-10{
+    padding-right: 10px !important;
+}
+
+.margin-right-10{
+    margin-right: 10px !important;
+}
+
 .padding-top-20{
     padding-top: 20px;
 }
@@ -450,11 +458,19 @@ search-result-item{
 }
 
 .folder{
+    width: 100%;
+    text-align: left !important;
 }
 
 .folder:hover {
-    color: white;
+    color: white !important;
     background-color: #314b57;
+    width: 100%;
+    text-align: left;
+}
+
+.hover-white:hover{
+    color:white;
 }
 
 
