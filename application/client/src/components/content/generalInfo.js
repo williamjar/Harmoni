@@ -24,10 +24,10 @@ export class GeneralInfo extends Component{
         return(
             <div>
                 <div className="row">
-                    <div className="col-7 border-right">
+                    <div className="col-lg-7 col-sm-12 border-right">
                         <InfoForm editMode={this.props.editMode}/>
                     </div>
-                    <div className="col-5">
+                    <div className="col-lg-5 col-sm-12">
                         <Card.Body>
                             <Image src={EventStore.currentEvent.picture != null ? lorde : placeholder} alt="event image" fluid className="mb-2"/>
                             <Button type={"file"} variant={"secondary"}>Last opp bilde</Button>
