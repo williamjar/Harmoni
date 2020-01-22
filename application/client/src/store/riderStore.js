@@ -116,6 +116,18 @@ export class RiderStore {
         axios.delete(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider/' + riderID, {headers: header}).then(callback()).catch(error => console.log(error));
     }
 
+    //Delete a rider element for the artist
+    static deleteRiderFromArtistPage(artistToken, eventID, artistID, riderID, callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": artistToken
+        };
+        axios.delete(axiosConfig.root +  "/artistapi/rider/" + eventID + "/" + artistID + "/" + riderID, {headers: header})
+            .then(response => {
+                callback(response.status, response.data);
+            })
+    }
+
     static getAllRidersForArtistByEvent(artistID, eventID, token, callback){
         let header = {
             "Content-Type": "application/json",

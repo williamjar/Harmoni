@@ -72,7 +72,7 @@ export class ArtistRegisterRiders extends Component{
                                 {
                                     this.state.riderElements.map(rider => {
                                         if (rider.artistID === this.state.artistID){
-                                            return <Rider key={rider.riderID} description={rider.description} isDone={rider.isDone} status={rider.status} riderObject={rider} deleteRider={null}/>
+                                            return <Rider key={rider.riderID} description={rider.description} isDone={rider.isDone} status={rider.status} riderObject={rider} deleteRider={this.deleteRider}/>
                                         }
                                         else{
                                             return null;
@@ -86,6 +86,18 @@ export class ArtistRegisterRiders extends Component{
             );
         }
     }
+
+    deleteRider = (rider) => {
+        let currentRiders = this.state.riderElements;
+        currentRiders = currentRiders.filter(r => r.riderID !== rider.riderID);
+        this.setState({riderElements: currentRiders});
+
+        RiderStore.deleteRiderFromArtistPage(this.state.token, this.state.eventID, this.state.artistID, rider.riderID, (status, data) => {
+            if (status !== 200){
+                Alert.info("Noe skjedde. Vennligst prøv igjen om rideren ikke fjernes ved å oppdatere siden.");
+            }
+        })
+    };
 
     addFile = (event) => {
         try{
@@ -294,8 +306,16 @@ class Rider extends Component{
                     <div className="col-4">
                         <input type="text" className="form-control" placeholder="Status" value={this.props.status} disabled={true} name="status" onChange={this.handleStatusInput}/>
                     </div>
+                    <div className="col-1">
+                        <button className="btn btn-danger" onClick={this.deleteRider}><FaTrashAlt/></button>
+                    </div>
                 </div>
             </div>
         )
     }
+
+    deleteRider = () => {
+        this.props.deleteRider(this.props.riderObject);
+    }
+
 }

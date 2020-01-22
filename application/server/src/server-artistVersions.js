@@ -86,3 +86,11 @@ app.post("/artistapi/document", (request, response) => {
             response.json(data);
         });
 });
+
+app.delete("/artistapi/rider/:eventID/:artistID/:riderID", (request, response) => {
+    console.log("Request from artist to delete rider");
+    riderDao.deleteOne((status, data) => {
+        response.status(status);
+        response.json(data);
+    }, request.params.riderID, request.params.artistID, request.params.eventID);
+});
