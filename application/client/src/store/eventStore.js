@@ -79,7 +79,7 @@ export class EventStore {
 
     static editCurrentEvent() {
 
-        console.log("Current event: " + this.currentEvent.toString());
+        console.log("Edit Current event: " + this.currentEvent.toString());
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -100,7 +100,7 @@ export class EventStore {
             "publishDate": this.currentEvent.publishDate,
             "publishTime": this.currentEvent.publishTime,
             "organizerID": this.currentEvent.organizer,
-            "eventTypeID": 1,
+            "eventTypeID": this.currentEvent.eventType,
             "pictureID": this.currentEvent.picture
         };
 
@@ -198,8 +198,6 @@ export class EventStore {
                     response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
                     response.data[i].eventTypeName, response.data[i].picture));
             }
-
-            console.log("EventStore: allEventsForOrganizer: " + this.allEventsForOrganizer);
 
             callback();
         });

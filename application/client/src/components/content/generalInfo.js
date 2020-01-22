@@ -64,6 +64,7 @@ export class InfoForm extends Component {
             zipCode: EventStore.currentEvent.zipCode,
             town: EventStore.currentEvent.town,
             description: EventStore.currentEvent.description,
+            eventType: EventStore.currentEvent.eventType,
             savingInformation: false,
             dateError: false
         };
@@ -90,6 +91,8 @@ export class InfoForm extends Component {
 
 
     render() {
+        EventStore.getEventCategories();
+        console.log("Event type: " + EventStore.currentEvent.eventType);
         if(this.state.edit){
             return(
                 <div>
@@ -120,11 +123,10 @@ export class InfoForm extends Component {
                                         </Col>
                                         <Col>
                                             <Form.Label>Type arrangement</Form.Label>
-                                            <Form.Control as="select" value={this.state.eventType}>
-                                                {
-                                                    EventStore.eventCategories.map((eventType) => (
-                                                        <option name="eventType" value={eventType} onChange={this.handleChange} >{eventType}</option>
-                                                    ))}
+                                            <Form.Control as="select" value={this.state.eventType} name="eventType" onChange={this.handleChange}>
+                                                <option value={1}> Konsert </option>
+                                                <option value={2}> Festival </option>
+                                                <option value={3}> Konkurranse </option>
                                             </Form.Control>
                                         </Col>
                                     </Row>
@@ -206,7 +208,7 @@ export class InfoForm extends Component {
                                                 <Form.Label>Kategori:</Form.Label>
                                             </Col>
                                         </Row>
-                                        {EventStore.eventCategories[EventStore.currentEvent.eventType - 1]}
+                                        {EventStore.eventCategories[EventStore.currentEvent.eventType-1]}
                                     </Col>
                                 </Row>
                                 <Row className="mb-4">
@@ -321,6 +323,7 @@ export class InfoForm extends Component {
         EventStore.currentEvent.zipCode = this.state.zipCode;
         EventStore.currentEvent.town = this.state.town;
         EventStore.currentEvent.description = this.state.description;
+        EventStore.currentEvent.eventType = this.state.eventType;
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql
     formatDate(date) {
