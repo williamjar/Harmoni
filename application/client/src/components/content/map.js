@@ -6,7 +6,7 @@ import mapStyle from "./mapStyle";
 const MapsComponent =
 
     compose(  withProps({
-            googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places",
+            googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyBekue27ciYidD7LztuCQu6ERjcioCUfkI&v=3.exp&libraries=geometry,drawing,places",
             loadingElement: <div style={{ height: `100%` }} />,
             containerElement: <div style={{ height: `400px` }} />,
             mapElement: <div style={{ height: `100%` }} />,
@@ -17,7 +17,7 @@ const MapsComponent =
         <GoogleMap
             defaultZoom={8}
             defaultCenter={props.position}
-            defaultOptions={{style: mapStyle}}
+            options={{ styles: mapStyle }}
         >
             {props.isMarkerShown && <Marker position= {props.position} onClick={props.onMarkerClick} />}
         </GoogleMap>
