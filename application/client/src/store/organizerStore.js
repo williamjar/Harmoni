@@ -104,8 +104,8 @@ export class OrganizerStore {
 
         console.log("CONTACT ID " + this.currentOrganizer.contactID);
         return axios.delete(axiosConfig.root + '/api/contact/' + this.currentOrganizer.contactID, {headers: header}).then( res => {
-            console.log(res);
-        });
+            console.log("Deleted User: " + res);
+        }).catch(e => console.log("Error deleting user - " + e));
     }
 
     static archiveOldEvents() {
