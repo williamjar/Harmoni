@@ -1,5 +1,6 @@
 import axios from "axios";
 import {CookieStore} from "./cookieStore";
+import {EventStore} from "./eventStore";
 
 const hash = require('./hashService');
 
@@ -42,6 +43,7 @@ export class LoginService {
                                         CookieStore.setCurrentUserID(emailResponse[0].organizerID);
                                         CookieStore.setCurrentToken(loginResponse.jwt);
                                         //The user logs in
+                                        EventStore.getEventCategories();
                                         callback(200);
                                     } else {
                                         CookieStore.setCurrentToken(null);

@@ -104,7 +104,7 @@ export class BugReview extends Component {
                     Alert.success("Din tilbakemelding ble registrert");
                     BugStore.getAllBugsFromOrganizer(OrganizerStore.currentOrganizer.organizerID, () => {
                         this.setState( {bugList : BugStore.allBugsReportedByOrganizer})
-                    })
+                    });
                 }else{
                     Alert.warning("Det oppsto et problem. Prøv igjen, eller ta kontakt med oss!")
                 }

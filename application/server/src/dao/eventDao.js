@@ -11,7 +11,7 @@ module.exports = class eventDao extends Dao {
     }
 
     getOne(callback, eventID) {
-        super.query('SELECT * FROM event WHERE eventID = ?', [eventID], callback);
+        super.query('SELECT * FROM event LEFT JOIN eventType ON event.eventTypeID = eventType.eventTypeID WHERE eventID = ?', [eventID], callback);
     }
 
     createOne(callback, list) {
@@ -56,5 +56,9 @@ module.exports = class eventDao extends Dao {
 
     archiveOldEvents(callback, organizerID) {
         super.query('UPDATE event SET status = 2 WHERE organizerID = ? AND status = 1 AND endDate <= CURRENT_DATE() AND endTime < CURRENT_TIME()', [organizerID], callback);
+    }
+
+    getAllEventTypes(callback) {
+        super.query('SELECT * FROM eventType', [], callback);
     }
 };

@@ -230,7 +230,6 @@ body{
     border-radius: 0px !important;
     color:black;
     font-family: Roboto !important;
-
     padding-top: 25px !important;
     padding-bottom: 25px !important;
 }
@@ -494,17 +493,31 @@ search-result-item{
         background-position: 0px 0px ;
         background-size: 500% auto;
     }
+
+    .content{
+        overflow-y: scroll;
+        height: 100vh;
+        padding: 0px 0 0 0 !important;
+        margin:0 auto;
+    }
+
+    .simple-content{
+        max-width: 100% !important;
+    }
+
 }
 
 @media only screen and (min-width: 600px) and (max-width: 1400px){
     body{
         /* background: #314b57 !important; */
-
         background-repeat: no-repeat;
         background-position: 0px 0px ;
         background-size: 230% auto;
     }
+
 }
+
+
 
 /* contact info */
 .contact:hover {
