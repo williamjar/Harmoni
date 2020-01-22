@@ -34,8 +34,6 @@ export class PictureService {
 
     //Insert picture
     static insertPicture(organizerID, fileForm, callback){
-        console.log("File form: ");
-        console.log(fileForm);
         for(let pair of fileForm.entries()){
             console.log(pair);
         }

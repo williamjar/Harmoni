@@ -19,6 +19,8 @@ import {FaBullhorn} from "react-icons/all";
 import { createHashHistory } from 'history';
 import {PictureService} from "../../store/pictureService";
 let history = createHashHistory();
+import {Link} from "../user/userPage"
+
 
 export class MobileMenu extends Component{
 
@@ -152,7 +154,6 @@ export class Menu extends Component{
 
 
 export class UserProfileButton extends Component{
-
     constructor(props) {
         super(props);
         this.state = {

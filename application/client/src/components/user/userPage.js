@@ -395,7 +395,6 @@ export class ProfilePictureForm extends React.Component {
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
 
     }
 
@@ -437,28 +436,35 @@ export class ProfilePictureForm extends React.Component {
 
     render() {
         return (
-            <Form onSubmit={this.handleSubmit}>
                 <Card className={"border-0"}>
-                    <Form onSubmit={this.handleSubmit}>
+                    <Form>
                         {this.checkIfUserHasPicture()}
                         <Form.Group>
                             <FormControl name="newProfilePicture" type="file"
                                          onChange={this.handleInputChange}/>
                         </Form.Group>
                         <Form.Group>
-                            <Button hidden={this.state.savingInformation} disabled={!this.state.profilePictureUploaded} variant="secondary" type="submit">Last opp profilbilde</Button>
-                            <Button hidden={!this.state.savingInformation} disabled variant="secondary" type="submit"><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>Laster opp profilbilde</Button>
+                            <Button onClick = {this.upload} hidden={this.state.savingInformation} disabled={!this.state.profilePictureUploaded} variant="secondary" type="submit">Last opp profilbilde</Button>
                         </Form.Group>
                     </Form>
                 </Card>
-            </Form>
         )
     }
 
-    handleSubmit(event) {
+    upload = (event) => {
         event.preventDefault();
-        this.submitForm();
-    }
+        this.submitForm(() => {
+            this.updateInfoPicture((profilePicture) => {
+                if(profilePicture !== null && profilePicture !== ''){
+                    PictureService.previewPicture(profilePicture, (url) => {
+                        this.setState({link: url})
+                            .then(Link.setCurrentLink(url))
+                    })
+                }
+            })
+        });
+    };
+
 
     handleInputChange(event) {
 
@@ -475,9 +481,9 @@ export class ProfilePictureForm extends React.Component {
         }
     }
 
-    submitForm() {
+    submitForm(callback) {
         if (MegaValidator.validateFile(this.state.newProfilePicture) && this.state.profilePictureUploaded) {
-            console.log("Image validated");
+    console.log("Image validated");
             let formData = new FormData();
             formData.append('description', this.state.newProfilePicture.name);
             formData.append('selectedFile', this.state.newProfilePicture);
@@ -489,13 +495,21 @@ export class ProfilePictureForm extends React.Component {
                     this.state.profilePicture = totalPath;
                     this.setState({profilePictureUploaded: false});
                 }
+                callback()
             });
         } else {
             console.log("Image not validated");
             this.setState({savingInformation: false});
         }
     }
+}
 
+export class Link {
+    static currentLink;
+
+    static setCurrentLink(newLink){
+        this.currentLink = newLink;
+    }
 }
 
 
