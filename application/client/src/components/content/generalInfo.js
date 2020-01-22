@@ -93,6 +93,7 @@ export class InfoForm extends Component {
     render() {
         EventStore.getEventCategories();
         console.log("Event type: " + EventStore.currentEvent.eventType);
+        console.log("State type: " + this.state.eventType);
         if(this.state.edit){
             return(
                 <div>
@@ -124,9 +125,10 @@ export class InfoForm extends Component {
                                         <Col>
                                             <Form.Label>Type arrangement</Form.Label>
                                             <Form.Control as="select" value={this.state.eventType} name="eventType" onChange={this.handleChange}>
-                                                <option value={1}> Konsert </option>
-                                                <option value={2}> Festival </option>
-                                                <option value={3}> Konkurranse </option>
+                                                 {EventStore.eventCategories.map((cat,i) => (
+                                                        <option value={i+1}>{cat}</option>
+                                                    ))
+                                                }
                                             </Form.Control>
                                         </Col>
                                     </Row>
@@ -319,11 +321,12 @@ export class InfoForm extends Component {
         EventStore.currentEvent.endDate = this.formatDate(this.state.endDate);
         EventStore.currentEvent.startTime = this.state.startTime;
         EventStore.currentEvent.endTime = this.state.endTime;
+        EventStore.currentEvent.eventType = this.state.eventType;
         EventStore.currentEvent.address = this.state.address;
         EventStore.currentEvent.zipCode = this.state.zipCode;
         EventStore.currentEvent.town = this.state.town;
         EventStore.currentEvent.description = this.state.description;
-        EventStore.currentEvent.eventType = this.state.eventType;
+        console.log("SAVED EVENT: " + EventStore.currentEvent.toString());
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql
     formatDate(date) {
@@ -338,25 +341,16 @@ export class InfoForm extends Component {
         if(day.length < 2) {
             day = "0" + day;
         }
-
         return [year, month, day].join("-");
     }
 
 
     formatDateFromSql(date){
         //2019-12-31T23:00:00.000Z
-        var newDate = date.split('T');
-
-        var convertedDate = newDate[0];
-
-
+        let newDate = date.split('T');
+        let convertedDate = newDate[0];
         return convertedDate;
-
-
     }
-
-
-
 }
 
 

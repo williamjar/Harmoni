@@ -17,6 +17,7 @@ export class EventStore {
 
     static setCurrentEvent(newEvent) {
         this.currentEvent = newEvent;
+        console.log(this.currentEvent.toString());
     }
 
     static createEvent(callback, eventName, organizerID) {
@@ -73,7 +74,7 @@ export class EventStore {
                 response.data[0].endTime, response.data[0].address, response.data[0].town,
                 response.data[0].zipCode, response.data[0].status, response.data[0].description,
                 response.data[0].publishDate, response.data[0].publishTime, response.data[0].organizerID,
-                response.data[0].eventTypeName, response.data[0].pictureID);
+                response.data[0].eventType, response.data[0].pictureID);
         });
     }
 
@@ -123,7 +124,7 @@ export class EventStore {
                     response.data[i].endTime, response.data[i].address, response.data[i].town,
                     response.data[i].zipCode, response.data[i].status, response.data[i].description,
                     response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
-                    response.data[i].eventTypeName, response.data[i].picture));
+                    response.data[i].eventTypeID, response.data[i].picture));
             }
 
             if (response.error) {
@@ -196,7 +197,7 @@ export class EventStore {
                     response.data[i].endTime, response.data[i].address, response.data[i].town,
                     response.data[i].zipCode, response.data[i].status, response.data[i].description,
                     response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
-                    response.data[i].eventTypeName, response.data[i].picture));
+                    response.data[i].eventTypeID, response.data[i].picture));
             }
 
             callback();
