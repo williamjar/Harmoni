@@ -362,16 +362,17 @@ export class DeleteUserForm extends React.Component {
         }
     }
 
-
     checkPasswordAndDeleteCurrentUser() {
 
         hash.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
             console.log("Password ? " + res);
             if (res) {
                 OrganizerStore.deleteCurrentOrganizer();
-                CookieStore.currentToken = null;
-                CookieStore.currentUserID = null;
-                // TODO Proper logout here
+                sessionStorage.setItem('token', null);
+                sessionStorage.removeItem('loggedIn');
+                CookieStore.setCurrentToken(null);
+                CookieStore.setCurrentUserID(-1);
+                history.push("/");
                 window.location.reload();
             } else {
                 this.setState({errorDeleting: true});

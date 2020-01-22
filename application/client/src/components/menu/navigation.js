@@ -35,9 +35,9 @@ export class MobileMenu extends Component{
             <div className="zoom-80 fixed-top card">
                 <div className="row no-gutters">
                     <div className="col-4">
-                        <div className="logoImg-mobile">
+                        <div className="logoImg-mobile" >
                             <NavLink to="/" onClick={this.collapse}>
-                            <img width="100px" src={logo} alt=""/>
+                                <img width="100px" src={logo} alt=""/>
                             </NavLink>
                         </div>
                     </div>
@@ -48,15 +48,29 @@ export class MobileMenu extends Component{
                     </div>
                 </div>
                 {this.state.expand?
-                <div className="card" onClick={this.toggleExpand}>
-                    <Menu/>
-
-                </div>
+                    <div className="card drop-shadow-mobile-menu " onClick={this.toggleExpand}>
+                        <Menu/>
 
 
+                        <div className="log-out-mobile pointer" onClick={() => {
+                            sessionStorage.setItem('token', null);
+                            sessionStorage.removeItem('loggedIn');
+                            CookieStore.setCurrentToken(null);
+                            CookieStore.setCurrentUserID(-1);
+                            history.push("/");
+                            this.props.logOut();
+                        }}>
+                            Logg av <FaSignOutAlt size={20}/>
+                        </div>
 
-                :null}
+
+                    </div>
+
+
+
+                    :null}
             </div>
+
         )
     }
 
@@ -72,6 +86,7 @@ export class MobileMenu extends Component{
         history.push("/brukerprofil");
         this.collapse();
     };
+
 }
 
 export class NavBar extends Component{

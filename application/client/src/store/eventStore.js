@@ -73,13 +73,13 @@ export class EventStore {
                 response.data[0].endTime, response.data[0].address, response.data[0].town,
                 response.data[0].zipCode, response.data[0].status, response.data[0].description,
                 response.data[0].publishDate, response.data[0].publishTime, response.data[0].organizerID,
-                response.data[0].eventTypeName, response.data[0].pictureID);
+                response.data[0].eventType, response.data[0].pictureID);
         });
     }
 
     static editCurrentEvent() {
 
-        console.log("Current event: " + this.currentEvent.toString());
+        console.log("Edit Current event: " + this.currentEvent.toString());
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -100,12 +100,10 @@ export class EventStore {
             "publishDate": this.currentEvent.publishDate,
             "publishTime": this.currentEvent.publishTime,
             "organizerID": this.currentEvent.organizer,
-            "eventTypeID": 1,
+            "eventTypeID": this.currentEvent.eventType,
             "pictureID": this.currentEvent.picture
         };
-
         return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, body, {headers: header});
-
     }
 
     static storeAllEvents() {
@@ -123,7 +121,7 @@ export class EventStore {
                     response.data[i].endTime, response.data[i].address, response.data[i].town,
                     response.data[i].zipCode, response.data[i].status, response.data[i].description,
                     response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
-                    response.data[i].eventTypeName, response.data[i].picture));
+                    response.data[i].eventTypeID, response.data[i].picture));
             }
 
             if (response.error) {
@@ -196,10 +194,8 @@ export class EventStore {
                     response.data[i].endTime, response.data[i].address, response.data[i].town,
                     response.data[i].zipCode, response.data[i].status, response.data[i].description,
                     response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
-                    response.data[i].eventTypeName, response.data[i].picture));
+                    response.data[i].eventTypeID, response.data[i].picture));
             }
-
-            console.log("EventStore: allEventsForOrganizer: " + this.allEventsForOrganizer);
 
             callback();
         });
