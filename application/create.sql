@@ -117,8 +117,8 @@ CREATE TABLE artist(
 CREATE TABLE event_artist(
     eventID INT,
     artistID INT,
-    contractSigned tinyint default 0 not null,
-    hasBeenPaid    tinyint default 0 not null,
+    contractSigned TINYINT(1) DEFAULT 0 NOT NULL,
+    hasBeenPaid    TINYINT(1) DEFAULT 0 NOT NULL,
     PRIMARY KEY(eventID, artistID)
 );
 
@@ -139,13 +139,15 @@ CREATE TABLE event_crewCategory_crew(
     eventID INT,
     crewCategoryID INT,
     crewID INT,
-    isResponsible TINYINT(1) DEFAULT 0,
+    isResponsible TINYINT(1) DEFAULT  0 NOT NULL,
+    contractSigned tinyint(1) DEFAULT  0 NOT NULL,
+    hasBeenPaid    tinyint(1) DEFAULT  0 NOT NULL,
     PRIMARY KEY(eventID, crewCategoryID, crewID)
 );
 
 CREATE TABLE document(
     documentID INT AUTO_INCREMENT,
-    eventID INT,
+    eventID INT NOT NULL,
     documentName VARCHAR(100),
     documentLink TEXT,
     artistID INT,

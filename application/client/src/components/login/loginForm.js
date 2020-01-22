@@ -6,7 +6,7 @@ import {CookieStore} from "../../store/cookieStore";
 import {UserPage} from "../user/userPage";
 
 export class LoginForm extends React.Component {
-
+    _mounted = false;
     constructor(props) {
         super(props);
         this.state = {
@@ -97,23 +97,27 @@ export class LoginForm extends React.Component {
             if (status===200) {
                 sessionStorage.setItem('loggedIn', 'true');
                 this.props.logIn();
-                this.setState({loggingIn: false});
+                if(this._mounted) this.setState({loggingIn: false});
             } else if(status===501){
-                this.setState({loggingIn: false});
-                this.setState({loginError: true});
+                if(this._mounted) this.setState({loggingIn: false});
+                if(this._mounted) this.setState({loginError: true});
             } else if(status===502){
-                this.setState({loggingIn: false});
-                this.setState({userDoesNotExist: true});
+                if(this._mounted) this.setState({loggingIn: false});
+                if(this._mounted) this.setState({userDoesNotExist: true});
             } else {
-                this.setState({loggingIn: false});
-                this.setState({serverError: true});
+                if(this._mounted) this.setState({loggingIn: false});
+                if(this._mounted) this.setState({serverError: true});
             }
 
-
-
         });
+    }
 
+    componentDidMount() {
+        this._mounted = true;
+    }
 
+    componentWillUnmount() {
+        this._mounted = false;
     }
 
     // Database control functions to display the proper error message to the user.

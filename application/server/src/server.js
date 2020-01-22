@@ -49,13 +49,15 @@ app.get('/products/:id', function (req, res) {
     res.json({msg: 'This is CORS-enabled for all origins!'})
 });
 
+// login must be first
+require('./server-login.js');
+
 require('./server-artist.js');
 require('./server-bug.js');
 require('./server-contact.js');
 require('./server-crew.js');
 require('./server-document.js');
 require('./server-event.js');
-require('./server-login.js');
 require('./server-organizer.js');
 require('./server-picture.js');
 require('./server-rider.js');

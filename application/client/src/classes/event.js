@@ -2,10 +2,10 @@ import {Organizer} from "./organizer";
 import {Artist} from "./artist";
 import {RiderElement} from "./riderElement";
 
-export class Event{
+export class Event {
 
     constructor(eventID, eventName, startDate, endDate, startTime, endTime, address, town, zipCode, status, description,
-                publishDate, publishTime, organizer, picture){
+                publishDate, publishTime, organizer, eventType, picture) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.startDate = startDate;
@@ -20,6 +20,7 @@ export class Event{
         this.publishDate = publishDate;
         this.publishTime = publishTime;
         this.organizer = organizer;
+        this.eventType = eventType;
         this.picture = picture;
 
         this.tickets = [];
@@ -30,37 +31,37 @@ export class Event{
         this.riderElements = [];
     }
 
-    addTicketType(ticketType){
+    addTicketType(ticketType) {
         this.tickets.push(ticketType);
     }
 
-    addDocument(document){
+    addDocument(document) {
         this.documents.push(document);
     }
 
-    addCrewMember(crewMember){
+    addCrewMember(crewMember) {
         this.crewMembers.push(crewMember);
     }
 
-    addCrewCategory(crewCategory){
+    addCrewCategory(crewCategory) {
         this.crewCategories.push(crewCategory);
     }
 
-    addArtist(artist){
+    addArtist(artist) {
         this.artists.push(artist);
     }
 
-    addRiderElement(artist, riderElement){
+    addRiderElement(artist, riderElement) {
         this.riderElements.push([artist, riderElement]);
     }
 
-    static getTestEvents(){
+    static getTestEvents() {
         let eventOne = new Event(0, 'Festival4evah',
             '20210101', '20220101', '0000', '0000',
             null, null, null,
             0, 'Some festival',
             null, null,
-            Organizer.getTestOrganizer()[0],
+            Organizer.getTestOrganizer()[0], 1,
             'eventImage.png');
 
         eventOne.addCrewCategory('Lazy Work');
@@ -74,14 +75,32 @@ export class Event{
         return [eventOne];
     }
 
-    getRiderFromArtist(artist){
+    getRiderFromArtist(artist) {
         let retArr = [];
-        for (let i = 0; i < this.riderElements.length; i++){
-            if (this.riderElements[i][0].artistID === artist.artistID){
+        for (let i = 0; i < this.riderElements.length; i++) {
+            if (this.riderElements[i][0].artistID === artist.artistID) {
                 retArr.push(this.riderElements[i][1]);
             }
         }
         return retArr;
+    }
+
+    toString() {
+        return "Name: " + this.eventName +
+            "\nstartDate : " + this.startDate +
+            "\nendDate: " + this.endDate +
+            "\nstarttime: " + this.startTime +
+            "\nendtime: " + this.endTime +
+            "\naddress:  " + this.address +
+            "\ntown: " + this.town +
+            "\nzip: " + this.zipCode +
+            "\nstatus: " + this.status +
+            "\ndesc: " + this.description +
+            "\nPublishDate: " + this.publishDate +
+            "\nPublishTime: " + this.publishTime +
+            "\nOrganizer: " + this.organizer +
+            "\nType: " + this.eventType +
+            "\nPic: " + this.picture;
     }
 
 }
