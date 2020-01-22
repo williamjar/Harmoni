@@ -241,24 +241,6 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     });
 });
 
-/*
-app.delete("/api/documents/category/:documentCategoryID", (req, res) => {
-    documentationDao.deleteDocumentCategory(req.params.documentCategoryID, (status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
-
-deleteDocumentCategory(documentCategoryID, callback){
-    var val = [documentCategoryID];
-    super.query(
-        "delete from document where eventID = ? and documentID = ?;",
-        val,
-        callback
-    );
-}
- */
-
 app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID, (status, data) => {
         res.status(status);
@@ -457,7 +439,7 @@ app.put("/api/document/:documentID", (request, response) => {
     }, val, request.params.documentID);
 });
 
-app.delete("/test/mjau/:documentID/:path*", (req, res) => {
+app.delete("/api/document/:documentID/:path*", (req, res) => {
     console.log("ID " + req.params.documentID + " Link " + req.params.path + req.params['0']);
     documentDao.deleteOne((status, data) => {
         res.status(status);
@@ -466,17 +448,3 @@ app.delete("/test/mjau/:documentID/:path*", (req, res) => {
     console.log("DELETEING");
     deleteFile('./' + req.params.path + req.params['0']);
 });
-
-/*
-function deleteFile(path) {
-    try {
-        fs.unlink(path, function (err) {
-            if (err) throw err;
-            // if no error, file has been deleted successfully
-            console.log('File deleted!');
-        });
-    } catch (e) {
-        console.log("Error, could not delete file:" + e);
-    }
-}
- */

@@ -125,7 +125,7 @@ export class DocumentService {
             "x-access-token": CookieStore.currentToken
         };
         console.log("ID " + documentID + " Link ");
-        axios.delete(axiosConfig.root + '/test/mjau/' + documentID + '/' + documentLink, {headers: header})
+        axios.delete(axiosConfig.root + '/api/document/' + documentID + '/' + documentLink, {headers: header})
             .catch(error => console.log(error));
     }
 
