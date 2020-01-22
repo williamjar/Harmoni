@@ -79,6 +79,7 @@ export class EventStore {
 
     static editCurrentEvent() {
 
+        console.log("Current event: " + this.currentEvent.toString());
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken

@@ -85,4 +85,22 @@ export class Event {
         return retArr;
     }
 
+    toString() {
+        return this.eventName +
+            this.startDate +
+            this.endDate +
+            this.startTime +
+            this.endTime +
+            this.address +
+            this.town +
+            this.zipCode +
+            this.status +
+            this.description +
+            this.publishDate +
+            this.publishTime +
+            this.organizer +
+            this.eventType +
+            this.picture;
+    }
+
 }
