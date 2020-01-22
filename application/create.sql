@@ -147,7 +147,7 @@ CREATE TABLE event_crewCategory_crew(
 
 CREATE TABLE document(
     documentID INT AUTO_INCREMENT,
-    eventID INT,
+    eventID INT NOT NULL,
     documentName VARCHAR(100),
     documentLink TEXT,
     artistID INT,

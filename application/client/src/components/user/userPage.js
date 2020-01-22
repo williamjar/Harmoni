@@ -25,6 +25,7 @@ export class UserPage extends React.Component {
             newPhonenumber: '',
             profilePicture: '',
             newProfilePicture: '',
+            profilePictureUploaded: false,
             savingInformation: false,
             showPasswordAlert: false,
             mode: 1,
@@ -55,6 +56,7 @@ export class UserPage extends React.Component {
         }
     }
 
+
     render() {
         return (
             <Card className={"border-0"}>
@@ -82,7 +84,7 @@ export class UserPage extends React.Component {
                                                      onChange={this.handleInputChange}/>
                                     </Form.Group>
                                     <Form.Group>
-                                        <Button hidden={this.state.savingInformation}  variant="secondary" type="submit">Last opp profilbilde</Button>
+                                        <Button hidden={this.state.savingInformation} disabled={!this.state.profilePictureUploaded} variant="secondary" type="submit">Last opp profilbilde</Button>
                                         <Button hidden={!this.state.savingInformation} disabled variant="secondary" type="submit"><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>Laster opp profilbilde</Button>
                                     </Form.Group>
                                 </Form>
@@ -214,6 +216,7 @@ export class UserPage extends React.Component {
         const target = event.target;
         if (target.name === 'newProfilePicture') {
             this.setState({newProfilePicture: target.files[0]});
+            this.setState({profilePictureUploaded: true});
         } else {
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
@@ -299,7 +302,8 @@ export class UserPage extends React.Component {
             });
         }
 
-        if (MegaValidator.validateFile(this.state.newProfilePicture)) {
+        if (MegaValidator.validateFile(this.state.newProfilePicture) && this.state.profilePictureUploaded) {
+            alert("sdhahsdahsdhasdha");
             console.log("Image validated");
             let formData = new FormData();
             formData.append('description', this.state.newProfilePicture.name);
@@ -310,6 +314,7 @@ export class UserPage extends React.Component {
                 if (statusCode === 200 && link) {
                     const totalPath = __dirname + '../../../../server/' + link;
                     this.state.profilePicture = totalPath;
+                    this.setState({profilePictureUploaded: false});
                 }
             });
         } else {
@@ -404,16 +409,16 @@ export class DeleteUserForm extends React.Component {
     }
 
     submitForm() {
-        if (this.checkPassword()) {
+        if (this.checkPasswordAndDeleteCurrentUser()) {
 
             alert("Brukeren er slettet");
         } else {
-            alert("feil passord");
+            alert("Feil passord, prøv igjen.");
         }
     }
 
 
-    checkPassword() {
+    checkPasswordAndDeleteCurrentUser() {
 
         hash.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
             console.log("Password ? " + res);
