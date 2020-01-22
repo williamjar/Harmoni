@@ -295,9 +295,12 @@ export class InfoForm extends Component {
 
 
     submitForm(){
+        console.log("form submitted.");
         this.setState({dateError: false})
         if(this.validateForm()){
+            console.log("form validated");
             this.save();
+            EventStore.editCurrentEvent().then(console.log("Lagret"));
             this.setState({edit:false});
         } else{
             this.setState({dateError: true})
@@ -305,6 +308,9 @@ export class InfoForm extends Component {
     }
 
     save(){
+            console.log(this.state.description);
+            console.log(this.formatDate(this.state.startDate));
+            console.log(this.formatDate(this.state.endDate));
             EventStore.currentEvent.eventName = this.state.eventName;
             EventStore.currentEvent.startDate = this.formatDate(this.state.startDate);
             EventStore.currentEvent.endDate = this.formatDate(this.state.endDate);
