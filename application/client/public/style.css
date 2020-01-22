@@ -94,6 +94,10 @@ body{
     margin-top:5px;
 }
 
+.margin-top-10{
+    margin-top:10px !important;
+}
+
 .margin-bottom-20{
     margin-bottom: 20px;
 }
@@ -263,7 +267,7 @@ body{
 
 /* Content */
 .Login-Container{
-
+    margin-top: 10%;
 
 }
 
@@ -512,8 +516,23 @@ search-result-item{
         margin:0 auto;
     }
 
+    .bugButton{
+        width: 100%;
+        padding-top: 10px;
+        margin-top:10px !important;
+        text-align: center;
+    }
+
     .simple-content{
         max-width: 100% !important;
+    }
+
+    .bugWindow{
+        width: 100% !important;
+        margin: auto;
+        padding-top: 15px;
+        padding-bottom: 30px;
+
     }
 
 }
@@ -526,6 +545,24 @@ search-result-item{
         background-size: 230% auto;
     }
 
+
+}
+
+@media only screen and (min-width: 600px) and (max-width: 991px){
+    .bugButton{
+        width: 100%;
+        padding-top: 10px;
+        margin-top:10px !important;
+        text-align: center;
+    }
+
+    .bugWindow{
+        width: 100% !important;
+        margin: auto;
+        padding-top: 15px;
+        padding-bottom: 30px;
+
+    }
 }
 
 
@@ -551,7 +588,7 @@ search-result-item{
 
 
 .bugWindow{
-    width: 70%;
+    width: 90%;
     margin: auto;
     padding-top: 15px;
     padding-bottom: 30px;
@@ -561,6 +598,13 @@ search-result-item{
 .bugButton{
     margin: auto;
     padding-top: 10px;
-    text-align: center;
+    margin-top: 10px !important;
+    text-align: right;
+}
+
+.bugLabel {
+    background: #314b57;
+    color:white;
+    text-indent: 10px;
 }
 

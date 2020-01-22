@@ -59,7 +59,7 @@ export class EventStore {
         }).catch(console.log("Error in eventStore"));
     }
 
-    static storeCurrentEvent(eventID) {
+    static storeCurrentEvent(eventID, callback) {
 
         //Populates currentEvent
 
@@ -75,7 +75,7 @@ export class EventStore {
                 response.data[0].zipCode, response.data[0].status, response.data[0].description,
                 response.data[0].publishDate, response.data[0].publishTime, response.data[0].organizerID,
                 response.data[0].eventType, response.data[0].pictureID);
-        });
+        }).then(() => callback());
     }
 
     static editCurrentEvent() {

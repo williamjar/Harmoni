@@ -9,6 +9,8 @@ import placeholder from './placeholder.jpg'
 import {Ticket, TicketView} from "../ticket";
 import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
+import {PictureService} from "../../store/pictureService";
+import {CheckList} from "./checklist";
 
 const history = createHashHistory();
 
@@ -16,25 +18,21 @@ const history = createHashHistory();
 // The component changes if the event is in "edit mode" or not
 export class GeneralInfo extends Component{
 
-    state = {
+    constructor(props){
+        super(props);
+        this.state = {
 
-    };
+        };
+    }
 
     render(){
         return(
             <div>
-                <div className="row">
-                    <div className="col-lg-7 col-sm-12 border-right">
-                        <InfoForm editMode={this.props.editMode}/>
-                    </div>
-                    <div className="col-lg-5 col-sm-12">
-                        <Card.Body>
-                            <Image src={EventStore.currentEvent.picture != null ? lorde : placeholder} alt="event image" fluid className="mb-2"/>
-                            <Button type={"file"} variant={"secondary"}>Last opp bilde</Button>
-                        </Card.Body>
-                    </div>
-                </div>
-                <Row className="mb-3">
+
+                <InfoForm editMode={this.props.editMode}/>
+
+
+                <Row>
                     <Col>
                         <Card className="mb-2 border-0">
                             <Card.Title>Billetter</Card.Title>
@@ -66,7 +64,10 @@ export class InfoForm extends Component {
             description: EventStore.currentEvent.description,
             eventType: EventStore.currentEvent.eventType,
             savingInformation: false,
-            dateError: false
+            dateError: false,
+            issueList: [],
+            selectedFile: null,
+            serverFile: null
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -74,14 +75,21 @@ export class InfoForm extends Component {
     }
 
 
+
     // Updates the state and the event store object when form input is changed
     handleChange(event){
+        this.updateIssueList();
         this.setState({savingInformation:false});
         const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+        if (target.name === 'selectedFile'){
+            this.setState({[target.name]: target.files[0]});
+        }
+        else{
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
 
-        this.setState({[name]: value,});
+            this.setState({[name]: value,});
+        }
     }
 
     handleSubmit(event) {
@@ -89,24 +97,36 @@ export class InfoForm extends Component {
         this.submitForm();
     }
 
+    componentDidMount() {
+        this.updateIssueList();
+
+        console.log(EventStore.currentEvent);
+
+        if (EventStore.currentEvent.picture !== null){
+            PictureService.getPicture(EventStore.currentEvent.picture, picture => {
+                if (picture !== null){
+                    PictureService.previewPicture(picture.pictureLink, link => {
+                        this.setState({serverFile: link});
+                    });
+                }
+            })
+        }
+    }
 
     render() {
         if(this.state.edit){
             return(
-                <div>
+                    <Row>
+                    <Col>
                     <Card className="mb-2 border-0">
                         <Form onSubmit={this.handleSubmit}>
                             <Card.Body>
                                 <Row>
-                                    <Col xs="4">
-                                        {this.state.edit === false ? <Card.Title>
-                                            {this.state.eventName}
-                                        </Card.Title> : <Form.Control type="text" value={this.state.eventName} name="eventName" onChange={this.handleChange}/>}
-                                    </Col>
                                     <Col>
-
+                                    <Form.Control size="lg" type="text" value={this.state.eventName} name="eventName" placeholder="Tittel" onChange={this.handleChange}/>
                                     </Col>
                                 </Row>
+                                <br/>
                                 <Form.Group>
                                     <Row className="mb-2">
                                         <Col xs="5">
@@ -122,9 +142,9 @@ export class InfoForm extends Component {
                                         <Col>
                                             <Form.Label>Type arrangement</Form.Label>
                                             <Form.Control as="select" value={this.state.eventType} name="eventType" onChange={this.handleChange}>
-                                                 {EventStore.eventCategories.map((cat,i) => (
-                                                        <option value={i+1}>{cat}</option>
-                                                    ))
+                                                {EventStore.eventCategories.map((cat,i) => (
+                                                    <option value={i+1}>{cat}</option>
+                                                ))
                                                 }
                                             </Form.Control>
                                         </Col>
@@ -149,7 +169,7 @@ export class InfoForm extends Component {
                                         </Col>
                                         <Col xs="3">
                                             <Form.Label>Postnummer</Form.Label>
-                                            <Form.Control type="text" value={this.state.zipCode} name="zipCode" onChange={this.handleChange}/>
+                                            <Form.Control style={{width : '4.5rem'}} type="tel" maxLength="4" value={this.state.zipCode} name="zipCode" onChange={this.handleChange}/>
                                         </Col>
                                         <Col xs="3">
                                             <Form.Label>Poststed</Form.Label>
@@ -164,21 +184,57 @@ export class InfoForm extends Component {
                                     </Row>
                                     <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Arrangementet kan ikke starte etter det har sluttet!</Form.Text>
                                 </Form.Group>
+                                <Row>
+                                    <Col>
                                 <Form.Group>
                                     <Button type="submit" variant="success">Lagre</Button>
                                 </Form.Group>
+                                    </Col>
+                                </Row>
                             </Card.Body>
-
                         </Form>
                     </Card>
-                </div>
+                    </Col>
+                        <Col>
+                            <CheckList issueList={this.state.issueList}/>
+                        </Col>
+                        <Col>
+                            <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2"/>
+                            <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/>
+                            <Button type={"file"} variant={"secondary"} onClick={() => {
+                                console.log("Uploading image...");
+                                let fileForm = new FormData();
+                                fileForm.append("description", this.state.selectedFile.name);
+                                fileForm.append("selectedFile", this.state.selectedFile);
+                                console.log(fileForm.get("selectedFile"));
+                                PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path) => {
+                                    if (statusCode === 200 && path) {
+                                        PictureService.previewPicture(path, link => {
+                                            EventStore.currentEvent.picture = link;
+                                            this.setState({serverFile: link});
+                                            console.log("Image uploaded");
+                                        });
+                                    }
+                                    else{
+                                        console.log("Image was not inserted");
+                                    }
+                                });
+                            }}>Last opp bilde</Button>
+                        </Col>
+                    </Row>
+
             )}
         else{
             return (
-                <div>
+                <Row>
+                    <Col>
                     <Card className="mb-2 border-0">
-                        <Card.Title className={"h3"}>{EventStore.currentEvent.eventName}</Card.Title>
                         <Card.Body>
+                            <Row>
+                                <Col>
+                                    <Card.Title className={"h2 font-weight-bold"}>{EventStore.currentEvent.eventName}</Card.Title>
+                                </Col>
+                            </Row>
                             <Form.Group>
                                 <Row className="mb-2">
                                     <Col xs="5">
@@ -276,10 +332,56 @@ export class InfoForm extends Component {
                         </Card.Body>
 
                     </Card>
+                    </Col>
 
-                </div>
+                    <Col>
+                        <Card>
+                            <Card.Body>
+                                <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2"/>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+
+                </Row>
             );
         }
+    }
+
+
+    updateIssueList(){
+        let list = [];
+
+        if(this.state.eventName===null) {
+            list.push("Mangler tittel");
+        } else if (this.state.eventName.length <= 1) {
+            list.push("Mangler tittel");
+        }
+
+        if(this.state.description===null){
+            list.push("Mangler beskrivelse");
+        } else if(this.state.description.length<=1){
+            list.push("Mangler beskrivelse");
+        }
+
+        if(this.state.address===null || this.state.zipCode===null || this.state.town===null) {
+            list.push("Addresse er ikke satt");
+        } else if(this.state.address.length<=1 || this.state.zipCode.length<=1 || this.state.town.length<=1) {
+            list.push("Addresse er ikke satt");
+        }
+
+        if(this.state.startDate===null || this.state.endDate===null){
+            list.push("Dato er ikke satt");
+        } else if(this.state.startDate.length<=1 || this.state.endDate.length<=1){
+            list.push("Dato er ikke satt");
+        }
+
+        if(this.state.startTime===null || this.state.endTime===null){
+            list.push("Tidspunkt er ikke satt");
+        } else if (this.state.startTime.length<=1 || this.state.endTime.length<=1){
+            list.push("Tidspunkt eventet er ikke satt");
+        }
+
+        this.setState({issueList: list})
     }
 
 
@@ -323,6 +425,7 @@ export class InfoForm extends Component {
         EventStore.currentEvent.zipCode = this.state.zipCode;
         EventStore.currentEvent.town = this.state.town;
         EventStore.currentEvent.description = this.state.description;
+        EventStore.currentEvent.picture = this.state.serverFile;
         console.log("SAVED EVENT: " + EventStore.currentEvent.toString());
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql

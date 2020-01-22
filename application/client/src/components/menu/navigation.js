@@ -87,6 +87,7 @@ export class MobileMenu extends Component{
         history.push("/brukerprofil");
         this.collapse();
     };
+
 }
 
 export class NavBar extends Component{

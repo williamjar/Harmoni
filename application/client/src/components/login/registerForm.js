@@ -57,10 +57,7 @@ export class RegisterForm extends React.Component {
     render() {
 
         return (
-
-
             <Card style={{width : '35rem'}} className="text-center mx-auto mt-5 drop-shadow">
-
                 <Modal show={this.state.showGDPR} >
                     <Modal.Header closeButton>
                         <Modal.Title>Harmoni: personsvernserklæring</Modal.Title>
@@ -76,70 +73,70 @@ export class RegisterForm extends React.Component {
                 </Modal>
 
                 <Form onSubmit={this.handleSubmit} className={"align-items-center"}>
-                <Card.Body>
-                    <Card.Title className="mb-4">Registrer ny bruker</Card.Title>
-                <div className="justify-content-md-center">
-                        <Form.Text className="text-danger" hidden={!this.state.usernameAlreadyExist}>Brukernavnet finnes allerede</Form.Text>
-                        <Form.Group>
-                            <Form.Control maxLength="25" type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Control maxLength="8" type="tel" name="phonenumber" placeholder="Telefonnummer" value={this.state.phonenumber} onChange={this.handleInputChange}/>
-                        </Form.Group>
-                        <Form.Text className="text-danger" hidden={!this.state.emailAlreadyExist}>Det er allerede registrert en bruker med denne e-postaddressen</Form.Text>
+                    <Card.Body>
+                        <Card.Title className="mb-4">Registrer ny bruker</Card.Title>
+                        <div className="justify-content-md-center">
+                            <Form.Text className="text-danger" hidden={!this.state.usernameAlreadyExist}>Brukernavnet finnes allerede</Form.Text>
+                            <Form.Group>
+                                <Form.Control maxLength="25" type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Control maxLength="8" type="tel" name="phonenumber" placeholder="Telefonnummer" value={this.state.phonenumber} onChange={this.handleInputChange}/>
+                            </Form.Group>
+                            <Form.Text className="text-danger" hidden={!this.state.emailAlreadyExist}>Det er allerede registrert en bruker med denne e-postaddressen</Form.Text>
                             <Row>
-                            <Col>
-                                <Form.Group>
-                                    <Form.Control type="email" maxLength="320" name="firstEmail" placeholder="E-postadresse" value={this.state.firstEmail} onChange={this.handleInputChange}/>
-                                </Form.Group>
-                            </Col>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Control type="email" maxLength="320" name="firstEmail" placeholder="E-postadresse" value={this.state.firstEmail} onChange={this.handleInputChange}/>
+                                    </Form.Group>
+                                </Col>
 
-                            <Col>
-                                <Form.Group>
-                                    <Form.Control type="email" maxLength="320" name="secondEmail" placeholder="Gjenta e-postadresse" value={this.state.secondEmail} onChange={this.handleInputChange}/>
-                                </Form.Group>
-                            </Col>
-                        </Row>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Control type="email" maxLength="320" name="secondEmail" placeholder="Gjenta e-postadresse" value={this.state.secondEmail} onChange={this.handleInputChange}/>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
 
 
-                        <Row>
-                            <Col>
-                                <Form.Group>
-                                    <Form.Control type="password" maxLength="40" name="firstPassword" placeholder="Passord" value={this.state.password} onChange={this.handleInputChange}/>
-                                </Form.Group>
-                            </Col>
+                            <Row>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Control type="password" maxLength="40" name="firstPassword" placeholder="Passord" value={this.state.password} onChange={this.handleInputChange}/>
+                                    </Form.Group>
+                                </Col>
 
-                            <Col>
-                                <Form.Group>
-                                    <Form.Control type="password" maxLength="30" name="secondPassword" placeholder="Gjenta passord" value={this.state.password} onChange={this.handleInputChange}/>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                    <Form.Group>
-                        <Form.Check name="confirmTermsOfService" value={this.state.confirmTermsOfService}  onChange={this.handleInputChange} type="checkbox" label={"Godkjenn personvernserklæring"}/>
-                        <Form.Text className="link text-primary" onClick={()=>this.functionToShowGDPR()}> Les vår personvernserklæring </Form.Text>
-                    </Form.Group>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Control type="password" maxLength="30" name="secondPassword" placeholder="Gjenta passord" value={this.state.password} onChange={this.handleInputChange}/>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Form.Group>
+                                <Form.Check name="confirmTermsOfService" value={this.state.confirmTermsOfService}  onChange={this.handleInputChange} type="checkbox" label={"Godkjenn personvernserklæring"}/>
+                                <Form.Text className="link text-primary" onClick={()=>this.functionToShowGDPR()}> Les vår personvernserklæring </Form.Text>
+                            </Form.Group>
 
-                    <Container hidden={!this.state.formCheckerActive}>
+                            <Container hidden={!this.state.formCheckerActive}>
 
-                        <Form.Text className="text-danger" hidden={MegaValidator.validateUsernameLength(this.state.username)}>Brukernavn kreves</Form.Text>
-                        <Form.Text className="text-danger" hidden={MegaValidator.validateEmailLength(this.state.firstEmail, this.state.secondEmail)}>E-postaddresse kreves</Form.Text>
-                        <Form.Text className="text-danger" hidden={MegaValidator.validateUsername("nothing", this.state.username)}>Brukernavnet kan kun inneholde tall og bokstaver</Form.Text>
+                                <Form.Text className="text-danger" hidden={MegaValidator.validateUsernameLength(this.state.username)}>Brukernavn kreves</Form.Text>
+                                <Form.Text className="text-danger" hidden={MegaValidator.validateEmailLength(this.state.firstEmail, this.state.secondEmail)}>E-postaddresse kreves</Form.Text>
+                                <Form.Text className="text-danger" hidden={MegaValidator.validateUsername("nothing", this.state.username)}>Brukernavnet kan kun inneholde tall og bokstaver</Form.Text>
 
-                        <Form.Text className="text-danger" hidden={MegaValidator.validateEmail(this.state.firstEmail, this.state.secondEmail)}>E-postadressene må være like</Form.Text>
-                        <Form.Text className="text-danger" hidden={MegaValidator.validatePassword(null,this.state.firstPassword,this.state.secondPassword)}>Passordene må være like</Form.Text>
+                                <Form.Text className="text-danger" hidden={MegaValidator.validateEmail(this.state.firstEmail, this.state.secondEmail)}>E-postadressene må være like</Form.Text>
+                                <Form.Text className="text-danger" hidden={MegaValidator.validatePassword(null,this.state.firstPassword,this.state.secondPassword)}>Passordene må være like</Form.Text>
 
-                        <Form.Text className="text-danger" hidden={MegaValidator.validatePasswordLength(this.state.firstPassword,this.state.secondPassword)}>Passordet ditt må være på minst 8 tegn</Form.Text>
-                        <Form.Text className="text-danger" hidden={!MegaValidator.checkForEInNumber(this.state.phonenumber)}>Telefonnummeret ditt inneholder ugyldige symboler</Form.Text>
+                                <Form.Text className="text-danger" hidden={MegaValidator.validatePasswordLength(this.state.firstPassword,this.state.secondPassword)}>Passordet ditt må være på minst 8 tegn</Form.Text>
+                                <Form.Text className="text-danger" hidden={!MegaValidator.checkForEInNumber(this.state.phonenumber)}>Telefonnummeret ditt inneholder ugyldige symboler</Form.Text>
 
-                        <Form.Text className="text-danger" hidden={!this.state.databaseConnectionError}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
+                                <Form.Text className="text-danger" hidden={!this.state.databaseConnectionError}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
 
-                    </Container>
+                            </Container>
 
-                        <Form.Text> Har du allerede en bruker? <NavLink to="/"> Klikk her for å logge inn. <span className="NavLink"/></NavLink></Form.Text>
+                            <Form.Text> Har du allerede en bruker? <NavLink to="/"> Klikk her for å logge inn. <span className="NavLink"/></NavLink></Form.Text>
 
-                </div>
-                </Card.Body>
+                        </div>
+                    </Card.Body>
                     <Card>
                         <Button variant="btn btn-primary" type="submit" hidden={this.state.loggingIn} disabled={!this.validateForm()}> Registrer bruker </Button>
                         <Button variant="btn btn-primary" disabled hidden={!this.state.loggingIn}><Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Registrerer bruker</Button>
@@ -157,11 +154,7 @@ export class RegisterForm extends React.Component {
         this.setState({loggingIn: true});
         this.setState({emailAlreadyExist: false});
         this.setState({usernameAlreadyExist: false});
-        /*
-        *   Service code goes here. The login variables(email, password) can be accessed via the state variables "this.state.firstEmail" and "this.state.firstPassword";
-        *   It can be assumed that the emails are identical and that the passwords are identical.
-        *
-        * */
+
         RegisterOrganizerService.registerOrganizer(this.state.username, this.state.phonenumber,this.state.firstEmail, this.state.firstPassword, statusCode => {
             if (statusCode === 200){
                 history.push('/');
@@ -175,7 +168,6 @@ export class RegisterForm extends React.Component {
                 this.setState({loggingIn: false});
             }
             else if (statusCode === 500){
-
                 this.setState({loggingIn: false});
             }
         });
