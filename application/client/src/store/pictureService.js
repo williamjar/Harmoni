@@ -97,7 +97,7 @@ export class PictureService {
 
     static previewPicture(pictureLink, callback){
 
-        console.log("Preview " + pictureLink);
+        console.log(axiosConfig.root + "/file/preview/" + pictureLink);
 
             axios.get(axiosConfig.root + '/file/preview/' + pictureLink, {
                 method: "GET",
