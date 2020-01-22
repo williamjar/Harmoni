@@ -79,8 +79,8 @@ app.put("/api/artist/:artistID", (request, response) => {
     let val = [
         request.body.genreID,
         request.params.artistID,
-        request.body.organizerID,
-        request.body.contactID,
+        /*request.body.organizerID,
+        request.body.contactID,*/
     ];
 
     artistDao.updateOne((status, data) => {

@@ -18,6 +18,7 @@ import {CookieStore} from "../../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import {EventView} from "../dashboard/eventView";
 import {NoEvents} from "../dashboard/dashboard";
+import {ContactService} from "../../../store/contactService";
 
 export class Contacts extends React.Component {
 
@@ -31,6 +32,8 @@ export class Contacts extends React.Component {
             showContact: false,
             genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"],
         };
+
+        this.update = this.update.bind(this);
     }
 
     componentDidMount() {
@@ -47,6 +50,10 @@ export class Contacts extends React.Component {
 
     hidePerformer = () => {
         this.setState({show: false});
+    };
+
+    update = () => {
+        ArtistService.getArtistForOrganizer((res) => this.setState({performers: res}), CookieStore.currentUserID);
     };
 
     render() {
@@ -108,7 +115,7 @@ export class Contacts extends React.Component {
                                     </Row>
                                     <Accordion.Collapse eventKey="0">
                                         <Row className="no-gutters">
-                                            <ContactList performers={this.state.performers.filter(performer => performer.genre === i + 1)}/>
+                                            <ContactList performers={this.state.performers.filter(performer => performer.genre === i + 1)} updateHandler={this.update}/>
                                         </Row>
                                     </Accordion.Collapse>
                                 </Accordion>)
@@ -160,12 +167,12 @@ export class ContactList extends React.Component {
     viewPerformer = (e) => {
         console.log("view clicked");
         this.setState({
-            showContact: true,
             currentPerformer: this.state.performers.find(performer => {return performer.artistID === parseInt(e.target.id)})
-        });
+        },() => this.setState({showContact: true}));
     };
 
     hidePerformer = () => {
+        this.props.updateHandler();
         this.setState({showContact: false});
     };
 
@@ -223,9 +230,10 @@ export class ContactInfo extends React.Component {
         this.setState({
             show: this.props.show,
             contact: this.props.contact,
+            contactName: this.state.contact.contactName,
             email: this.state.contact.email,
             phone: this.state.contact.phone,
-            genre: this.state.contact.genre
+            /*genre: this.state.contact.genre*/
         });
     }
 
@@ -234,11 +242,19 @@ export class ContactInfo extends React.Component {
     };
 
     saveClicked = () => {
-
+        console.log(this.state.genre);
+        ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
+            ArtistService.updateArtistGenre(() => {
+                console.log(this.state.genre);
+                this.setState({show: false, editable: false}, () => this.setState({show: true}));
+            }, this.state.contact.artistID, parseInt(this.state.genre), CookieStore.currentUserID, this.state.contact.contactID)
+        })
     };
 
     handleChange = (e) => {
-        this.setState({[e.target.name]: e.target.value, show: false}, () => this.setState({show: true}));
+        this.setState({[e.target.name]: e.target.value, show: false}, () => {
+            this.setState({show: true});
+        });
     };
 
     render() {
@@ -275,9 +291,9 @@ export class ContactInfo extends React.Component {
                             <FaMusic/>
                         </Col>
                         <Col>
-                            {this.state.editable ? <Form.Control name="genre" as="select" value={this.state.genres[this.state.genre - 1]}
+                            {this.state.editable ? <Form.Control name="genre" as="select" defaultValue={this.state.genre}
                             onChange={this.handleChange}>{
-                                this.state.genres.map(genre => {return <option>{genre}</option>})
+                                this.state.genres.map((genre,i) => {return <option value={i + 1}>{genre}</option>})
                             }</Form.Control> : this.state.genres[this.state.genre - 1]}
                         </Col>
                     </Row>
@@ -290,7 +306,7 @@ export class ContactInfo extends React.Component {
                     </Row>
                 </Modal.Body>
                 <Modal.Footer>
-                    {this.state.editable ? <Button variant="success">Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}
+                    {this.state.editable ? <Button variant="success" onClick={this.saveClicked}>Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}
                     <Button variant="danger">Slett</Button>
                 </Modal.Footer>
             </Modal>
