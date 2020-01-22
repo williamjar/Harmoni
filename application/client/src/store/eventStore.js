@@ -100,11 +100,12 @@ export class EventStore {
             "publishDate": this.currentEvent.publishDate,
             "publishTime": this.currentEvent.publishTime,
             "organizerID": this.currentEvent.organizer,
-            "eventTypeID": this.currentEvent.eventType,
+            "eventTypeID": 1,
             "pictureID": this.currentEvent.picture
         };
 
         return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, body, {headers: header});
+
     }
 
     static storeAllEvents() {
@@ -216,7 +217,7 @@ export class EventStore {
                 this.eventCategories.push(response.data[i].eventTypeName);
                 console.log(response.data[i].eventTypeName);
             }
-        }).then(res => console.log("GET EVENT CAT: " + res));
+        });
     }
 
     static formatDate(date) {

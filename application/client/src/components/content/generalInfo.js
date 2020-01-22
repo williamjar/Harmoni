@@ -30,7 +30,7 @@ export class GeneralInfo extends Component{
                     <div className="col-5">
                         <Card.Body>
                             <Image src={EventStore.currentEvent.picture != null ? lorde : placeholder} alt="event image" fluid className="mb-2"/>
-                             <Button type={"file"} variant={"secondary"}>Last opp bilde</Button>
+                            <Button type={"file"} variant={"secondary"}>Last opp bilde</Button>
                         </Card.Body>
                     </div>
                 </div>
@@ -49,6 +49,7 @@ export class GeneralInfo extends Component{
 
 // Component for editing or submitting general info about an event
 export class InfoForm extends Component {
+
     constructor(props) {
         super(props);
 
@@ -63,7 +64,6 @@ export class InfoForm extends Component {
             zipCode: EventStore.currentEvent.zipCode,
             town: EventStore.currentEvent.town,
             description: EventStore.currentEvent.description,
-            eventType: EventStore.currentEvent.eventType,
             savingInformation: false,
             dateError: false
         };
@@ -90,89 +90,88 @@ export class InfoForm extends Component {
 
 
     render() {
-
         if(this.state.edit){
-        return(
-            <div>
-                <Card className="mb-2 border-0">
-                    <Form onSubmit={this.handleSubmit}>
-                    <Card.Body>
-                        <Row>
-                            <Col xs="4">
-                                {this.state.edit === false ? <Card.Title>
-                                    {this.state.eventName}
-                                </Card.Title> : <Form.Control type="text" value={this.state.eventName} name="eventName" onChange={this.handleChange}/>}
-                            </Col>
-                            <Col>
+            return(
+                <div>
+                    <Card className="mb-2 border-0">
+                        <Form onSubmit={this.handleSubmit}>
+                            <Card.Body>
+                                <Row>
+                                    <Col xs="4">
+                                        {this.state.edit === false ? <Card.Title>
+                                            {this.state.eventName}
+                                        </Card.Title> : <Form.Control type="text" value={this.state.eventName} name="eventName" onChange={this.handleChange}/>}
+                                    </Col>
+                                    <Col>
 
-                            </Col>
-                        </Row>
-                        <Form.Group>
-                            <Row className="mb-2">
-                                <Col xs="5">
-                                    <FaCalendarAlt className="mr-1"/>
-                                    <Form.Label>Start</Form.Label>
-                                    <Form.Control type="date" placeholder={this.formatDateFromSql(this.state.startDate)} value={this.formatDateFromSql(this.state.startDate)} name="startDate" onChange={this.handleChange}/>
-                                </Col>
-                                <Col xs="3">
-                                    <FaClock className="mr-1"/>
-                                    <Form.Label>Tid</Form.Label>
-                                    <Form.Control type="time" value={this.state.startTime} name="startTime" onChange={this.handleChange}/>
-                                </Col>
-                                <Col>
-                                    <Form.Label>Type arrangement</Form.Label>
-                                    <Form.Control as="select" value={this.state.eventType} name="eventType" onChange={this.handleChange}>
-                                        {
-                                            EventStore.eventCategories.map((eventType,index) => (
-                                            <option value={index}>{eventType}</option>
-                                        ))}
-                                    </Form.Control>
-                                </Col>
-                            </Row>
-                            <Row className="mb-4">
-                                <Col xs="5">
-                                    <FaCalendarAlt className="mr-1"/>
-                                    <Form.Label>Slutt</Form.Label>
-                                    <Form.Control type="date" placeholder={this.formatDateFromSql(this.state.endDate)} value={this.formatDateFromSql(this.state.endDate)} name="endDate" onChange={this.handleChange}/>
-                                </Col>
-                                <Col xs="3">
-                                    <FaClock className="mr-1"/>
-                                    <Form.Label>Tid</Form.Label>
-                                    <Form.Control type="time" value={this.state.endTime} name="endTime" onChange={this.handleChange}/>
-                                </Col>
-                            </Row>
-                            <Row className="mb-4">
-                                <Col xs="5">
-                                    <FaHouseDamage className="mr-1"/>
-                                    <Form.Label>Adresse</Form.Label>
-                                    <Form.Control type="text" value={this.state.address} name="address" onChange={this.handleChange}/>
-                                </Col>
-                                <Col xs="3">
-                                    <Form.Label>Postnummer</Form.Label>
-                                    <Form.Control type="text" value={this.state.zipCode} name="zipCode" onChange={this.handleChange}/>
-                                </Col>
-                                <Col xs="3">
-                                    <Form.Label>Poststed</Form.Label>
-                                    <Form.Control type="text" value={this.state.town} name="town" onChange={this.handleChange}/>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <Form.Label>Beskrivelse</Form.Label>
-                                    <Form.Control as="textarea" rows="3" value={this.state.description} name="description" onChange={this.handleChange}/>
-                                </Col>
-                            </Row>
-                            <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Arrangementet kan ikke starte etter det har sluttet!</Form.Text>
-                        </Form.Group>
-                        <Form.Group>
-                            <Button type="submit" variant="success">Lagre</Button>
-                        </Form.Group>
-                    </Card.Body>
+                                    </Col>
+                                </Row>
+                                <Form.Group>
+                                    <Row className="mb-2">
+                                        <Col xs="5">
+                                            <FaCalendarAlt className="mr-1"/>
+                                            <Form.Label>Start</Form.Label>
+                                            <Form.Control type="date" placeholder={this.formatDateFromSql(this.state.startDate)} value={this.formatDateFromSql(this.state.startDate)} name="startDate" onChange={this.handleChange}/>
+                                        </Col>
+                                        <Col xs="3">
+                                            <FaClock className="mr-1"/>
+                                            <Form.Label>Tid</Form.Label>
+                                            <Form.Control type="time" value={this.state.startTime} name="startTime" onChange={this.handleChange}/>
+                                        </Col>
+                                        <Col>
+                                            <Form.Label>Type arrangement</Form.Label>
+                                            <Form.Control as="select" value={this.state.eventType}>
+                                                {
+                                                    EventStore.eventCategories.map((eventType) => (
+                                                        <option name="eventType" value={eventType} onChange={this.handleChange} >{eventType}</option>
+                                                    ))}
+                                            </Form.Control>
+                                        </Col>
+                                    </Row>
+                                    <Row className="mb-4">
+                                        <Col xs="5">
+                                            <FaCalendarAlt className="mr-1"/>
+                                            <Form.Label>Slutt</Form.Label>
+                                            <Form.Control type="date" placeholder={this.formatDateFromSql(this.state.endDate)} value={this.formatDateFromSql(this.state.endDate)} name="endDate" onChange={this.handleChange}/>
+                                        </Col>
+                                        <Col xs="3">
+                                            <FaClock className="mr-1"/>
+                                            <Form.Label>Tid</Form.Label>
+                                            <Form.Control type="time" value={this.state.endTime} name="endTime" onChange={this.handleChange}/>
+                                        </Col>
+                                    </Row>
+                                    <Row className="mb-4">
+                                        <Col xs="5">
+                                            <FaHouseDamage className="mr-1"/>
+                                            <Form.Label>Adresse</Form.Label>
+                                            <Form.Control type="text" value={this.state.address} name="address" onChange={this.handleChange}/>
+                                        </Col>
+                                        <Col xs="3">
+                                            <Form.Label>Postnummer</Form.Label>
+                                            <Form.Control type="text" value={this.state.zipCode} name="zipCode" onChange={this.handleChange}/>
+                                        </Col>
+                                        <Col xs="3">
+                                            <Form.Label>Poststed</Form.Label>
+                                            <Form.Control type="text" value={this.state.town} name="town" onChange={this.handleChange}/>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <Form.Label>Beskrivelse</Form.Label>
+                                            <Form.Control as="textarea" rows="3" value={this.state.description} name="description" onChange={this.handleChange}/>
+                                        </Col>
+                                    </Row>
+                                    <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Arrangementet kan ikke starte etter det har sluttet!</Form.Text>
+                                </Form.Group>
+                                <Form.Group>
+                                    <Button type="submit" variant="success">Lagre</Button>
+                                </Form.Group>
+                            </Card.Body>
 
-                    </Form>
-                </Card>
-            </div>
-        )}
+                        </Form>
+                    </Card>
+                </div>
+            )}
         else{
             return (
                 <div>
@@ -207,7 +206,7 @@ export class InfoForm extends Component {
                                                 <Form.Label>Kategori:</Form.Label>
                                             </Col>
                                         </Row>
-                                        {EventStore.eventCategories[EventStore.currentEvent.eventType]}
+                                        {EventStore.eventCategories[EventStore.currentEvent.eventType - 1]}
                                     </Col>
                                 </Row>
                                 <Row className="mb-4">
@@ -263,8 +262,8 @@ export class InfoForm extends Component {
                                     <Col>
                                         <Row className="mt-2">
                                             <Col>
-                                                    <Card.Title>Beskrivelse</Card.Title>
-                                                    {EventStore.currentEvent.description}
+                                                <Card.Title>Beskrivelse</Card.Title>
+                                                {EventStore.currentEvent.description}
                                             </Col>
                                         </Row>
                                     </Col>
@@ -310,19 +309,18 @@ export class InfoForm extends Component {
     }
 
     save(){
-            console.log(this.state.description);
-            console.log(this.formatDate(this.state.startDate));
-            console.log(this.formatDate(this.state.endDate));
-            EventStore.currentEvent.eventName = this.state.eventName;
-            EventStore.currentEvent.startDate = this.formatDate(this.state.startDate);
-            EventStore.currentEvent.endDate = this.formatDate(this.state.endDate);
-            EventStore.currentEvent.startTime = this.state.startTime;
-            EventStore.currentEvent.endTime = this.state.endTime;
-            EventStore.currentEvent.address = this.state.address;
-            EventStore.currentEvent.zipCode = this.state.zipCode;
-            EventStore.currentEvent.town = this.state.town;
-            EventStore.currentEvent.description = this.state.description;
-            EventStore.currentEvent.eventType = this.state.eventType;
+        console.log(this.state.description);
+        console.log(this.formatDate(this.state.startDate));
+        console.log(this.formatDate(this.state.endDate));
+        EventStore.currentEvent.eventName = this.state.eventName;
+        EventStore.currentEvent.startDate = this.formatDate(this.state.startDate);
+        EventStore.currentEvent.endDate = this.formatDate(this.state.endDate);
+        EventStore.currentEvent.startTime = this.state.startTime;
+        EventStore.currentEvent.endTime = this.state.endTime;
+        EventStore.currentEvent.address = this.state.address;
+        EventStore.currentEvent.zipCode = this.state.zipCode;
+        EventStore.currentEvent.town = this.state.town;
+        EventStore.currentEvent.description = this.state.description;
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql
     formatDate(date) {
@@ -357,5 +355,7 @@ export class InfoForm extends Component {
 
 
 }
+
+
 
 

@@ -86,21 +86,21 @@ export class Event {
     }
 
     toString() {
-        return this.eventName +
-            this.startDate +
-            this.endDate +
-            this.startTime +
-            this.endTime +
-            this.address +
-            this.town +
-            this.zipCode +
-            this.status +
-            this.description +
-            this.publishDate +
-            this.publishTime +
-            this.organizer +
-            this.eventType +
-            this.picture;
+        return "Name: " + this.eventName +
+            "\nstartDate : " + this.startDate +
+            "\nendDate: " + this.endDate +
+            "\nstarttime: " + this.startTime +
+            "\nendtime: " + this.endTime +
+            "\naddress:  " + this.address +
+            "\ntown: " + this.town +
+            "\nzip: " + this.zipCode +
+            "\nstatus: " + this.status +
+            "\ndesc: " + this.description +
+            "\nPublishDate: " + this.publishDate +
+            "\nPublishTime: " + this.publishTime +
+            "\nOrganizer: " + this.organizer +
+            "\nType: " + this.eventType +
+            "\nPic: " + this.picture;
     }
 
 }
