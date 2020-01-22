@@ -167,6 +167,10 @@ export class Documents extends Component{
         }
     }
 
+    handleDelete(documentID){
+        //sletter fra liste
+    }
+
     render(){
         return(
             <section>
@@ -229,7 +233,6 @@ class Info extends Component {
     }
 
     associatedContact(){
-        //console.log("ID: " + this.props.documentID + " Artist: " + this.state.artist[0].contactName + " Crew: " + this.state.crew[0].contactName);
         if(this.state.crew !== undefined && this.state.crew.contactName !== undefined){
                 return(
                     <Row className ={"border-bottom"}>
@@ -254,6 +257,15 @@ class Info extends Component {
         }
     }
 
+    deleteDocument = (e) => {
+        e.preventDefault();
+        documentService.deleteDocument(this.props.documentID, this.props.documentLink, () => {
+            this.forceUpdate()
+        });
+
+
+    };
+
 
     render() {
         return (
@@ -272,7 +284,7 @@ class Info extends Component {
                     {this.associatedContact()}
                 </Col>
                 <Col size = {3} className={"text-right"}>
-                    <Button variant="danger"> Slett </Button>
+                    <Button onClick = {this.deleteDocument} variant="danger"> Slett </Button>
                 </Col>
             </Row>
         );

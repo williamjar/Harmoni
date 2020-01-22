@@ -119,13 +119,16 @@ export class DocumentService {
         }, {headers: header}).then(response => response.data);
     }
 
-//TODO: Delete? change Document params if not
-    deleteDocument(id) {
+    static deleteDocument(documentID, documentLink, callback) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete(axiosConfig.root + '/api/document/' + id, {headers: header}).then(response => response.data);
+        console.log("ID " + documentID + " Link ");
+        axios.delete(axiosConfig.root + '/test/mjau/' + documentID + '/' + documentLink, {headers: header}).then(response => response.data)
+            .then(response => console.log(response))
+            .catch(error => console.log(error));
+        callback();
     }
 
 //TODO: Delete? change Document params if not

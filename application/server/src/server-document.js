@@ -439,10 +439,26 @@ app.put("/api/document/:documentID", (request, response) => {
     }, val, request.params.documentID);
 });
 
-app.delete("/api/document/:documentID", (request, response) => {
-    console.log("Express: Request to delete document " + request.params.documentID);
+app.delete("/test/mjau/:documentID/:path*", (req, res) => {
+    console.log("ID " + req.params.documentID + " Link " + req.params.path + req.params['0']);
     documentDao.deleteOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.documentID);
+        res.status(status);
+        res.json(data);
+    }, req.params.documentID);
+    console.log("DELETEING");
+    deleteFile('./' + req.params.path + req.params['0']);
 });
+
+/*
+function deleteFile(path) {
+    try {
+        fs.unlink(path, function (err) {
+            if (err) throw err;
+            // if no error, file has been deleted successfully
+            console.log('File deleted!');
+        });
+    } catch (e) {
+        console.log("Error, could not delete file:" + e);
+    }
+}
+ */
