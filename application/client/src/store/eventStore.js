@@ -17,7 +17,6 @@ export class EventStore {
 
     static setCurrentEvent(newEvent) {
         this.currentEvent = newEvent;
-        console.log(this.currentEvent.toString());
     }
 
     static createEvent(callback, eventName, organizerID) {
@@ -104,9 +103,7 @@ export class EventStore {
             "eventTypeID": this.currentEvent.eventType,
             "pictureID": this.currentEvent.picture
         };
-
         return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, body, {headers: header});
-
     }
 
     static storeAllEvents() {
