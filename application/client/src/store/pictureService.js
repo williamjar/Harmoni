@@ -39,7 +39,7 @@ export class PictureService {
         for(let pair of fileForm.entries()){
             console.log(pair);
         }
-        axios.post('http://localhost:8080/api/file/picture', fileForm)
+        axios.post('http://localhost:8080/file/picture', fileForm)
             .then(response => {
                 let databaseHeader = {
                     "Content-Type": "application/json",
@@ -72,7 +72,8 @@ export class PictureService {
 
 
     static previewPicture(pictureLink, callback){
-
+            console.log("Link " + pictureLink);
+            console.log("Kjører service");
             axios.get(axiosConfig.root + '/file/preview/' + pictureLink, {
                 method: "GET",
                 responseType: "blob"

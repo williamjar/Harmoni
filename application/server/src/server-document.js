@@ -95,6 +95,7 @@ const fileStorage = multer.diskStorage({
 const pictureStorage = multer.diskStorage({
 
     destination: (req, file, cb) => {
+        console.log("pic store");
 
         ensureFolderExists('./resources/', 0o744, err => {
             if (err) {
@@ -140,7 +141,8 @@ const fileUpload = multer({storage: fileStorage});
 
 
 //Save picture to server
-app.post("/api/file/picture", uploadUserPicture.single('selectedFile'), (req, res) => {
+app.post("/file/picture", uploadUserPicture.single('selectedFile'), (req, res) => {
+    console.log(req.file);
     try {
         res.send({name: req.file.filename, path: req.file.path});
     } catch (err) {

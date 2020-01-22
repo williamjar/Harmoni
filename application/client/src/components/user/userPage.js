@@ -76,9 +76,7 @@ export class UserPage extends React.Component {
                                     </tbody>
                                 </Table>
                             </Card>
-                            <ProfilePictureForm>
-
-                            </ProfilePictureForm>
+                            <ProfilePictureForm profilePicture = {this.state.profilePicture}/>
                         </Col>
                         <Col>
                             <Card className={"p-2 card border-0"}>
@@ -390,10 +388,10 @@ export class ProfilePictureForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            profilePicture: '',
             profilePictureUploaded: true,
             savingInformation: false,
-            link: ''
+            link: '',
+            newProfilePicture: null
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -403,22 +401,33 @@ export class ProfilePictureForm extends React.Component {
 
 
     componentDidMount() {
-        /*
-        this.updateInfo((profilePicture) => {
+        this.updateInfoPicture((profilePicture) => {
             if(profilePicture !== null && profilePicture !== ''){
                 PictureService.previewPicture(profilePicture, (url) => {
                     this.setState({link: url})
                 });
             }
+        })
+    }
+
+    updateInfoPicture(callback) {
+        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
+            if (statusCode === 200) {
+                let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
+
+                this.setState(this.setState({
+                    profilePicture: databaseImage
+                }));
+                callback(databaseImage);
+            } else {
+            }
         });
-        \
-         */
     }
 
 
     checkIfUserHasPicture(){
         if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
-            console.log("Skal ikke kjøre");
+            console.log("Kjører check");
             return(<img width={"200px"} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
         }else {
             return(<img width={"200px"} src={require('./profile.png')} alt={"Bildet kunne ikke lastes inn"}/>);
@@ -452,13 +461,18 @@ export class ProfilePictureForm extends React.Component {
     }
 
     handleInputChange(event) {
-        this.setState({savingInformation: false});
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-        console.log(this.state.confirmDeleteUser);
-        this.setState({[name]: value,});
 
+        this.setState({savingInformation: false});
+
+        if(event.target.name === "newProfilePicture"){
+            this.setState({newProfilePicture: event.target.files[0]});
+        } else {
+            const target = event.target;
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+            console.log(this.state.confirmDeleteUser);
+            this.setState({[name]: value,});
+        }
     }
 
     submitForm() {
