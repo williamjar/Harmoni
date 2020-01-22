@@ -76,6 +76,9 @@ export class UserPage extends React.Component {
                                     </tbody>
                                 </Table>
                             </Card>
+                            <ProfilePictureForm>
+
+                            </ProfilePictureForm>
                         </Col>
                         <Col>
                             <Card className={"p-2 card border-0"}>
@@ -387,9 +390,10 @@ export class ProfilePictureForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            newProfilePicture: '',
+            profilePicture: '',
             profilePictureUploaded: true,
-            savingInformation: false
+            savingInformation: false,
+            link: ''
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -414,6 +418,7 @@ export class ProfilePictureForm extends React.Component {
 
     checkIfUserHasPicture(){
         if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
+            console.log("Skal ikke kjøre");
             return(<img width={"200px"} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
         }else {
             return(<img width={"200px"} src={require('./profile.png')} alt={"Bildet kunne ikke lastes inn"}/>);
@@ -426,6 +431,7 @@ export class ProfilePictureForm extends React.Component {
             <Form onSubmit={this.handleSubmit}>
                 <Card className={"border-0"}>
                     <Form onSubmit={this.handleSubmit}>
+                        {this.checkIfUserHasPicture()}
                         <Form.Group>
                             <FormControl name="newProfilePicture" type="file"
                                          onChange={this.handleInputChange}/>
