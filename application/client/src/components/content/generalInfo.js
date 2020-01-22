@@ -99,6 +99,18 @@ export class InfoForm extends Component {
 
     componentDidMount() {
         this.updateIssueList();
+
+        console.log(EventStore.currentEvent);
+
+        if (EventStore.currentEvent.picture !== null){
+            PictureService.getPicture(EventStore.currentEvent.picture, picture => {
+                if (picture !== null){
+                    PictureService.previewPicture(picture.pictureLink, link => {
+                        this.setState({serverFile: link});
+                    });
+                }
+            })
+        }
     }
 
     render() {
@@ -197,7 +209,6 @@ export class InfoForm extends Component {
                                 console.log(fileForm.get("selectedFile"));
                                 PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path) => {
                                     if (statusCode === 200 && path) {
-                                        const totalPath = '../../../../server/' + path;
                                         PictureService.previewPicture(path, link => {
                                             EventStore.currentEvent.picture = link;
                                             this.setState({serverFile: link});
@@ -414,6 +425,7 @@ export class InfoForm extends Component {
         EventStore.currentEvent.zipCode = this.state.zipCode;
         EventStore.currentEvent.town = this.state.town;
         EventStore.currentEvent.description = this.state.description;
+        EventStore.currentEvent.picture = this.state.serverFile;
         console.log("SAVED EVENT: " + EventStore.currentEvent.toString());
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql

@@ -19,6 +19,7 @@ export class EventCard extends React.Component {
     // Sends the user to the event-screen when clicking "vis"
     viewEvent = () => {
         EventStore.getEventCategories();
+        console.log(this.props.event);
         EventStore.setCurrentEvent(this.props.event);
         RiderStore.storeAllRidersForEvent(() => {
             console.log("Here comes the sun, nananana");

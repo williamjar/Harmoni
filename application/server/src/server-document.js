@@ -389,7 +389,7 @@ app.get("/file/preview/:path*", (req, res) => {
         var file = fs.createReadStream("./" + req.params.path + req.params['0']);
         file.pipe(res);
     }
-    console.log("Error: path is null")
+    console.log("Error: path is null");
 });
 
 app.get("/api/document/download/:path*", (req, res) => {

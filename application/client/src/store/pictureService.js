@@ -9,15 +9,22 @@ const axiosConfig = require("./axiosConfig");
 export class PictureService {
 
     //Get picture
-    getPicture(pictureID){
+    static getPicture(pictureID, callback){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
         axios.get(axiosConfig.root + '/api/organizer/picture/' + pictureID, {headers: header})
             .then(response => {
-                return new PictureElement(response.data[0].pictureID, response.data[0].pictureLink);
+                if (response.data[0].pictureID && response.data[0].pictureLink){
+                    callback(new PictureElement(response.data[0].pictureID, response.data[0].pictureLink));
+                }
+                else{
+                    callback(null);
+                }
+
             })
+            .catch(err => callback(null));
     }
 
     //Update picture
