@@ -64,7 +64,7 @@ export class TicketAll extends Component {
             savingInformation: false,
             loading: false,
             dateError: false,
-            noEndSellingDate: false
+            noEndSellingDate: true
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -237,7 +237,7 @@ export class TicketAll extends Component {
                                     </Col>
                                     <Col/>
                                     <Col/>
-                                    <Col hiddem={this.state.noEndSellingDate}>
+                                    <Col>
                                         <Form.Text>{endDate}</Form.Text>
                                         <Form.Control
                                             type ="date"
@@ -275,6 +275,7 @@ export class TicketAll extends Component {
                                             name="noEndSellingDate"
                                             label="Ønsker ikke å sette en sluttdato for salg"
                                             value={this.state.noEndSellingDate}
+                                            checked={this.state.noEndSellingDate}
                                             onChange={this.handleInputChange}
                                         />
                                     </Col>
@@ -320,6 +321,7 @@ export class TicketAll extends Component {
         Updates all the states when changed.
     */
     handleInputChange(event) {
+        console.log(this.state.noEndSellingDate)
         let target = event.target;
         let value = target.type === 'checkbox' ? target.checked : target.value;
         let name = target.name;

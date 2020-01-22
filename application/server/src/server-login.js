@@ -1,5 +1,6 @@
 import {app, loginDao, organizerDao, SECRET, jwt} from "./server";
 import {CookieStore} from "../../client/src/store/cookieStore";
+import {EventStore} from "../../client/src/store/eventStore";
 
 let privateKey = SECRET.privateKey;
 let publicKey = SECRET.publicKey;
