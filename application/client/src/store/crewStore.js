@@ -47,7 +47,7 @@ export class CrewStore {
             response.data.map(data => {
 
                 this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
-                    data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible, data.contractSigned, data.hasBeenPaid));
+                    data.crewCategoryName, data.contactName, data.phone, data.email));
 
             });
 
@@ -71,7 +71,7 @@ export class CrewStore {
             response.data.map(data => {
 
                 this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
-                    data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible, data.contractSigned, data.hasBeenPaid));
+                    data.crewCategoryName, data.contactName, data.phone, data.email, (data.isResponsible === 1), (data.contractSigned === 1), (data.hasBeenPaid === 1)));
             });
 
             callback();
@@ -209,7 +209,14 @@ export class CrewStore {
     }
 
     //assign a crew member to an event
-    static assignCrewMemberToEvent(eventID, categoryID, crewID, isResponsible,callback){
+    static assignCrewMemberToEvent(eventID, categoryID, crewID, isResponsible, contractSigned, hasBeenPaid, callback){
+        console.log("CREWSTORE");
+        console.log("hasBeenPaid");
+        console.log(hasBeenPaid);
+        console.log("contractSigned");
+        console.log(contractSigned);
+        console.log("isResponsible");
+        console.log(isResponsible);
 
         let header = {
             "Content-Type": "application/json",
@@ -220,9 +227,9 @@ export class CrewStore {
             "eventID": eventID,
             "crewCategoryID": categoryID,
             "crewID": crewID,
-            "isResponsible": 0,
-            "contractSigned": 0,
-            "hasBeenPaid": 0
+            "isResponsible": isResponsible,
+            "contractSigned": contractSigned,
+            "hasBeenPaid": hasBeenPaid
         },  {headers: header}).then(response => callback(response.data));
     }
 
@@ -260,6 +267,13 @@ export class CrewStore {
     //update crew member as leader in a category for an event.
     //it is possible for a crew member to be a leader for more than one category
     static updateCrewMemberEvent(isResponsible, contractSigned, hasBeenPaid, eventID, crewCategoryID, crewID) {
+        console.log("SE HER");
+        console.log("hasBeenPaid");
+        console.log(hasBeenPaid);
+        console.log("contractSigned");
+        console.log(contractSigned);
+        console.log("isResponsible");
+        console.log(isResponsible);
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -312,7 +326,7 @@ export class CrewStore {
     }
 
     //remove crew member from event
-    static unassignCrewMemberFromEvent(eventID, crewCategoryID, crewID){
+    static unassignCrewMemberFromEvent(eventID, crewCategoryID, crewID, callback){
 
         let header = {
             "Content-Type": "application/json",
@@ -320,7 +334,7 @@ export class CrewStore {
         };
 
         return axios.delete(axiosConfig.root + '/api/crew/assign/' + eventID + '/' + crewCategoryID + '/' + crewID,  {headers: header})
-            .then(response => console.log(response));
+            .then(response => callback(response.data));
     }
 
     //delete crew member
