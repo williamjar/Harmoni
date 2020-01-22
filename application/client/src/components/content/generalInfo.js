@@ -9,6 +9,7 @@ import placeholder from './placeholder.jpg'
 import {Ticket, TicketView} from "../ticket";
 import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
+import {PictureService} from "../../store/pictureService";
 
 const history = createHashHistory();
 
@@ -16,9 +17,13 @@ const history = createHashHistory();
 // The component changes if the event is in "edit mode" or not
 export class GeneralInfo extends Component{
 
-    state = {
-
-    };
+    constructor(props){
+        super(props);
+        this.state = {
+            selectedFile: null,
+            serverFile: null
+        };
+    }
 
     render(){
         return(
@@ -29,8 +34,28 @@ export class GeneralInfo extends Component{
                     </div>
                     <div className="col-5">
                         <Card.Body>
-                            <Image src={EventStore.currentEvent.picture != null ? lorde : placeholder} alt="event image" fluid className="mb-2"/>
-                            <Button type={"file"} variant={"secondary"}>Last opp bilde</Button>
+                            <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2"/>
+                            <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/>
+                            <Button type={"file"} variant={"secondary"} onClick={() => {
+                                console.log("Uploading image...");
+                                let fileForm = new FormData();
+                                fileForm.append("description", this.state.selectedFile.name);
+                                fileForm.append("selectedFile", this.state.selectedFile);
+                                console.log(fileForm.get("selectedFile"));
+                                PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path) => {
+                                    if (statusCode === 200 && path) {
+                                        const totalPath = '../../../../server/' + path;
+                                        PictureService.previewPicture(totalPath, link => {
+                                            EventStore.currentEvent.picture = link;
+                                            this.setState({serverFile: link});
+                                            console.log("Image uploaded");
+                                        });
+                                    }
+                                    else{
+                                        console.log("Image was not inserted");
+                                    }
+                                });
+                            }}>Last opp bilde</Button>
                         </Card.Body>
                     </div>
                 </div>
@@ -44,6 +69,10 @@ export class GeneralInfo extends Component{
                 </Row>
             </div>
         )
+    }
+
+    componentDidMount() {
+        this.setState({serverFile: EventStore.currentEvent.picture});
     }
 }
 
