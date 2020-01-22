@@ -139,6 +139,53 @@ export class DocumentService {
         });
     }
 
+    static addDocumentFromArtistPage(artistToken, eventID, artistID, file, callback){
+
+        let header = {
+            "x-access-token": artistToken
+        };
+
+        axios.post('http://localhost:8080/artistapi/file/document/' + eventID + '/2', file, {headers: header})
+            .then(response => {
+                let databaseHeader = {
+                    "Content-Type": "application/json",
+                    "x-access-token": artistToken
+                };
+
+                if (!response.data.error){
+
+                    const path = response.data.path;
+                    const name = response.data.name.split("_")[1];
+
+                    //eventID, documentName, link, artistID, crewID, categoryID
+                    let body = {
+                        eventID: eventID,
+                        documentName: name,
+                        documentLink: path,
+                        artistID: artistID,
+                        crewID: null,
+                        documentCategoryID: 2
+                    };
+
+                    axios.post('http://localhost:8080/artistapi/document', JSON.stringify(body), {headers: databaseHeader}).then(dataResponse => {
+
+                        if (response.status === 200 && response.data.name){
+                            console.log(dataResponse.data);
+                            let returnData = {
+                                "documentLink": path,
+                                "documentID": dataResponse.data.insertId
+                            };
+                            callback(200, returnData);
+                        }
+                        else{
+                            callback(501, {"error": "An error occurred regarding saving file information to DB."});
+                        }
+                    });
+                }
+
+            });
+    }
+
 //TODO: Delete? change Document params if not
     updateDocument(documentID, eventID, name, link, artistID, crewID, categoryID) {
         let header = {

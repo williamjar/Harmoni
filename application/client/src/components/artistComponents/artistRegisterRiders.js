@@ -4,6 +4,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import {DocumentService as documentService, DocumentService} from "../../store/documentService";
 import {ArtistService} from "../../store/artistService";
 import {RiderStore} from "../../store/riderStore";
+import {Document} from "../../classes/document";
 import {
     FaAngleDown,
     FaFileAlt,
@@ -37,7 +38,7 @@ export class ArtistRegisterRiders extends Component{
         }
         else{
             return (
-                <div>
+                <Col>
                     <Row>
                         <Col>
                             <Card>
@@ -45,21 +46,7 @@ export class ArtistRegisterRiders extends Component{
                                 <Documents documents={this.state.documents}/>
                             </Card>
                             <Card>
-                                <h3 className={"mt-4 mb-4"}>Dine riders</h3>
-                                {
-                                    this.state.riderElements.map(rider => {
-                                        if (rider.artistID === this.state.artistID){
-                                            return <Rider key={rider.riderElementID} description={rider.description} isDone={rider.isDone} status={rider.status} riderObject={rider} deleteRider={null}/>
-                                        }
-                                        else{
-                                            return null;
-                                        }
-                                    })
-                                }
-                            </Card>
-                            <Card>
-                                Legg til rider<br/>
-
+                                Legg til rider som fritekst<br/>
                                 <InputGroup className="mb-3">
                                     <FormControl
                                         placeholder=""
@@ -73,12 +60,61 @@ export class ArtistRegisterRiders extends Component{
                                     </InputGroup.Append>
                                 </InputGroup>
                             </Card>
+                            <Card>
+                                <Col>
+                                    <span className="btn btn-primary btn-file">
+                                        Last opp riders som PDF <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/>
+                                    </span>
+                                </Col>
+                            </Card>
+                            <Card>
+                                <h3 className={"mt-4 mb-4"}>Dine riders</h3>
+                                {
+                                    this.state.riderElements.map(rider => {
+                                        if (rider.artistID === this.state.artistID){
+                                            return <Rider key={rider.riderID} description={rider.description} isDone={rider.isDone} status={rider.status} riderObject={rider} deleteRider={null}/>
+                                        }
+                                        else{
+                                            return null;
+                                        }
+                                    })
+                                }
+                            </Card>
                         </Col>
                     </Row>
-                </div>
+                </Col>
             );
         }
     }
+
+    addFile = (event) => {
+        try{
+            let fileInput = document.querySelector("#uploadAttachmentPerformer");
+            let attachment = fileInput.files[0];
+            let filename = attachment.name;
+            let formData = new FormData();
+            formData.append('selectedFile', attachment);
+            formData.append('description', filename);
+            DocumentService.addDocumentFromArtistPage(this.state.token, this.state.eventID, this.state.artistID, formData, (status, data) => {
+                if (status === 200 && data.documentLink && data.documentID){
+                    let currentDocuments = this.state.documents;
+                    currentDocuments.push(new Document(data.documentID, this.state.eventID, data.documentLink.split("_")[1], data.documentLink, this.state.artistID, null, 2));
+                    this.setState({documents: currentDocuments});
+                }
+                else {
+                    Alert.info("Noe hendte. Vennligst prøv igjen");
+                    console.log(status);
+                    console.log(data);
+                }
+            });
+
+        }
+        catch (e) {
+            Alert.info("Something went wrong, please try again");
+        }
+
+
+    };
 
     handleInputRider = (event) =>{
         /* Handles the rider input for new riders to be added to state variable */
@@ -94,7 +130,6 @@ export class ArtistRegisterRiders extends Component{
                     let currentState = this.state;
                     let currentRiders = currentState.riderElements;
                     currentRiders.push(newRider);
-                    console.log("Hello");
                     console.log(currentRiders);
                     currentState.riderInput = "";
                     this.setState(currentState);

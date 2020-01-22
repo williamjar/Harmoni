@@ -291,8 +291,6 @@ export class PerformerCard extends Component{
 
                <div className="row padding-top-20">
 
-
-
                    <div className="col-4">
                         <span className="btn btn-primary btn-file">
                             Legg til vedlegg <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/>

@@ -269,6 +269,11 @@ app.post("/api/file/document/:eventID/:documentCategoryID", fileUpload.single('s
     res.send({name: req.file.filename, path: req.file.path});
 });
 
+//Upload document from artist page
+app.post("/artistapi/file/document/:eventID/:documentCategoryID", fileUpload.single('selectedFile'), (req, res) => {
+    res.send({name: req.file.filename, path: req.file.path});
+});
+
 
 app.get("/api/:eventID/documents/category", (req, res) => {
     console.log("/doc: fikk request fra klient");

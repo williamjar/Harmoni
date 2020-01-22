@@ -72,3 +72,17 @@ app.post("/artistapi/rider", (request, response) => {
         response.json(data);
     }, val);
 });
+
+app.post("/artistapi/document", (request, response) => {
+    console.log("Express: Request from artist to add a document");
+    documentationDao.insertDocument(request.body.eventID,
+        request.body.documentName,
+        request.body.documentLink,
+        request.body.artistID,
+        request.body.crewID,
+        request.body.documentCategoryID,
+        (status, data) => {
+            response.status(status);
+            response.json(data);
+        });
+});
