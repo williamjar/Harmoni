@@ -143,10 +143,6 @@ export class App extends Component{
 
             this.setState(currentState);
         });
-
-        if (sessionStorage.getItem("currentEvent")) {
-            EventStore.currentEvent = sessionStorage.getItem("currentEvent");
-        }
     }
 }
 
