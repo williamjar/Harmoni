@@ -10,7 +10,7 @@ import {FaUsers} from "react-icons/all";
 import {FaFileSignature} from "react-icons/all";
 import logo from './logo.jpeg';
 import mobileLogo from './harmonilogo.png'
-import mobileLogo2 from './mobilmenylogoharmoni.png'
+import mobileLogo2 from './harmonilogo.png'
 import fullLogo from './harmonilogofull.png'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
