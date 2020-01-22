@@ -15,6 +15,7 @@ import { createHashHistory } from 'history';
 import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
 import {BugReview} from "./components/bugReview";
 import {Contacts} from "./components/content/contacts/contacts";
+import {EventStore} from "./store/eventStore";
 let history = createHashHistory();
 
 export class App extends Component{

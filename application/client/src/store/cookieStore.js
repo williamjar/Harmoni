@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {OrganizerStore} from "./organizerStore";
+import {EventStore} from "./eventStore";
 
 const publicKey = require('../cookieConfig').publicKey;
 const jwt = require('jsonwebtoken');
