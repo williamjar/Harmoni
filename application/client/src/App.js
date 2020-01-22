@@ -13,6 +13,7 @@ import {CreateEventSplash} from "./components/content/CreateEventSplash";
 import {UserPage} from "./components/user/userPage";
 import {Search} from "./components/content/search";
 
+
 import {GetTicket} from "./components/ticket";
 import {EventForm} from "./components/content/eventForm";
 import Navbar from "react-bootstrap/Navbar";

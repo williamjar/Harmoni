@@ -4,6 +4,7 @@ import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
 import {PerformerPanel, PerformersView} from "./performers";
 import {GeneralInfo} from "./generalInfo";
+import {Map} from "./map";
 import {CrewPanel, CrewTab} from "./crew";
 import {DocumentationTab} from "../documentationTab";
 import {EventStore} from "../../store/eventStore";
@@ -50,6 +51,7 @@ export class EventForm extends Component{
                     <TabContent>
                         <div className="padding-bottom-20">
                             <GeneralInfo editMode={this.state.editMode}/>
+                            <Map/>
                         </div>
                     </TabContent>
                 </Tab>
