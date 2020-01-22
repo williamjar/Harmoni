@@ -81,10 +81,15 @@ export class InfoForm extends Component {
         this.updateIssueList();
         this.setState({savingInformation:false});
         const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+        if (target.name === 'selectedFile'){
+            this.setState({[target.name]: target.files[0]});
+        }
+        else{
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
 
-        this.setState({[name]: value,});
+            this.setState({[name]: value,});
+        }
     }
 
     handleSubmit(event) {
