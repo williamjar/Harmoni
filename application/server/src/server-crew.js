@@ -118,7 +118,7 @@ app.put("/api/crew/:crewID", (request, response) => {
     }, val);
 });
 
-app.put("/crew/:crewID/event/:eventID", (request, response) => {
+app.put("/api/crew/:crewID/event/:eventID", (request, response) => {
     console.log("update responsibility and contracts for crew");
     let val = [
         request.body.isResponsible,

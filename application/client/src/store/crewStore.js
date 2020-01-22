@@ -1,8 +1,6 @@
 import axios from "axios";
 import {CrewMember} from "../classes/crewMember.js"
 import {CookieStore} from "./cookieStore";
-import createWithBsPrefix from "react-bootstrap/esm/createWithBsPrefix";
-import {forEach} from "react-bootstrap/esm/ElementChildren";
 import {CrewCategory} from "../classes/crewCategory";
 
 let axiosConfig = require("./axiosConfig");
@@ -48,9 +46,8 @@ export class CrewStore {
 
             response.data.map(data => {
 
-                this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.contactID, data.description,
-                this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.description, data.crewCategoryID,
-                    data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible));
+                this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
+                    data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible, data.contractSigned, data.hasBeenPaid));
 
             });
 
@@ -73,11 +70,8 @@ export class CrewStore {
 
             response.data.map(data => {
 
-                this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.description,
-                    data.crewCategoryID, data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible, data.contractSigned, data.hasBeenPaid));
-                this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.contactID, data.description,
-                    data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible));
-
+                this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
+                    data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible, data.contractSigned, data.hasBeenPaid));
             });
 
             callback();
