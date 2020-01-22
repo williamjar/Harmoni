@@ -175,6 +175,7 @@ export class ArtistRegisterRiders extends Component{
                 });
                 RiderStore.getAllRidersForArtistByEvent(artistID, eventID, realToken, (status, res) => {
                     if (status === 200 && res){
+                        console.log(res);
                         this.setState({riderElements: res});
                     }
                     else{
@@ -286,6 +287,7 @@ class Rider extends Component{
     }
 
     render(){
+        console.log(this.props);
         return(
             <div className="card card-body">
                 <div className="row align-items-center">
@@ -296,7 +298,7 @@ class Rider extends Component{
 
                     <div className="col-2">
                         <div className="form-check">
-                            <input className="form-check-input" type="checkbox" disabled={true} checked={this.props.taskDone} name="taskDone" onChange={this.handleCheckBoxInput}/>
+                            <input className="form-check-input" type="checkbox" disabled={true} checked={this.props.isDone === 1 || this.props.isDone} name="taskDone" onChange={this.handleCheckBoxInput}/>
                             <label className="form-check-label" htmlFor="riderCompleted">
                                 Utført
                             </label>
