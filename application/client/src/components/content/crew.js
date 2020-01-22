@@ -251,6 +251,7 @@ export class AddCrewType extends Component{
             CrewStore.addCategory(this.state.crewType, CookieStore.currentUserID);
             alert(this.state.crewType);
             this.props.submit();
+            CrewStore.storeAllCrewCategoriesForOrganizer();
         }
     };
 }
@@ -950,10 +951,25 @@ export class AddCrewMember extends Component{
 
 
     submitForm = () => {
-        CrewStore.createCrewMemberForEvent(() => {
-            this.props.toggleRegisterCrewMember();
-            this.props.submit();
-        }, this.state.name, this.state.phone, this.state.email, this.state.description, this.state.selectedCategoryID, (this.state.isResponsible ? 1 : 0), EventStore.currentEvent.eventID, CookieStore.currentUserID);
+        if(this.state.name.trim() !== "" && this.state.phone.trim() !== "" && this.state.email.trim() !== ""){
+            CrewStore.createCrewMemberForEvent(() => {
+                this.props.toggleRegisterCrewMember();
+                this.props.submit();
+            }, this.state.name, this.state.phone, this.state.email, this.state.description, this.state.selectedCategoryID, (this.state.isResponsible ? 1 : 0), EventStore.currentEvent.eventID, CookieStore.currentUserID);
+        }
+        else{
+            if(this.state.name.trim() === ""){
+                Alert.warning("Navn må være fylt ut");
+            }
+
+            if(this.state.phone.trim() === ""){
+                Alert.warning("Telefon må være fylt ut");
+            }
+
+            if(this.state.email.trim() === ""){
+                Alert.warning("Email må være fylt ut");
+            }
+        }
     };
 
     submitCrewType = () => {
