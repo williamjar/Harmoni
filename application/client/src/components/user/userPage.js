@@ -4,6 +4,8 @@ import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {PictureService} from "../../store/pictureService";
 import {MegaValidator} from "../../megaValidator";
+import {LoginService} from "../../store/loginService";
+import {DocumentService as documentService} from "../../store/documentService";
 import * as hash from "../../store/hashService";
 import {createHashHistory} from "history";
 
@@ -23,9 +25,11 @@ export class UserPage extends React.Component {
             newPhonenumber: '',
             profilePicture: '',
             newProfilePicture: '',
+            profilePictureUploaded: false,
             savingInformation: false,
             showPasswordAlert: false,
-            mode: 1
+            mode: 1,
+            link: ""
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -33,7 +37,23 @@ export class UserPage extends React.Component {
     }
 
     componentDidMount() {
-        this.updateInfo();
+        this.updateInfo((profilePicture) => {
+            if(profilePicture !== null && profilePicture !== ''){
+                PictureService.previewPicture(profilePicture, (url) => {
+                    this.setState({link: url})
+                });
+            }
+        });
+
+    }
+
+
+    checkIfUserHasPicture(){
+        if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
+            return(<img width={"200px"} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
+        }else {
+            return(<img width={"200px"} src={require('./profile.png')} alt={"Bildet kunne ikke lastes inn"}/>);
+        }
     }
 
 
@@ -56,8 +76,7 @@ export class UserPage extends React.Component {
                     <Row>
                         <Col>
                             <Card className={"p-2 card border-0"}>
-                                <Image width={"140px"} roundedCircle fluid thumbnail p-5 src={this.state.profilePicture} />
-
+                                {this.checkIfUserHasPicture()}
                                 <Form onSubmit={this.handleSubmit}>
 
                                     <Form.Group>
@@ -65,7 +84,7 @@ export class UserPage extends React.Component {
                                                      onChange={this.handleInputChange}/>
                                     </Form.Group>
                                     <Form.Group>
-                                        <Button hidden={this.state.savingInformation}  variant="secondary" type="submit">Last opp profilbilde</Button>
+                                        <Button hidden={this.state.savingInformation} disabled={!this.state.profilePictureUploaded} variant="secondary" type="submit">Last opp profilbilde</Button>
                                         <Button hidden={!this.state.savingInformation} disabled variant="secondary" type="submit"><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>Laster opp profilbilde</Button>
                                     </Form.Group>
                                 </Form>
@@ -197,17 +216,20 @@ export class UserPage extends React.Component {
         const target = event.target;
         if (target.name === 'newProfilePicture') {
             this.setState({newProfilePicture: target.files[0]});
+            this.setState({profilePictureUploaded: true});
         } else {
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
 
             this.setState({[name]: value,});
         }
+
     }
 
     handleSubmit(event) {
         event.preventDefault();
         this.submitForm();
+        window.location.reload()
     }
 
 
@@ -216,7 +238,7 @@ export class UserPage extends React.Component {
     }
 
 
-    updateInfo() {
+    updateInfo(callback) {
         OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
             if (statusCode === 200) {
                 console.log("User is here:" + OrganizerStore.currentOrganizer.username);
@@ -242,6 +264,7 @@ export class UserPage extends React.Component {
                     phonenumber: databasePhone,
                     profilePicture: databaseImage
                 }));
+                callback(databaseImage);
             } else {
                 //console.log("We have an error!");
             }
@@ -279,7 +302,8 @@ export class UserPage extends React.Component {
             });
         }
 
-        if (MegaValidator.validateFile(this.state.newProfilePicture)) {
+        if (MegaValidator.validateFile(this.state.newProfilePicture) && this.state.profilePictureUploaded) {
+            alert("sdhahsdahsdhasdha");
             console.log("Image validated");
             let formData = new FormData();
             formData.append('description', this.state.newProfilePicture.name);
@@ -290,6 +314,7 @@ export class UserPage extends React.Component {
                 if (statusCode === 200 && link) {
                     const totalPath = __dirname + '../../../../server/' + link;
                     this.state.profilePicture = totalPath;
+                    this.setState({profilePictureUploaded: false});
                 }
             });
         } else {
@@ -384,16 +409,16 @@ export class DeleteUserForm extends React.Component {
     }
 
     submitForm() {
-        if (this.checkPassword()) {
+        if (this.checkPasswordAndDeleteCurrentUser()) {
 
             alert("Brukeren er slettet");
         } else {
-            alert("feil passord");
+            alert("Feil passord, prøv igjen.");
         }
     }
 
 
-    checkPassword() {
+    checkPasswordAndDeleteCurrentUser() {
 
         hash.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
             console.log("Password ? " + res);

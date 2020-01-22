@@ -1,4 +1,4 @@
-import {app,pictureDao} from "./server";
+import {app, fs, pictureDao} from "./server";
 
 //Insert picture
 app.post("/api/picture/insert", (request, response) => {
