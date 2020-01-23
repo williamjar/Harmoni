@@ -1,7 +1,9 @@
 import React from 'react';
 import {Form, Button, Card, Spinner} from 'react-bootstrap'
 import { NavLink } from 'react-router-dom';
-import {LoginService} from "../../store/loginService"; ;
+import {LoginService} from "../../store/loginService";
+
+import Logo from '../menu/Logo_large.png';
 
 export class LoginForm extends React.Component {
     _mounted = false;
@@ -40,9 +42,12 @@ export class LoginForm extends React.Component {
 
     render(){
         return (
-            <Card style={{width : '25rem'}} className="text-center mx-auto mt-5 drop-shadow">
+            <Card style={{width : '35rem'}} className="text-center mx-auto mt-5 drop-shadow">
                 <Form onSubmit={this.handleSubmit} className={"align-items-center"}>
                     <Card.Body>
+                        <div className="login-logo">
+                            <img src={Logo} />
+                        </div>
                         <Card.Title className="mb-4">Logg inn</Card.Title>
                         <Form.Group>
                             <Form.Control type="email" name="email" placeholder="E-postadresse" value={this.state.email} onChange={this.handleInputChange}/>
