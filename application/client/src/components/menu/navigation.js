@@ -182,57 +182,50 @@ export class UserProfileButton extends Component{
     }
 
     componentDidMount() {
-        if (this.state.profilePicture !== null && this.state.profilePicture !== '') {
-            PictureService.previewPicture(this.state.profilePicture, (url) => {
-                this.setState({link: url});
-                console.log(this.state);
-            });
-        }
-    }
-
-    checkIfUserHasPicture(){
-        console.log(this.state);
-        console.log("PEKK" + this.props.profilePicture);
-        if(this.state.link !== null && this.state.link !== ''){
-            return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
-        }else {
-            return(<img width={50} src={require('../user/profile.png')} alt={"standard profilbilde"}/>);
-        }
+        this.updateInfo((profilePicture) => {
+            if (profilePicture !== null && profilePicture !== '') {
+                PictureService.previewPicture(profilePicture, (url) => {
+                    this.setState({link: url});
+                });
+            }
+        })
     }
 
     upload = (path) => {
         PictureService.previewPicture(path, (url) => {
             this.setState({link: url});
-            console.log(this.state);
         });
 
     };
 
     checkForUpdate(){
-        if(this.state.profilePicture === this.props.profilePicture){
-            console.log("DE ER LIKE");
-        } else {
-            console.log("DE ER IKKE LIKE");
+        if(this.state.profilePicture !== this.props.profilePicture){
             this.upload(this.props.profilePicture);
             this.setState({profilePicture: this.props.profilePicture})
+        }else{
+            if(this.state.link !== ''){
+                return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
+            } else {
+                return(<img width={50} src={require('../user/profile.png')} alt={"standard profilbilde"}/>);
+            }
+
         }
     }
-
 
     render() {
         return(
             <NavLink to="/brukerprofil">
                 <div className="user-nav">
-                    <div className="row no-gutters">
-                        {this.checkForUpdate()}
-                        {this.checkIfUserHasPicture()}
-                        <div className="col-lg-9">
-                            <div className="padding-left-15">
-                                <b>{this.state.username}</b><br/>
-                                Arrangør
-                            </div>
-                        </div>
-                    </div>
+                    <Row className = {" no-gutters"}>
+                        <Col size = {2}>
+                            {this.checkForUpdate()}
+                        </Col>
+                        <Col size = {10}>
+                            <b>{this.state.username}</b>
+                            <br/>
+                            Arrangør
+                        </Col>
+                    </Row>
                 </div>
             </NavLink>
         )
@@ -246,7 +239,6 @@ export class UserProfileButton extends Component{
 
                 this.setState(this.setState({
                     username: databaseUsername,
-                    profilePicture: databaseImage
                 }));
                 callback(databaseImage);
             }
