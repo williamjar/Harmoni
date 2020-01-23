@@ -38,26 +38,22 @@ export class CrewContacts extends React.Component {
         CrewStore.storeAllCrewMembersForOrganizer(() => {
             this.setState({crew: CrewStore.allCrewMembersForOrganizer}, ()=> console.log(this.state.crew))
         }, CookieStore.currentUserID);
-        CrewStore.storeAllCrewCategoriesForOrganizer(() => {
-            this.setState({crewCategories: CrewStore.allCrewCategoriesForOrganizer}, () => console.log(this.state.crewCategory))
-        }, CookieStore.currentUserID);
     }
-
-    filterCrew = (e) => {
-        this.setState({active: e.target.name});
-    };
 
     searchHandler = (selected) => {
         this.setState({currentCrew: selected, show: true}, () => console.log(selected));
     };
 
-    hidePerformer = () => {
+    hideCrew = () => {
         this.update( () => this.setState({show: false}));
     };
 
     update = (callback) => {
-        ArtistService.getArtistForOrganizer((res) => {
-            this.setState({performers: res}, () => callback());
+        CrewStore.storeAllCrewMembersForOrganizer(() => {
+            this.setState({crew: CrewStore.allCrewMembersForOrganizer}, ()=> {
+                console.log(this.state.crew);
+                callback();
+            })
         }, CookieStore.currentUserID);
     };
 
@@ -73,34 +69,11 @@ export class CrewContacts extends React.Component {
                         </Col>
                     </Row>
                     <Search searchHandler={this.searchHandler} results={this.state.crew}/>
-                    <Row className="mb-2 mt-2">
-                        <Col xs={2}>
-                            <Form.Control as="select" size="sm" onChange={this.sortSelected}>
-                                <option value={0} selected>Alle</option>
-                                {this.state.crewCategory.map((category, i) =>  {
-                                    return <option value={i + 1}>{category}</option>
-                                })}
-                            </Form.Control>
-                        </Col>
-                    </Row>
-                    {this.state.crew.length !== null ? this.state.crewCategory.map((crewCategory, i) => {
-                        if(this.state.crew.find(crew => {return crew.crewCategoryName === i + 1}) && (this.state.active === crewCategory || this.state.active === "all")) {
-                            return(
-                                <Accordion id={crewCategory} defaultActiveKey="0">
-                                    <Row className="no-gutters primary-color-dark">
-                                        <p>{crewCategory}</p>
-                                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
-                                    </Row>
-                                    <Accordion.Collapse eventKey="0">
-                                        <Row className="no-gutters">
-                                            <CrewContactList crew={this.state.crew.filter(crew => crew.crewCategoryName === i + 1)} crewCategories={this.state.crewCategory} updateHandler={this.update}/>
-                                        </Row>
-                                    </Accordion.Collapse>
-                                </Accordion>)
-                        } else {
-                            return null;
-                        }
-                    }) : <div className="mt-5 center">
+                    {this.state.crew.length !== null ?
+                        <Row className="no-gutters mt-2">
+                            {console.log(this.state.crew)}
+                            <CrewContactList crew={this.state.crew} updateHandler={this.update}/>
+                        </Row> : <div className="mt-5 center">
                         Du har ingen registrerte personell
                     </div>}
                 </Card>
@@ -113,7 +86,7 @@ export class CrewContacts extends React.Component {
                     </Col>
                 </Row>
                 {console.log(this.state.currentCrew)}
-                {this.state.currentCrew !== null ? <CrewContactInfo show={this.state.show} contact={this.state.currentCrew} onHide={this.hidePerformer}/> : null}
+                {this.state.currentCrew !== null ? <CrewContactInfo show={this.state.show} contact={this.state.currentCrew} onHide={this.hideCrew}/> : null}
             </div>
         )
     }
@@ -126,17 +99,16 @@ export class CrewContactList extends React.Component {
 
         this.state = {
             unsorted: this.props.crew,
-            crew: [],
+            crew: this.props.crew,
             showContact: false,
             currentCrew: null,
-            crewCategory: this.props.crewCategories
         }
     }
 
     static getDerivedStateFromProps(props, state) {
-        if(props.unsorted !== state.unsorted) {
+        if(props.crew !== state.crew) {
             return {
-                unsorted: props.unsorted
+                crew: props.crew
             }
         }
         return null;
@@ -161,17 +133,26 @@ export class CrewContactList extends React.Component {
     };
 
     componentDidMount() {
+        console.log(this.state.unsorted);
         this.sortCrew(this.props.crew);
     }
 
     render() {
         return(
-            <Table responsive>
+            <Table responsive hover>
+                <thead>
+                <tr align='center' onClick={this.viewPerformer}>
+                    <th align="left">Navn</th>
+                    <th>Telefon</th>
+                    <th></th>
+                </tr>
+                </thead>
                 <tbody>
+                {console.log(this.state.crew)}
                 {this.state.crew.map(crew => (
                     <tr align='center' className="contact pointer" onClick={this.viewPerformer} id={crew.crewID} key={crew.crewID}>
                         <td align="left" id={crew.crewID}>{crew.contactName}</td>
-                        <td id={crew.crewID}></td>
+                        <td id={crew.crewID}>{crew.phone}</td>
                         <td align="right" id={crew.crewID}><FaEye size={30} id={crew.crewID}>Vis</FaEye></td>
                     </tr>
                 ))}
