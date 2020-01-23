@@ -67,7 +67,8 @@ export class InfoForm extends Component {
             dateError: false,
             issueList: [],
             selectedFile: null,
-            serverFile: null
+            serverFile: null,
+            pictureID: -1
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -102,7 +103,8 @@ export class InfoForm extends Component {
 
         console.log(EventStore.currentEvent);
 
-        if (EventStore.currentEvent.picture !== null){
+        if (EventStore.currentEvent.picture !== null && EventStore.currentEvent.picture > 0){
+            this.setState({pictureID: EventStore.currentEvent.picture});
             PictureService.getPicture(EventStore.currentEvent.picture, picture => {
                 if (picture !== null){
                     PictureService.previewPicture(picture.pictureLink, link => {
@@ -208,16 +210,19 @@ export class InfoForm extends Component {
                                     fileForm.append("description", this.state.selectedFile.name);
                                     fileForm.append("selectedFile", this.state.selectedFile);
                                     console.log(fileForm.get("selectedFile"));
-                                    PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path) => {
+                                    PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path, newPictureID) => {
                                         if (statusCode === 200 && path) {
+                                            console.log(newPictureID);
                                             PictureService.previewPicture(path, link => {
-                                                EventStore.currentEvent.picture = link;
+                                                EventStore.currentEvent.picture = newPictureID;
+                                                this.setState({pictureID: newPictureID});
+                                                console.log(this.state.pictureID);
                                                 this.setState({serverFile: link});
                                                 Alert.success("Bildet ditt ble lastet opp")
                                             });
                                         }
                                         else{
-                                            console.log("Image was not inserted");
+                                            Alert.danger("Beklager, det har oppstått en feil med opplastningen")
                                         }
                                     });
                                 }
@@ -416,16 +421,14 @@ export class InfoForm extends Component {
 
 
     submitForm(){
-
-
-        this.setState({dateError: false})
+        this.setState({dateError: false});
         if(this.validateForm()){
             console.log("form validated");
             this.save();
-            EventStore.editCurrentEvent().then(console.log("Lagret"));
+            EventStore.editCurrentEvent().then(() => Alert.info("Arrangementet ble lagret."));
             this.setState({edit:false});
         } else{
-            this.setState({dateError: true})
+            this.setState({dateError: true});
             Alert.danger("Arrangementet kan ikke slutte før det har startet. Sjekk dato og tid.");
         }
     }
@@ -444,7 +447,7 @@ export class InfoForm extends Component {
         EventStore.currentEvent.zipCode = this.state.zipCode;
         EventStore.currentEvent.town = this.state.town;
         EventStore.currentEvent.description = this.state.description;
-        EventStore.currentEvent.picture = this.state.serverFile;
+        EventStore.currentEvent.picture = this.state.pictureID;
         console.log("SAVED EVENT: " + EventStore.currentEvent.toString());
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql

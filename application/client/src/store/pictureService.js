@@ -91,7 +91,7 @@ export class PictureService {
                     axios.put('http://localhost:8080/api/event/picture/' + eventID, JSON.stringify({pictureID: insertImageResponse.data.insertId}), {headers: databaseHeader})
                         .then(updateImageResponse => {
                             if (updateImageResponse.status === 200 && updateImageResponse.data.affectedRows > 0){
-                                callback(200, response.data.path);
+                                callback(200, response.data.path, insertImageResponse.data.insertId);
                             }
                         });
                 })
