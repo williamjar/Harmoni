@@ -30,10 +30,7 @@ export class TabContent extends Component {
                 <Row className="event-buttons">
                     <Col>
                         <div>
-                            <Button hidden={(this.state.activeTab === 3)} className="float-right mr-1" onClick={() => {
-                                console.log("next");
-                                this.props.btnClick();
-                            }}>Neste</Button>
+                            <Button hidden={(this.state.activeTab === 3)} className="float-right mr-1" onClick={this.props.btnClick()}>Neste</Button>
 
                             <Button hidden={!(this.state.status === 1)} variant="danger" className="mr-2" onClick={() => {
                                 if (window.confirm('Er du sikker på at du vil kansellere dette arrangementet?')) this.cancelEvent();
