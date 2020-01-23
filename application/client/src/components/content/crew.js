@@ -49,7 +49,7 @@ export class CrewPanel extends Component{
                         </div>
 
                         <div className="padding-top-20">
-                            {this.state.showRegisterNew?<AddCrewMember submitFunction={this.submitFunction} toggleRegisterCrewMember={this.toggleRegisterNew} crewCategoryList={this.state.crewCategoryList} />:null}
+                            {this.state.showRegisterNew?<AddCrewMember submit={this.submitFunction} submitCategory={this.submitCategory} toggleRegisterCrewMember={this.toggleRegisterNew} crewCategoryList={this.state.crewCategoryList} />:null}
                             {this.state.showCrewCard?<CrewCard submitFunction={this.submitFunction} crewSelected={this.state.crewSelected} crewCategoryList={this.state.crewCategoryList} crewCategoryID={this.state.crewCategorySelected} categoryHandler={this.categoryHandler}/>:null}
 
                         </div>
@@ -165,7 +165,7 @@ export class CrewPanel extends Component{
         this.refreshCrewList();
     };
 
-    submitFunction2 = () => {
+    submitCategory = () => {
         this.refreshCrewList();
         this.refreshCrewCategories();
     };
@@ -209,18 +209,18 @@ export class AddCrewType extends Component{
                     </Form.Group>
                 </Form.Row>
 
-                    <Row className="no-gutter">
-                        <Col className="col-1">
-                    <Button variant="success" type="submit" onClick={this.submitForm}>
-                       Lagre
-                    </Button>
-                        </Col>
-                        <Col className="col-1">
-                    <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelButton}>
-                        Avbryt
-                    </Button>
-                        </Col>
-                    </Row>
+                <Row className="no-gutter">
+                    <Col className="col-1">
+                        <Button variant="success" type="submit" onClick={this.submitForm}>
+                            Lagre
+                        </Button>
+                    </Col>
+                    <Col className="col-1">
+                        <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelButton}>
+                            Avbryt
+                        </Button>
+                    </Col>
+                </Row>
             </div>
         )
     }
@@ -372,12 +372,15 @@ export class CrewCard extends Component{
                 hasBeenPaid: props.crewSelected.hasBeenPaid
             };
         }
-        if(props.crewCategoryID !== state.crewCategoryID){
-            console.log("props ID");
-            console.log(props.crewCategoryID);
+        if(state.crewCategoryID === null){
+            return {
+                crewCategoryID : props.crewCategoryList[0].crewCategoryID
+            };
+        }
+        else if(props.crewSelected.crewCategoryID !== state.crewCategoryID){
             return {
                 crewCategoryID : props.crewCategoryID
-            }
+            };
         }
 
         return null;
@@ -385,7 +388,7 @@ export class CrewCard extends Component{
 
     componentDidMount() {
         //this.setState({
-         //   isResponsible: this.props.crewSelected.isResponsible });
+        //   isResponsible: this.props.crewSelected.isResponsible });
         /*
         let currentState = this.state;
         currentState.numberOfFilesAlreadyUploaded = currentState.performer.documents.length;
@@ -456,18 +459,18 @@ export class CrewCard extends Component{
 
     sendEmail(){
 
-      /*  MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
-            "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
-            "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
-            "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
-            "Regards, " + OrganizerStore.currentOrganizer.username, (statusCode) => {
-                if (statusCode === 200){
-                    console.log("Email sent successfully");
-                }
-                else{
-                    console.log("An error occured sending the email");
-                }
-            }); */
+        /*  MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
+              "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
+              "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
+              "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
+              "Regards, " + OrganizerStore.currentOrganizer.username, (statusCode) => {
+                  if (statusCode === 200){
+                      console.log("Email sent successfully");
+                  }
+                  else{
+                      console.log("An error occured sending the email");
+                  }
+              }); */
     }
 
     save = () => {
@@ -518,18 +521,18 @@ export class CrewCard extends Component{
 
     sendEmail(){
 
-      /*  MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
-            "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
-            "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
-            "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
-            "Regards, " + OrganizerStore.currentOrganizer.username, (statusCode) => {
-                if (statusCode === 200){
-                    console.log("Email sent successfully");
-                }
-                else{
-                    console.log("An error occured sending the email");
-                }
-            }); */
+        /*  MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
+              "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
+              "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
+              "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
+              "Regards, " + OrganizerStore.currentOrganizer.username, (statusCode) => {
+                  if (statusCode === 200){
+                      console.log("Email sent successfully");
+                  }
+                  else{
+                      console.log("An error occured sending the email");
+                  }
+              }); */
     }
 
     save = () => {
@@ -555,35 +558,35 @@ export class CrewView extends Component {
             return null;
         } else {
             return(
-      <div>
+                <div>
 
-            {this.state.categoryList.map(e => (
-                <ul className="list-group">
+                    {this.state.categoryList.map(e => (
+                        <ul className="list-group">
 
-                    {this.props.crewList.length === 0?
-                        <div>Personale er ikke lagt til</div>
-                        :<b className="card-title">{e.crewCategoryName}</b>}
+                            {this.props.crewList.length === 0?
+                                <div>Personale er ikke lagt til</div>
+                                :<b className="card-title">{e.crewCategoryName}</b>}
 
-                    {this.state.crewList != undefined ? this.state.crewList.filter(c=>c.crewCategoryName === e.crewCategoryName).map(c=> (
-                        <li className="list-group-item pointer selection" onClick={() => {this.showCard(c)}}>
-                            <div className="row">
-                                <div className="col-10">
-                                    {c.contactName}
-                                </div>
+                            {this.state.crewList != undefined ? this.state.crewList.filter(c=>c.crewCategoryName === e.crewCategoryName).map(c=> (
+                                <li className="list-group-item pointer selection" onClick={() => {this.showCard(c)}}>
+                                    <div className="row">
+                                        <div className="col-10">
+                                            {c.contactName}
+                                        </div>
 
-                                <div className="col-10">
-                                    {c.isResponsible ? "Hovedansvalig" : null}
-                                </div>
+                                        <div className="col-10">
+                                            {c.isResponsible ? "Hovedansvalig" : null}
+                                        </div>
 
-                                <div className="col-2 text-right">
-                                    <button className="btn-danger rounded" onClick={() => this.unassignCrew(c)}>Slett</button>
-                                </div>
-                            </div>
-                        </li>
-                    )):null}
-                </ul>
-            ))}
-      </div>
+                                        <div className="col-2 text-right">
+                                            <button className="btn-danger rounded" onClick={() => this.unassignCrew(c)}>Slett</button>
+                                        </div>
+                                    </div>
+                                </li>
+                            )):null}
+                        </ul>
+                    ))}
+                </div>
 
             )
         }
@@ -605,8 +608,8 @@ export class CrewView extends Component {
     };
 
     unassignCrew = (crew) => {
-    //Call to parent with crew object to remove from event.
-    this.props.unassignCrew(crew);
+        //Call to parent with crew object to remove from event.
+        this.props.unassignCrew(crew);
     };
 
     refreshCrewCategories = () => {
@@ -637,8 +640,8 @@ export class AddCrewMember extends Component{
             isResponsible: false,
             crewCategoryID : 1,
             showRegisterCrewType : false,
-            selectedCategoryID: this.props.crewCategoryList[0].crewCategoryID,
-            crewCategoryList: [this.props.crewCategoryList]
+            selectedCategoryID: null,
+            crewCategoryList: []
         };
     }
 
@@ -667,41 +670,36 @@ export class AddCrewMember extends Component{
                         <Form.Label>Beskrivelse</Form.Label>
                         <Form.Control type="text" placeholder="" onChange={this.handleDescriptionChange} />
                     </Form.Group>
-
                     <Form.Group controlId="fromGridCategory">
                         <Row className="no-gutters">
                             <Col size={6}>
-                        <Form.Label>Velg personell-type</Form.Label>
-                        <select
-                            value={this.state.selectedCategoryID}
-                            onChange={e =>
-                                this.setState({
-                                    selectedCategoryID: e.target.value,
-                                })
-                            }
-                        >
-                            {this.state.crewCategoryList.map(category => (
-                                <option key={category.crewCategoryID} value={category.crewCategoryID}>
-                                    {category.crewCategoryName}
-                                </option>
-                            ))}
-                        </select>
+                                <Form.Label>Velg personell-type</Form.Label>
+                                {this.state.selectedCategoryID === null?
+                                    <div>Ingen kategorier er lagt til</div>
+                                    :
+                                <select value={this.state.selectedCategoryID} onChange={this.handleCategoryChange}>
+                                    {this.state.crewCategoryList.map(category => (
+                                        <option key={category.crewCategoryID} value={category.crewCategoryID}>
+                                            {category.crewCategoryName}
+                                        </option>
+                                    ))}
+                                </select>}
 
                             </Col>
 
 
-                        <Col size={6}>
-                            <button className="btn btn-success" onClick={this.toggleRegisterCrewTypeForm}>Ny kategori</button>
-                        </Col>
+                            <Col size={6}>
+                                <button className="btn btn-success" onClick={this.toggleRegisterCrewTypeForm}>Ny kategori</button>
+                            </Col>
 
                         </Row>
                     </Form.Group>
 
                     {this.state.showRegisterCrewType?
-                    <div className="padding-bottom-20">
-                        <AddCrewType submit={this.submitCrewType} cancelButton={this.toggleRegisterCrewTypeForm}/>
-                    </div>
-                    :null}
+                        <div className="padding-bottom-20">
+                            <AddCrewType submit={this.submitCrewType} cancelButton={this.toggleRegisterCrewTypeForm}/>
+                        </div>
+                        :null}
 
                     <Form.Group>
                         <Form.Label>Hovedansvarlig</Form.Label>
@@ -724,9 +722,16 @@ export class AddCrewMember extends Component{
     static getDerivedStateFromProps(props, state) {
         /* Updates the props based on parent state change
         * sets the current performer to be displayed in card */
-        if(props.crewCategoryList!== state.crewCategoryList) {
+        if(props.crewCategoryList.length === 0) {
             return {
-                crewCategoryList: props.crewCategoryList
+                crewCategoryList: [],
+                selectedCategoryID : null
+            };
+        }
+        else if((props.crewCategoryList.length !== 0) && (props.crewCategoryList !== state.crewCategoryList)) {
+            return {
+                crewCategoryList: props.crewCategoryList,
+                selectedCategoryID : props.crewCategoryList[0].crewCategoryID
             };
         }
         return null;
@@ -764,12 +769,18 @@ export class AddCrewMember extends Component{
         this.setState({isResponsible: !this.state.isResponsible});
     };
 
+    handleCategoryChange = (event) =>{
+        this.setState({
+            selectedCategoryID: event.target.value,
+        });
+    };
+
 
     submitForm = () => {
         if(this.state.name.trim() !== "" && this.state.phone.trim() !== "" && this.state.email.trim() !== ""){
             CrewStore.createCrewMemberForEvent((crew) => {
                 this.props.toggleRegisterCrewMember();
-                this.props.submitFunction(crew);
+                this.props.submit(crew);
             }, this.state.name, this.state.phone, this.state.email, this.state.description, this.state.selectedCategoryID, (this.state.isResponsible ? 1 : 0), EventStore.currentEvent.eventID, CookieStore.currentUserID);
         }
         else{
@@ -788,7 +799,7 @@ export class AddCrewMember extends Component{
     };
 
     submitCrewType = () => {
-        this.props.submit();
+        this.props.submitCategory();
     };
 
     toggleShowCrewType = () => {
