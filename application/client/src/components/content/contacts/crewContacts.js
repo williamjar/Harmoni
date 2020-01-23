@@ -64,7 +64,7 @@ export class CrewContacts extends React.Component {
             <div>
                 <Card className="border-0 m-4 artists">
                     <Row>
-                        <Col xs={2}>
+                        <Col>
                             <h3 className={"mt-4 mb-4"}>Mitt personell</h3>
                         </Col>
                         <Col>
@@ -182,13 +182,22 @@ export class CrewContactInfo extends React.Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return (nextProps.show !== this.state.show);
+        return ((nextProps.show !== this.state.show) || (nextProps.contact !== this.state.contact && this.state.editable !== true))
     }
 
     componentDidUpdate(props) {
-        this.setState({
-            show: props.show,
-        });
+
+        if(this.state.editable) {
+            this.setState({show: props.show});
+        } else {
+            this.setState({
+                contact: props.contact,
+                contactName: this.state.contact.contactName,
+                email: this.state.contact.email,
+                phone: this.state.contact.phone,
+                description: this.state.contact.description
+            }, () => this.setState({show: props.show}, ));
+        }
     }
 
     componentDidMount() {
