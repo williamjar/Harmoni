@@ -11,16 +11,13 @@ import {
     FaPhone, FaPlusCircle,
     FaUserCircle
 } from "react-icons/all";
-import {EventCard} from "../dashboard/eventCard";
 import Table from "react-bootstrap/Table";
 import {ArtistService} from "../../../store/artistService";
 import {CookieStore} from "../../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
-import {EventView} from "../dashboard/eventView";
-import {NoEvents} from "../dashboard/dashboard";
 import {ContactService} from "../../../store/contactService";
 
-export class Contacts extends React.Component {
+export class PerformerContacts extends React.Component {
 
     constructor(props) {
         super(props);
@@ -49,11 +46,13 @@ export class Contacts extends React.Component {
     };
 
     hidePerformer = () => {
-        this.setState({show: false});
+        this.update( () => this.setState({show: false}));
     };
 
-    update = () => {
-        ArtistService.getArtistForOrganizer((res) => this.setState({performers: res}), CookieStore.currentUserID);
+    update = (callback) => {
+        ArtistService.getArtistForOrganizer((res) => {
+            this.setState({performers: res}, () => callback());
+        }, CookieStore.currentUserID);
     };
 
     render() {
@@ -172,8 +171,7 @@ export class ContactList extends React.Component {
     };
 
     hidePerformer = () => {
-        this.props.updateHandler();
-        this.setState({showContact: false});
+        this.props.updateHandler(() => this.setState({showContact: false}))
     };
 
     sortPerformers = (performers) => {
