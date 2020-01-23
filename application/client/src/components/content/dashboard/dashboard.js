@@ -79,6 +79,7 @@ export class Dashboard extends React.Component {
                 }
             });
             return (
+                <div>
                 <Card className={"border-0 justify-content-md-center m-4"}>
                     <h3 className={"mt-4 mb-4"}>Mine arrangement</h3>
                     <Search searchHandler={this.searchHandler} results={this.state.events}/>
@@ -168,14 +169,14 @@ export class Dashboard extends React.Component {
                     </Accordion.Collapse>
                 </Accordion> : null}
 
-                    <Row>
-                        <Col className="pull-right" size={12}>
-                            <div onClick={this.addEventClicked} align="right">
-                                <FaPlusCircle className="ml-2" size={60}/>
-                            </div>
-                        </Col>
-                    </Row>
                 </Card>
+
+                    <div className="padding-top-40"></div>
+                            <div onClick={this.addEventClicked} className=" bottom-right">
+                                <FaPlusCircle className="ml-2 add-event" size={60}/>
+                            </div>
+
+                </div>
             )
         }
         else{

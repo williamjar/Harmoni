@@ -11,6 +11,10 @@
     background:  #00799e !important;
 }
 
+.btn-outline-primary {
+    background:  #00799e !important;
+}
+
 .btn-success {
     background: #007d07 !important;
 }
@@ -64,6 +68,10 @@ body{
 
 .padding-top-20{
     padding-top: 20px;
+}
+
+.padding-top-40{
+    padding-top:40px;
 }
 
 .padding-bottom-10{
@@ -232,7 +240,11 @@ body{
     position: absolute;
     width: 100%;
     bottom: 20px;
+}
 
+.add-event:hover{
+    color: #00799e!important;
+    cursor: pointer;
 }
 
 .log-out{
@@ -502,7 +514,8 @@ body{
 
 .bottom-right{
     position: absolute;
-    bottom: 0;
+    bottom: 10px;
+    right: 10px;
 }
 
 #style-5::-webkit-scrollbar-thumb
