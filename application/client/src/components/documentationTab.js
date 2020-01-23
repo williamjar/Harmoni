@@ -8,6 +8,10 @@ import {EventStore} from "../store/eventStore";
 import {Col} from "react-bootstrap";
 import {DocumentCategory} from "../classes/documentCategory";
 import Button from "react-bootstrap/Button";
+import {Alert} from "./alerts";
+import {createHashHistory} from "history";
+
+let history = createHashHistory();
 
 export class DocumentationTab extends Component{
 
@@ -42,10 +46,10 @@ export class DocumentationTab extends Component{
         formData.append('selectedFile', selectedFile);
         DocumentService.addDocument(EventStore.currentEvent.eventID, selectedCategoryName, null, null, selectedCategoryID, formData, statusCode => {
             if (statusCode === 200){
-                alert("Document was added!");
+                Alert.success("Vedlegget ble lagt til");
             }
             else{
-                alert("There was an error, please try again or contact us.");
+                Alert.danger("Det skjedde en feil under opplastning, vennligst prøv igjen eller kontakt oss.");
             }
         })
     };
@@ -72,21 +76,50 @@ export class DocumentationTab extends Component{
         console.log(this.state);
         const {description, selectedFile} = this.state;
         return (
-            <div>
-                <select id='categorySelect' className={"mr-1"}>
-                    {this.state.documentCategories.map(category => (
-                        <option key={category.documentCategoryID} value={category.documentCategoryID}>
-                            {category.documentCategoryName}
-                        </option>
-                    ))}
-                </select>
+            <div className="document-event center-v padding-top-30 text-center">
 
-                <input
-                    type="file"
-                    name="selectedFile"
-                    onChange={this.onChange}
-                />
-                <Button type="button" className={"mr-1"} onClick={this.onSubmit}>Last opp fil</Button>
+                <div className="row text-left">
+                    <div className="col-4"></div>
+                    <div className="col-4">
+                        <span className="text-center"><h3 className="padding-bottom-20">Her kan du laste opp diverse dokumenter tilknyttet til arrangementet.</h3></span>
+                        <select id='categorySelect' className={"mr-1 form-control"}>
+                            {this.state.documentCategories.map(category => (
+                                <option key={category.documentCategoryID} value={category.documentCategoryID}>
+                                    {category.documentCategoryName}
+                                </option>
+                            ))}
+                        </select>
+
+                    </div>
+                </div>
+
+                <div className="row padding-top-20">
+                    <div className="col-4"></div>
+
+                    <div className="col-4">
+                        <span className="btn btn-secondary btn-lg btn-file">
+                            Velg fil
+                            <input
+                                type="file"
+                                name="selectedFile"
+                                onChange={this.onChange}
+                            />
+                        </span>
+                        <Button type="button" className={"mr-1 margin-left-10 btn-success btn-lg"} onClick={this.onSubmit}>Last opp fil</Button>
+                    </div>
+                </div>
+
+                <div className="row padding-top-50">
+                    <div className="col-4"></div>
+
+                    <div className="col-4">
+                        <Button className={"mr-1 btn"} onClick={() => {
+                            history.push("/dokumenter/" + EventStore.currentEvent.eventID)
+                        }}>Gå til arrangementets dokumenter</Button>
+                    </div>
+                </div>
+
+
 
 
             </div>
