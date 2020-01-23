@@ -7,12 +7,15 @@ const mocha = require('mocha');
 import ArtistDao from "../../dao/artistDao";
 import BugDao from "../../dao/bugDao";
 import ContactDao from "../../dao/contactDao";
+import CrewDao from "../../dao/crewDao";
+import EventDao from "../../dao/eventDao";
+import LoginDao from "../../dao/loginDao";
 import OrganizerDao from "../../dao/organizerDao";
 import PicturDao from "../../dao/pictureDao";
 import RiderDao from "../../dao/riderDao"
 import TicketDao from   "../../dao/ticketDao";
 
-const GITLAB_CI = true;
+const GITLAB_CI = false;
 
 let config;
 
@@ -28,6 +31,9 @@ const pool = mysql.createPool(config);
 const artistDao = new ArtistDao(pool);
 const bugDao = new BugDao(pool);
 const contactDao = new ContactDao(pool);
+const crewDao = new CrewDao(pool);
+const eventDao = new EventDao(pool);
+const loginDao = new LoginDao(pool);
 const organizerDao = new OrganizerDao(pool);
 const pictureDao = new PicturDao(pool);
 const riderDao = new RiderDao(pool);
@@ -49,6 +55,9 @@ mocha.before(done => {
 
 mocha.describe('Starting DAO test', () => {
 
+
+
+
     //ArtistDao
     mocha.describe('Artist', () => {
         mocha.describe('getAll()', () => {
@@ -67,6 +76,7 @@ mocha.describe('Starting DAO test', () => {
             });
         });
 
+
         mocha.describe('getAllForEvent()', () => {
             mocha.it('should return all for event', () => {
                 artistDao.getAllForEvent((status, data) => {
@@ -82,6 +92,8 @@ mocha.describe('Starting DAO test', () => {
                 } , 1)
             })
         });
+
+
 
         mocha.describe('createOne()', () => {
             mocha.it('should create one artist', () => {
@@ -166,6 +178,9 @@ mocha.describe('Starting DAO test', () => {
         });
     });
 
+
+
+
     //BugDao
     mocha.describe('BugDao', () => {
         mocha.describe('getOneBug()', () => {
@@ -202,6 +217,12 @@ mocha.describe('Starting DAO test', () => {
             });
         });
     });
+
+
+
+
+
+
 
     //ContectDao
     mocha.describe('ContactDao', () => {
@@ -263,11 +284,371 @@ mocha.describe('Starting DAO test', () => {
 
          */
     });
+
+
+
+
+
+
+
     //CrewDao
+    mocha.describe('Crewdao', () => {
+        mocha.describe('createOne()', () => {
+            mocha.it('should create a new event', () => {
+                crewDao.getOne((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 1)
+                }, 1)
+
+            });
+        });
+        mocha.describe('getOne()', () => {
+            mocha.it('should return an event', () => {
+                let list = ['Nytt crew', 1, 1];
+                crewDao.createOne((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                }, list)
+
+            });
+        });
+        mocha.describe('updateOne()', () => {
+            mocha.it('should update an event', () => {
+                let list = ['Nytt crew', 1, 1];
+                crewDao.updateOne((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                }, list)
+
+            });
+        });
+        mocha.describe('getAllForOrganizer()', () => {
+            mocha.it('should return all rom organizer', () => {
+                crewDao.getAllForOrganizer((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 2)
+                }, 1)
+
+            });
+        });
+        mocha.describe('addDocument()', () => {
+            mocha.it('should add a document to organizer', () => {
+                let list = [1,'Dokumentnavn', 'Dokumentlink', 1, 1];
+                crewDao.addDocument((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                }, list)
+
+            });
+        });
+        mocha.describe('getAllCategoriesForEvent()', () => {
+            mocha.it('should return all categories for event', () => {
+                crewDao.getAllCategoriesForEvent((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 1)
+                }, 1)
+
+            });
+        });
+        mocha.describe('getAllCategories()', () => {
+            mocha.it('should return all categories in the system', () => {
+                crewDao.getAllCategories((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 3)
+                }, 1)
+
+            });
+        });
+
+        mocha.describe('getAllCategories()', () => {
+            mocha.it('should return all categories in the system', () => {
+                let list = [1,1,1,1,1,1];
+                crewDao.assignOne((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                }, list)
+
+            });
+        });
+        mocha.describe('getAllCategories()', () => {
+            mocha.it('should return all categories in the system', () => {
+                crewDao.unAssignOne((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                }, 1,1,1)
+
+            });
+        });
+        mocha.describe('createOneCategory()', () => {
+            mocha.it('should create a new category', () => {
+                let list = ['New Category', 1];
+                crewDao.createOneCategory((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                }, list)
+
+            });
+        });
+
+        mocha.describe('deleteOneCategory()', () => {
+            mocha.it('should delete a category', () => {
+                crewDao.deleteOneCategory((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                }, 3)
+
+            });
+        });
+
+        mocha.describe('getAllForEvent()', () => {
+            mocha.it('should return an event', () => {
+                let list = [1];
+                crewDao.getAllForEvent((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 1)
+                }, list)
+
+            });
+        });
+
+        //Todo Fix updateForEvent()
+        /*
+        request.body.isResponsible,
+        request.body.contractSigned,
+        request.body.hasBeenPaid,
+        request.body.crewCategoryID,
+        request.params.eventID,
+        request.params.crewID,
+
+
+        mocha.describe('updateOneForEvent()', () => {
+            mocha.it('should update event ', () => {
+                let list = [0,1,1,1,1,0];
+                crewDao.updateOneForEvent((status, data) => {
+                    console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                }, list)
+
+            });
+        });
+         */
+        mocha.describe('deleteOne()', () => {
+            mocha.it('should delete one contact', () => {
+                crewDao.deleteOne((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                }, 2)
+
+            });
+        });
+    });
+
+
+
+
+
     //DocumentationDao
     //DocumentDao
+
+
+
+
+
     //EventDao
+    mocha.describe('EventDao', () => {
+        mocha.describe('getAll()', () => {
+            mocha.it('should return all events', () => {
+                eventDao.getAll((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 2);
+                });
+            });
+        });
+        mocha.describe('getOne()', () => {
+            mocha.it('should return one event', () => {
+                let eventId = 1;
+                eventDao.getOne((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 1);
+                }, eventId);
+            });
+        });
+        mocha.describe('getAllForOrganizer()', () => {
+            mocha.it('should return all events for an organizer', () => {
+                let organizerID = 1;
+                eventDao.getAllForOrganizer((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 1);
+                }, organizerID);
+            });
+        });
+        mocha.describe('getByStatusForOrganizer()', () => {
+            mocha.it('should return all events with status = status', () => {
+                let status = 0;
+                let organizerID = 1;
+                eventDao.getByStatusForOrganizer((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 1);
+                }, status, organizerID);
+            });
+        });
+        mocha.describe('getAllArtists()', () => {
+            mocha.it('should return all artist in one event', () => {
+                let eventID = 1;
+                eventDao.getAllArtists((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 1);
+                }, eventID);
+            });
+        });
+        mocha.describe('getNumberOfStatusForOrganizer()', () => {
+            mocha.it('should return the numer of events wih a given status', () => {
+                let status = 0;
+                let organizerID = 1;
+                eventDao.getNumberOfStatusForOrganizer((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 1);
+                }, status, organizerID);
+            });
+        });
+        mocha.describe('getXOfStatusAfterDateForOrganizer()', () => {
+            mocha.it('should return all events with status after date', () => {
+                let status = 0;
+                let x = 0;
+                let date = "2020-01-30";
+                let organizerID = 1;
+                eventDao.getXOfStatusAfterDateForOrganizer((status, data) => {
+                    console.log(data);
+                    assert.equal(data.length, 0);
+                }, status, x, date, organizerID);
+            });
+        });
+        mocha.describe('getAllEventTypes()', () => {
+            mocha.it('should return all types of event', () => {
+                eventDao.getAllEventTypes((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 3);
+                });
+            });
+        });
+        mocha.describe('createOne()', () => {
+            mocha.it('should create an event', () => {
+                let list = ['updated name', '2020-01-30', '2020-01-30', "14:00", "18:00",
+                    'updated address', 'updated town', '666', '0',
+                    'updated description','2020-01-30', "14:00", 2,2, null, 2
+                ];
+                eventDao.createOne((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1);
+                }, list);
+            });
+        });
+        mocha.describe('setStatus()', () => {
+            mocha.it('should update status to an event', () => {
+                let eventId = 1;
+                let status = 1;
+                eventDao.setStatus((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1);
+                }, eventId, status);
+            });
+        });
+        mocha.describe('addDocument()', () => {
+            mocha.it('should add an document to an event', () => {
+                let eventId = 1;
+                let documentId = 1;
+                eventDao.addDocument((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1);
+                }, eventId, documentId);
+            });
+        });
+        mocha.describe('setStatus()', () => {
+            mocha.it('should update status to an event', () => {
+                let organizerID = 1;
+
+                eventDao.archiveOldEvents((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 0);
+                }, organizerID);
+            });
+        });
+        mocha.describe('deleteOne()', () => {
+            mocha.it('should delete an event', () => {
+                let eventID = 0;
+                eventDao.deleteOne((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 0);
+                }, eventID);
+            });
+        });
+        mocha.describe('changePicture()', () => {
+            mocha.it('should change an events picture.', () => {
+                eventDao.changePicture(1,1,(status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1);
+                });
+            });
+        });
+
+
+        /*
+        //Todo fix updateOne()
+        //eventName, startDate, endDate, startTime, endTime, address,
+        town, zipCode, status, description, publishDate, publishTime,
+         eventTypeID, pictureID,  eventID
+
+
+        mocha.describe('updateOne()', () => {
+            mocha.it('should update an event', () => {
+                let list = ['updated name', '2020-01-30', '2020-01-30', "14:00", "18:00",
+                            'updated address', 'updated town', '666', '0',
+                            'updated description','2020-01-30', "14:00", 2,2, null, 2
+                ];
+                eventDao.updateOne((status, data) => {
+                    console.log(data);
+                    assert.equal(data.affectedRows, 1);
+                }, list);
+            });
+        });
+
+         */
+    });
+
+
+
+
+
     //LoginDao
+    mocha.describe('LoginDao', () => {
+        mocha.describe('checkLogin()', () => {
+            let email = 'geir@lillelondon.no';
+            let password = 'salted/hashed passord';
+            mocha.it('should return one organizer', () => {
+                loginDao.checkLogin(email,password,(status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 1);
+                });
+            });
+        });
+        mocha.describe('checkLogin()', () => {
+            let username = 'LilleLondon';
+            mocha.it('should return one organizer', () => {
+                loginDao.checkUserExists(username,(status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 1);
+                });
+            });
+        });
+
+    });
+
+
+
+
+
+
+
 
 
     //OrganizerDao
@@ -278,7 +659,7 @@ mocha.describe('Starting DAO test', () => {
                     //console.log(data);
                     assert.equal(data.length, 1);
                 },  1)
-            })
+            });
         });
         mocha.describe('createOne()', () => {
             mocha.it('should create a new  organizer', () => {
@@ -330,29 +711,28 @@ mocha.describe('Starting DAO test', () => {
         mocha.describe('changePicture()', () => {
             mocha.it('should change an organizers profile picture', () => {
                 organizerDao.changePicture(  1,1, (status, data) => {
-                    console.log(data);
+                    //console.log(data);
                     assert.equal(data.affectedRows, 1);
                 })
             })
         });
-        /*
-        //Todo: fix getOrganizerFromEmail()
+
         mocha.describe('getOrganizerFromEmail()', () => {
+            let email = 'geir@lillelondon.no';
             mocha.it('should return the   organizers email', () => {
-                organizerDao.getOrganizerFromEmail(  'geir@lillelondon.no', (status, data) => {
-                    console.log(data);
-                    assert.equal(data.length, 'geir@lillelondon.no');
+                organizerDao.getOrganizerFromEmail(  email, (status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 2);
                 })
             })
         });
-
-         */
-        });
-
-    /*
-        getOrganizerFromEmail
+    });
+     /*
         changeOrganizerProfilePicture????
      */
+
+
+
 
     //PictureDao
     mocha.describe('PictureDao', () => {
@@ -402,6 +782,12 @@ mocha.describe('Starting DAO test', () => {
     });
 
 
+
+
+
+
+
+
     //RiderDao
     mocha.describe('RiderDao', () => {
         mocha.describe('getOne()', () => {
@@ -422,18 +808,6 @@ mocha.describe('Starting DAO test', () => {
             })
         });
 
-        //Todo fix later
-        /*
-        mocha.describe('getAllRidersForArtistForEvent()', () => {
-            mocha.it('should return full rider for an artist in one event', () => {
-                ticketDao.getAllRidersForArtistForEvent((status, data) => {
-                    console.log(data);
-                    assert.equal(data.length, 1);
-                }, 1, 1)
-            })
-        });
-
-         */
         mocha.describe('getAllRiderForEvent()', () => {
             mocha.it('should return all riders for an event', () => {
                 riderDao.getAllRidersForEvent((status, data) => {
@@ -473,6 +847,13 @@ mocha.describe('Starting DAO test', () => {
         });
 
     });
+
+
+
+
+
+
+
 
     //TicketDao
     mocha.describe('TicketDao', () => {
