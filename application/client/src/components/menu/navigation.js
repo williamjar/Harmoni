@@ -8,10 +8,9 @@ import {FaCalendarPlus} from "react-icons/all";
 import {FaMusic} from "react-icons/all";
 import {FaUsers} from "react-icons/all";
 import {FaFileSignature} from "react-icons/all";
-import logo from './logo.jpeg';
-import mobileLogo from './harmonilogo.png'
-import harmoniLogo from './harmoni.png'
-import mobileLogo2 from './harmonilogo.png'
+
+import harmoniLogo from './Logo_large.png'
+import mobileLogo2 from './Logo_mobile.png'
 import fullLogo from './harmonilogofull.png'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
@@ -142,13 +141,13 @@ export class Menu extends Component{
 
                     <NavLink className="" to="/artister">
                     <li className="list-group-item nav-link">
-                        <FaMusic/> Artister
+                        <FaMusic/> Mine artister
                     </li>
                     </NavLink>
 
                     <NavLink className="" to="/personell">
                     <li className="list-group-item nav-link">
-                        <FaUsers/> Personell
+                        <FaUsers/> Mitt personell
                     </li>
                     </NavLink>
 
