@@ -56,8 +56,6 @@ export class EventForm extends Component {
     };
 
     render() {
-
-        console.log("new render\nactive tab: " + this.state.activeTab);
         // On page reload uses sessionstorage to set set the currentEvent variable.
         if (!(EventStore.currentEvent)) {
             if (sessionStorage.getItem("currentEvent")) {
@@ -78,7 +76,7 @@ export class EventForm extends Component {
                         </div>
                     </TabContent>
                 </Tab>
-                <Tab eventKey={1} title="Artister" value={1}>
+                <Tab eventKey={1} title="Artister" >
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
                                 editable={this.state.edit} tab={this.state.activeTab} btnClick={this.handleButtonClick}>
                         <div className="padding-bottom-20">
@@ -86,7 +84,7 @@ export class EventForm extends Component {
                         </div>
                     </TabContent>
                 </Tab>
-                <Tab eventKey="2" title="Personell" value={2}>
+                <Tab eventKey="2" title="Personell">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
                                 editable={this.state.edit} tab={this.state.activeTab} btnClick={this.handleButtonClick}>
                         <div className="padding-bottom-20">
@@ -94,7 +92,7 @@ export class EventForm extends Component {
                         </div>
                     </TabContent>
                 </Tab>
-                <Tab eventKey="3" title="Dokumenter" value={3}>
+                <Tab eventKey="3" title="Dokumenter">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
                                 editable={this.state.edit} tab={this.state.activeTab} btnClick={this.handleButtonClick}>
                         <div className="padding-bottom-20">

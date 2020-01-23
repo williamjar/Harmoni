@@ -37,7 +37,6 @@ export class TabContent extends Component {
                                 this.props.btnClick();
                             }}>Neste</Button>
 
-
                             <Button hidden={!(this.state.status === 1)} variant="danger" className="mr-2" onClick={() => {
                                 if (window.confirm('Er du sikker på at du vil kansellere dette arrangementet?')) this.cancelEvent();
                             }}>Kanseller</Button>
@@ -65,12 +64,6 @@ export class TabContent extends Component {
         if (props.editable !== state.editable) {
             return {
                 editable: props.editable
-            };
-        }
-
-        if (props.tab !== state.activeTab) {
-            return {
-                activeTab : props.tab
             };
         }
         return null;
