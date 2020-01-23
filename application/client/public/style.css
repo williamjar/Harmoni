@@ -22,6 +22,10 @@ body{
     padding-top: 200px;
 }
 
+.upload {
+    align-content: center;
+}
+
 .main-color{
     color:#00525c !important;
 }
