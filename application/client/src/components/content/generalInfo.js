@@ -11,6 +11,7 @@ import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
 import {PictureService} from "../../store/pictureService";
 import {CheckList} from "./checklist";
+import {MegaValidator} from "../../megaValidator";
 
 const history = createHashHistory();
 
@@ -200,22 +201,27 @@ export class InfoForm extends Component {
                             <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/>
                             <Button type={"file"} variant={"secondary"} onClick={() => {
                                 console.log("Uploading image...");
-                                let fileForm = new FormData();
-                                fileForm.append("description", this.state.selectedFile.name);
-                                fileForm.append("selectedFile", this.state.selectedFile);
-                                console.log(fileForm.get("selectedFile"));
-                                PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path) => {
-                                    if (statusCode === 200 && path) {
-                                        PictureService.previewPicture(path, link => {
-                                            EventStore.currentEvent.picture = link;
-                                            this.setState({serverFile: link});
-                                            console.log("Image uploaded");
-                                        });
-                                    }
-                                    else{
-                                        console.log("Image was not inserted");
-                                    }
-                                });
+                                if(MegaValidator.validateFile(this.state.selectedFile)){
+                                    let fileForm = new FormData();
+                                    fileForm.append("description", this.state.selectedFile.name);
+                                    fileForm.append("selectedFile", this.state.selectedFile);
+                                    console.log(fileForm.get("selectedFile"));
+                                    PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path) => {
+                                        if (statusCode === 200 && path) {
+                                            PictureService.previewPicture(path, link => {
+                                                EventStore.currentEvent.picture = link;
+                                                this.setState({serverFile: link});
+                                                console.log("Image uploaded");
+                                            });
+                                        }
+                                        else{
+                                            console.log("Image was not inserted");
+                                        }
+                                    });
+                                }
+                                else{
+                                    console.log("Det skjedde en feil.");
+                                }
                             }}>Last opp bilde</Button>
                         </Col>
                     </Row>
