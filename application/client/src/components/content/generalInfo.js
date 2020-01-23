@@ -79,8 +79,6 @@ export class InfoForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-
-
     // Updates the state and the event store object when form input is changed
     handleChange(event){
         this.updateIssueList();
