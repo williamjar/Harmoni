@@ -21,6 +21,9 @@ before_script:
 run_tests:
   stage: test
   script:
+    - cd ..
+    - ls -a
+    - cd server
     - npm test
     - cd ../client
     - npm test
