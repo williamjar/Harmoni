@@ -7,7 +7,7 @@ export class MegaValidator {
 
     static validateUsernameLength(newUsername){
         if(newUsername===undefined) return true;
-        return newUsername.length > 1;
+        return newUsername.length > 0;
     }
 
     static validateUsername(oldUsername, newUsername) {
@@ -20,6 +20,7 @@ export class MegaValidator {
     }
 
     static validatePhoneNumberLength(phoneNumber) {
+        if(phoneNumber===null || phoneNumber===undefined) return true;
         return (phoneNumber.length === 8)
     }
 
@@ -41,7 +42,10 @@ export class MegaValidator {
     }
 
     static validateEmailLength(firstEmail, secondEmail){
-        return firstEmail.length >= 3 || secondEmail.length >= 3;
+
+        if(firstEmail===null || secondEmail===null) return false;
+
+        return firstEmail.length >= 2 && secondEmail.length >= 2;
     }
 
     static validateEmail(firstEmail, secondEmail){

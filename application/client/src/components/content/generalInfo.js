@@ -185,7 +185,7 @@ export class InfoForm extends Component {
                                 <Row>
                                     <Col>
                                 <Form.Group>
-                                    <Button hidden={this.state.savingInformation} type="submit" variant="success">Lagre informasjon</Button>
+                                    <Button hidden={this.state.savingInformation} onmouseover={() => this.updateIssueList} type="submit" variant="success">Lagre informasjon</Button>
                                     <Button hidden={!this.state.savingInformation} disabled variant={"success"}><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/> Lagrer informasjon</Button>
                                 </Form.Group>
                                     </Col>
@@ -354,7 +354,6 @@ export class InfoForm extends Component {
         }
     }
 
-
     updateIssueList(){
         let list = [];
 
@@ -366,7 +365,7 @@ export class InfoForm extends Component {
 
         if(this.state.description===null){
             list.push("Mangler beskrivelse");
-        } else if(this.state.description.length<=1){
+        } else if(this.state.description.length <= 1){
             list.push("Mangler beskrivelse");
         }
 
@@ -410,7 +409,6 @@ export class InfoForm extends Component {
         this.setState({savingInformation: true});
         this.setState({dateError: false});
         if(this.validateForm()){
-            console.log("form validated");
             this.save();
             EventStore.editCurrentEvent().then(this.setState({savingInformation: false}));
             this.setState({edit:false});
