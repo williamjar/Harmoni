@@ -45,7 +45,9 @@ export class CrewContacts extends React.Component {
     };
 
     hideCrew = () => {
-        this.update( () => this.setState({show: false}));
+        this.update( () => this.setState({crew: CrewStore.allCrewMembersForOrganizer}, () => {
+            this.setState({show: false});
+        }));
     };
 
     update = (callback) => {
@@ -114,10 +116,10 @@ export class CrewContactList extends React.Component {
         return null;
     }
 
-    viewPerformer = (e) => {
+    viewCrew = (e) => {
         console.log("view clicked");
         this.setState({
-            currentPerformer: this.state.performers.find(performer => {return performer.artistID === parseInt(e.target.id)})
+            currentCrew: this.state.crew.find(crew => {return crew.crewID === parseInt(e.target.id)})
         },() => this.setState({showContact: true}));
     };
 
@@ -141,7 +143,7 @@ export class CrewContactList extends React.Component {
         return(
             <Table responsive hover>
                 <thead>
-                <tr align='center' onClick={this.viewPerformer}>
+                <tr align='center' onClick={this.viewCrew}>
                     <th align="left">Navn</th>
                     <th>Telefon</th>
                     <th></th>
@@ -150,7 +152,7 @@ export class CrewContactList extends React.Component {
                 <tbody>
                 {console.log(this.state.crew)}
                 {this.state.crew.map(crew => (
-                    <tr align='center' className="contact pointer" onClick={this.viewPerformer} id={crew.crewID} key={crew.crewID}>
+                    <tr align='center' className="contact pointer" onClick={this.viewCrew} id={crew.crewID} key={crew.crewID}>
                         <td align="left" id={crew.crewID}>{crew.contactName}</td>
                         <td id={crew.crewID}>{crew.phone}</td>
                         <td align="right" id={crew.crewID}><FaEye size={30} id={crew.crewID}>Vis</FaEye></td>
@@ -174,25 +176,25 @@ export class CrewContactInfo extends React.Component {
             contactName: this.props.contact.contactName,
             email: this.props.contact.email,
             phone: this.props.contact.phone,
-            crewCategory: this.props.contact.crewCategoryName,
-            crewCategories: this.props.crewCategories,
+            description: this.props.contact.description,
             editable: false,
         }
     }
 
     shouldComponentUpdate(nextProps) {
-        return (nextProps.contact !== this.state.contact || nextProps.show !== this.state.show);
+        return (nextProps.show !== this.state.show);
     }
 
     componentDidUpdate(props) {
         this.setState({
-            show: this.props.show,
-            contact: this.props.contact,
-            contactName: this.state.contact.contactName,
-            email: this.state.contact.email,
-            phone: this.state.contact.phone,
-            /*genre: this.state.contact.genre*/
+            show: props.show,
         });
+    }
+
+    componentDidMount() {
+        this.setState({
+            contact: this.props.contact
+        }, () => this.setState({show: this.props.show}))
     }
 
     editClicked = () => {
@@ -200,12 +202,11 @@ export class CrewContactInfo extends React.Component {
     };
 
     saveClicked = () => {
-        /*ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
-            ArtistService.updateArtistGenre(() => {
-                console.log(this.state.genre);
+        ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
+            CrewStore.updateCrewMember(this.state.description, this.state.contact.crewID).then(r => {
                 this.setState({show: false, editable: false}, () => this.setState({show: true}));
-            }, this.state.contact.artistID, parseInt(this.state.genre), CookieStore.currentUserID, this.state.contact.contactID)
-        })*/
+            });
+        })
     };
 
     handleChange = (e) => {
@@ -242,25 +243,12 @@ export class CrewContactInfo extends React.Component {
                                                                  onChange={this.handleChange}/> : this.state.phone}
                         </Col>
                     </Row>
-                    <h5>Stillingsinfo</h5>
-                    <Row>
-                        <Col xs={1}>
-                            <FaMusic/>
-                        </Col>
-                        <Col>
-                            {this.state.editable ? <Form.Control name="genre" as="select" defaultValue={this.state.genre}
-                                                                 onChange={this.handleChange}>{
-                                this.state.crewCategories.map((category,i) => {return <option value={i + 1}>{category}</option>})
-                            }</Form.Control> : this.state.crewCategory}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}>
-                            <FaCalendar/>
-                        </Col>
-                        <Col>
-                        </Col>
-                    </Row>
+                    <h5>Beskrivelse</h5>
+                    {this.state.editable ? <Form.Control name="description" as="textarea" value={this.state.description} onChange={this.handleChange}/> :
+                        <Card.Body>
+                            {this.state.description}
+                        </Card.Body>
+                    }
                 </Modal.Body>
                 <Modal.Footer>
                     {this.state.editable ? <Button variant="success" onClick={this.saveClicked}>Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}
