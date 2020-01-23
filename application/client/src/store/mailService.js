@@ -10,9 +10,13 @@ export class MailService{
             "x-access-token": CookieStore.currentToken
         };
 
-        attachmentLinks.map(e => {if (e === undefined) return null});
+        if (attachmentLinks !== null){
+            attachmentLinks = attachmentLinks.map(e => {if (e === undefined) return null});
+        }
+
 
         let body = {
+            username: 'bedriftharmoni@gmail.com',
             emailTo: emailTo,
             subject: subject,
             emailBody: emailBody,

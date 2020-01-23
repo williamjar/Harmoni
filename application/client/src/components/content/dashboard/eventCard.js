@@ -18,20 +18,21 @@ export class EventCard extends React.Component {
 
     // Sends the user to the event-screen when clicking "vis"
     viewEvent = () => {
-        EventStore.getEventCategories();
         console.log(this.props.event);
+        if (!(EventStore.eventCategories[0])) {
+            console.log("loaded categories over again");
+            EventStore.getEventCategories(() => {
+            });
+        }
         EventStore.setCurrentEvent(this.props.event);
         RiderStore.storeAllRidersForEvent(() => {
             console.log("Here comes the sun, nananana");
             console.log(RiderStore.allRidersForCurrentEvent);
             history.push("/arrangementEdit/" + this.props.event.eventID);
         }, EventStore.currentEvent.eventID);
-
     };
 
-
     render() {
-
         return(
             <tr align='center'>
                 <td align="left">{this.formatDate(this.props.event.startDate)}</td>

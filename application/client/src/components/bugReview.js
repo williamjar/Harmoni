@@ -106,12 +106,17 @@ export class BugReview extends Component {
         } else {
             BugStore.registerBug(OrganizerStore.currentOrganizer.organizerID, this.state.description, statusCode => {
                 if (statusCode === 200) {
-                    MailService.sendGeneralEmail("bedriftharmoni@gmail.com", "Bug Report",
+                    MailService.sendGeneralEmailToOne("bedriftharmoni@gmail.com", "Bug Report",
                         "Følgende bug har blitt registrert.\n\nBruker: " + OrganizerStore.currentOrganizer.username +
                         "\nUserID: " + OrganizerStore.currentOrganizer.organizerID + "\nBeskrivelse: \"" + this.state.description + "\"",
                         null,
-                        () => {
-                            Alert.info("Din tilbakemelding ble registrert");
+                        (mailStatus) => {
+                            if (mailStatus === 200){
+                                Alert.info("Din tilbakemelding ble registrert")
+                            }
+                            else{
+                                Alert.info("Din tilbakemelding ble registrert, men det skjedde en glipp med vårt mailsystem, og vi vil ikke bli informert om bug'en. Vennligst prøv igjen om du ønsker det, eller send en epost til bedriftharmoni@gmail.com");
+                            }
                         });
                     BugStore.getAllBugsFromOrganizer(OrganizerStore.currentOrganizer.organizerID, () => {
                         this.setState({bugList: BugStore.allBugsReportedByOrganizer})
@@ -132,7 +137,7 @@ export class BugReview extends Component {
             this.setState(
                 {bugList: BugStore.allBugsReportedByOrganizer})
         });
-        console.log(this.state.ticketList);
+        console.log(this.state.bugList);
     };
 
     /*
