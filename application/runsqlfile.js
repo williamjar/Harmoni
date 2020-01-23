@@ -3,8 +3,9 @@ let fs = require('fs');
 module.exports = function(filename, pool, done){
     console.log(__dirname);
     console.log("runsqlfile: reading file " + filename);
+    let sql;
     try{
-        let sql = fs.readFileSync(filename, "utf-8");
+        sql = fs.readFileSync(filename, "utf-8");
     }
     catch (e) {
         console.log("Could not create " + filename);
