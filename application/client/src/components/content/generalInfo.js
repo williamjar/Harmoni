@@ -70,7 +70,7 @@ export class InfoForm extends Component {
             selectedFile: null,
             serverFile: null,
             uploadingPicture: false,
-            savingInformation: false
+            savingInformation: false,
             serverFile: null,
             pictureID: null
         };
