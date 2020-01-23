@@ -15,6 +15,14 @@ body{
     height: 100%;
 }
 
+.main-color{
+    color:#00525c !important;
+}
+
+.main-color.active{
+    color:#00525c !important;
+}
+
 .center-v{
     margin-top: 10%;
 }
@@ -24,6 +32,10 @@ body{
 }
 .padding-20{
     padding:20px;
+}
+
+.padding-30{
+    padding:30px;
 }
 
 .padding-25{
@@ -146,12 +158,18 @@ body{
 
 .logoImg img{
      max-width: 100% !important;
+    padding-left:30px;
+    padding-right: 30px;
 
  }
 
 .logoImg-mobile img{
-    width: 150px !important;
+    width: 75px !important;
+    padding:10px;
+}
 
+.icon-hover:hover{
+    color: #00799e;
 }
 
 .Nav-Menu{
@@ -170,6 +188,12 @@ body{
     border: none !important;
     text-align: left;
     zoom: 80%;
+
+}
+
+.nav .active {
+    background: #00799e !important;
+    color:white !important;
 }
 
 .log-out{
@@ -177,7 +201,7 @@ body{
     bottom:0px;
     padding-bottom: 10px;
     padding-top:10px;
-    background: midnightblue;
+    background: #003E51;
     color:white;
     width: 100%;
 }
@@ -223,6 +247,7 @@ body{
 
 .Nav-Menu .user-nav:hover{
     background: #567d99;
+    color: white;
 }
 
 .user-nav img {
@@ -261,14 +286,18 @@ body{
     font-family: Roboto !important;
     padding-top: 25px !important;
     padding-bottom: 25px !important;
-}
 
+}
 
 
 .nav-link:hover{
-    background: darkslateblue !important;
+    background: #00525c !important;
     color: white;
+    text-decoration: none;
 }
+
+
+
 
 
 /* Content */
@@ -495,12 +524,12 @@ search-result-item{
 
 
 /* Different mediums, Mobile etc */
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 991px) {
     .content{
         overflow-y: scroll;
         height: 100vh;
         padding: 20px 20px 50px 20px;
-        margin:0 auto;
+        margin-top: 50px;
     }
 }
 
@@ -577,7 +606,10 @@ search-result-item{
 .contact:hover {
     width: 50px !important;
     height: 50px !important;
-    font-size: 18px;
+    font-weight: bold;
+    color: #003E51 !important;
+    border-left: #003E51;
+    border-left-style: solid;
 }
 
 .addButton {
