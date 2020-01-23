@@ -31,7 +31,6 @@ export class TabContent extends Component {
                     <Col>
                         <div>
                             <Button hidden={(this.state.activeTab === 3)} className="float-right mr-1" onClick={() => {
-                                console.log("next");
                                 this.props.btnClick();
                             }}>Neste</Button>
 
