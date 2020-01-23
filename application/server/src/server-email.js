@@ -48,14 +48,19 @@ app.post("/api/email", (request, response) => {
 
     console.log(attachmentLinks);
 
-    transporter.sendMail({
+    let mailData = {
         from: harmonyUsername,
         to: emailTo,
         subject: subject,
         text: body,
         html: html,
         attachments: attachments
-    }).then(sendEmailResponse => {
+    };
+
+    console.log(mailData);
+
+    transporter.sendMail(mailData).then(sendEmailResponse => {
+        console.log(sendEmailResponse);
         response.status(200);
         response.json(sendEmailResponse);
     }).catch(error => {

@@ -75,6 +75,11 @@ export class CreateEventSplash extends Component{
             Alert.danger("Tittel kan ikke være tom");
             this.setState(state);
         } else{
+            if (!(EventStore.eventCategories[0])) {
+                console.log("loaded categories over again");
+                EventStore.getEventCategories(() => {
+                });
+            }
             EventStore.createEvent(() => {
                 history.push('/arrangementEdit/');
                 this.setState({isLoading: false});

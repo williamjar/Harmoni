@@ -58,6 +58,10 @@ body{
     padding-top: 10px;
 }
 
+.padding-top-50{
+    padding-top: 50px;
+}
+
 .padding-top-bottom-100{
     padding: 100px 0px 100px 0px;
 }
@@ -168,6 +172,12 @@ body{
     padding:10px;
 }
 
+.logoImg-mobile img:hover{
+    width: 75px !important;
+    padding:10px;
+    color: #00799e !important;
+}
+
 .icon-hover:hover{
     color: #00799e;
 }
@@ -196,6 +206,13 @@ body{
     color:white !important;
 }
 
+.event-buttons{
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+
+}
+
 .log-out{
     position: absolute;
     bottom:0px;
@@ -216,6 +233,12 @@ body{
     width: 100%;
     background:lightgrey;
     padding: 40px;
+    text-align: center;
+}
+
+.document-event {
+    width: 100%;
+    height: available;
     text-align: center;
 }
 

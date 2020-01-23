@@ -273,7 +273,7 @@ export class PerformerCard extends Component{
                 <div className="row padding-top-20">
                     <div className="col-4">
                         <div className="form-check">
-                            <input className="form-check-input" name="contractSigned" type="checkbox" checked={this.state.contractSigned} id="signedContract" onChange={this.handleOtherCheckboxes}/>
+                            <input className="form-check-input " name="contractSigned" type="checkbox" checked={this.state.contractSigned} id="signedContract" onChange={this.handleOtherCheckboxes}/>
                             <label className="form-check-label" htmlFor="contractSigned">
                                 Signert kontrakt
                             </label>
