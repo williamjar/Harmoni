@@ -202,7 +202,7 @@ export class EventStore {
         });
     }
 
-    static getEventCategories() {
+    static getEventCategories(callback) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -212,8 +212,8 @@ export class EventStore {
             this.eventCategories = [];
             for (let i = 0; i < response.data.length; i++) {
                 this.eventCategories.push(response.data[i].eventTypeName);
-                console.log(response.data[i].eventTypeName);
             }
+            callback();
         });
     }
 

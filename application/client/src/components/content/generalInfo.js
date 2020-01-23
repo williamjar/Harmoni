@@ -63,12 +63,13 @@ export class InfoForm extends Component {
             town: EventStore.currentEvent.town,
             description: EventStore.currentEvent.description,
             eventType: EventStore.currentEvent.eventType,
+            eventTypes: [],
             savingInformation: false,
             dateError: false,
             issueList: [],
             selectedFile: null,
             serverFile: null,
-            pictureID: -1
+            pictureID: null
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -112,6 +113,12 @@ export class InfoForm extends Component {
                     });
                 }
             })
+        }
+        if (!(EventStore.eventCategories[0])) {
+            console.log("loaded categories over again");
+            EventStore.getEventCategories(() => {
+                this.setState({eventTypes: EventStore.eventCategories});
+            });
         }
     }
 
