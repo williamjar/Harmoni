@@ -15,6 +15,14 @@ body{
     height: 100%;
 }
 
+.main-color{
+    color:#00525c !important;
+}
+
+.main-color.active{
+    color:#00525c !important;
+}
+
 .center-v{
     margin-top: 10%;
 }
@@ -146,11 +154,14 @@ body{
 
 .logoImg img{
      max-width: 100% !important;
+    padding-left:30px;
+    padding-right: 30px;
 
  }
 
 .logoImg-mobile img{
-    width: 150px !important;
+    width: 75px !important;
+    padding:10px;
 
 }
 
@@ -266,7 +277,7 @@ body{
 
 
 .nav-link:hover{
-    background: darkslateblue !important;
+    background: #003E51 !important;
     color: white;
 }
 
@@ -495,12 +506,12 @@ search-result-item{
 
 
 /* Different mediums, Mobile etc */
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 991px) {
     .content{
         overflow-y: scroll;
         height: 100vh;
         padding: 20px 20px 50px 20px;
-        margin:0 auto;
+        margin-top: 50px;
     }
 }
 

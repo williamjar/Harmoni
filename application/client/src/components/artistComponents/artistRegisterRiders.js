@@ -38,18 +38,18 @@ export class ArtistRegisterRiders extends Component{
         }
         else{
             return (
-                <Col>
-                    <Row>
-                        <Col>
-                            <Card>
-                                <h3 className={"mt-4 mb-4"}>Filer tilgjengelige for deg på dette arrangementet:</h3>
-                                <Documents documents={this.state.documents}/>
-                            </Card>
-                            <Card>
-                                Legg til rider som fritekst<br/>
+                <Card className="border-0 m-4">
+
+                    <Card.Body>
+                        <Card.Text>Artistside for arrangementet</Card.Text>
+                        <h4 className={"mt-4 mb-4"}>Filer knyttet til dette arrangmentet</h4>
+                        <Documents documents={this.state.documents}/>
+                        <h4 className={"mt-4 mb-4"}>Legg til rider for dette arrangementet</h4>
+                        <Row>
+                            <Col>
                                 <InputGroup className="mb-3">
                                     <FormControl
-                                        placeholder=""
+                                        placeholder="feks. jeg vil ha suppe"
                                         aria-label=""
                                         aria-describedby="basic-addon2"
                                         value={this.state.riderInput}
@@ -59,30 +59,26 @@ export class ArtistRegisterRiders extends Component{
                                         <Button variant="outline-secondary" onClick={this.addRider}>Legg til rider</Button>
                                     </InputGroup.Append>
                                 </InputGroup>
-                            </Card>
-                            <Card>
-                                <Col>
-                                    <span className="btn btn-primary btn-file">
-                                        Last opp riders som PDF <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/>
-                                    </span>
-                                </Col>
-                            </Card>
-                            <Card>
-                                <h3 className={"mt-4 mb-4"}>Dine riders</h3>
-                                {
-                                    this.state.riderElements.map(rider => {
-                                        if (rider.artistID === this.state.artistID){
-                                            return <Rider key={rider.riderID} description={rider.description} isDone={rider.isDone} status={rider.status} riderObject={rider} deleteRider={this.deleteRider}/>
-                                        }
-                                        else{
-                                            return null;
-                                        }
-                                    })
+                            </Col>
+                            <Col>
+                                <Button className="btn-primary btn-file">Last opp riders som PDF <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/></Button>
+                            </Col>
+                        </Row>
+
+                        <h4 className={"mt-4 mb-4"}>Dine riders</h4>
+                        {
+                            this.state.riderElements.map(rider => {
+                                if (rider.artistID === this.state.artistID){
+                                    return <Rider key={rider.riderID} description={rider.description} isDone={rider.isDone} status={rider.status} riderObject={rider} deleteRider={this.deleteRider}/>
                                 }
-                            </Card>
-                        </Col>
-                    </Row>
-                </Col>
+                                else{
+                                    return null;
+                                }
+                            })
+                        }
+                    </Card.Body>
+                </Card>
+
             );
         }
     }
@@ -146,6 +142,7 @@ export class ArtistRegisterRiders extends Component{
                     currentState.riderInput = "";
                     this.setState(currentState);
                     console.log(this.state);
+                    Alert.success("Rider er lagt til for arrangementet.")
                 }
                 else{
                     Alert.danger("Det skjedde en feil, vennligst prøv igjen senere.");
@@ -289,9 +286,8 @@ class Rider extends Component{
     render(){
         console.log(this.props);
         return(
-            <div className="card card-body">
-                <div className="row align-items-center">
-
+            <Card className={"mt-2 mb-2 p-2"}>
+                <Card.Body className="row align-items-center">
                     <div className="col-4">
                         {this.props.description}
                     </div>
@@ -311,8 +307,8 @@ class Rider extends Component{
                     <div className="col-1">
                         <button className="btn btn-danger" onClick={this.deleteRider}><FaTrashAlt/></button>
                     </div>
-                </div>
-            </div>
+                </Card.Body>
+            </Card>
         )
     }
 
