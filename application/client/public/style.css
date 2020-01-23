@@ -12,8 +12,17 @@
 }
 
 .btn-outline-primary {
-    background:  #00799e !important;
+    border-color: #00799e !important;
+    color: #00799e !important;
 }
+
+.btn-outline-primary:hover {
+    background:  #00799e !important;
+    color: white !important;
+
+}
+
+
 
 .btn-success {
     background: #007d07 !important;
