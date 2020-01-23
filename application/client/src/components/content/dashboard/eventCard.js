@@ -18,31 +18,29 @@ export class EventCard extends React.Component {
 
     // Sends the user to the event-screen when clicking "vis"
     viewEvent = () => {
-        console.log(this.props.event);
         if (!(EventStore.eventCategories[0])) {
-            console.log("loaded categories over again");
             EventStore.getEventCategories(() => {
             });
         }
         EventStore.setCurrentEvent(this.props.event);
         RiderStore.storeAllRidersForEvent(() => {
-            console.log("Here comes the sun, nananana");
-            console.log(RiderStore.allRidersForCurrentEvent);
             history.push("/arrangementEdit/" + this.props.event.eventID);
         }, EventStore.currentEvent.eventID);
     };
 
     render() {
         return(
+
             <Card className={"m-2 p-2 shadow-sm "}>
                 <Card.Body>
-                <Row>
-                <Col>{this.formatDate(this.props.event.startDate)}</Col>
-                <Col>{this.props.event.eventName} {this.props.event.town !== "" && this.props.event.town !== null ? " - " + this.props.event.town : null}</Col>
-                <Col align="right"><Button className="align-right" variant="outline-primary" onClick={this.viewEvent}>Vis </Button></Col>
+                    <Row>
+                     <Col>{this.formatDate(this.props.event.startDate)}</Col>
+                     <Col>{this.props.event.eventName} {this.props.event.town !== "" && this.props.event.town !== null ? " - " + this.props.event.town : null}</Col>
+                    <Col align="right"><Button className="align-right" variant="outline-primary" onClick={this.viewEvent}>Vis </Button></Col>
                 </Row>
                 </Card.Body>
             </Card>
+
         )
     }
 
