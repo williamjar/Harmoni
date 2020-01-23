@@ -1,7 +1,7 @@
 import React from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button} from "react-bootstrap";
+import {Button, Col, Row, Card} from "react-bootstrap";
 import { createHashHistory } from 'history';
 import {EventStore} from "../../../store/eventStore";
 import {RiderStore} from "../../../store/riderStore";
@@ -34,13 +34,23 @@ export class EventCard extends React.Component {
 
     render() {
         return(
-            <tr align='center'>
-                <td align="left">{this.formatDate(this.props.event.startDate)}</td>
-                <td>{this.props.event.eventName} {this.props.event.town !== "" && this.props.event.town !== null ? " - " + this.props.event.town : null}</td>
-                <td align="right"><Button variant="outline-secondary" onClick={this.viewEvent}>Vis </Button></td>
-            </tr>
+            <Card className={"m-2 p-2 shadow-sm "}>
+                <Card.Body>
+                <Row>
+                <Col>{this.formatDate(this.props.event.startDate)}</Col>
+                <Col>{this.props.event.eventName} {this.props.event.town !== "" && this.props.event.town !== null ? " - " + this.props.event.town : null}</Col>
+                <Col align="right"><Button className="align-right" variant="outline-primary" onClick={this.viewEvent}>Vis </Button></Col>
+                </Row>
+                </Card.Body>
+            </Card>
         )
     }
+
+    /*<tr align='center'>
+<td align="left">{this.formatDate(this.props.event.startDate)}</td>
+<td>{this.props.event.eventName} {this.props.event.town !== "" && this.props.event.town !== null ? " - " + this.props.event.town : null}</td>
+<td align="right"><Button variant="outline-primary" onClick={this.viewEvent}>Vis </Button></td>
+</tr>*/
 
     componentDidMount() {
         let date = this.formatDate(this.props.event.startDate);
