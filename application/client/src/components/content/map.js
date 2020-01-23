@@ -1,8 +1,10 @@
 import React, {Component} from "react";
 import { compose, withProps} from "recompose"
 import { withScriptjs, withGoogleMap, GoogleMap, Marker} from "react-google-maps"
-import PlacesAutocomplete, {geocodeByAddress, getLatLng} from "react-places-autocomplete"
 import mapStyle from "./mapStyle";
+import { OpenStreetMapProvider } from 'leaflet-geosearch'
+
+const provider = new OpenStreetMapProvider();
 
 const MapsComponent =
 
@@ -29,22 +31,34 @@ export class Map extends Component{
 
     state = {
         isMarkerShown: true,
-        /*latLng: null,*/
+        latLng: null,
+        location: this.props.location
     };
 
     componentDidMount(){
-        /*this.getLatLng((res) => {
-            console.log("Results:");
-            console.log(res);
-            this.setState({latLng: res})
-        })*/
+        console.log("Location: " + this.props.location);
+        this.getLatLng((results) => {
+            console.log("Results from OpenStreetMap:");
+            console.log(results);
+
+            if (results.length == 0){
+                this.setState({latLng: {lat: 0, lng: 0}});
+            }else {
+                let lat = parseFloat(results[0].y);
+                let lng = parseFloat(results[0].x);
+
+                this.setState({latLng: {lat: lat, lng: lng}});
+            }
+
+
+
+        })
     }
-/*
+
     async getLatLng(callback){
-        let results = await geocodeByAddress("Toronto, ON, Canada");
-        let latLng = await getLatLng(results[0]);
-        callback({lat: -10, lng: -10});
-    }*/
+        let results = await provider.search({query: this.state.location});
+        callback(results);
+    }
 
     /*
     delayedShowMarker = () => {
@@ -58,12 +72,17 @@ export class Map extends Component{
     };
 
     render(){
-        return(
-            <MapsComponent
-                isMarkerShown = {this.state.isMarkerShown}
-                onMarkerClick = {this.handleMarkerClick}
-                latLng = {this.props.latLng}
-            />
-        )
+        if (this.state.latLng == null){
+            return null
+        }else{
+            return(
+                <MapsComponent
+                    isMarkerShown = {this.state.isMarkerShown}
+                    onMarkerClick = {this.handleMarkerClick}
+                    latLng = {this.state.latLng}
+                />
+            )
+        }
+
     }
 }
