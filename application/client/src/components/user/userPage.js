@@ -458,7 +458,6 @@ export class ProfilePictureForm extends React.Component {
                 if(profilePicture !== null && profilePicture !== ''){
                     PictureService.previewPicture(profilePicture, (url) => {
                         this.setState({link: url})
-                            .then(Link.setCurrentLink(url))
                     })
                 }
             })

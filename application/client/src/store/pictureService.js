@@ -104,9 +104,6 @@ export class PictureService {
                 //Open the URL on new Window
                 callback(fileURL);
             })
-                .catch(error => {
-                    console.log(error);
-                });
     }
 
 
