@@ -160,6 +160,12 @@ body{
     width: auto;
 }
 
+.login-logo img{
+    width: 250px;
+    padding-bottom: 40px;
+    padding-top:20px;
+}
+
 .logoImg img{
      max-width: 100% !important;
     padding-left:30px;
