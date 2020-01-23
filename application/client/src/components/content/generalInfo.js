@@ -28,10 +28,7 @@ export class GeneralInfo extends Component{
     render(){
         return(
             <div>
-
                 <InfoForm editMode={this.props.editMode}/>
-
-
                 <Row>
                     <Col>
                         <Card className="mb-2 border-0">
