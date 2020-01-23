@@ -168,6 +168,12 @@ body{
     padding:10px;
 }
 
+.logoImg-mobile img:hover{
+    width: 75px !important;
+    padding:10px;
+    color: #00799e !important;
+}
+
 .icon-hover:hover{
     color: #00799e;
 }
@@ -194,6 +200,13 @@ body{
 .nav .active {
     background: #00799e !important;
     color:white !important;
+}
+
+.event-buttons{
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+
 }
 
 .log-out{
