@@ -40,7 +40,7 @@ export class Dashboard extends React.Component {
         };
     }
 
-    // Method for filtering the organizer's events by status -> NOT IMPLEMENTED YET
+    // Method for filtering the organizer's events by status
     filterEvents = (e) => {
         this.setState({active: e.target.name});
     };

@@ -588,7 +588,10 @@ search-result-item{
 .contact:hover {
     width: 50px !important;
     height: 50px !important;
-    font-size: 18px;
+    font-weight: bold;
+    color: #003E51 !important;
+    border-left: #003E51;
+    border-left-style: solid;
 }
 
 .addButton {
