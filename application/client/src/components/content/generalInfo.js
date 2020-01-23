@@ -64,11 +64,9 @@ export class InfoForm extends Component {
             description: EventStore.currentEvent.description,
             eventType: EventStore.currentEvent.eventType,
             eventTypes: [],
-            savingInformation: false,
             dateError: false,
             issueList: [],
             selectedFile: null,
-            serverFile: null,
             uploadingPicture: false,
             savingInformation: false,
             serverFile: null,
@@ -183,7 +181,7 @@ export class InfoForm extends Component {
                                             <Form.Control style={{width : '4.5rem'}} type="tel" maxLength="4" value={this.state.zipCode} name="zipCode" onChange={this.handleChange}/>
                                         </Col>
                                         <Col xs="3">
-                                            <Form.Label>Poststed</Form.Label>
+                                            <Form.Label>By</Form.Label>
                                             <Form.Control type="text" value={this.state.town} name="town" onChange={this.handleChange}/>
                                         </Col>
                                     </Row>
@@ -367,7 +365,7 @@ export class InfoForm extends Component {
                     {this.state.address !== null && this.state.address.trim() !== "" ? <Row className = "padding-bottom-20">
                         <Col>
                             <Map
-                                latLng = {{lat: 66.4857, lng: 13.5622}} //Glomfjord!
+                                location = {this.state.address + ", " + this.state.town}
                             />
                         </Col>
                     </Row> : null}
