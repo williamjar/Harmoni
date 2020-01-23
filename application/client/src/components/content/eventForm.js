@@ -32,7 +32,6 @@ export class EventForm extends Component {
     };
 
     handleButtonClick = () => {
-        console.log("next tab called");
         let tab = this.state.activeTab;
         if (tab < 3) {
             tab++;

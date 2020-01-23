@@ -38,7 +38,7 @@ export class MobileMenu extends Component{
             <div className="zoom-80 fixed-top card">
                 <div className="row no-gutters">
                     <div className="col-4">
-                        <div className="logoImg-mobile" >
+                        <div className="logoImg-mobile icon-hover" >
                             <NavLink to="/" onClick={this.collapse}>
                                 <img width="100px" src={mobileLogo2} alt=""/>
                             </NavLink>

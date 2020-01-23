@@ -20,15 +20,17 @@ export class TabContent extends Component {
 
     render() {
         return (
-            <div className="tabContent">
-                <div className="tabChildren">
-                    {this.props.children}
+            <div>
+                <div className="tabContent">
+                    <div className="tabChildren margin-bottom-50">
+                        {this.props.children}
+                    </div>
                 </div>
-                <Row>
+
+                <Row className="event-buttons">
                     <Col>
                         <div>
                             <Button hidden={(this.state.activeTab === 3)} className="float-right mr-1" onClick={() => {
-                                console.log("next");
                                 this.props.btnClick();
                             }}>Neste</Button>
 
@@ -50,6 +52,7 @@ export class TabContent extends Component {
                         </div>
                     </Col>
                 </Row>
+
             </div>
         )
     }
