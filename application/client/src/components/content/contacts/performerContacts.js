@@ -55,13 +55,17 @@ export class PerformerContacts extends React.Component {
         }, CookieStore.currentUserID);
     };
 
+    /*addClicked = () => {
+        this.setState({currentPerformer: new Artist})
+    };*/
+
     render() {
         console.log(this.state.performers);
         return(
             <div>
                 <Card className="border-0 m-4 artists">
                     <Row>
-                        <Col xs={2}>
+                        <Col>
                             <h3 className={"mt-4 mb-4"}>Mine artister</h3>
                         </Col>
                         <Col>
@@ -197,6 +201,7 @@ export class ContactList extends React.Component {
                     </tr>
                 ))}
                 </tbody>
+                {console.log(this.state.currentPerformer)}
                 {this.state.currentPerformer !== null ? <ContactInfo show={this.state.showContact} contact={this.state.currentPerformer} onHide={this.hidePerformer}/> : null}
             </Table>
         )
@@ -221,11 +226,21 @@ export class ContactInfo extends React.Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return (nextProps.show !== this.state.show)
+        return ((nextProps.show !== this.state.show) || (nextProps.contact !== this.state.contact && this.state.editable !== true))
     }
 
     componentDidUpdate(props) {
-        this.setState({show: props.show});
+        if(this.state.editable) {
+            this.setState({show: props.show});
+        } else {
+            this.setState({
+                contact: props.contact,
+                contactName: this.state.contact.contactName,
+                email: this.state.contact.email,
+                phone: this.state.contact.phone,
+                genre: this.state.contact.genre
+            }, () => this.setState({show: props.show}, ));
+        }
     }
 
     componentDidMount() {

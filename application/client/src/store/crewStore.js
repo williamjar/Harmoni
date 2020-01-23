@@ -78,8 +78,6 @@ export class CrewStore {
         };
 
         axios.get(axiosConfig.root + '/api/crew/event/' + eventID, {headers: header}).then(response => {
-            console.log("response");
-            console.log(response);
 
             response.data.map(data => {
                 this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
@@ -174,7 +172,6 @@ export class CrewStore {
             };
 
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>{
-                console.log(response);
 
                     let assignBody = {
                         "eventID": eventID,
@@ -186,7 +183,6 @@ export class CrewStore {
                     };
 
                 axios.post(axiosConfig.root + '/api/crew/assign', assignBody,{headers: header}).then(response =>{
-                    console.log(response);
                     callback();
                     });
             });
@@ -263,13 +259,6 @@ export class CrewStore {
      * @param {function} callback
      */
     static assignCrewMemberToEvent(eventID, categoryID, crewID, isResponsible, contractSigned, hasBeenPaid, callback){
-        console.log("CREWSTORE");
-        console.log("hasBeenPaid");
-        console.log(hasBeenPaid);
-        console.log("contractSigned");
-        console.log(contractSigned);
-        console.log("isResponsible");
-        console.log(isResponsible);
 
         let header = {
             "Content-Type": "application/json",
@@ -333,13 +322,7 @@ export class CrewStore {
      * @param {int} crewID - The database ID of the crew member.
      */
     static updateCrewMemberEvent(isResponsible, contractSigned, hasBeenPaid, eventID, crewCategoryID, crewID) {
-        console.log("SE HER");
-        console.log("hasBeenPaid");
-        console.log(hasBeenPaid);
-        console.log("contractSigned");
-        console.log(contractSigned);
-        console.log("isResponsible");
-        console.log(isResponsible);
+
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
