@@ -13,19 +13,12 @@ variables:
 before_script:
   - cd application/client
   - npm install
-  - cd ../server
-  - npm install
 
 # Run JEST test
 
 run_tests:
   stage: test
   script:
-    - cd ..
-    - ls -a
-    - cd server
-    - npm test
-    - cd ../client
     - npm test
   artifacts:
     paths:
