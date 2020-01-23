@@ -10,6 +10,8 @@ export class MailService{
             "x-access-token": CookieStore.currentToken
         };
 
+        attachmentLinks.map(e => {if (e === undefined) return null});
+
         let body = {
             emailTo: emailTo,
             subject: subject,
@@ -46,7 +48,15 @@ export class MailService{
 
     static sendArtistInvitation(artist, subject, emailBody, callback){
 
-        let documentLinks = artist.documents.map(doc => doc.documentLink);
+        console.log("Sending artist invitation");
+
+        console.log(artist);
+
+        let documentLinks = artist.documents.map(doc => doc.documentLink).filter(e => {
+            return e;
+        });
+
+        console.log(documentLinks);
 
         this.sendGeneralEmail(artist.email, subject, emailBody, documentLinks, callback);
     }

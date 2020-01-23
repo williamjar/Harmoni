@@ -9,15 +9,22 @@ const axiosConfig = require("./axiosConfig");
 export class PictureService {
 
     //Get picture
-    getPicture(pictureID){
+    static getPicture(pictureID, callback){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
         axios.get(axiosConfig.root + '/api/organizer/picture/' + pictureID, {headers: header})
             .then(response => {
-                return new PictureElement(response.data[0].pictureID, response.data[0].pictureLink);
+                if (response.data[0].pictureID && response.data[0].pictureLink){
+                    callback(new PictureElement(response.data[0].pictureID, response.data[0].pictureLink));
+                }
+                else{
+                    callback(null);
+                }
+
             })
+            .catch(err => callback(null));
     }
 
     //Update picture
@@ -33,11 +40,11 @@ export class PictureService {
     }
 
     //Insert picture
-    static insertPicture(organizerID, fileForm, callback){
+    static insertProfilePicture(organizerID, fileForm, callback){
         for(let pair of fileForm.entries()){
             console.log(pair);
         }
-        axios.post('http://localhost:8080/file/picture', fileForm)
+        axios.post('http://localhost:8080/api/file/profilePicture', fileForm)
             .then(response => {
                 let databaseHeader = {
                     "Content-Type": "application/json",
@@ -66,6 +73,37 @@ export class PictureService {
                     });
             })
             .catch(err => callback(500));
+    }
+
+    static insertEventPicture(eventID, fileForm, callback){
+        let serverHeader = {
+            "x-access-token": CookieStore.currentToken
+        };
+        axios.post('http://localhost:8080/api/file/eventPicture', fileForm, {headers: serverHeader}).then(response => {
+            let databaseHeader = {
+                "Content-Type": "application/json",
+                "x-access-token": CookieStore.currentToken
+            };
+            let body = {
+                path: response.data.path
+            };
+            axios.post('http://localhost:8080/api/event/picture/', JSON.stringify(body), {headers: databaseHeader})
+                .then(insertImageResponse => {
+                    let databaseHeader = {
+                        "Content-Type": "application/json",
+                        "x-access-token": CookieStore.currentToken
+                    };
+                    axios.put('http://localhost:8080/api/event/picture/' + eventID, JSON.stringify({pictureID: insertImageResponse.data.insertId}), {headers: databaseHeader})
+                        .then(updateImageResponse => {
+                            if (updateImageResponse.status === 200 && updateImageResponse.data.affectedRows > 0){
+                                callback(200, response.data.path);
+                            }
+                        });
+                })
+        }).catch(err => {
+            console.log(err);
+            callback(500);
+        });
     }
 
 

@@ -291,8 +291,6 @@ export class PerformerCard extends Component{
 
                <div className="row padding-top-20">
 
-
-
                    <div className="col-4">
                         <span className="btn btn-primary btn-file">
                             Legg til vedlegg <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/>
@@ -376,11 +374,13 @@ export class PerformerCard extends Component{
             let formData = new FormData();
             for (let i = 0; i < files.length; i++){
                 formData.set('selectedFile', files[i]);
+                formData.set('description', files[i].name);
                 DocumentService.addDocument(EventStore.currentEvent.eventID, "Kontrakt", currentState.performer.artistID, null, 1, formData, (statusCode, returnData) => {
                     if (statusCode === 200){
                         console.log("Document was successfully uploaded");
                         Alert.success("Dokumentet ble lastet opp");
-                        this.state.performer.addDocument(new Document(returnData.documentID, returnData.documentLink, 1));
+                        console.log(returnData.documentLink);
+                        this.state.performer.addDocument(new Document(returnData.documentID, EventStore.currentEvent.eventID, files[i].name, returnData.documentLink, this.state.performer.artistID, null, 1));
                         fileInput.value = '';
                         currentState.numberOfFilesAlreadyUploaded += 1;
                         currentState.numberOfFilesAdded = 0;
@@ -445,18 +445,39 @@ export class PerformerCard extends Component{
     sendEmail(){
         console.log("Sending email to");
         console.log(this.state.performer);
-        MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
-            "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
-            "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
-            "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
-            "Regards, " + OrganizerStore.currentOrganizer.username, (statusCode) => {
-                if (statusCode === 200){
-                    console.log("Email sent successfully");
-                }
-                else{
-                    console.log("An error occured sending the email");
-                }
+
+        ArtistService.getArtistToken(this.state.performer.artistID, EventStore.currentEvent.eventID, (statusCode, token) => {
+            console.log(statusCode + " " + token);
+            if (statusCode === 200 && token){
+                console.log("We're sending the email");
+
+                const linkFriendlyToken = token.replace(/\./g, "+");
+
+                console.log(linkFriendlyToken);
+
+                const emailBody = "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
+                    "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
+                    "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
+                    "Enter this link into your browser to see your contract and edit your riders: \n" +
+                    "http://localhost:3000/#/artistLogin/" + linkFriendlyToken + " " +
+                    "Regards, " + OrganizerStore.currentOrganizer.username + " ";
+
+                MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName, emailBody
+                    , (statusCode) => {
+                        if (statusCode === 200){
+                            console.log("Email sent successfully");
+                        }
+                        else{
+                            console.log("An error occured sending the email");
+                        }
+                    });
+            }
+            else{
+
+            }
         });
+
+
     }
 
     save = () => {
@@ -548,7 +569,6 @@ export class Rider extends Component{
             this.props.riderObject.status = this.state.status;
             this.props.riderObject.isModified = true;
         });
-
     };
 
     handleCheckBoxInput = (event) => {

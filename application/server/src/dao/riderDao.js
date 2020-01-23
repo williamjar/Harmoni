@@ -19,6 +19,7 @@ module.exports = class riderDao extends Dao {
     }
 
     createOne(callback, list) {
+        console.log(list);
         super.query('INSERT INTO riderElement VALUES (default, ?, ?, default, 0, ?)', list, callback);
     }
 
