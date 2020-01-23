@@ -34,11 +34,17 @@ const riderDao = new RiderDao(pool);
 const ticketDao = new TicketDao(pool);
 
 mocha.before(done => {
-    runSQLFile('../create.sql', pool, () => {
-        runSQLFile('../testData.sql', pool, () => {
-            done();
+    try{
+        runSQLFile('../create.sql', pool, () => {
+            runSQLFile('../testData.sql', pool, () => {
+                done();
+            });
         });
-    });
+    }
+    catch (e) {
+        done();
+    }
+
 });
 
 mocha.describe('Starting DAO test', () => {
