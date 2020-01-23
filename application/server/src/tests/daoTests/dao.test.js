@@ -12,12 +12,23 @@ import PicturDao from "../../dao/pictureDao";
 import RiderDao from "../../dao/riderDao"
 import TicketDao from   "../../dao/ticketDao";
 
-const pool = mysql.createPool(databaseConfig.testConfig);
+const GITLAB_CI = true;
+
+let config;
+
+if (GITLAB_CI){
+    config = databaseConfig.gitlabConfig;
+}
+else{
+    config = databaseConfig.testConfig;
+}
+
+const pool = mysql.createPool(config);
 
 const artistDao = new ArtistDao(pool);
 const bugDao = new BugDao(pool);
 const contactDao = new ContactDao(pool);
-const organizerDao = new OrganizerDao(pool)
+const organizerDao = new OrganizerDao(pool);
 const pictureDao = new PicturDao(pool);
 const riderDao = new RiderDao(pool);
 const ticketDao = new TicketDao(pool);
