@@ -105,7 +105,7 @@ export class DocumentationTab extends Component{
                                 onChange={this.onChange}
                             />
                         </span>
-                        <Button type="button" className={"mr-1 margin-left-10 btn-success btn-lg"} onClick={this.onSubmit}>Last opp fil</Button>
+                        <Button type="button" variant="success" className={"mr-1 margin-left-10 btn-lg"} onClick={this.onSubmit}>Last opp fil</Button>
                     </div>
                 </div>
 
@@ -113,7 +113,7 @@ export class DocumentationTab extends Component{
                     <div className="col-4"></div>
 
                     <div className="col-4">
-                        <Button className={"mr-1 btn"} onClick={() => {
+                        <Button type="button" className={"mr-1 btn-primary"} onClick={() => {
                             history.push("/dokumenter/" + EventStore.currentEvent.eventID)
                         }}>Gå til arrangementets dokumenter</Button>
                     </div>
