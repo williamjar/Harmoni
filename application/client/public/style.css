@@ -34,6 +34,10 @@ body{
     padding:20px;
 }
 
+.padding-30{
+    padding:30px;
+}
+
 .padding-25{
     padding:25px;
 }
@@ -52,6 +56,10 @@ body{
 
 .padding-top-10{
     padding-top: 10px;
+}
+
+.padding-top-50{
+    padding-top: 50px;
 }
 
 .padding-top-bottom-100{
@@ -152,6 +160,12 @@ body{
     width: auto;
 }
 
+.login-logo img{
+    width: 250px;
+    padding-bottom: 40px;
+    padding-top:20px;
+}
+
 .logoImg img{
      max-width: 100% !important;
     padding-left:30px;
@@ -164,7 +178,15 @@ body{
     padding:10px;
 }
 
+.logoImg-mobile img:hover{
+    width: 75px !important;
+    padding:10px;
+    color: #00799e !important;
+}
 
+.icon-hover:hover{
+    color: #00799e;
+}
 
 .Nav-Menu{
     height: 100vh;
@@ -190,6 +212,13 @@ body{
     color:white !important;
 }
 
+.event-buttons{
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+
+}
+
 .log-out{
     position: absolute;
     bottom:0px;
@@ -210,6 +239,12 @@ body{
     width: 100%;
     background:lightgrey;
     padding: 40px;
+    text-align: center;
+}
+
+.document-event {
+    width: 100%;
+    height: available;
     text-align: center;
 }
 

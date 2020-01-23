@@ -7,6 +7,8 @@ import { NavLink } from 'react-router-dom';
 import { createHashHistory } from 'history';
 import {CookieStore} from "../../store/cookieStore";
 import {EventStore} from "../../store/eventStore";
+import {Alert} from "../alerts";
+
 let history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 
 export class CreateEventSplash extends Component{
@@ -39,24 +41,22 @@ export class CreateEventSplash extends Component{
             <div className=" w-75 center">
                     <div className = "padding-top-bottom-100">
                     <Form onSubmit={this.create}>
-                        <div className="padding-bottom-10"> Opprett  arrangement</div>
+                        <div className="padding-bottom-10 center">Opprett nytt arrangement</div>
                         <InputGroup className="mb-3 " size="sm">
                             <FormControl
                                 onChange={this.inputHandler}
-                                placeholder="Navn på arrangementet"
-                                aria-label="Navn på arrangementet"
+                                placeholder="Tittel på arrangementet"
+                                aria-label="Tittel på arrangementet"
                                 aria-describedby="basic-addon2"
+
                             />
 
                             <InputGroup.Append>
-                                <Button type="submit" variant="success">Opprett</Button>
+                                <Button alt="Denne knappen vil opprette et nytt arrangement. Du vil få muligheten til å oppdatere navnet senere." type="submit" variant="success">Opprett</Button>
                             </InputGroup.Append>
                         </InputGroup>
                     </Form>
                     </div>
-
-                    {this.state.emptyMessage?<div className="text-red">{this.emptyMessage}</div>:null}
-
 
             </div>
         );}
@@ -72,8 +72,14 @@ export class CreateEventSplash extends Component{
         if(this.state.inputName.trim() === ""){
             let state = this.state;
             state.emptyMessage = true;
+            Alert.danger("Tittel kan ikke være tom");
             this.setState(state);
         } else{
+            if (!(EventStore.eventCategories[0])) {
+                console.log("loaded categories over again");
+                EventStore.getEventCategories(() => {
+                });
+            }
             EventStore.createEvent(() => {
                 history.push('/arrangementEdit/');
                 this.setState({isLoading: false});

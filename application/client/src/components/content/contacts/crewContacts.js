@@ -38,26 +38,24 @@ export class CrewContacts extends React.Component {
         CrewStore.storeAllCrewMembersForOrganizer(() => {
             this.setState({crew: CrewStore.allCrewMembersForOrganizer}, ()=> console.log(this.state.crew))
         }, CookieStore.currentUserID);
-        CrewStore.storeAllCrewCategoriesForOrganizer(() => {
-            this.setState({crewCategories: CrewStore.allCrewCategoriesForOrganizer}, () => console.log(this.state.crewCategory))
-        }, CookieStore.currentUserID);
     }
-
-    filterCrew = (e) => {
-        this.setState({active: e.target.name});
-    };
 
     searchHandler = (selected) => {
         this.setState({currentCrew: selected, show: true}, () => console.log(selected));
     };
 
-    hidePerformer = () => {
-        this.update( () => this.setState({show: false}));
+    hideCrew = () => {
+        this.update( () => this.setState({crew: CrewStore.allCrewMembersForOrganizer}, () => {
+            this.setState({show: false});
+        }));
     };
 
     update = (callback) => {
-        ArtistService.getArtistForOrganizer((res) => {
-            this.setState({performers: res}, () => callback());
+        CrewStore.storeAllCrewMembersForOrganizer(() => {
+            this.setState({crew: CrewStore.allCrewMembersForOrganizer}, ()=> {
+                console.log(this.state.crew);
+                callback();
+            })
         }, CookieStore.currentUserID);
     };
 
@@ -73,34 +71,11 @@ export class CrewContacts extends React.Component {
                         </Col>
                     </Row>
                     <Search searchHandler={this.searchHandler} results={this.state.crew}/>
-                    <Row className="mb-2 mt-2">
-                        <Col xs={2}>
-                            <Form.Control as="select" size="sm" onChange={this.sortSelected}>
-                                <option value={0} selected>Alle</option>
-                                {this.state.crewCategory.map((category, i) =>  {
-                                    return <option value={i + 1}>{category}</option>
-                                })}
-                            </Form.Control>
-                        </Col>
-                    </Row>
-                    {this.state.crew.length !== null ? this.state.crewCategory.map((crewCategory, i) => {
-                        if(this.state.crew.find(crew => {return crew.crewCategoryName === i + 1}) && (this.state.active === crewCategory || this.state.active === "all")) {
-                            return(
-                                <Accordion id={crewCategory} defaultActiveKey="0">
-                                    <Row className="no-gutters primary-color-dark">
-                                        <p>{crewCategory}</p>
-                                        <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
-                                    </Row>
-                                    <Accordion.Collapse eventKey="0">
-                                        <Row className="no-gutters">
-                                            <CrewContactList crew={this.state.crew.filter(crew => crew.crewCategoryName === i + 1)} crewCategories={this.state.crewCategory} updateHandler={this.update}/>
-                                        </Row>
-                                    </Accordion.Collapse>
-                                </Accordion>)
-                        } else {
-                            return null;
-                        }
-                    }) : <div className="mt-5 center">
+                    {this.state.crew.length !== null ?
+                        <Row className="no-gutters mt-2">
+                            {console.log(this.state.crew)}
+                            <CrewContactList crew={this.state.crew} updateHandler={this.update}/>
+                        </Row> : <div className="mt-5 center">
                         Du har ingen registrerte personell
                     </div>}
                 </Card>
@@ -113,7 +88,7 @@ export class CrewContacts extends React.Component {
                     </Col>
                 </Row>
                 {console.log(this.state.currentCrew)}
-                {this.state.currentCrew !== null ? <CrewContactInfo show={this.state.show} contact={this.state.currentCrew} onHide={this.hidePerformer}/> : null}
+                {this.state.currentCrew !== null ? <CrewContactInfo show={this.state.show} contact={this.state.currentCrew} onHide={this.hideCrew}/> : null}
             </div>
         )
     }
@@ -126,26 +101,25 @@ export class CrewContactList extends React.Component {
 
         this.state = {
             unsorted: this.props.crew,
-            crew: [],
+            crew: this.props.crew,
             showContact: false,
             currentCrew: null,
-            crewCategory: this.props.crewCategories
         }
     }
 
     static getDerivedStateFromProps(props, state) {
-        if(props.unsorted !== state.unsorted) {
+        if(props.crew !== state.crew) {
             return {
-                unsorted: props.unsorted
+                crew: props.crew
             }
         }
         return null;
     }
 
-    viewPerformer = (e) => {
+    viewCrew = (e) => {
         console.log("view clicked");
         this.setState({
-            currentPerformer: this.state.performers.find(performer => {return performer.artistID === parseInt(e.target.id)})
+            currentCrew: this.state.crew.find(crew => {return crew.crewID === parseInt(e.target.id)})
         },() => this.setState({showContact: true}));
     };
 
@@ -161,17 +135,26 @@ export class CrewContactList extends React.Component {
     };
 
     componentDidMount() {
+        console.log(this.state.unsorted);
         this.sortCrew(this.props.crew);
     }
 
     render() {
         return(
-            <Table responsive>
+            <Table responsive hover>
+                <thead>
+                <tr align='center' onClick={this.viewCrew}>
+                    <th align="left">Navn</th>
+                    <th>Telefon</th>
+                    <th></th>
+                </tr>
+                </thead>
                 <tbody>
+                {console.log(this.state.crew)}
                 {this.state.crew.map(crew => (
-                    <tr align='center' className="contact pointer" onClick={this.viewPerformer} id={crew.crewID} key={crew.crewID}>
+                    <tr align='center' className="contact pointer" onClick={this.viewCrew} id={crew.crewID} key={crew.crewID}>
                         <td align="left" id={crew.crewID}>{crew.contactName}</td>
-                        <td id={crew.crewID}></td>
+                        <td id={crew.crewID}>{crew.phone}</td>
                         <td align="right" id={crew.crewID}><FaEye size={30} id={crew.crewID}>Vis</FaEye></td>
                     </tr>
                 ))}
@@ -193,25 +176,25 @@ export class CrewContactInfo extends React.Component {
             contactName: this.props.contact.contactName,
             email: this.props.contact.email,
             phone: this.props.contact.phone,
-            crewCategory: this.props.contact.crewCategoryName,
-            crewCategories: this.props.crewCategories,
+            description: this.props.contact.description,
             editable: false,
         }
     }
 
     shouldComponentUpdate(nextProps) {
-        return (nextProps.contact !== this.state.contact || nextProps.show !== this.state.show);
+        return (nextProps.show !== this.state.show);
     }
 
     componentDidUpdate(props) {
         this.setState({
-            show: this.props.show,
-            contact: this.props.contact,
-            contactName: this.state.contact.contactName,
-            email: this.state.contact.email,
-            phone: this.state.contact.phone,
-            /*genre: this.state.contact.genre*/
+            show: props.show,
         });
+    }
+
+    componentDidMount() {
+        this.setState({
+            contact: this.props.contact
+        }, () => this.setState({show: this.props.show}))
     }
 
     editClicked = () => {
@@ -219,12 +202,11 @@ export class CrewContactInfo extends React.Component {
     };
 
     saveClicked = () => {
-        /*ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
-            ArtistService.updateArtistGenre(() => {
-                console.log(this.state.genre);
+        ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
+            CrewStore.updateCrewMember(this.state.description, this.state.contact.crewID).then(r => {
                 this.setState({show: false, editable: false}, () => this.setState({show: true}));
-            }, this.state.contact.artistID, parseInt(this.state.genre), CookieStore.currentUserID, this.state.contact.contactID)
-        })*/
+            });
+        })
     };
 
     handleChange = (e) => {
@@ -261,25 +243,12 @@ export class CrewContactInfo extends React.Component {
                                                                  onChange={this.handleChange}/> : this.state.phone}
                         </Col>
                     </Row>
-                    <h5>Stillingsinfo</h5>
-                    <Row>
-                        <Col xs={1}>
-                            <FaMusic/>
-                        </Col>
-                        <Col>
-                            {this.state.editable ? <Form.Control name="genre" as="select" defaultValue={this.state.genre}
-                                                                 onChange={this.handleChange}>{
-                                this.state.crewCategories.map((category,i) => {return <option value={i + 1}>{category}</option>})
-                            }</Form.Control> : this.state.crewCategory}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}>
-                            <FaCalendar/>
-                        </Col>
-                        <Col>
-                        </Col>
-                    </Row>
+                    <h5>Beskrivelse</h5>
+                    {this.state.editable ? <Form.Control name="description" as="textarea" value={this.state.description} onChange={this.handleChange}/> :
+                        <Card.Body>
+                            {this.state.description}
+                        </Card.Body>
+                    }
                 </Modal.Body>
                 <Modal.Footer>
                     {this.state.editable ? <Button variant="success" onClick={this.saveClicked}>Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}

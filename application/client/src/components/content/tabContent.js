@@ -14,20 +14,25 @@ export class TabContent extends Component {
 
     state = {
         editable: [this.props.editable],
+        activeTab: [this.props.tab],
         status: EventStore.currentEvent.status,
     };
 
     render() {
-        console.log("Status: " + this.state.status);
         return (
-            <div className="tabContent">
-                <div className="tabChildren">
-                    {this.props.children}
+            <div>
+                <div className="tabContent">
+                    <div className="tabChildren margin-bottom-50">
+                        {this.props.children}
+                    </div>
                 </div>
-                <Row>
+
+                <Row className="event-buttons">
                     <Col>
                         <div>
-                            <Button className="float-right mr-1" onClick={this.props.onClick}>Neste</Button>
+                            <Button hidden={(this.state.activeTab === 3)} className="float-right mr-1" onClick={() => {
+                                this.props.btnClick();
+                            }}>Neste</Button>
 
                             <Button hidden={!(this.state.status === 1)} variant="danger" className="mr-2" onClick={() => {
                                 if (window.confirm('Er du sikker på at du vil kansellere dette arrangementet?')) this.cancelEvent();
@@ -47,17 +52,22 @@ export class TabContent extends Component {
                         </div>
                     </Col>
                 </Row>
+
             </div>
         )
     }
 
-
     // Updates the state when the received props from parent changes
     static getDerivedStateFromProps(props, state) {
-
         if (props.editable !== state.editable) {
             return {
                 editable: props.editable
+            };
+        }
+
+        if (props.tab !== state.activeTab) {
+            return {
+                activeTab : props.tab
             };
         }
         return null;
@@ -69,17 +79,10 @@ export class TabContent extends Component {
         history.push("/");
     };
 
-    // Nothing seems to happen
-
     publishEvent = () => {
         EventStore.publishCurrentEvent().then(console.log('Event published!'));
-        this.setState({status : 1})
+        this.setState({status : 1});
         Alert.success("Arrangementet har blitt publisert")
-    };
-
-    archiveEvent = () => {
-        EventStore.archiveCurrentEvent().then(console.log('Event archived!'));
-        history.push("/");
     };
 
     cancelEvent = () => {
@@ -98,7 +101,7 @@ export class TabContent extends Component {
 
     planEvent = () => {
         EventStore.planCurrentEvent().then(console.log('Event sent to planning!'));
-        this.setState({status : 0})
+        this.setState({status : 0});
         Alert.success("Arrangementet har blitt flyttet til under planlegging")
     };
 }

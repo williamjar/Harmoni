@@ -38,16 +38,16 @@ export class MobileMenu extends Component{
             <div className="zoom-80 fixed-top card">
                 <div className="row no-gutters">
                     <div className="col-4">
-                        <div className="logoImg-mobile" >
+                        <div className="logoImg-mobile icon-hover" >
                             <NavLink to="/" onClick={this.collapse}>
                                 <img width="100px" src={mobileLogo2} alt=""/>
                             </NavLink>
                         </div>
                     </div>
 
-                    <div className="col-8 text-right padding-20  padding-right-20 align-content-center">
-                        <FaUserCog size="30" onClick={this.goToUserProfile} className="pointer"/>
-                        <FaBars size="30" onClick={this.toggleExpand} className="pointer margin-left-30"/>
+                    <div className="col-8 text-right padding-30  padding-right-20 align-content-center">
+                        <FaUserCog size="30" onClick={this.goToUserProfile} className="pointer icon-hover"/>
+                        <FaBars size="30" onClick={this.toggleExpand} className="pointer margin-left-30 icon-hover"/>
                     </div>
                 </div>
                 {this.state.expand?

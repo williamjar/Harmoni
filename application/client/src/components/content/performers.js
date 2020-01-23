@@ -18,6 +18,8 @@ import {OrganizerStore} from "../../store/organizerStore";
 import {DocumentService} from "../../store/documentService";
 import {Document} from "../../classes/document";
 import {Alert} from '../alerts.js';
+import {MegaValidator} from "../../megaValidator";
+import {Card} from "react-bootstrap";
 
 
 export class PerformerPanel extends Component{
@@ -59,7 +61,7 @@ export class PerformerPanel extends Component{
                         </div>
 
                         <div className="col-lg-6 col-md-12">
-                            <RegisteredPerformers performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
+                            <RegisteredPerformers key={this.state.performerSelected} performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
                         </div>
                     </div>
 
@@ -214,7 +216,8 @@ export class PerformerCard extends Component{
 
     render(){
         return(
-            <div className="card card-body">
+            <Card>
+                <Card.Body>
                 <div className="row align-items-center">
                     <div className="col-2">
                         <img src="https://s3.us-east-2.amazonaws.com/upload-icon/uploads/icons/png/19339625881548233621-512.png" width={50} alt=""/>
@@ -264,16 +267,13 @@ export class PerformerCard extends Component{
                             return null
                         }}
                         )}
-
-
-
                             </div>
                 </div>
 
                 <div className="row padding-top-20">
                     <div className="col-4">
                         <div className="form-check">
-                            <input className="form-check-input" name="contractSigned" type="checkbox" checked={this.state.contractSigned} id="signedContract" onChange={this.handleOtherCheckboxes}/>
+                            <input className="form-check-input " name="contractSigned" type="checkbox" checked={this.state.contractSigned} id="signedContract" onChange={this.handleOtherCheckboxes}/>
                             <label className="form-check-label" htmlFor="contractSigned">
                                 Signert kontrakt
                             </label>
@@ -289,32 +289,34 @@ export class PerformerCard extends Component{
                     </div>
                 </div>
 
-               <div className="row padding-top-20">
 
-                   <div className="col-4">
-                        <span className="btn btn-primary btn-file">
+                   <Row className="mt-5">
+                   <Col>
+                        <span className="btn btn-secondary btn-file">
                             Legg til vedlegg <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/>
                         </span>
                        {this.state.numberOfFilesAdded > 0 && this.state.numberOfFilesAdded<2? <div className="padding-left-5">{this.state.numberOfFilesAdded + " file added"}</div>: null}
                        {this.state.numberOfFilesAdded > 1 ? <div className="padding-left-5">{this.state.numberOfFilesAdded + " files added"}</div>: null}
+                   </Col>
 
-                   </div>
+                   <Col>
+                       <Button variant="info" onClick={() => this.sendEmail()}>Send invitasjon</Button>
+                   </Col>
 
+                   <Col>
+                       <Button variant="success" onClick={() => this.save()} id="savePerformer">Lagre artist og legg til </Button>
+                   </Col>
 
-                   <div className="col-4">
-                       Filer lagt til fra før: {this.state.numberOfFilesAlreadyUploaded}
-                   </div>
+                   </Row>
 
-                   <div className="col-4 offset-4 text-right">
-                       <button className = "butn-success-rounded" onClick={() => this.sendEmail()}>Send offisiell invitasjon til artist</button>
-                   </div>
+                <Row className="">
+                    <Col>
+                    Filer lagt til fra før: {this.state.numberOfFilesAlreadyUploaded}
+                    </Col>
+                </Row>
 
-                   <div className="col-4 offset-4 text-right">
-                       <button className="btn-success rounded" onClick={() => this.save()} id="savePerformer">Lagre</button>
-                   </div>
-               </div>
-
-            </div>
+                </Card.Body>
+            </Card>
         )
     }
 
@@ -443,9 +445,6 @@ export class PerformerCard extends Component{
     };
 
     sendEmail(){
-        console.log("Sending email to");
-        console.log(this.state.performer);
-
         ArtistService.getArtistToken(this.state.performer.artistID, EventStore.currentEvent.eventID, (statusCode, token) => {
             console.log(statusCode + " " + token);
             if (statusCode === 200 && token){
@@ -465,7 +464,7 @@ export class PerformerCard extends Component{
                 MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName, emailBody
                     , (statusCode) => {
                         if (statusCode === 200){
-                            console.log("Email sent successfully");
+                            Alert.info("E-post ble sendt til artisten med informasjon.");
                         }
                         else{
                             console.log("An error occured sending the email");
@@ -605,24 +604,43 @@ export class RegisterPerformer extends Component{
         };
     }
 
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.name)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.name)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epostaddresse';
+        }
+        else{
+            return '';
+        }
+    }
+
     render() {
         return(
             <div className="card card-body">
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
-                            <Form.Control type="name" placeholder="" onChange={this.handleNameChange}/>
+                            <Form.Control type="text" maxLength={"30"} placeholder="" onChange={this.handleNameChange}/>
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="formGridPassword">
                             <Form.Label>Telefon</Form.Label>
-                            <Form.Control type="phone" placeholder="" onChange={this.handlePhoneChange}/>
+                            <Form.Control type="tel" maxLength={"8"} placeholder="" onChange={this.handlePhoneChange}/>
                         </Form.Group>
                     </Form.Row>
 
                     <Form.Group controlId="formGridAddress1">
                         <Form.Label>Epost</Form.Label>
-                        <Form.Control type="text" placeholder="" onChange={this.handleEmailChange}/>
+                        <Form.Control type="email" placeholder="" onChange={this.handleEmailChange}/>
                     </Form.Group>
 
                     <Form.Row>
@@ -641,7 +659,7 @@ export class RegisterPerformer extends Component{
 
                     <Row className="no-gutter">
                         <Col className="col-2">
-                    <Button variant="primary" type="submit" onClick={this.submitForm}>
+                    <Button variant="primary" type="submit" disabled={!(this.validateForm()==='')} onClick={this.submitForm}>
                         Submit
                     </Button>
                         </Col>
@@ -651,6 +669,7 @@ export class RegisterPerformer extends Component{
                     </Button>
                         </Col>
                     </Row>
+                <Form.Text className={"text-danger"}>{this.validateForm()}</Form.Text>
             </div>
         )
     }
@@ -748,7 +767,7 @@ export class RegisteredPerformers extends Component{
 
                 <ul className="list-group">
                     {this.props.performersAdded.map(p =>
-                        <li className="list-group-item pointer selection" onClick={() => this.showCard(p)}>
+                        <li key={p} className="list-group-item pointer selection" onClick={() => this.showCard(p)}>
                         <div className="row">
                             <div className="col-10">
                                 {p.contactName}
