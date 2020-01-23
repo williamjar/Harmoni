@@ -589,8 +589,8 @@ search-result-item{
     width: 50px !important;
     height: 50px !important;
     font-weight: bold;
-    color: #00aaee;
-    border-left: #00aaee;
+    color: #003E51 !important;
+    border-left: #003E51;
     border-left-style: solid;
 }
 
