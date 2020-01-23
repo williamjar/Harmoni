@@ -12,6 +12,7 @@ import {createHashHistory} from "history";
 import {PictureService} from "../../store/pictureService";
 import {CheckList} from "./checklist";
 import {MegaValidator} from "../../megaValidator";
+import {Alert} from "../alerts";
 
 const history = createHashHistory();
 
@@ -121,6 +122,7 @@ export class InfoForm extends Component {
                             <Card.Body>
                                 <Row>
                                     <Col>
+                                     <Form.Text>Tittel på arrangementet</Form.Text>
                                     <Form.Control size="lg" type="text" value={this.state.eventName} name="eventName" placeholder="Tittel" onChange={this.handleChange}/>
                                     </Col>
                                 </Row>
@@ -180,12 +182,11 @@ export class InfoForm extends Component {
                                             <Form.Control as="textarea" rows="3" value={this.state.description} name="description" onChange={this.handleChange}/>
                                         </Col>
                                     </Row>
-                                    <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Arrangementet kan ikke starte etter det har sluttet!</Form.Text>
                                 </Form.Group>
                                 <Row>
                                     <Col>
                                 <Form.Group>
-                                    <Button type="submit" variant="success">Lagre</Button>
+                                    <Button type="submit" variant="success">Lagre informasjon</Button>
                                 </Form.Group>
                                     </Col>
                                 </Row>
@@ -195,9 +196,9 @@ export class InfoForm extends Component {
                     </Col>
                         <Col>
                             <CheckList issueList={this.state.issueList}/>
-                        </Col>
-                        <Col>
-                            <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2"/>
+
+                            <h5 className={"mt-2"}>Last opp et bilde til arrangementet</h5>
+                            <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2 w-25"/>
                             <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/>
                             <Button type={"file"} variant={"secondary"} onClick={() => {
                                 console.log("Uploading image...");
@@ -211,7 +212,7 @@ export class InfoForm extends Component {
                                             PictureService.previewPicture(path, link => {
                                                 EventStore.currentEvent.picture = link;
                                                 this.setState({serverFile: link});
-                                                console.log("Image uploaded");
+                                                Alert.success("Bildet ditt ble lastet opp")
                                             });
                                         }
                                         else{
@@ -220,7 +221,7 @@ export class InfoForm extends Component {
                                     });
                                 }
                                 else{
-                                    console.log("Det skjedde en feil.");
+                                    Alert.danger("Beklager, det har oppstått en feil med opplastningen")
                                 }
                             }}>Last opp bilde</Button>
                         </Col>
@@ -338,9 +339,9 @@ export class InfoForm extends Component {
                     </Col>
 
                     <Col>
-                        <Card>
+                        <Card className={"border-0"}>
                             <Card.Body>
-                                <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2"/>
+                                <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2 w-75"/>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -381,7 +382,7 @@ export class InfoForm extends Component {
         if(this.state.startTime===null || this.state.endTime===null){
             list.push("Tidspunkt er ikke satt");
         } else if (this.state.startTime.length<=1 || this.state.endTime.length<=1){
-            list.push("Tidspunkt eventet er ikke satt");
+            list.push("Tidspunkt er ikke satt");
         }
 
         this.setState({issueList: list})
@@ -402,7 +403,8 @@ export class InfoForm extends Component {
 
 
     submitForm(){
-        console.log("form submitted.");
+
+
         this.setState({dateError: false})
         if(this.validateForm()){
             console.log("form validated");
@@ -411,6 +413,7 @@ export class InfoForm extends Component {
             this.setState({edit:false});
         } else{
             this.setState({dateError: true})
+            Alert.danger("Arrangementet kan ikke slutte før det har startet. Sjekk dato og tid.");
         }
     }
 
