@@ -5,6 +5,22 @@
     font-family: Roboto, serif !important;
 }
 
+
+
+.btn-primary {
+    background:  #00799e !important;
+}
+
+.btn-success {
+    background: #007d07 !important;
+}
+
+.btn-primary:hover{
+    filter: brightness(120%);
+}
+
+
+
 body{
     /* background: #314b57 !important; */
     background-image: url("./resources/concert.jpg");
