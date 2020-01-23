@@ -4,6 +4,7 @@ import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
 import {PerformerPanel, PerformersView} from "./performers";
 import {GeneralInfo} from "./generalInfo";
+import {Map} from "./map";
 import {CrewPanel, CrewTab} from "./crew";
 import {DocumentationTab} from "../documentationTab";
 import {EventStore} from "../../store/eventStore";
