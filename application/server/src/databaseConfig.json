@@ -16,5 +16,14 @@
     "database": "joakimad",
     "debug": false,
     "multipleStatements": true
+  },
+  "gitlabConfig":{
+    "connectionLimit": 2,
+    "host": "mysql",
+    "user": "root",
+    "password": "secret",
+    "database": "supertestdb",
+    "debug": false,
+    "multipleStatements": true
   }
 }

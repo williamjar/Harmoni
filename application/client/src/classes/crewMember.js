@@ -19,9 +19,8 @@ export class CrewMember extends Contact {
     }*/
 
     static getTestCrewMember(){
-        let crewMemberOne = new CrewMember(0, 'This lazy dude can only work every third sunday when theres a full moon',
-            "Lazy work", super.getTestContacts()[3].contactName, super.getTestContacts()[3].phone, super.getTestContacts()[3].email,);
-
+        let crewMemberOne = new CrewMember(0, super.getTestContacts()[3].contactID, 'This lazy dude can only work every third sunday when theres a full moon',
+            0, "Lazy work", super.getTestContacts()[3].contactName, super.getTestContacts()[3].phone, super.getTestContacts()[3].email, false, false, false);
         return [crewMemberOne];
     }
 }

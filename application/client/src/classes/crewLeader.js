@@ -7,12 +7,8 @@ export class CrewLeader extends CrewMember{
     }
 
     static getTestCrewLeader(){
-        let crewLeader = new CrewLeader(super.getTestCrewMember()[0].crewID,
-            super.getTestCrewMember()[0].contactName,
-            super.getTestCrewMember()[0].phone,
-            super.getTestCrewMember()[0].email,
-            super.getTestCrewMember()[0].description,
-            super.getTestCrewMember()[0].crewCategories[0]);
+        let crewLeader = new CrewLeader(super.getTestCrewMember()[0].crewID, super.getTestCrewMember()[0].contactName);
+        console.log(crewLeader);
         return [crewLeader];
     }
 }

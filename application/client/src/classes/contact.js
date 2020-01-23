@@ -7,10 +7,10 @@ export class Contact {
     }
 
     static getTestContacts() {
-        let contactOne = new Contact('organizer One', '00 00 12 34', 'mail@organisasjon.no');
-        let contactTwo = new Contact('Artist One', '12345678', 'nummeren@artist.no');
-        let contactThree = new Contact('Artist Two', '98752465', null);
-        let contactFour = new Contact('Crewman One', '52235456', 'dude@crew.com');
+        let contactOne = new Contact(0, 'organizer One', '00 00 12 34', 'mail@organisasjon.no');
+        let contactTwo = new Contact(1, 'Artist One', '12345678', 'nummeren@artist.no');
+        let contactThree = new Contact(2, 'Artist Two', '98752465', null);
+        let contactFour = new Contact(3, 'Crewman One', '52235456', 'dude@crew.com');
         return [contactOne, contactTwo, contactThree, contactFour];
     }
 }
