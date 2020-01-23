@@ -1,14 +1,15 @@
 import axios from "axios";
 import {Document} from "../classes/document.js"
 import {DocumentCategory} from "../classes/documentCategory";
-import {EventStore} from "./eventStore";
 import {CookieStore} from "./cookieStore";
 import {Contact} from "../classes/contact";
-
 const axiosConfig = require("./axiosConfig");
 
+/**
+ * @class DocumentService
+ * @classdesc Store Class for functions related to accessing and modifying documents.
+ */
 export class DocumentService {
-
 
     static getAllDocumentsByCategoryForEvent(eventID, documentCategoryID, callback) {
         let header = {
