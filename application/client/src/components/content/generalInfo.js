@@ -355,7 +355,7 @@ export class InfoForm extends Component {
                         </Col>
 
                     </Row>
-                    {this.state.address.trim() !== "" ? <Row className = "padding-bottom-20">
+                    {this.state.address !== null && this.state.address.trim() !== "" ? <Row className = "padding-bottom-20">
                         <Col>
                             <Map
                                 latLng = {{lat: 66.4857, lng: 13.5622}} //Glomfjord!
