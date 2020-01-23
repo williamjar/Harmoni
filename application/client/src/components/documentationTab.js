@@ -28,6 +28,18 @@ export class DocumentationTab extends Component{
         }
     };
 
+    checkFileType(){
+        if(this.state.selectedFile.name !== ''){
+            let filename = this.state.selectedFile.name;
+            return (/\.(jpeg)$/i).test(filename) || (/\.(jpg)$/i).test(filename) || (/\.(png)$/i).test(filename)
+                || (/\.(ai)$/i).test(filename) || (/\.(pdf)$/i).test(filename) || (/\.(pptx)$/i).test(filename)
+                || (/\.(ppt)$/i).test(filename) || (/\.(xlsx)$/i).test(filename) || (/\.(xls)$/i).test(filename)
+                || (/\.(docx)$/i).test(filename) || (/\.(doc)$/i).test(filename) || (/\.(rar)$/i).test(filename)
+                || (/\.(7z)$/i).test(filename) || (/\.(zip)$/i).test(filename) || (/\.(rtf)$/i).test(filename)
+                || (/\.(rtx)$/i).test(filename);
+        }
+    }
+
     onSubmit = (e) => {
         e.preventDefault();
         const {description, selectedFile} = this.state;
@@ -36,18 +48,26 @@ export class DocumentationTab extends Component{
         const selectedCategoryIndex = selectedCategory.selectedIndex;
         const selectedCategoryID = selectedCategory.value;
         const selectedCategoryName = selectedCategory.options[selectedCategoryIndex].text;
+        if(this.checkFileType()){
+            let formData = new FormData();
+            formData.append('description', description);
+            formData.append('selectedFile', selectedFile);
+            DocumentService.addDocument(EventStore.currentEvent.eventID, selectedCategoryName, null, null, selectedCategoryID, formData, statusCode => {
+                if (statusCode === 200){
+                    alert("Document was added!");
+                }
+                else{
+                    alert("There was an error, please try again or contact us.");
+                }
+            })
+        } else {
+            console.log("KAN IKKE LEGGE INN");
+            return(
+                <p>Kan ikke legge inn</p>
+            );
+        }
 
-        let formData = new FormData();
-        formData.append('description', description);
-        formData.append('selectedFile', selectedFile);
-        DocumentService.addDocument(EventStore.currentEvent.eventID, selectedCategoryName, null, null, selectedCategoryID, formData, statusCode => {
-            if (statusCode === 200){
-                alert("Document was added!");
-            }
-            else{
-                alert("There was an error, please try again or contact us.");
-            }
-        })
+
     };
 
     componentDidMount() {
