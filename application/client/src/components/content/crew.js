@@ -25,6 +25,7 @@ export class CrewPanel extends Component{
         this.state = {
             crewList : [],
             crewCategoryList : [],
+            crewCategoryListEvent : [],
             showCrewCard: false,
             crewSelected : {},
             crewCategorySelected : {},
@@ -56,7 +57,7 @@ export class CrewPanel extends Component{
                     </div>
 
                     <div className="col-lg-6 col-md-12">
-                        <CrewView crewList={this.state.crewList} changeCard={this.changeCurrentCrew} submit={this.submitFunction} unassignCrew={this.unassignCrew}/>
+                        <CrewView crewList={this.state.crewList} crewCategoryList={this.state.crewCategoryListEvent} changeCard={this.changeCurrentCrew} submit={this.submitFunction} refreshCrew={this.refreshCrewList} refreshCategories={this.refreshCrewCategoriesForEvent} unassignCrew={this.unassignCrew}/>
                     </div>
                 </div>
 
@@ -105,8 +106,9 @@ export class CrewPanel extends Component{
     };
 
     componentDidMount() {
-        this.refreshCrewList();
+       // this.refreshCrewList();
         this.refreshCrewCategories();
+       // this.refreshCrewCategoriesForEvent();
         this.callBackSearchResult();
     };
 
@@ -147,6 +149,8 @@ export class CrewPanel extends Component{
             this.setState(
                 { crewList : CrewStore.allCrewForCurrentEvent })
         }, EventStore.currentEvent.eventID);
+        console.log("crewList");
+        console.log(this.state.crewList);
     };
 
     refreshCrewCategories = () => {
@@ -154,8 +158,19 @@ export class CrewPanel extends Component{
             this.setState(
                 {
                     crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
-                })
+                });
         }, CookieStore.currentUserID);
+    };
+
+    refreshCrewCategoriesForEvent = () => {
+        CrewStore.storeAllCrewCategoriesForEvent(() => {
+            this.setState(
+                {
+                    crewCategoryListEvent : CrewStore.allCrewCategoriesForCurrentEvent
+                });
+            console.log("CREW PANEL EVENT CAT:");
+            console.log(this.state.crewCategoryListEvent);
+        }, EventStore.currentEvent.eventID);
     };
 
     submitFunction = (selected) => {
@@ -163,6 +178,7 @@ export class CrewPanel extends Component{
         currentState.crewSelected = selected;
         this.setState(currentState);
         this.refreshCrewList();
+        this.refreshCrewCategoriesForEvent();
     };
 
     submitCategory = () => {
@@ -548,7 +564,7 @@ export class CrewView extends Component {
         super(props);
         this.state = {
             crewList: this.props.crewList,
-            categoryList: [],
+            categoryList: this.props.crewCategoryList,
             categoryName: ""
         }
     }
@@ -594,10 +610,11 @@ export class CrewView extends Component {
 
     static getDerivedStateFromProps(props, state) {
         /* Updates the props based on parent state change
-        * sets the current performer to be displayed in card */
-        if(props.crewList!== state.crewList) {
+        * sets the current crew to be displayed in card */
+        if(props.crewList !== state.crewList) {
             return {
-                crewList: props.crewList
+                crewList: props.crewList,
+                categoryList : props.crewCategoryList
             };
         }
         return null;
@@ -612,17 +629,15 @@ export class CrewView extends Component {
         this.props.unassignCrew(crew);
     };
 
-    refreshCrewCategories = () => {
-        CrewStore.storeAllCrewCategoriesForEvent(() => {
-            this.setState(
-                {
-                    categoryList : CrewStore.allCrewCategoriesForCurrentEvent
-                })
-        }, EventStore.currentEvent.eventID);
-    };
-
     componentDidMount() {
-        this.refreshCrewCategories();
+
+        this.props.refreshCrew();
+        this.props.refreshCategories();
+        console.log("CATEGORYLIST:");
+        console.log(this.props.crewCategoryList);
+        console.log(this.state.categoryList);
+        console.log("CREWLIST:");
+        console.log(this.state.crewList);
 
     }
 }
@@ -677,7 +692,7 @@ export class AddCrewMember extends Component{
                                 {this.state.selectedCategoryID === null?
                                     <div>Ingen kategorier er lagt til</div>
                                     :
-                                <select value={this.state.selectedCategoryID} onChange={this.handleCategoryChange}>
+                                <select className="form-control" value={this.state.selectedCategoryID} onChange={this.handleCategoryChange}>
                                     {this.state.crewCategoryList.map(category => (
                                         <option key={category.crewCategoryID} value={category.crewCategoryID}>
                                             {category.crewCategoryName}
@@ -703,10 +718,7 @@ export class AddCrewMember extends Component{
 
                     <Form.Group>
                         <Form.Label>Hovedansvarlig</Form.Label>
-                        <input
-                            type="checkbox"
-                            onClick={this.handleIsResponsibleChange}
-                        />
+                        <input type="checkbox" onClick={this.handleIsResponsibleChange}/>
                     </Form.Group>
                     <Button variant="primary" type="button" onClick={this.submitForm}>
                         Lagre
