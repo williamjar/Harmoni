@@ -155,9 +155,9 @@ export class ContactList extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if(props.unsorted !== state.unsorted) {
+        if(props.performers !== state.unsorted) {
             return {
-                unsorted: props.unsorted
+                unsorted: props.performers
             }
         }
         return null;
@@ -187,7 +187,7 @@ export class ContactList extends React.Component {
 
     render() {
         return(
-            <Table responsive>
+            <Table responsive hover>
                 <tbody>
                 {this.state.performers.map(performer => (
                     <tr align='center' className="contact pointer" onClick={this.viewPerformer} id={performer.artistID} key={performer.artistID}>
