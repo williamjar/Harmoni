@@ -1,13 +1,33 @@
+//This styling will only be applied if a valid API-key is being used with Google Maps API
+
 export default [
+    {
+        "featureType": "all",
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            },
+            {
+                "color": "#efebe2"
+            }
+        ]
+    },
     {
         "featureType": "landscape",
         "elementType": "all",
         "stylers": [
             {
-                "hue": "#F600FF"
-            },
-            {
-                "gamma": 1
+                "color": "#efebe2"
             }
         ]
     },
@@ -16,55 +36,142 @@ export default [
         "elementType": "all",
         "stylers": [
             {
-                "hue": "#7200FF"
-            },
+                "color": "#efebe2"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.attraction",
+        "elementType": "all",
+        "stylers": [
             {
-                "saturation": 49
-            },
+                "color": "#efebe2"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.business",
+        "elementType": "all",
+        "stylers": [
             {
-                "gamma": 1
+                "color": "#efebe2"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.government",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#dfdcd5"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.medical",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#dfdcd5"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.park",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#bad294"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.place_of_worship",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#efebe2"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.school",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#efebe2"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.sports_complex",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#efebe2"
             }
         ]
     },
     {
         "featureType": "road.highway",
-        "elementType": "all",
+        "elementType": "geometry.fill",
         "stylers": [
             {
-                "hue": "#DE00FF"
-            },
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "geometry.stroke",
+        "stylers": [
             {
-                "saturation": -4.6000000000000085
-            },
-            {
-                "lightness": -1.4210854715202004e-14
-            },
-            {
-                "gamma": 1
+                "visibility": "off"
             }
         ]
     },
     {
         "featureType": "road.arterial",
-        "elementType": "all",
+        "elementType": "geometry.fill",
         "stylers": [
             {
-                "hue": "#FF009A"
-            },
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "geometry.stroke",
+        "stylers": [
             {
-                "gamma": 1
+                "visibility": "off"
             }
         ]
     },
     {
         "featureType": "road.local",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#fbfbfb"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
         "elementType": "all",
         "stylers": [
             {
-                "hue": "#FF0098"
-            },
-            {
-                "gamma": 1
+                "visibility": "off"
             }
         ]
     },
@@ -73,13 +180,7 @@ export default [
         "elementType": "all",
         "stylers": [
             {
-                "hue": "#EC00FF"
-            },
-            {
-                "saturation": 72.4
-            },
-            {
-                "gamma": 1
+                "color": "#a5d7e0"
             }
         ]
     }
