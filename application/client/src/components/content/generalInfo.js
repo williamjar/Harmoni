@@ -69,7 +69,7 @@ export class InfoForm extends Component {
             issueList: [],
             selectedFile: null,
             serverFile: null,
-            pictureID: -1
+            pictureID: null
         };
 
         this.handleChange = this.handleChange.bind(this);
