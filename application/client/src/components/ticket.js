@@ -35,9 +35,7 @@ export class Ticket extends Component{
     render(){
         return(
             <Card className={"border-0"}>
-                <Form>
                     <TicketAll/>
-                </Form>
             </Card>
         );
     }
@@ -55,16 +53,16 @@ export class TicketAll extends Component {
             ticketTypeName: '',
             price : '',
             amount : '',
-            releaseDate : '',
+            releaseDate : null,
             endDate : null,
-            releaseTime : '',
+            releaseTime : null,
             endTime : null,
             description : '',
             ticketList : [],
             savingInformation: false,
             loading: false,
             dateError: false,
-            noEndSellingDate: true
+            noEndSellingDate: false
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -78,7 +76,7 @@ export class TicketAll extends Component {
         return(
             <Card className={"border-0 mb-3 p-4"}>
                     {this.state.ticketList.map(ticket => (
-                        <Card className={"shadow mb-3"}>
+                        <Card key={ticket} className={"shadow mb-3"}>
                             <Card.Body>
                             <Form>
                                 <Row className="ticketStyle" >
@@ -141,7 +139,7 @@ export class TicketAll extends Component {
                                     <Col>
                                         <Form.Text>{endDate}</Form.Text>
                                         <Form.Control
-                                            value={this.formatDate(ticket.endDate)}
+                                            value={this.checkIfNull(this.formatDate(ticket.endDate))}
                                             readOnly
                                             plaintext
                                         />
@@ -243,7 +241,7 @@ export class TicketAll extends Component {
                                             type ="date"
                                             name = "endDate"
                                             onChange={this.handleInputChange}
-                                            disabled={this.state.noEndSellingDate}
+                                            disabled={!this.state.noEndSellingDate}
                                         />
                                     </Col>
 
@@ -253,7 +251,7 @@ export class TicketAll extends Component {
                                             type = "time"
                                             name = "endTime"
                                             onChange={this.handleInputChange}
-                                            disabled={this.state.noEndSellingDate}
+                                            disabled={!this.state.noEndSellingDate}
                                         />
                                     </Col>
 
@@ -273,7 +271,7 @@ export class TicketAll extends Component {
                                         <Form.Check
                                             type="checkbox"
                                             name="noEndSellingDate"
-                                            label="Ønsker ikke å sette en sluttdato for salg"
+                                            label="Sett sluttdato og tid for salg av billett"
                                             value={this.state.noEndSellingDate}
                                             checked={this.state.noEndSellingDate}
                                             onChange={this.handleInputChange}
@@ -296,13 +294,27 @@ export class TicketAll extends Component {
     }
 
     validateForm(){
+        return this.validateDate() && this.state.ticketTypeName !== '' && this.state.price !== '' && this.state.amount !== '' && this.state.releaseDate !== null && this.state.releaseTime !== null;
+    }
 
-        return this.validateDate() && this.state.ticketTypeName !== '' && this.state.price !== '' && this.state.amount !== '' && this.state.releaseDate !== null && this.state.endDate !== null;
 
+    checkIfNull(obamium){
+
+        if(obamium === null){
+            return obamium + " er ikke satt";
+        }
+
+        if(obamium === 'torsdag 1. januar 1970'){
+            return "Sluttdato er ikke satt";
+        }
+
+        return obamium;
     }
 
     validateDate(){
-        if(this.state.noEndSellingDate) return true;
+        if(!this.state.noEndSellingDate) return true;
+
+        if(this.state.endDate ===null) return false;
 
         if(this.state.releaseDate===this.state.endDate){
             return this.state.releaseTime < this.state.endTime;
@@ -321,7 +333,9 @@ export class TicketAll extends Component {
         Updates all the states when changed.
     */
     handleInputChange(event) {
-        console.log(this.state.noEndSellingDate)
+        console.log("validateform:" + this.validateForm());
+        console.log("validatedate:" + this.validateDate());
+        console.log(this.state.noEndSellingDate);
         let target = event.target;
         let value = target.type === 'checkbox' ? target.checked : target.value;
         let name = target.name;

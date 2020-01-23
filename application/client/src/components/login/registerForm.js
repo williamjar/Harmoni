@@ -5,6 +5,7 @@ import { createHashHistory } from 'history';
 import {NavLink} from "react-router-dom";
 import {MegaValidator} from "../../megaValidator";
 
+
 let history = createHashHistory();
 
 export class RegisterForm extends React.Component {
@@ -24,7 +25,6 @@ export class RegisterForm extends React.Component {
             loggingIn: false,
             confirmTermsOfService: false,
             showGDPR: false,
-            formCheckerActive: false
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -32,7 +32,6 @@ export class RegisterForm extends React.Component {
     }
 
     handleInputChange(event){
-        this.setState({formCheckerActive: true,});
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
@@ -113,28 +112,14 @@ export class RegisterForm extends React.Component {
                                 </Col>
                             </Row>
                             <Form.Group>
-                                <Form.Check name="confirmTermsOfService" value={this.state.confirmTermsOfService}  onChange={this.handleInputChange} type="checkbox" label={"Godkjenn personvernserklæring"}/>
-                                <Form.Text className="link text-primary" onClick={()=>this.functionToShowGDPR()}> Les vår personvernserklæring </Form.Text>
+                                <Button variant="outline-secondary" className="text-link" onClick={()=>this.functionToShowGDPR()}> Les vår personvernserklæring </Button>
+                                <Form.Check name="confirmTermsOfService" value={this.state.confirmTermsOfService}  onChange={this.handleInputChange} type="checkbox" label="Godkjenn personvernserklæring"/>
                             </Form.Group>
-
-                            <Container hidden={!this.state.formCheckerActive}>
-
-                                <Form.Text className="text-danger" hidden={MegaValidator.validateUsernameLength(this.state.username)}>Brukernavn kreves</Form.Text>
-                                <Form.Text className="text-danger" hidden={MegaValidator.validateEmailLength(this.state.firstEmail, this.state.secondEmail)}>E-postaddresse kreves</Form.Text>
-                                <Form.Text className="text-danger" hidden={MegaValidator.validateUsername("nothing", this.state.username)}>Brukernavnet kan kun inneholde tall og bokstaver</Form.Text>
-
-                                <Form.Text className="text-danger" hidden={MegaValidator.validateEmail(this.state.firstEmail, this.state.secondEmail)}>E-postadressene må være like</Form.Text>
-                                <Form.Text className="text-danger" hidden={MegaValidator.validatePassword(null,this.state.firstPassword,this.state.secondPassword)}>Passordene må være like</Form.Text>
-
-                                <Form.Text className="text-danger" hidden={MegaValidator.validatePasswordLength(this.state.firstPassword,this.state.secondPassword)}>Passordet ditt må være på minst 8 tegn</Form.Text>
-                                <Form.Text className="text-danger" hidden={!MegaValidator.checkForEInNumber(this.state.phonenumber)}>Telefonnummeret ditt inneholder ugyldige symboler</Form.Text>
+                                <Form.Text className="text-danger">{this.errorHandler()}</Form.Text>
 
                                 <Form.Text className="text-danger" hidden={!this.state.databaseConnectionError}>Det oppstod en feil med oppkoblingen til databasen.</Form.Text>
 
-                            </Container>
-
                             <Form.Text> Har du allerede en bruker? <NavLink to="/"> Klikk her for å logge inn. <span className="NavLink"/></NavLink></Form.Text>
-
                         </div>
                     </Card.Body>
                     <Card>
@@ -144,6 +129,34 @@ export class RegisterForm extends React.Component {
                 </Form>
             </Card>
         )
+    }
+
+
+    errorHandler(){
+        if(!MegaValidator.validateUsernameLength(this.state.username)){
+            return "Brukernavn kreves";
+        }
+        if(!MegaValidator.validateEmailLength(this.state.firstEmail, this.state.secondEmail)){
+            return "E-postaddresse kreves";
+        }
+        if(!MegaValidator.validateUsername("nothing", this.state.username)){
+            return "Brukernavnet kan kun inneholde tall og bokstaver";
+        }
+        if(!MegaValidator.validateEmail(this.state.firstEmail, this.state.secondEmail)){
+            return "E-postaddressene må være like";
+        }
+        if(!MegaValidator.validatePasswordLength(this.state.firstPassword,this.state.secondPassword)){
+            return "Passordet ditt må være på minst 8 tegn";
+        }
+        if(!MegaValidator.validatePassword(null,this.state.firstPassword,this.state.secondPassword)){
+            return "Passordene må være like";
+        }
+        if(MegaValidator.checkForEInNumber(this.state.phonenumber)){
+            return"Telefonnummeret ditt inneholder ugyldige symboler";
+        } else {
+            return ""
+        }
+
     }
 
     functionToShowGDPR(){
