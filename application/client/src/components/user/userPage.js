@@ -14,6 +14,7 @@ let history = createHashHistory();
 export class UserPage extends React.Component {
     constructor(props) {
         super(props);
+        console.log(props);
         this.state = {
             username: '',
             newUsername: '',
@@ -76,7 +77,7 @@ export class UserPage extends React.Component {
                                     </tbody>
                                 </Table>
                             </Card>
-                            <ProfilePictureForm profilePicture = {this.state.profilePicture}/>
+                            <ProfilePictureForm changeProfilePicture={this.props.changeProfilePicture}/>
                         </Col>
                         <Col>
                             <Card className={"p-2 card border-0"}>
@@ -391,8 +392,7 @@ export class ProfilePictureForm extends React.Component {
         this.state = {
             profilePictureUploaded: true,
             savingInformation: false,
-            link: '',
-            newProfilePicture: null
+            link: ''
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -404,7 +404,7 @@ export class ProfilePictureForm extends React.Component {
         this.updateInfoPicture((profilePicture) => {
             if(profilePicture !== null && profilePicture !== ''){
                 PictureService.previewPicture(profilePicture, (url) => {
-                    this.setState({link: url})
+                    this.setState({link: url});
                 });
             }
         })
@@ -415,9 +415,6 @@ export class ProfilePictureForm extends React.Component {
             if (statusCode === 200) {
                 let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
 
-                this.setState(this.setState({
-                    profilePicture: databaseImage
-                }));
                 callback(databaseImage);
             } else {
             }
@@ -458,8 +455,9 @@ export class ProfilePictureForm extends React.Component {
             this.updateInfoPicture((profilePicture) => {
                 if(profilePicture !== null && profilePicture !== ''){
                     PictureService.previewPicture(profilePicture, (url) => {
-                        this.setState({link: url})
-                    })
+                        this.setState({link: url});
+                        this.props.changeProfilePicture(profilePicture);
+                    });
                 }
             })
         });

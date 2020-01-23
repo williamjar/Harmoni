@@ -104,7 +104,7 @@ export class NavBar extends Component{
 
                 <Menu/>
 
-                <UserProfileButton/>
+                <UserProfileButton profilePicture={this.props.profilePicture}/>
 
                 <div className="center font-italic purple log-out" onClick={() => {
                     sessionStorage.setItem('token', null);
@@ -176,31 +176,33 @@ export class UserProfileButton extends Component{
         super(props);
         this.state = {
             username: '',
-            profilePicture: '',
-            link: ''
+            link: '',
+            profilePicture: this.props.profilePicture
         };
     }
 
     componentDidMount() {
-        this.updateInfo((profilePicture) => {
-            if(profilePicture !== null && profilePicture !== ''){
-                PictureService.previewPicture(profilePicture, (url) => {
-                    this.setState({link: url})
-                });
-            }
-        })
+        console.log(this.state);
+        if (this.state.profilePicture !== null && this.state.profilePicture !== '') {
+            PictureService.previewPicture(this.state.profilePicture, (url) => {
+                this.setState({link: url});
+                console.log(this.state);
+            });
+        }
     }
 
     checkIfUserHasPicture(){
-        if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
+        console.log(this.state);
+        if(this.state.link !== null && this.state.link !== ''){
             return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
         }else {
-            return(<img width={50} src={require('../user/profile.png')} alt={"test"}/>);
+            return(<img width={50} src={require('../user/profile.png')} alt={"standard profilbilde"}/>);
         }
     }
 
 
     render() {
+        console.log(this.props);
         return(
             <NavLink to="/brukerprofil">
                 <div className="user-nav">
@@ -212,7 +214,6 @@ export class UserProfileButton extends Component{
                                 Arrangør
                             </div>
                         </div>
-
                     </div>
                 </div>
             </NavLink>
@@ -224,7 +225,6 @@ export class UserProfileButton extends Component{
             if (statusCode === 200){
                 let databaseUsername = OrganizerStore.currentOrganizer.username;
                 let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
-
 
                 this.setState(this.setState({
                     username: databaseUsername,

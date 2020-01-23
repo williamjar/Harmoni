@@ -9,7 +9,6 @@ import Accordion from "react-bootstrap/Accordion";
 import {CookieStore} from "../store/cookieStore";
 
 
-
 const history = createHashHistory();
 
 export class FolderItem extends Component{
