@@ -49,9 +49,6 @@ export class Map extends Component{
 
                 this.setState({latLng: {lat: lat, lng: lng}});
             }
-
-
-
         })
     }
 
@@ -59,13 +56,6 @@ export class Map extends Component{
         let results = await provider.search({query: this.state.location});
         callback(results);
     }
-
-    /*
-    delayedShowMarker = () => {
-        setTimeout(() => {
-            this.setState({isMarkerShown: false})
-        }, 3000)
-    }*/
 
     handleMarkerClick = () => {
         console.error("A marker has been clicked, consider this a warning...");
