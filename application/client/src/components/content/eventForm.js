@@ -97,9 +97,6 @@ export class EventForm extends Component {
                                 editable={this.state.edit} tab={this.state.activeTab} btnClick={this.handleButtonClick}>
                         <div className="padding-bottom-20">
                             <DocumentationTab editable={true}/>
-                            <Button className={"mr-1"} onClick={() => {
-                                history.push("/dokumenter/" + EventStore.currentEvent.eventID)
-                            }}>Gå til arrangementets dokumenter</Button>
                         </div>
                     </TabContent>
                 </Tab>
