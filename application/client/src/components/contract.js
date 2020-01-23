@@ -1,16 +1,12 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Col, Row} from "react-bootstrap";
-import {NavLink} from "react-router-dom";
 import {FaFileUpload,FaAngleDown,FaFileImage, FaFilePowerpoint,FaFileExcel,FaFileArchive,FaFileWord, FaFilePdf, FaFileAlt, FaFolderOpen} from "react-icons/all";
 import { createHashHistory } from 'history';
 import {DocumentService as documentService} from "../store/documentService";
-import {DocumentCategory} from "../classes/documentCategory";
-import {OrganizerStore as organizerStore} from "../store/organizerStore";
 import {EventStore as eventStore} from "../store/eventStore";
-import axios from "axios";
 import Accordion from "react-bootstrap/Accordion";
-import ListGroup from "react-bootstrap/ListGroup";
+import {CookieStore} from "../store/cookieStore";
 
 
 
@@ -50,6 +46,10 @@ export class MyDocuments extends Component{
             </div>
         )
     }
+
+    componentDidMount() {
+
+    }
 }
 
 //---------------- Events ------------------
@@ -62,7 +62,9 @@ export class FolderEvent extends Component{
     }
 
     componentDidMount() {
-        this.setState({events: eventStore.allEventsForOrganizer});
+        eventStore.storeAllEventsForOrganizer(() => {
+            this.setState({events: eventStore.allEventsForOrganizer});
+        }, CookieStore.currentUserID);
     }
 
     handleClick(eventID){
