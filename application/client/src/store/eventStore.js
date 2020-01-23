@@ -17,6 +17,7 @@ export class EventStore {
 
     static setCurrentEvent(newEvent) {
         this.currentEvent = newEvent;
+        sessionStorage.setItem('currentEvent', JSON.stringify(this.currentEvent));
     }
 
     static createEvent(callback, eventName, organizerID) {

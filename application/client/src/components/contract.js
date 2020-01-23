@@ -226,7 +226,6 @@ class Info extends Component {
         documentService.getCrewInfoConnectedToDocument(this.props.documentID,(crewObj) => {
             this.setState({crew: crewObj});
         });
-
     }
 
     associatedContact(){

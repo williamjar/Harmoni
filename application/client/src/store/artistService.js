@@ -218,6 +218,46 @@ export class ArtistService {
             .then(genreList => callback(genreList));
     }
 
+    static getArtistToken(artistID, eventID, callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let body = {
+            artistID: artistID,
+            eventID: eventID
+        };
+
+        console.log("Getting artist token");
+
+        axios.post(axiosConfig.root + "/api/artist/personalLink", JSON.stringify(body), {headers: header}).then(response => {
+            console.log(response);
+            if (response.err){
+                callback(500);
+            }
+            else{
+                callback(200, response.data.jwt);
+            }
+        }).catch(callback(500));
+    }
+
+    static decodeToken(token, callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": token
+        };
+
+        axios.get(axiosConfig.root + "/decodeArtistToken", {headers: header}).then(response => {
+            if (response.data.error){
+                callback(500, response.error);
+            }
+            else{
+                callback(200, response.data);
+            }
+        });
+    }
+
 }
 
 

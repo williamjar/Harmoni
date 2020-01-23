@@ -78,12 +78,34 @@ app.post("/token", (req, res) => {
     })
 });
 
+app.post("/api/artist/personalLink", (req, res) => {
+    const artistID = req.body.artistID;
+    const eventID = req.body.eventID;
+    try{
+        let token = jwt.sign(
+            {
+                artistID: artistID,
+                eventID: eventID
+            },
+            privateKey,
+            {
+                algorithm: "RS512"
+            });
+        jwt.verify(token, publicKey);
+        console.log("Here we go");
+        console.log(token);
+        res.send({jwt: token});
+    }
+    catch (e) {
+        console.log(e);
+        res.json({err: e});
+    }
+});
+
 app.use('/api', (req, res, next) => {
-    console.log("Testing /api");
     let token;
     if (req.headers["x-access-token"]) {
         token = req.headers["x-access-token"];
-        console.log("Token in /api " + token);
         try {
             jwt.verify(token, publicKey);
             let email = jwt.decode(token, publicKey).email;
@@ -96,7 +118,6 @@ app.use('/api', (req, res, next) => {
                     algorithm: "RS512",
                 });
             jwt.verify(newToken, publicKey);
-            console.log("Token after /api " + newToken);
             CookieStore.setCurrentToken(newToken);
             next();
         } catch (e) {

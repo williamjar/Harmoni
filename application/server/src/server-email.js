@@ -46,6 +46,8 @@ app.post("/api/email", (request, response) => {
         });
     }
 
+    console.log(attachmentLinks);
+
     transporter.sendMail({
         from: harmonyUsername,
         to: emailTo,

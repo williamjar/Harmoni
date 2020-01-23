@@ -9,6 +9,9 @@ import {FaMusic} from "react-icons/all";
 import {FaUsers} from "react-icons/all";
 import {FaFileSignature} from "react-icons/all";
 import logo from './logo.jpeg';
+import mobileLogo from './harmonilogo.png'
+import mobileLogo2 from './harmonilogo.png'
+import fullLogo from './harmonilogofull.png'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {FaSignOutAlt} from "react-icons/all";
@@ -37,7 +40,7 @@ export class MobileMenu extends Component{
                     <div className="col-4">
                         <div className="logoImg-mobile" >
                             <NavLink to="/" onClick={this.collapse}>
-                                <img width="100px" src={logo} alt=""/>
+                                <img width="100px" src={mobileLogo2} alt=""/>
                             </NavLink>
                         </div>
                     </div>
@@ -54,6 +57,7 @@ export class MobileMenu extends Component{
 
                         <div className="log-out-mobile pointer" onClick={() => {
                             sessionStorage.setItem('token', null);
+                            sessionStorage.setItem('currentEvent', null);
                             sessionStorage.removeItem('loggedIn');
                             CookieStore.setCurrentToken(null);
                             CookieStore.setCurrentUserID(-1);
@@ -94,7 +98,7 @@ export class NavBar extends Component{
         return(
             <div className="Nav-Menu card">
                 <div className="logoImg">
-                <img width={"300px"} src={logo} alt=""/>
+                <img src={fullLogo} alt=""/>
                 </div>
 
                 <Menu/>

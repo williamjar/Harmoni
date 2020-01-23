@@ -71,6 +71,22 @@ export class RiderStore {
         }).catch(error => console.log(error));
     }
 
+    //Only for the artists own use
+    static createNewRiderElementFromArtistLogin(artistToken, artistID, eventID, description, callback){
+        const header = {
+            "Content-Type": "application/json",
+            "x-access-token": artistToken
+        };
+        const data = {
+            artistID: artistID,
+            eventID: eventID,
+            description: description
+        };
+        axios.post(axiosConfig.root + "/artistapi/rider", JSON.stringify(data), {headers: header}).then( response => {
+            callback(200, new RiderElement(response.data.insertId, artistID, "", false, description));
+        }).catch(() => callback(500));
+    }
+
     //update a rider element
     static updateRider(callback, riderElementID, artistID, eventID, status, isDone, description) {
         console.log("From rider store: " + riderElementID + artistID + eventID + status + isDone + description);
@@ -98,6 +114,33 @@ export class RiderStore {
             "x-access-token": CookieStore.currentToken
         };
         axios.delete(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider/' + riderID, {headers: header}).then(callback()).catch(error => console.log(error));
+    }
+
+    //Delete a rider element for the artist
+    static deleteRiderFromArtistPage(artistToken, eventID, artistID, riderID, callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": artistToken
+        };
+        axios.delete(axiosConfig.root +  "/artistapi/rider/" + eventID + "/" + artistID + "/" + riderID, {headers: header})
+            .then(response => {
+                callback(response.status, response.data);
+            })
+    }
+
+    static getAllRidersForArtistByEvent(artistID, eventID, token, callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": token
+        };
+        axios.get(axiosConfig.root + "/artistapi/event/" + eventID + "/artist/" + artistID + "/rider", {headers: header}).then(response => {
+            if(response.data && response.data.length > 0){
+                callback(200, response.data.map(riderElement => new RiderElement(riderElement.riderElementID, artistID, riderElement.status, riderElement.isDone, riderElement.description)));
+            }
+            else{
+                callback(500);
+            }
+        })
     }
 }
 

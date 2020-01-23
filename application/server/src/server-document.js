@@ -269,6 +269,11 @@ app.post("/api/file/document/:eventID/:documentCategoryID", fileUpload.single('s
     res.send({name: req.file.filename, path: req.file.path});
 });
 
+//Upload document from artist page
+app.post("/artistapi/file/document/:eventID/:documentCategoryID", fileUpload.single('selectedFile'), (req, res) => {
+    res.send({name: req.file.filename, path: req.file.path});
+});
+
 
 app.get("/api/:eventID/documents/category", (req, res) => {
     console.log("/doc: fikk request fra klient");
@@ -385,11 +390,18 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
 
 app.get("/file/preview/:path*", (req, res) => {
     console.log("Path");
-    if(req.params.path + req.params['0'] !== '' && req.params.path + req.params['0'] !== null){
-        var file = fs.createReadStream("./" + req.params.path + req.params['0']);
-        file.pipe(res);
+    const path = req.params.path + req.params['0'];
+    if(path !== '' && path !== null){
+        fs.access("./" + path, (err) => {
+            if (err){
+                console.log("File doesn't exist in file system");
+            }
+            else{
+                let file = fs.createReadStream("./" + path);
+                file.pipe(res);
+            }
+        });
     }
-    console.log("Error: path is null");
 });
 
 app.get("/api/document/download/:path*", (req, res) => {
