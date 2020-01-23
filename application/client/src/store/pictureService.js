@@ -44,8 +44,14 @@ export class PictureService {
         for(let pair of fileForm.entries()){
             console.log(pair);
         }
-        axios.post('http://localhost:8080/api/file/profilePicture', fileForm)
+
+        let serverHeader = {
+            "x-access-token": CookieStore.currentToken
+        };
+
+        axios.post('http://localhost:8080/api/file/profilePicture', fileForm, {headers: serverHeader})
             .then(response => {
+                console.log(response.data);
                 let databaseHeader = {
                     "Content-Type": "application/json",
                     "x-access-token": CookieStore.currentToken
