@@ -6,13 +6,12 @@ import FormControl from "react-bootstrap/FormControl";
 import FormLabel from "react-bootstrap/FormLabel";
 import Button from "react-bootstrap/Button";
 import {BugStore} from "../store/bugStore";
+import {MailService} from "../store/mailService";
 import {OrganizerStore} from "../store/organizerStore";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {Alert} from "../components/alerts";
-
-
 
 let reportBugs = "Hjelp oss med å finne feil i systemet";
 let listBugs = "Feil du alt har rapportert inn";
@@ -21,64 +20,69 @@ export class BugReview extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            description : '',
-            bugList : []
+            description: '',
+            bugList: []
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
 
-    render(){
-        return(
-                <Card.Body>
-                    <FormGroup controlId="ControlTextarea" className="bugWindow">
-                        <FormLabel>
-                            {reportBugs}
-                        </FormLabel>
-                        <Row>
-                            <FormControl
-                                as="textarea" rows="3"
-                                name = "description"
-                                placeholder = "Skriv din tilbakemelding her"
-                                value = {this.state.description}
-                                onChange = {this.handleInputChange}
-                            />
-                        </Row>
-                        <Row>
-                            <Button className="bugButton" variant="success" onClick={this.handleSubmit}>Publiser</Button>
-                        </Row>
-                    </FormGroup>
+    render() {
+        return (
+            <Card.Body>
+                <FormGroup controlId="ControlTextarea" className="bugWindow">
+                    <FormLabel>
+                        {reportBugs}
+                    </FormLabel>
+                    <Row>
+                        <Col>
+                        <FormControl
+                            as="textarea" rows="5"
+                            name="description"
+                            placeholder="Skriv din tilbakemelding her"
+                            value={this.state.description}
+                            onChange={this.handleInputChange}
+                        />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col size={12} className="text-right">
+                        <Button className="bugButton btn-lg" variant="success" onClick={this.handleSubmit}>Publiser</Button>
+                        </Col>
+                    </Row>
+                </FormGroup>
 
-                    <FormGroup className="bugWindow">
-                        <FormLabel>{listBugs}</FormLabel>
-                            <ListGroup>
-                                {this.state.bugList.map( bug => (
-                                    <ListGroup.Item key={bug.bugID}>
-                                        <Row>
-                                            <Col sm={8}>
-                                                {bug.description}
-                                            </Col>
-                                            <Col sm={2}>
-                                                {this.formatDate(bug.date)}
-                                            </Col>
-                                            <Col sm={1}>
-                                                <button id={bug.bugID} onClick={this.deleteBug}>Slett</button>
-                                            </Col>
-                                        </Row>
+                <FormGroup className="bugWindow">
+                    <FormLabel className="bugLabel w-100 padding-top-10 padding-bottom-10">{listBugs}</FormLabel>
+                    <ListGroup>
+                        {this.state.bugList.map(bug => (
+                            <ListGroup.Item key={bug.bugID}>
+                                <Row>
+                                    <Col sm={8}>
+                                        {bug.description}
+                                    </Col>
+                                    <Col sm={2} >
+                                        {this.formatDate(bug.date)}
+                                    </Col>
+                                    <Col sm={2}>
+                                        <button id={bug.bugID} onClick={this.deleteBug} className="btn btn-danger">Slett</button>
+                                    </Col>
+                                </Row>
 
-                                    </ListGroup.Item>
-                                ))}
-                        </ListGroup>
-                    </FormGroup>
+                            </ListGroup.Item>
+                        ))}
+                    </ListGroup>
+                </FormGroup>
 
-                </Card.Body>
+            </Card.Body>
         )
     }
 
     componentDidMount() {
         this.listBugs();
     }
+
     /*
        Changes the this.state.description when text is put inn.
      */
@@ -90,22 +94,29 @@ export class BugReview extends Component {
         this.setState({[name]: value,});
 
     }
+
     /*
         Saves the input to the database when pushed.
         Also updates the list with registrated bugs.
      */
-    handleSubmit(event){
+    handleSubmit(event) {
         event.preventDefault();
-        if (this.state.description === ''){
+        if (this.state.description === '') {
             Alert.info("Tilbakemeldingen kan ikke være tom")
         } else {
             BugStore.registerBug(OrganizerStore.currentOrganizer.organizerID, this.state.description, statusCode => {
-                if (statusCode === 200){
-                    Alert.success("Din tilbakemelding ble registrert");
+                if (statusCode === 200) {
+                    MailService.sendGeneralEmail("bedriftharmoni@gmail.com", "Bug Report",
+                        "Følgende bug har blitt registrert.\n\nBruker: " + OrganizerStore.currentOrganizer.username +
+                        "\nUserID: " + OrganizerStore.currentOrganizer.organizerID + "\nBeskrivelse: \"" + this.state.description + "\"",
+                        null,
+                        () => {
+                            Alert.info("Din tilbakemelding ble registrert");
+                        });
                     BugStore.getAllBugsFromOrganizer(OrganizerStore.currentOrganizer.organizerID, () => {
-                        this.setState( {bugList : BugStore.allBugsReportedByOrganizer})
-                    })
-                }else{
+                        this.setState({bugList: BugStore.allBugsReportedByOrganizer})
+                    });
+                } else {
                     Alert.warning("Det oppsto et problem. Prøv igjen, eller ta kontakt med oss!")
                 }
             });
@@ -117,9 +128,9 @@ export class BugReview extends Component {
     */
     listBugs = () => {
         console.log(OrganizerStore.currentOrganizer.organizerID);
-        BugStore.getAllBugsFromOrganizer( OrganizerStore.currentOrganizer.organizerID, () => {
+        BugStore.getAllBugsFromOrganizer(OrganizerStore.currentOrganizer.organizerID, () => {
             this.setState(
-                { bugList : BugStore.allBugsReportedByOrganizer})
+                {bugList: BugStore.allBugsReportedByOrganizer})
         });
         console.log(this.state.ticketList);
     };
@@ -129,11 +140,10 @@ export class BugReview extends Component {
      */
     deleteBug = (event) => {
         BugStore.deleteBug(event.target.id, statusCode => {
-            if (statusCode === 200){
+            if (statusCode === 200) {
                 Alert.success("Din tilbakemelding ble slettet!");
                 this.listBugs();
-            }
-            else{
+            } else {
                 Alert.warning("Det oppsto et problem. Prøv igjen, eller ta kontakt med oss!");
             }
         }).then(r => console.log('Deleting done'));

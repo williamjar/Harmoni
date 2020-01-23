@@ -1,8 +1,6 @@
 import axios from "axios";
 import {CrewMember} from "../classes/crewMember.js"
 import {CookieStore} from "./cookieStore";
-import createWithBsPrefix from "react-bootstrap/esm/createWithBsPrefix";
-import {forEach} from "react-bootstrap/esm/ElementChildren";
 import {CrewCategory} from "../classes/crewCategory";
 
 let axiosConfig = require("./axiosConfig");
@@ -48,8 +46,8 @@ export class CrewStore {
 
             response.data.map(data => {
 
-                this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.contactID, data.description,
-                    data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible));
+                this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
+                    data.crewCategoryName, data.contactName, data.phone, data.email));
 
             });
 
@@ -72,9 +70,8 @@ export class CrewStore {
 
             response.data.map(data => {
 
-                this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.contactID, data.description,
-                    data.crewCategoryName, data.contactName, data.phone, data.email, data.isResponsible));
-
+                this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
+                    data.crewCategoryName, data.contactName, data.phone, data.email, (data.isResponsible === 1), (data.contractSigned === 1), (data.hasBeenPaid === 1)));
             });
 
             callback();
@@ -149,12 +146,14 @@ export class CrewStore {
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>{
                 console.log(response);
 
-                let assignBody = {
-                    "eventID": eventID,
-                    "crewCategoryID": crewCategoryID,
-                    "crewID": response.data.insertId,
-                    "isResponsible": isResponsible
-                };
+                    let assignBody = {
+                        "eventID": eventID,
+                        "crewCategoryID": crewCategoryID,
+                        "crewID": response.data.insertId,
+                        "isResponsible": isResponsible,
+                        "contractSigned": 0,
+                        "hasBeenPaid": 0
+                    };
 
                 axios.post(axiosConfig.root + '/api/crew/assign', assignBody,{headers: header}).then(response =>{
                     console.log(response);
@@ -210,7 +209,14 @@ export class CrewStore {
     }
 
     //assign a crew member to an event
-    static assignCrewMemberToEvent(callback, eventID, categoryID, crewID, isResponsible){
+    static assignCrewMemberToEvent(eventID, categoryID, crewID, isResponsible, contractSigned, hasBeenPaid, callback){
+        console.log("CREWSTORE");
+        console.log("hasBeenPaid");
+        console.log(hasBeenPaid);
+        console.log("contractSigned");
+        console.log(contractSigned);
+        console.log("isResponsible");
+        console.log(isResponsible);
 
         let header = {
             "Content-Type": "application/json",
@@ -221,8 +227,10 @@ export class CrewStore {
             "eventID": eventID,
             "crewCategoryID": categoryID,
             "crewID": crewID,
-            "isResponsible": isResponsible
-        },  {headers: header}).then(response => console.log(response));
+            "isResponsible": isResponsible,
+            "contractSigned": contractSigned,
+            "hasBeenPaid": hasBeenPaid
+        },  {headers: header}).then(response => callback(response.data));
     }
 
     //add a document to a crew member
@@ -243,32 +251,40 @@ export class CrewStore {
     }
 
     //update a crew member
-    static updateCrewMember(description, id) {
+    static updateCrewMember(description, crewID) {
 
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.put(axiosConfig.root + '/api/crew/' + id, {
+        return axios.put(axiosConfig.root + '/api/crew/' + crewID, {
             "description": description,
-            "crewID": id
+            "crewID": crewID
         },  {headers: header}).then(response => console.log(response));
     }
 
     //update crew member as leader in a category for an event.
     //it is possible for a crew member to be a leader for more than one category
-    static updateCrewMemberAsLeader(isResponsible, eventID, categoryID, crewID) {
-
+    static updateCrewMemberEvent(isResponsible, contractSigned, hasBeenPaid, eventID, crewCategoryID, crewID) {
+        console.log("SE HER");
+        console.log("hasBeenPaid");
+        console.log(hasBeenPaid);
+        console.log("contractSigned");
+        console.log(contractSigned);
+        console.log("isResponsible");
+        console.log(isResponsible);
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.put(axiosConfig.root + '/api/responsible/' + isResponsible, {
+        return axios.put(axiosConfig.root + '/api/crew/' + crewID + '/event/' + eventID, {
             "isResponsible": isResponsible,
+            "contractSigned": contractSigned,
+            "hasBeenPaid": hasBeenPaid,
             "eventID": eventID,
-            "crewCategoryID": categoryID,
+            "crewCategoryID": crewCategoryID,
             "crewID": crewID
         },  {headers: header}).then(response => console.log(response));
     }
@@ -310,7 +326,7 @@ export class CrewStore {
     }
 
     //remove crew member from event
-    static unassignCrewMemberFromEvent(eventID, crewCategoryID, crewID){
+    static unassignCrewMemberFromEvent(eventID, crewCategoryID, crewID, callback){
 
         let header = {
             "Content-Type": "application/json",
@@ -318,7 +334,7 @@ export class CrewStore {
         };
 
         return axios.delete(axiosConfig.root + '/api/crew/assign/' + eventID + '/' + crewCategoryID + '/' + crewID,  {headers: header})
-            .then(response => console.log(response));
+            .then(response => callback(response.data));
     }
 
     //delete crew member

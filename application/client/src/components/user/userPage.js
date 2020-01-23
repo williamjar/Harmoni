@@ -362,16 +362,18 @@ export class DeleteUserForm extends React.Component {
         }
     }
 
-
     checkPasswordAndDeleteCurrentUser() {
 
         hash.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
             console.log("Password ? " + res);
             if (res) {
                 OrganizerStore.deleteCurrentOrganizer();
-                CookieStore.currentToken = null;
-                CookieStore.currentUserID = null;
-                // TODO Proper logout here
+                sessionStorage.setItem('token', null);
+                sessionStorage.setItem('currentEvent', null);
+                sessionStorage.removeItem('loggedIn');
+                CookieStore.setCurrentToken(null);
+                CookieStore.setCurrentUserID(-1);
+                history.push("/");
                 window.location.reload();
             } else {
                 this.setState({errorDeleting: true});
@@ -460,7 +462,7 @@ export class ProfilePictureForm extends React.Component {
             let formData = new FormData();
             formData.append('description', this.state.newProfilePicture.name);
             formData.append('selectedFile', this.state.newProfilePicture);
-            PictureService.insertPicture(OrganizerStore.currentOrganizer.organizerID, formData, (statusCode, link) => {
+            PictureService.insertProfilePicture(OrganizerStore.currentOrganizer.organizerID, formData, (statusCode, link) => {
                 console.log("Image uploaded with status " + statusCode);
                 this.setState({savingInformation: false});
                 if (statusCode === 200 && link) {

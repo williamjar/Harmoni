@@ -8,7 +8,10 @@ import {FaCalendarPlus} from "react-icons/all";
 import {FaMusic} from "react-icons/all";
 import {FaUsers} from "react-icons/all";
 import {FaFileSignature} from "react-icons/all";
-import logo from './logo.jpeg';
+
+import harmoniLogo from './Logo_large.png'
+import mobileLogo2 from './Logo_mobile.png'
+import fullLogo from './harmonilogofull.png'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {FaSignOutAlt} from "react-icons/all";
@@ -35,9 +38,9 @@ export class MobileMenu extends Component{
             <div className="zoom-80 fixed-top card">
                 <div className="row no-gutters">
                     <div className="col-4">
-                        <div className="logoImg-mobile">
+                        <div className="logoImg-mobile" >
                             <NavLink to="/" onClick={this.collapse}>
-                            <img width="100px" src={logo} alt=""/>
+                                <img width="100px" src={mobileLogo2} alt=""/>
                             </NavLink>
                         </div>
                     </div>
@@ -48,15 +51,30 @@ export class MobileMenu extends Component{
                     </div>
                 </div>
                 {this.state.expand?
-                <div className="card" onClick={this.toggleExpand}>
-                    <Menu/>
-
-                </div>
+                    <div className="card drop-shadow-mobile-menu " onClick={this.toggleExpand}>
+                        <Menu/>
 
 
+                        <div className="log-out-mobile pointer" onClick={() => {
+                            sessionStorage.setItem('token', null);
+                            sessionStorage.setItem('currentEvent', null);
+                            sessionStorage.removeItem('loggedIn');
+                            CookieStore.setCurrentToken(null);
+                            CookieStore.setCurrentUserID(-1);
+                            history.push("/");
+                            this.props.logOut();
+                        }}>
+                            Logg av <FaSignOutAlt size={20}/>
+                        </div>
 
-                :null}
+
+                    </div>
+
+
+
+                    :null}
             </div>
+
         )
     }
 
@@ -72,6 +90,7 @@ export class MobileMenu extends Component{
         history.push("/brukerprofil");
         this.collapse();
     };
+
 }
 
 export class NavBar extends Component{
@@ -79,7 +98,7 @@ export class NavBar extends Component{
         return(
             <div className="Nav-Menu card">
                 <div className="logoImg">
-                <img width={"300px"} src={logo} alt=""/>
+                <img src={harmoniLogo} alt=""/>
                 </div>
 
                 <Menu/>
@@ -122,13 +141,13 @@ export class Menu extends Component{
 
                     <NavLink className="" to="/artister">
                     <li className="list-group-item nav-link">
-                        <FaMusic/> Artister
+                        <FaMusic/> Mine artister
                     </li>
                     </NavLink>
 
                     <NavLink className="" to="/personell">
                     <li className="list-group-item nav-link">
-                        <FaUsers/> Personell
+                        <FaUsers/> Mitt personell
                     </li>
                     </NavLink>
 

@@ -176,11 +176,11 @@ ALTER TABLE organizer
 ADD FOREIGN KEY (pictureID) REFERENCES picture(pictureID),
 ADD FOREIGN KEY (contactID) REFERENCES contact(contactID) ON DELETE CASCADE;
 
-ALTER TABLE ticketType ADD FOREIGN KEY (eventID) REFERENCES event(eventID);
+ALTER TABLE ticketType ADD FOREIGN KEY (eventID) REFERENCES event(eventID) ON DELETE CASCADE;
 
 ALTER TABLE artist
 ADD FOREIGN KEY (genreID) REFERENCES genre(genreID),
-ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID),
+ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID) ON DELETE CASCADE,
 ADD FOREIGN KEY (contactID) REFERENCES contact(contactID) ON DELETE CASCADE;
 
 ALTER TABLE event_artist

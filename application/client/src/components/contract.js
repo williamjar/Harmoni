@@ -121,6 +121,7 @@ export class FolderCategory extends Component {
     }
 }
 
+
 export class Documents extends Component{
     constructor(props){
         super(props);
@@ -225,7 +226,6 @@ class Info extends Component {
         documentService.getCrewInfoConnectedToDocument(this.props.documentID,(crewObj) => {
             this.setState({crew: crewObj});
         });
-
     }
 
     associatedContact(){

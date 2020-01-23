@@ -49,10 +49,14 @@ export class MegaValidator {
     }
 
     static validateFile(file) {
-        if(file===undefined){
+        if(file===undefined || file === null){
             return false;
         }
-        return (/\.(gif|jpeg|jpg|png)$/i).test(file.name);
-
+        if (file.name){
+            return (/\.(gif|jpeg|jpg|png)$/i).test(file.name);
+        }
+        else{
+            return (/\.(gif|jpeg|jpg|png)$/i).test(file)
+        }
     }
 }

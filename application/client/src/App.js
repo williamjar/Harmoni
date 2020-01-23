@@ -1,39 +1,23 @@
 import React from 'react';
 import {Component} from 'react';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Menu, MobileMenu, NavBar, UserProfileButton} from "./components/menu/navigation";
 import {Content, SimpleContent} from "./components/content/content";
 import {HashRouter, NavLink, Route} from 'react-router-dom';
-import {PerformerCard, PerformersTab} from "./components/content/performers";
 import {Dashboard} from "./components/content/dashboard/dashboard";
 import {LoginForm} from "./components/login/loginForm";
 import {RegisterForm} from "./components/login/registerForm";
 import {CreateEventSplash} from "./components/content/CreateEventSplash";
 import {UserPage} from "./components/user/userPage";
-import {Search} from "./components/content/search";
-
-
-import {GetTicket} from "./components/ticket";
 import {EventForm} from "./components/content/eventForm";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
-import {FaCalendarAlt, FaCalendarPlus, FaFileSignature, FaMusic, FaUsers} from "react-icons/all";
-import {Alert} from './components/alerts'
-
-
-
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
 import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
 import {BugReview} from "./components/bugReview";
 import {Contacts} from "./components/content/contacts/contacts";
+import {EventStore} from "./store/eventStore";
+import {ArtistRegisterRiders} from "./components/artistComponents/artistRegisterRiders";
 let history = createHashHistory();
-
 
 export class App extends Component{
 
@@ -42,11 +26,9 @@ export class App extends Component{
 
         this.state = {
             loggedIn : false,
+            artistLoggedIn: false,
             mobileView : false,
         };
-
-        this.handleLogin();
-
     }
 
     turnOffMobileView = () => {
@@ -62,6 +44,8 @@ export class App extends Component{
     };
 
     componentDidMount = () => {
+        this.handleLogin();
+
         window.addEventListener('resize', () =>{
             if(window.innerWidth > 991){
                 this.turnOffMobileView();
@@ -100,7 +84,6 @@ export class App extends Component{
                                     <div className="margin-bottom-30"><br/> </div>:null
                                 }
 
-
                             <div className="col-lg-10 col-sm-12">
                                 <Route exact path="/" component={() => <Content page={<Dashboard/>} />} />
                                 <Route exact path="/opprett"  component={() => <SimpleContent page={<CreateEventSplash />} />} />
@@ -120,17 +103,22 @@ export class App extends Component{
             );
         }
         else {
+            console.log("Not logged in");
             return(
                 <div className="Login-Container">
-
                     <HashRouter>
                         <Route exact path="/" component={() => <LoginForm logIn={() => this.handleLogin()}/>} />
                         <Route exact path="/registrer" component={() => <RegisterForm />} />
+                        <Route exact path ="/artistLogin/:token" component={(props) => <Content page={<ArtistRegisterRiders{...props} />}/>}/>
                     </HashRouter>
                 </div>
             )
         }
     }
+
+    logoutUser = () => {
+        this.setState({loggedIn: false});
+    };
 
     handleLogin = () => {
         let currentState = this.state;
@@ -139,29 +127,33 @@ export class App extends Component{
             sessionStorage.setItem('token', CookieStore.currentToken);
         }
 
-        CookieStore.validateToken(validate => {
-            if (!validate){
-                sessionStorage.removeItem('loggedIn');
-                history.push("/");
-            }
-            else{
-                sessionStorage.setItem('loggedIn', 'true');
-            }
+        if (history.location.pathname.includes("/artistLogin/")){
+            this.setState({artistLoggedIn: true});
+        }
+        else{
+            CookieStore.validateToken(validate => {
+                if (!validate){
+                    sessionStorage.removeItem('loggedIn');
+                    console.log(this.props);
+                    history.push("/");
+                }
+                else{
+                    sessionStorage.setItem('loggedIn', 'true');
+                }
 
-            if (sessionStorage.getItem('loggedIn')){
-                console.log("User logged in");
-                currentState.loggedIn = true;
-            }
-            else{
-                currentState.loggedIn = false;
-            }
+                if (sessionStorage.getItem('loggedIn')){
+                    console.log("User logged in");
+                    currentState.loggedIn = true;
+                }
+                else{
+                    currentState.loggedIn = false;
+                }
 
-            this.setState(currentState);
-        });
+                this.setState(currentState);
+            });
+        }
     }
-
 }
 
-
-
 export default App;
+
