@@ -289,15 +289,6 @@ class Info extends Component {
         }
     }
 
-    deleteDocument = (e) => {
-        e.preventDefault();
-        documentService.deleteDocument(this.state.documentID, this.state.documentLink, () => {
-            this.forceUpdate()
-        });
-
-
-    };
-
 
     render() {
         return (
