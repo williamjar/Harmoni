@@ -40,7 +40,7 @@ export class Dashboard extends React.Component {
         };
     }
 
-    // Method for filtering the organizer's events by status -> NOT IMPLEMENTED YET
+    // Method for filtering the organizer's events by status
     filterEvents = (e) => {
         this.setState({active: e.target.name});
     };
@@ -81,7 +81,7 @@ export class Dashboard extends React.Component {
             });
             return (
                 <Card className={"border-0 justify-content-md-center m-4"}>
-                    <h3 className={"mt-4 mb-4"}>Arrangementer</h3>
+                    <h3 className={"mt-4 mb-4"}>Mine arrangement</h3>
                     <Search searchHandler={this.searchHandler} results={this.state.events}/>
                     <Row className="filterMenu mb-2 mt-2">
                         <Col>
