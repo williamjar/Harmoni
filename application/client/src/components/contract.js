@@ -309,7 +309,7 @@ class Info extends Component {
                 </Col>
                 <Col size = {3} className={"text-right"}>
                     <Button onClick = {() => this.props.deleteDocument(this.state.documentID, this.state.documentLink, this.state.documentCategoryID)} variant="danger"> Slett </Button>
-                </Col>
+                </Col>api/organizer/picture
             </Row>
         );
     }

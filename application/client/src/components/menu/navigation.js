@@ -177,12 +177,11 @@ export class UserProfileButton extends Component{
         this.state = {
             username: '',
             link: '',
-            profilePicture: this.props.profilePicture
+            profilePicture: ''
         };
     }
 
     componentDidMount() {
-        console.log(this.state);
         if (this.state.profilePicture !== null && this.state.profilePicture !== '') {
             PictureService.previewPicture(this.state.profilePicture, (url) => {
                 this.setState({link: url});
@@ -193,6 +192,7 @@ export class UserProfileButton extends Component{
 
     checkIfUserHasPicture(){
         console.log(this.state);
+        console.log("PEKK" + this.props.profilePicture);
         if(this.state.link !== null && this.state.link !== ''){
             return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
         }else {
@@ -200,13 +200,31 @@ export class UserProfileButton extends Component{
         }
     }
 
+    upload = (path) => {
+        PictureService.previewPicture(path, (url) => {
+            this.setState({link: url});
+            console.log(this.state);
+        });
+
+    };
+
+    checkForUpdate(){
+        if(this.state.profilePicture === this.props.profilePicture){
+            console.log("DE ER LIKE");
+        } else {
+            console.log("DE ER IKKE LIKE");
+            this.upload(this.props.profilePicture);
+            this.setState({profilePicture: this.props.profilePicture})
+        }
+    }
+
 
     render() {
-        console.log(this.props);
         return(
             <NavLink to="/brukerprofil">
                 <div className="user-nav">
                     <div className="row no-gutters">
+                        {this.checkForUpdate()}
                         {this.checkIfUserHasPicture()}
                         <div className="col-lg-9">
                             <div className="padding-left-15">
