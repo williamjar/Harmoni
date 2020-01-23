@@ -131,6 +131,7 @@ export class RegisterForm extends React.Component {
         )
     }
 
+
     errorHandler(){
         if(!MegaValidator.validateUsernameLength(this.state.username)){
             return "Brukernavn kreves";
