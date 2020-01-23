@@ -35,9 +35,7 @@ export class Ticket extends Component{
     render(){
         return(
             <Card className={"border-0"}>
-                <Form>
                     <TicketAll/>
-                </Form>
             </Card>
         );
     }

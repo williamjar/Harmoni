@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button, Card, Col, Form, Image, Row} from "react-bootstrap";
+import {Button, Card, Col, Form, Image, Row, Spinner} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
 import lorde from './lorde.jpg';
 import placeholder from './placeholder.jpg'
@@ -62,11 +62,12 @@ export class InfoForm extends Component {
             town: EventStore.currentEvent.town,
             description: EventStore.currentEvent.description,
             eventType: EventStore.currentEvent.eventType,
-            savingInformation: false,
             dateError: false,
             issueList: [],
             selectedFile: null,
-            serverFile: null
+            serverFile: null,
+            uploadingPicture: false,
+            savingInformation: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -98,8 +99,6 @@ export class InfoForm extends Component {
 
     componentDidMount() {
         this.updateIssueList();
-
-        console.log(EventStore.currentEvent);
 
         if (EventStore.currentEvent.picture !== null){
             PictureService.getPicture(EventStore.currentEvent.picture, picture => {
@@ -143,7 +142,7 @@ export class InfoForm extends Component {
                                             <Form.Label>Type arrangement</Form.Label>
                                             <Form.Control as="select" value={this.state.eventType} name="eventType" onChange={this.handleChange}>
                                                 {EventStore.eventCategories.map((cat,i) => (
-                                                    <option value={i+1}>{cat}</option>
+                                                    <option key={cat} value={i+1}>{cat}</option>
                                                 ))
                                                 }
                                             </Form.Control>
@@ -186,7 +185,8 @@ export class InfoForm extends Component {
                                 <Row>
                                     <Col>
                                 <Form.Group>
-                                    <Button type="submit" variant="success">Lagre informasjon</Button>
+                                    <Button hidden={this.state.savingInformation} type="submit" variant="success">Lagre informasjon</Button>
+                                    <Button hidden={!this.state.savingInformation} disabled variant={"success"}><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/> Lagrer informasjon</Button>
                                 </Form.Group>
                                     </Col>
                                 </Row>
@@ -200,30 +200,33 @@ export class InfoForm extends Component {
                             <h5 className={"mt-2"}>Last opp et bilde til arrangementet</h5>
                             <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2 w-25"/>
                             <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/>
-                            <Button type={"file"} variant={"secondary"} onClick={() => {
-                                console.log("Uploading image...");
+                            <Button hidden={this.state.uploadingPicture} type={"file"} variant={"secondary"} onClick={() => {
+                                this.setState({uploadingPicture: true});
                                 if(MegaValidator.validateFile(this.state.selectedFile)){
                                     let fileForm = new FormData();
                                     fileForm.append("description", this.state.selectedFile.name);
                                     fileForm.append("selectedFile", this.state.selectedFile);
-                                    console.log(fileForm.get("selectedFile"));
                                     PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path) => {
                                         if (statusCode === 200 && path) {
                                             PictureService.previewPicture(path, link => {
                                                 EventStore.currentEvent.picture = link;
                                                 this.setState({serverFile: link});
-                                                Alert.success("Bildet ditt ble lastet opp")
+                                                Alert.success("Bildet ditt ble lastet opp");
+                                                this.setState({uploadingPicture: false});
                                             });
                                         }
                                         else{
-                                            console.log("Image was not inserted");
+                                            Alert.danger("Beklager, det har oppstått en feil med opplastningen");
+                                            this.setState({uploadingPicture: false});
                                         }
                                     });
                                 }
                                 else{
-                                    Alert.danger("Beklager, det har oppstått en feil med opplastningen")
+                                    Alert.danger("Beklager, det har oppstått en feil med opplastningen");
+                                    this.setState({uploadingPicture: false});
                                 }
                             }}>Last opp bilde</Button>
+                            <Button hidden={!this.state.uploadingPicture} disabled variant={"secondary"}><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>Laster opp bilde</Button>
                         </Col>
                     </Row>
 
@@ -404,13 +407,14 @@ export class InfoForm extends Component {
 
     submitForm(){
 
-
-        this.setState({dateError: false})
+        this.setState({savingInformation: true});
+        this.setState({dateError: false});
         if(this.validateForm()){
             console.log("form validated");
             this.save();
-            EventStore.editCurrentEvent().then(console.log("Lagret"));
+            EventStore.editCurrentEvent().then(this.setState({savingInformation: false}));
             this.setState({edit:false});
+
         } else{
             this.setState({dateError: true})
             Alert.danger("Arrangementet kan ikke slutte før det har startet. Sjekk dato og tid.");
@@ -432,7 +436,7 @@ export class InfoForm extends Component {
         EventStore.currentEvent.town = this.state.town;
         EventStore.currentEvent.description = this.state.description;
         EventStore.currentEvent.picture = this.state.serverFile;
-        console.log("SAVED EVENT: " + EventStore.currentEvent.toString());
+
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql
     formatDate(date) {
