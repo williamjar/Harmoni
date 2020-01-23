@@ -10,6 +10,7 @@ import {FaUsers} from "react-icons/all";
 import {FaFileSignature} from "react-icons/all";
 import logo from './logo.jpeg';
 import mobileLogo from './harmonilogo.png'
+import harmoniLogo from './harmoni.png'
 import mobileLogo2 from './harmonilogo.png'
 import fullLogo from './harmonilogofull.png'
 import {OrganizerStore} from "../../store/organizerStore";
@@ -98,7 +99,7 @@ export class NavBar extends Component{
         return(
             <div className="Nav-Menu card">
                 <div className="logoImg">
-                <img src={fullLogo} alt=""/>
+                <img src={harmoniLogo} alt=""/>
                 </div>
 
                 <Menu/>
