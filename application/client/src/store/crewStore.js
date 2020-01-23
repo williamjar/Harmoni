@@ -5,11 +5,12 @@ import {CrewCategory} from "../classes/crewCategory";
 
 let axiosConfig = require("./axiosConfig");
 
+/**
+ * @class CrewStore
+ * @classdesc Store Class for functions related to accessing and modifying crew objects.
+ */
 export class CrewStore {
 
-    /*
-    Create set functions if set outside of here
-     */
     static allCrewMembersForOrganizer = [];
     static allCrewCategoriesForOrganizer = [];
     static allCrewCategoriesForCurrentEvent = [];
