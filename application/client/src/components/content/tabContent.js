@@ -18,12 +18,7 @@ export class TabContent extends Component {
         status: EventStore.currentEvent.status,
     };
 
-    componentWillReceiveProps({someProp}) {
-        this.setState({...this.state,someProp})
-    }
-
     render() {
-        console.log("Status: " + this.state.status);
         return (
             <div className="tabContent">
                 <div className="tabChildren">
@@ -32,7 +27,7 @@ export class TabContent extends Component {
                 <Row>
                     <Col>
                         <div>
-                            <Button className="float-right mr-1" onClick={() => {
+                            <Button hidden={(this.state.activeTab === 3)} className="float-right mr-1" onClick={() => {
                                 console.log("next");
                                 this.props.btnClick();
                             }}>Neste</Button>
@@ -64,6 +59,12 @@ export class TabContent extends Component {
         if (props.editable !== state.editable) {
             return {
                 editable: props.editable
+            };
+        }
+
+        if (props.tab !== state.activeTab) {
+            return {
+                activeTab : props.tab
             };
         }
         return null;

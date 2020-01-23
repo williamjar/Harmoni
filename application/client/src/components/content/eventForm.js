@@ -106,6 +106,4 @@ export class EventForm extends Component {
             </Tabs>
         );
     }
-
-
 }
