@@ -4,14 +4,11 @@ import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
 import {PerformerPanel, PerformersView} from "./performers";
 import {GeneralInfo} from "./generalInfo";
+import {Map} from "./map";
 import {CrewPanel, CrewTab} from "./crew";
 import {DocumentationTab} from "../documentationTab";
 import {EventStore} from "../../store/eventStore";
 import {createHashHistory} from "history";
-import {RiderStore} from "../../store/riderStore";
-import {CookieStore} from "../../store/cookieStore";
-import NavLink from "react-bootstrap/NavLink";
-import {FolderCategory, FolderEvent, FolderItem} from "../contract";
 import Button from "react-bootstrap/Button";
 import {OrganizerStore} from "../../store/organizerStore";
 import {Event} from "../../classes/event";
@@ -23,11 +20,25 @@ export class EventForm extends Component {
     constructor(props) {
         super(props);
 
+        this.handleButtonClick = this.handleButtonClick.bind(this);
+
         this.state = {
             activeTab: 0,
             editMode: false,
         };
     }
+
+    handleSelect = tab => {
+        this.setState({activeTab: tab});
+    };
+
+    handleButtonClick = () => {
+        let tab = this.state.activeTab;
+        if (tab < 3) {
+            tab++;
+        }
+        this.setState({activeTab: tab});
+    };
 
     // Handles when the user wants to edit the event
     editClicked = () => {
@@ -45,6 +56,7 @@ export class EventForm extends Component {
     };
 
     render() {
+        // On page reload uses sessionstorage to set set the currentEvent variable.
         if (!(EventStore.currentEvent)) {
             if (sessionStorage.getItem("currentEvent")) {
                 let sess = JSON.parse(sessionStorage.getItem("currentEvent"));
@@ -56,17 +68,17 @@ export class EventForm extends Component {
             }
         }
         return (
-            <Tabs defaultActiveKey="0" id="tabs">
-                <Tab eventKey="0" title="Generelt">
-                    <TabContent>
+            <Tabs activeKey={this.state.activeTab} id="tabs" onSelect={this.handleSelect}>
+                <Tab eventKey="0" title="Generelt" value={0}>
+                    <TabContent tab={this.state.activeTab} btnClick={this.handleButtonClick}>
                         <div className="padding-bottom-20">
                             <GeneralInfo editMode={this.state.editMode}/>
                         </div>
                     </TabContent>
                 </Tab>
-                <Tab eventKey="1" title="Artister">
+                <Tab eventKey={1} title="Artister" >
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
-                                editable={this.state.edit}>
+                                editable={this.state.edit} tab={this.state.activeTab} btnClick={this.handleButtonClick}>
                         <div className="padding-bottom-20">
                             <PerformerPanel/>
                         </div>
@@ -74,7 +86,7 @@ export class EventForm extends Component {
                 </Tab>
                 <Tab eventKey="2" title="Personell">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
-                                editable={this.state.edit}>
+                                editable={this.state.edit} tab={this.state.activeTab} btnClick={this.handleButtonClick}>
                         <div className="padding-bottom-20">
                             <CrewPanel/>
                         </div>
@@ -82,7 +94,7 @@ export class EventForm extends Component {
                 </Tab>
                 <Tab eventKey="3" title="Dokumenter">
                     <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
-                                editalbe={this.state.edit}>
+                                editable={this.state.edit} tab={this.state.activeTab} btnClick={this.handleButtonClick}>
                         <div className="padding-bottom-20">
                             <DocumentationTab editable={true}/>
                             <Button className={"mr-1"} onClick={() => {
@@ -92,8 +104,6 @@ export class EventForm extends Component {
                     </TabContent>
                 </Tab>
             </Tabs>
-        )
+        );
     }
-
-
 }

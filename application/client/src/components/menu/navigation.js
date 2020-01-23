@@ -39,16 +39,16 @@ export class MobileMenu extends Component{
             <div className="zoom-80 fixed-top card">
                 <div className="row no-gutters">
                     <div className="col-4">
-                        <div className="logoImg-mobile" >
+                        <div className="logoImg-mobile icon-hover" >
                             <NavLink to="/" onClick={this.collapse}>
                                 <img width="100px" src={mobileLogo2} alt=""/>
                             </NavLink>
                         </div>
                     </div>
 
-                    <div className="col-8 text-right padding-20  padding-right-20 align-content-center">
-                        <FaUserCog size="30" onClick={this.goToUserProfile} className="pointer"/>
-                        <FaBars size="30" onClick={this.toggleExpand} className="pointer margin-left-30"/>
+                    <div className="col-8 text-right padding-30  padding-right-20 align-content-center">
+                        <FaUserCog size="30" onClick={this.goToUserProfile} className="pointer icon-hover"/>
+                        <FaBars size="30" onClick={this.toggleExpand} className="pointer margin-left-30 icon-hover"/>
                     </div>
                 </div>
                 {this.state.expand?
@@ -128,37 +128,37 @@ export class Menu extends Component{
             <ul className="nav nav-links text-left list-group-flush w-100 ">
 
                 <div className="w-100">
-                    <NavLink className="" to="/" exact={true}>
-                    <li className="list-group-item nav-link">
+                    <NavLink className="text-decoration-none list-group-item nav-link" to="/" exact={true}>
+                    <li className="">
                         <FaCalendarAlt/> Mine arrangement
                     </li>
                     </NavLink>
 
-                    <NavLink className="" to="/opprett">
-                    <li className="list-group-item nav-link">
+                    <NavLink className="text-decoration-none list-group-item nav-link" to="/opprett">
+                    <li className="">
                         <FaCalendarPlus/> Opprett arrangement
                     </li>
                     </NavLink>
 
-                    <NavLink className="" to="/artister">
-                    <li className="list-group-item nav-link">
+                    <NavLink className="text-decoration-none list-group-item nav-link" to="/artister">
+                    <li className="">
                         <FaMusic/> Mine artister
                     </li>
                     </NavLink>
 
-                    <NavLink className="" to="/personell">
-                    <li className="list-group-item nav-link">
+                    <NavLink className="text-decoration-none list-group-item nav-link" to="/personell">
+                    <li className="">
                         <FaUsers/> Mitt personell
                     </li>
                     </NavLink>
 
-                    <NavLink className="" to="/dokumenter">
-                    <li className="list-group-item nav-link">
+                    <NavLink className="text-decoration-none list-group-item nav-link" to="/dokumenter">
+                    <li className="">
                         <FaFileSignature/> Mine dokumenter
                     </li>
                     </NavLink>
-                    <NavLink className="" to="/bug">
-                        <li className="list-group-item nav-link">
+                    <NavLink className="text-decoration-none list-group-item nav-link" to="/bug">
+                        <li className="">
                             <FaBullhorn/> Rapporter feil
                         </li>
                     </NavLink>

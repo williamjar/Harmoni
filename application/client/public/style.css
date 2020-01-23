@@ -41,6 +41,10 @@ body{
     padding:20px;
 }
 
+.padding-30{
+    padding:30px;
+}
+
 .padding-25{
     padding:25px;
 }
@@ -177,7 +181,16 @@ body{
 .logoImg-mobile img{
     width: 75px !important;
     padding:10px;
+}
 
+.logoImg-mobile img:hover{
+    width: 75px !important;
+    padding:10px;
+    color: #00799e !important;
+}
+
+.icon-hover:hover{
+    color: #00799e;
 }
 
 .Nav-Menu{
@@ -196,6 +209,19 @@ body{
     border: none !important;
     text-align: left;
     zoom: 80%;
+
+}
+
+.nav .active {
+    background: #00799e !important;
+    color:white !important;
+}
+
+.event-buttons{
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+
 }
 
 .log-out{
@@ -203,7 +229,7 @@ body{
     bottom:0px;
     padding-bottom: 10px;
     padding-top:10px;
-    background: midnightblue;
+    background: #003E51;
     color:white;
     width: 100%;
 }
@@ -249,6 +275,7 @@ body{
 
 .Nav-Menu .user-nav:hover{
     background: #567d99;
+    color: white;
 }
 
 .user-nav img {
@@ -287,14 +314,18 @@ body{
     font-family: Roboto !important;
     padding-top: 25px !important;
     padding-bottom: 25px !important;
-}
 
+}
 
 
 .nav-link:hover{
-    background: darkslateblue !important;
+    background: #00525c !important;
     color: white;
+    text-decoration: none;
 }
+
+
+
 
 
 /* Content */
@@ -611,7 +642,10 @@ search-result-item{
 .contact:hover {
     width: 50px !important;
     height: 50px !important;
-    font-size: 18px;
+    font-weight: bold;
+    color: #003E51 !important;
+    border-left: #003E51;
+    border-left-style: solid;
 }
 
 .addButton {

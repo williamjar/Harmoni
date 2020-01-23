@@ -12,6 +12,8 @@ import {createHashHistory} from "history";
 import {PictureService} from "../../store/pictureService";
 import {CheckList} from "./checklist";
 import {MegaValidator} from "../../megaValidator";
+import {Alert} from "../alerts";
+import {Map} from "./map";
 
 const history = createHashHistory();
 
@@ -65,7 +67,8 @@ export class InfoForm extends Component {
             dateError: false,
             issueList: [],
             selectedFile: null,
-            serverFile: null
+            serverFile: null,
+            pictureID: -1
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -100,7 +103,8 @@ export class InfoForm extends Component {
 
         console.log(EventStore.currentEvent);
 
-        if (EventStore.currentEvent.picture !== null){
+        if (EventStore.currentEvent.picture !== null && EventStore.currentEvent.picture > 0){
+            this.setState({pictureID: EventStore.currentEvent.picture});
             PictureService.getPicture(EventStore.currentEvent.picture, picture => {
                 if (picture !== null){
                     PictureService.previewPicture(picture.pictureLink, link => {
@@ -121,6 +125,7 @@ export class InfoForm extends Component {
                             <Card.Body>
                                 <Row>
                                     <Col>
+                                     <Form.Text>Tittel på arrangementet</Form.Text>
                                     <Form.Control size="lg" type="text" value={this.state.eventName} name="eventName" placeholder="Tittel" onChange={this.handleChange}/>
                                     </Col>
                                 </Row>
@@ -180,12 +185,11 @@ export class InfoForm extends Component {
                                             <Form.Control as="textarea" rows="3" value={this.state.description} name="description" onChange={this.handleChange}/>
                                         </Col>
                                     </Row>
-                                    <Form.Text hidden={!this.state.dateError} className={"text-danger"}>Arrangementet kan ikke starte etter det har sluttet!</Form.Text>
                                 </Form.Group>
                                 <Row>
                                     <Col>
                                 <Form.Group>
-                                    <Button type="submit" variant="success">Lagre</Button>
+                                    <Button type="submit" variant="success">Lagre informasjon</Button>
                                 </Form.Group>
                                     </Col>
                                 </Row>
@@ -195,9 +199,9 @@ export class InfoForm extends Component {
                     </Col>
                         <Col>
                             <CheckList issueList={this.state.issueList}/>
-                        </Col>
-                        <Col>
-                            <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2"/>
+
+                            <h5 className={"mt-2"}>Last opp et bilde til arrangementet</h5>
+                            <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2 w-25"/>
                             <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/>
                             <Button type={"file"} variant={"secondary"} onClick={() => {
                                 console.log("Uploading image...");
@@ -206,21 +210,24 @@ export class InfoForm extends Component {
                                     fileForm.append("description", this.state.selectedFile.name);
                                     fileForm.append("selectedFile", this.state.selectedFile);
                                     console.log(fileForm.get("selectedFile"));
-                                    PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path) => {
+                                    PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path, newPictureID) => {
                                         if (statusCode === 200 && path) {
+                                            console.log(newPictureID);
                                             PictureService.previewPicture(path, link => {
-                                                EventStore.currentEvent.picture = link;
+                                                EventStore.currentEvent.picture = newPictureID;
+                                                this.setState({pictureID: newPictureID});
+                                                console.log(this.state.pictureID);
                                                 this.setState({serverFile: link});
-                                                console.log("Image uploaded");
+                                                Alert.success("Bildet ditt ble lastet opp")
                                             });
                                         }
                                         else{
-                                            console.log("Image was not inserted");
+                                            Alert.danger("Beklager, det har oppstått en feil med opplastningen")
                                         }
                                     });
                                 }
                                 else{
-                                    console.log("Det skjedde en feil.");
+                                    Alert.danger("Beklager, det har oppstått en feil med opplastningen")
                                 }
                             }}>Last opp bilde</Button>
                         </Col>
@@ -229,123 +236,135 @@ export class InfoForm extends Component {
             )}
         else{
             return (
-                <Row>
-                    <Col>
-                    <Card className="mb-2 border-0">
-                        <Card.Body>
-                            <Row>
-                                <Col>
-                                    <Card.Title className={"h2 font-weight-bold"}>{EventStore.currentEvent.eventName}</Card.Title>
-                                </Col>
-                            </Row>
-                            <Form.Group>
-                                <Row className="mb-2">
-                                    <Col xs="5">
-                                        <Row>
-                                            <Col>
-                                                <FaCalendarAlt className="mr-1"/>
-                                                <Form.Label>Start</Form.Label>
-                                            </Col>
-                                        </Row>
-                                        {EventStore.currentEvent.startDate !== null ?
-                                            this.formatDate(EventStore.currentEvent.startDate) :
-                                            null}
-                                    </Col>
-                                    <Col xs="3">
-                                        <Row>
-                                            <Col>
-                                                <FaClock className="mr-1"/>
-                                                <Form.Label>Tid</Form.Label>
-                                            </Col>
-                                        </Row>
-                                        {EventStore.currentEvent.startTime}
-                                    </Col>
-                                    <Col>
-                                        <Row>
-                                            <Col>
-                                                <Form.Label>Kategori:</Form.Label>
-                                            </Col>
-                                        </Row>
-                                        {EventStore.eventCategories[EventStore.currentEvent.eventType-1]}
-                                    </Col>
-                                </Row>
-                                <Row className="mb-4">
-                                    <Col xs="5">
-                                        <Row>
-                                            <Col>
-                                                <FaCalendarAlt className="mr-1"/>
-                                                <Form.Label>Slutt</Form.Label>
-                                            </Col>
-                                        </Row>
-                                        {EventStore.currentEvent.endDate !== null ?
-                                            this.formatDate(EventStore.currentEvent.endDate) :
-                                            null}
-                                    </Col>
-                                    <Col xs="3">
-                                        <Row>
-                                            <Col>
-                                                <FaClock className="mr-1"/>
-                                                <Form.Label>Tid</Form.Label>
-                                            </Col>
-                                        </Row>
-                                        {EventStore.currentEvent.endTime}
-                                    </Col>
-                                </Row>
-                                <Row className="mb-4">
-                                    <Col xs="5">
-                                        <Row>
-                                            <Col>
-                                                <FaHouseDamage className="mr-1"/>
-                                                <Form.Label>Adresse</Form.Label>
-                                            </Col>
-                                        </Row>
-                                        {EventStore.currentEvent.address}
-                                    </Col>
-                                    <Col xs="3">
-                                        <Row>
-                                            <Col>
-                                                <Form.Label>Postnummer</Form.Label>
-                                            </Col>
-                                        </Row>
-                                        {EventStore.currentEvent.zipCode}
-                                    </Col>
-                                    <Col xs="3">
-                                        <Row>
-                                            <Col>
-                                                <Form.Label>Poststed</Form.Label>
-                                            </Col>
-                                        </Row>
-                                        {EventStore.currentEvent.town}
-                                    </Col>
-                                </Row>
+                <div>
+                    <Row>
+                        <Col>
+                        <Card className="mb-2 border-0">
+                            <Card.Body>
                                 <Row>
                                     <Col>
-                                        <Row className="mt-2">
-                                            <Col>
-                                                <Card.Title>Beskrivelse</Card.Title>
-                                                {EventStore.currentEvent.description}
-                                            </Col>
-                                        </Row>
+                                        <Card.Title className={"h2 font-weight-bold"}>{EventStore.currentEvent.eventName}</Card.Title>
                                     </Col>
                                 </Row>
-                            </Form.Group>
-                            <Form.Group>
-                                <Button variant="info" onClick={() => this.editMode()}>Rediger informasjon</Button>
-                            </Form.Group>
-                        </Card.Body>
-
-                    </Card>
-                    </Col>
-
-                    <Col>
-                        <Card>
-                            <Card.Body>
-                                <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2"/>
+                                <Form.Group>
+                                    <Row className="mb-2">
+                                        <Col xs="5">
+                                            <Row>
+                                                <Col>
+                                                    <FaCalendarAlt className="mr-1"/>
+                                                    <Form.Label>Start</Form.Label>
+                                                </Col>
+                                            </Row>
+                                            {EventStore.currentEvent.startDate !== null ?
+                                                this.formatDate(EventStore.currentEvent.startDate) :
+                                                null}
+                                        </Col>
+                                        <Col xs="3">
+                                            <Row>
+                                                <Col>
+                                                    <FaClock className="mr-1"/>
+                                                    <Form.Label>Tid</Form.Label>
+                                                </Col>
+                                            </Row>
+                                            {EventStore.currentEvent.startTime}
+                                        </Col>
+                                        <Col>
+                                            <Row>
+                                                <Col>
+                                                    <Form.Label>Kategori:</Form.Label>
+                                                </Col>
+                                            </Row>
+                                            {EventStore.eventCategories[EventStore.currentEvent.eventType-1]}
+                                        </Col>
+                                    </Row>
+                                    <Row className="mb-4">
+                                        <Col xs="5">
+                                            <Row>
+                                                <Col>
+                                                    <FaCalendarAlt className="mr-1"/>
+                                                    <Form.Label>Slutt</Form.Label>
+                                                </Col>
+                                            </Row>
+                                            {EventStore.currentEvent.endDate !== null ?
+                                                this.formatDate(EventStore.currentEvent.endDate) :
+                                                null}
+                                        </Col>
+                                        <Col xs="3">
+                                            <Row>
+                                                <Col>
+                                                    <FaClock className="mr-1"/>
+                                                    <Form.Label>Tid</Form.Label>
+                                                </Col>
+                                            </Row>
+                                            {EventStore.currentEvent.endTime}
+                                        </Col>
+                                    </Row>
+                                    <Row className="mb-4">
+                                        <Col xs="5">
+                                            <Row>
+                                                <Col>
+                                                    <FaHouseDamage className="mr-1"/>
+                                                    <Form.Label>Adresse</Form.Label>
+                                                </Col>
+                                            </Row>
+                                            {EventStore.currentEvent.address}
+                                        </Col>
+                                        <Col xs="3">
+                                            <Row>
+                                                <Col>
+                                                    <Form.Label>Postnummer</Form.Label>
+                                                </Col>
+                                            </Row>
+                                            {EventStore.currentEvent.zipCode}
+                                        </Col>
+                                        <Col xs="3">
+                                            <Row>
+                                                <Col>
+                                                    <Form.Label>Poststed</Form.Label>
+                                                </Col>
+                                            </Row>
+                                            {EventStore.currentEvent.town}
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <Row className="mt-2">
+                                                <Col>
+                                                    <Card.Title>Beskrivelse</Card.Title>
+                                                    {EventStore.currentEvent.description}
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                </Form.Group>
+                                <Form.Group>
+                                    <Button variant="info" onClick={() => this.editMode()}>Rediger informasjon</Button>
+                                </Form.Group>
                             </Card.Body>
-                        </Card>
-                    </Col>
 
-                </Row>
+                        </Card>
+                        </Col>
+
+
+                        <Col>
+                            <Card className={"border-0"}>
+                                <Card.Body>
+                                    <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2 w-75"/>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+
+                    </Row>
+                    {this.state.address !== null && this.state.address.trim() !== "" ? <Row className = "padding-bottom-20">
+                        <Col>
+                            <Map
+                                latLng = {{lat: 66.4857, lng: 13.5622}} //Glomfjord!
+                            />
+                        </Col>
+                    </Row> : null}
+
+                </div>
+
             );
         }
     }
@@ -381,7 +400,7 @@ export class InfoForm extends Component {
         if(this.state.startTime===null || this.state.endTime===null){
             list.push("Tidspunkt er ikke satt");
         } else if (this.state.startTime.length<=1 || this.state.endTime.length<=1){
-            list.push("Tidspunkt eventet er ikke satt");
+            list.push("Tidspunkt er ikke satt");
         }
 
         this.setState({issueList: list})
@@ -402,15 +421,15 @@ export class InfoForm extends Component {
 
 
     submitForm(){
-        console.log("form submitted.");
-        this.setState({dateError: false})
+        this.setState({dateError: false});
         if(this.validateForm()){
             console.log("form validated");
             this.save();
-            EventStore.editCurrentEvent().then(console.log("Lagret"));
+            EventStore.editCurrentEvent().then(() => Alert.info("Arrangementet ble lagret."));
             this.setState({edit:false});
         } else{
-            this.setState({dateError: true})
+            this.setState({dateError: true});
+            Alert.danger("Arrangementet kan ikke slutte før det har startet. Sjekk dato og tid.");
         }
     }
 
@@ -428,7 +447,7 @@ export class InfoForm extends Component {
         EventStore.currentEvent.zipCode = this.state.zipCode;
         EventStore.currentEvent.town = this.state.town;
         EventStore.currentEvent.description = this.state.description;
-        EventStore.currentEvent.picture = this.state.serverFile;
+        EventStore.currentEvent.picture = this.state.pictureID;
         console.log("SAVED EVENT: " + EventStore.currentEvent.toString());
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql
