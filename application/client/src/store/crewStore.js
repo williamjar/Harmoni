@@ -15,8 +15,11 @@ export class CrewStore {
     static allCrewCategoriesForCurrentEvent = [];
     static allCrewForCurrentEvent = [];
 
-
-    //get a crew member
+    /**
+     * Returns a Crew Object with data from the database and returns it in the callback
+     * @param {int} crewID - The database ID of the crew member.
+     * @param {function} callback
+     */
     static getCrewMember(crewID, callback) {
 
         let header = {
@@ -32,7 +35,11 @@ export class CrewStore {
     }
 
 
-    //store/get all crew members for an organizer
+    /**
+     * Returns a Crew Object with data from the database and returns it in the callback
+     * @param {function} callback
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     */
     static storeAllCrewMembersForOrganizer(callback, organizerID) {
 
         this.allCrewMembersForOrganizer = [];
@@ -55,7 +62,11 @@ export class CrewStore {
         });
     }
 
-    //store/get all crew members for an event
+    /**
+     * Sets the variable allCrewForCurrentEvent as a list of Crew objects created with data from the database
+     * @param {function} callback
+     * @param {int} eventID - The database ID of the event.
+     */
     static storeAllCrewMembersForEvent(callback, eventID) {
         this.allCrewForCurrentEvent = [];
 
@@ -69,16 +80,18 @@ export class CrewStore {
             console.log(response);
 
             response.data.map(data => {
-
                 this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
                     data.crewCategoryName, data.contactName, data.phone, data.email, (data.isResponsible === 1), (data.contractSigned === 1), (data.hasBeenPaid === 1)));
             });
-
             callback();
         });
     }
 
-    // store/get all crew categories for an organizer
+    /**
+     * Sets the variable allCrewCategoriesForOrganizer as a list of CrewCategory objects created with data from the database
+     * @param {function} callback
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     */
     static storeAllCrewCategoriesForOrganizer(callback, organizerID) {
 
         this.allCrewCategoriesForOrganizer = [];
@@ -98,7 +111,11 @@ export class CrewStore {
         });
     }
 
-    // store/get all crew categories for an event
+    /**
+     * Sets the variable allCrewCategoriesForEvent as a list of CrewCategory objects created with data from the database
+     * @param {function} callback
+     * @param {int} eventID - The database ID of the event.
+     */
     static storeAllCrewCategoriesForEvent(callback, eventID) {
 
         this.allCrewCategoriesForCurrentEvent = [];
@@ -120,7 +137,18 @@ export class CrewStore {
         });
     }
 
-    //register a new crew member and set as assigned for current event
+    /**
+     * Creates a new crew member and assigns it to the current event.
+     * @param {function} callback
+     * @param {String} name - The name of the new crew member.
+     * @param {String} phone - The phone of the new crew member.
+     * @param {String} email - The email of the new crew member.
+     * @param {String} description - A description the new crew member.
+     * @param {int} crewCategoryID - The database ID of the Crew category the new crew member will be added to.
+     * @param {int} isResponsible - A boolean
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     */
     static createCrewMemberForEvent(callback, name, phone, email, description, crewCategoryID, isResponsible, eventID, organizerID){
         //TODO: Needs a Callback
 

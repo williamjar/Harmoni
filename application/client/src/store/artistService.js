@@ -11,7 +11,6 @@ const axiosConfig = require("./axiosConfig");
 export class ArtistService {
 
     // artistID, name, phone, email, genre, organizer
-
     static getArtist(artistID, callback) {
 
         let header = {
