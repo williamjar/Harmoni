@@ -25,3 +25,4 @@ module.exports = class pictureDao extends Dao {
         super.query('select pictureID from organizer where organizerID = ?', [organizerID], callback);
     }
 };
+
