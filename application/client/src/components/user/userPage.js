@@ -445,7 +445,7 @@ export class ProfilePictureForm extends React.Component {
                                          onChange={this.handleInputChange}/>
                         </Form.Group>
                         <Form.Group>
-                            <Button onClick = {this.upload} hidden={this.state.savingInformation} disabled={!this.state.profilePictureUploaded} variant="secondary" type="submit">Last opp profilbilde</Button>
+                            <Button onClick = {this.upload} hidden={this.state.savingInformation} variant="secondary" type="submit">Last opp profilbilde</Button>
                         </Form.Group>
                     </Form>
                 </Card>
