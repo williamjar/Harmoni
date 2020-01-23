@@ -221,18 +221,17 @@ export class ContactInfo extends React.Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return (nextProps.contact !== this.state.contact || nextProps.show !== this.state.show);
+        return (nextProps.show !== this.state.show)
     }
 
     componentDidUpdate(props) {
+        this.setState({show: props.show});
+    }
+
+    componentDidMount() {
         this.setState({
-            show: this.props.show,
             contact: this.props.contact,
-            contactName: this.state.contact.contactName,
-            email: this.state.contact.email,
-            phone: this.state.contact.phone,
-            /*genre: this.state.contact.genre*/
-        });
+        }, () => this.setState({show: this.props.show}));
     }
 
     editClicked = () => {
@@ -244,7 +243,10 @@ export class ContactInfo extends React.Component {
         ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
             ArtistService.updateArtistGenre(() => {
                 console.log(this.state.genre);
-                this.setState({show: false, editable: false}, () => this.setState({show: true}));
+                this.setState({
+                    show: false,
+                    editable: false,
+                }, () => this.setState({show: true}));
             }, this.state.contact.artistID, parseInt(this.state.genre), CookieStore.currentUserID, this.state.contact.contactID)
         })
     };
