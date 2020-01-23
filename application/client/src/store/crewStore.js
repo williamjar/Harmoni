@@ -11,6 +11,7 @@ let axiosConfig = require("./axiosConfig");
  */
 export class CrewStore {
 
+    //TODO how to jsdoc these?? ??? ?? ? ? ? ? ?? ?? ? ? ? ?QUESTION ???
     static allCrewMembersForOrganizer = [];
     static allCrewCategoriesForOrganizer = [];
     static allCrewCategoriesForCurrentEvent = [];

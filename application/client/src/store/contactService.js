@@ -1,8 +1,11 @@
 import {CookieStore} from "./cookieStore";
 import axios from "axios";
-
 const axiosConfig = require("./axiosConfig");
 
+/**
+ * @class ContactService
+ * @classdesc Service Class for functions related to accessing and modifying contact objects.
+ */
 export class ContactService {
 
     /**
