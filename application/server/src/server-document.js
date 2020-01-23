@@ -4,6 +4,7 @@ import {
     pictureDao,
     documentDao,
     organizerDao,
+    eventDao,
     multer,
     path,
     fs,
@@ -92,17 +93,43 @@ const fileStorage = multer.diskStorage({
     }
 });
 
-const pictureStorage = multer.diskStorage({
+const eventPictureStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        ensureFolderExists('./resources', 0o744, err => {
+            if (err){
+                cb(new Error("Could not create folder for resources"));
+            }
+            else{
+                ensureFolderExists('./resources/eventPictures', 0o744, err => {
+                    if (err){
+                        cb(new Error("Could not create folder for event pictures"));
+                    }
+                    else{
+                        console.log("Event pictures will be saved to ./resources/eventPictures");
+                        cb(null, './resources/eventPictures');
+                    }
+                });
+            }
+        });
+    },
+    filename: (req, file, cb) => {
+        const newFileName = uuidv4(path.extname(file.originalname)) + "_" + file.originalname;
+        console.log("Saving " + newFileName);
+        cb(null, newFileName);
+    }
+});
+
+const profilePictureStorage = multer.diskStorage({
 
     destination: (req, file, cb) => {
 
         ensureFolderExists('./resources/', 0o744, err => {
             if (err) {
-                console.log("Could not create folder for resources");
+                cb(new Error("Could not create folder for resources"));
             } else {
                 ensureFolderExists('./resources/profilePictures', 0o744, err => {
                     if (err) {
-                        console.log("Could not create folder for profile pictures");
+                        cb(new Error("Could not create folder for profile pictures"));
                     } else {
                         console.log("Destination set for ./resources/profilePictures");
                         cb(null, './resources/profilePictures');
@@ -112,16 +139,20 @@ const pictureStorage = multer.diskStorage({
         });
     },
     filename: (req, file, cb) => {
-        const newFilename = uuidv4(path.extname(file.originalname)) + "_" + file.originalname;
-        console.log("Creating new file " + newFilename);
-        cb(null, newFilename);
+        try{
+            const newFilename = uuidv4(path.extname(file.originalname)) + "_" + file.originalname;
+            console.log("Creating new file " + newFilename);
+            cb(null, newFilename);
+        }
+        catch (e) {
+            cb(e);
+        }
     }
 });
 
-
 //init upload
 const uploadUserPicture = multer({
-    storage: pictureStorage,
+    storage: profilePictureStorage,
     limits: {fileSize: 5000000000},
     fileFilter: (req, file, cb) => {
         console.log("Checking file filter");
@@ -134,13 +165,27 @@ const uploadUserPicture = multer({
     }
 });
 
+const uploadEventPicture = multer({
+    storage: eventPictureStorage,
+    limits: {fileSize: 5000000000},
+    fileFilter: (req, file, cb) => {
+        console.log(file);
+        if (file.mimetype === "image/png" || file.mimetype === "image/jpg" ||
+            file.mimetype === "image/jpeg" || file.mimetype === "image/gif"){
+            cb(null, true);
+        }
+        else{
+            return cb(new Error('Allowed only .png, .jpg, .jpeg, .gif'));
+        }
+    }
+});
+
 const fileUpload = multer({storage: fileStorage});
 
 // PICTURE
 
-
 //Save picture to server
-app.post("/api/file/picture", uploadUserPicture.single('selectedFile'), (req, res) => {
+app.post("/api/file/profilePicture", uploadUserPicture.single('selectedFile'), (req, res) => {
     try {
         res.send({name: req.file.filename, path: req.file.path});
     } catch (err) {
@@ -148,8 +193,24 @@ app.post("/api/file/picture", uploadUserPicture.single('selectedFile'), (req, re
     }
 });
 
+app.post("/api/file/eventPicture", uploadEventPicture.single("selectedFile"), (req, res) => {
+   try{
+       res.send({name: req.file.filename, path: req.file.path});
+   } catch (err) {
+       res.send(400);
+   }
+});
+
 app.post("/api/organizer/picture", (request, response) => {
     console.log("Request to add a picture");
+    pictureDao.insertPicture(request.body.path, (status, data) => {
+        response.status(status);
+        response.json(data);
+    });
+});
+
+app.post("/api/event/picture", (request, response) => {
+    console.log("Request to add an event picture");
     pictureDao.insertPicture(request.body.path, (status, data) => {
         response.status(status);
         response.json(data);
@@ -183,6 +244,15 @@ app.put("/api/organizer/picture/:organizerID", (request, response) => {
     });
 });
 
+//Update picture on event
+app.put("/api/event/picture/:eventID", (request, response) => {
+    console.log("Request to update event picture");
+    eventDao.changePicture(request.body.pictureID, request.params.eventID, (status, data) => {
+        response.status(status);
+        response.json(data);
+    });
+});
+
 //Get one picture
 app.get("/api/organizer/picture/:pictureID", (require, response) => {
     console.log("Request to get the picture of an organizer");
@@ -196,6 +266,11 @@ app.get("/api/organizer/picture/:pictureID", (require, response) => {
 app.post("/api/file/document/:eventID/:documentCategoryID", fileUpload.single('selectedFile'), (req, res) => {
     console.log("Request to create document");
     console.log(req.file);
+    res.send({name: req.file.filename, path: req.file.path});
+});
+
+//Upload document from artist page
+app.post("/artistapi/file/document/:eventID/:documentCategoryID", fileUpload.single('selectedFile'), (req, res) => {
     res.send({name: req.file.filename, path: req.file.path});
 });
 
@@ -314,11 +389,19 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
 });
 
 app.get("/file/preview/:path*", (req, res) => {
-    if(req.params.path + req.params['0'] !== '' && req.params.path + req.params['0'] !== null){
-        var file = fs.createReadStream("./" + req.params.path + req.params['0']);
-        file.pipe(res);
+    console.log("Path");
+    const path = req.params.path + req.params['0'];
+    if(path !== '' && path !== null){
+        fs.access("./" + path, (err) => {
+            if (err){
+                console.log("File doesn't exist in file system");
+            }
+            else{
+                let file = fs.createReadStream("./" + path);
+                file.pipe(res);
+            }
+        });
     }
-    console.log("Error: path is null")
 });
 
 app.get("/api/document/download/:path*", (req, res) => {

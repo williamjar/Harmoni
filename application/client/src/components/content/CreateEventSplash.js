@@ -43,8 +43,8 @@ export class CreateEventSplash extends Component{
                         <InputGroup className="mb-3 " size="sm">
                             <FormControl
                                 onChange={this.inputHandler}
-                                placeholder="Skriv inn navn på arrangementet"
-                                aria-label="Skriv inn navn på arrangementet"
+                                placeholder="Navn på arrangementet"
+                                aria-label="Navn på arrangementet"
                                 aria-describedby="basic-addon2"
                             />
 

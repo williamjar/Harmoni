@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {OrganizerStore} from "./organizerStore";
+import {EventStore} from "./eventStore";
 
 const publicKey = require('../cookieConfig').publicKey;
 const jwt = require('jsonwebtoken');
@@ -39,6 +40,16 @@ export class CookieStore{
         }
         else{
             callback(false);
+        }
+    }
+
+    static validateArtistToken(token, callback){
+        try{
+            jwt.verify(token, publicKey);
+            return true;
+        }
+        catch (e) {
+            return false;
         }
     }
 

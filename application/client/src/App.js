@@ -15,6 +15,8 @@ import { createHashHistory } from 'history';
 import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
 import {BugReview} from "./components/bugReview";
 import {Contacts} from "./components/content/contacts/contacts";
+import {EventStore} from "./store/eventStore";
+import {ArtistRegisterRiders} from "./components/artistComponents/artistRegisterRiders";
 let history = createHashHistory();
 
 export class App extends Component{
@@ -24,10 +26,9 @@ export class App extends Component{
 
         this.state = {
             loggedIn : false,
+            artistLoggedIn: false,
             mobileView : false,
         };
-
-        this.handleLogin();
     }
 
     turnOffMobileView = () => {
@@ -43,6 +44,8 @@ export class App extends Component{
     };
 
     componentDidMount = () => {
+        this.handleLogin();
+
         window.addEventListener('resize', () =>{
             if(window.innerWidth > 991){
                 this.turnOffMobileView();
@@ -100,12 +103,13 @@ export class App extends Component{
             );
         }
         else {
+            console.log("Not logged in");
             return(
                 <div className="Login-Container">
-
                     <HashRouter>
                         <Route exact path="/" component={() => <LoginForm logIn={() => this.handleLogin()}/>} />
                         <Route exact path="/registrer" component={() => <RegisterForm />} />
+                        <Route exact path ="/artistLogin/:token" component={(props) => <Content page={<ArtistRegisterRiders{...props} />}/>}/>
                     </HashRouter>
                 </div>
             )
@@ -123,26 +127,33 @@ export class App extends Component{
             sessionStorage.setItem('token', CookieStore.currentToken);
         }
 
-        CookieStore.validateToken(validate => {
-            if (!validate){
-                sessionStorage.removeItem('loggedIn');
-                history.push("/");
-            }
-            else{
-                sessionStorage.setItem('loggedIn', 'true');
-            }
+        if (history.location.pathname.includes("/artistLogin/")){
+            this.setState({artistLoggedIn: true});
+        }
+        else{
+            CookieStore.validateToken(validate => {
+                if (!validate){
+                    sessionStorage.removeItem('loggedIn');
+                    console.log(this.props);
+                    history.push("/");
+                }
+                else{
+                    sessionStorage.setItem('loggedIn', 'true');
+                }
 
-            if (sessionStorage.getItem('loggedIn')){
-                console.log("User logged in");
-                currentState.loggedIn = true;
-            }
-            else{
-                currentState.loggedIn = false;
-            }
+                if (sessionStorage.getItem('loggedIn')){
+                    console.log("User logged in");
+                    currentState.loggedIn = true;
+                }
+                else{
+                    currentState.loggedIn = false;
+                }
 
-            this.setState(currentState);
-        });
+                this.setState(currentState);
+            });
+        }
     }
 }
 
 export default App;
+

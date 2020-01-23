@@ -26,6 +26,10 @@ body{
     padding:20px;
 }
 
+.padding-25{
+    padding:25px;
+}
+
 .padding-right-20{
     padding-right: 20px !important;
 }
@@ -90,6 +94,10 @@ body{
     margin-top:5px;
 }
 
+.margin-top-10{
+    margin-top:10px !important;
+}
+
 .margin-bottom-20{
     margin-bottom: 20px;
 }
@@ -118,14 +126,32 @@ body{
     background:#e9ecef;
 }
 
+.hover-grey:hover{
+    background:grey !important;
+}
+
+.background-red {
+    background:red !important;
+}
+
+.background-yellow {
+    background: yellow !important;
+}
+
 /* Navigation */
+
+.logoImg{
+    width: auto;
+}
+
 .logoImg img{
-     width: 75px !important;
+     max-width: 100% !important;
+
  }
 
 .logoImg-mobile img{
-    width: 75px !important;
-    padding:10px 0 0 20px;
+    width: 150px !important;
+
 }
 
 .Nav-Menu{
@@ -154,6 +180,24 @@ body{
     background: midnightblue;
     color:white;
     width: 100%;
+}
+
+.drop-shadow-mobile-menu {
+    -webkit-box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
+    -moz-box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
+    box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
+}
+
+.log-out-mobile{
+    width: 100%;
+    background:lightgrey;
+    padding: 40px;
+    text-align: center;
+}
+
+.log-out-mobile:hover{
+    background: #314b57;
+    color:white;
 }
 
 .log-out:hover{
@@ -229,7 +273,7 @@ body{
 
 /* Content */
 .Login-Container{
-
+    margin-top: 10%;
 
 }
 
@@ -246,7 +290,7 @@ body{
 }
 
 .simple-content{
-    max-width: 50%;
+    max-width: 60%;
 }
 
 .content{
@@ -478,8 +522,23 @@ search-result-item{
         margin:0 auto;
     }
 
+    .bugButton{
+        width: 100%;
+        padding-top: 10px;
+        margin-top:10px !important;
+        text-align: center;
+    }
+
     .simple-content{
         max-width: 100% !important;
+    }
+
+    .bugWindow{
+        width: 100% !important;
+        margin: auto;
+        padding-top: 15px;
+        padding-bottom: 30px;
+
     }
 
 }
@@ -492,6 +551,24 @@ search-result-item{
         background-size: 230% auto;
     }
 
+
+}
+
+@media only screen and (min-width: 600px) and (max-width: 991px){
+    .bugButton{
+        width: 100%;
+        padding-top: 10px;
+        margin-top:10px !important;
+        text-align: center;
+    }
+
+    .bugWindow{
+        width: 100% !important;
+        margin: auto;
+        padding-top: 15px;
+        padding-bottom: 30px;
+
+    }
 }
 
 
@@ -520,7 +597,7 @@ search-result-item{
 
 
 .bugWindow{
-    width: 70%;
+    width: 90%;
     margin: auto;
     padding-top: 15px;
     padding-bottom: 30px;
@@ -530,6 +607,13 @@ search-result-item{
 .bugButton{
     margin: auto;
     padding-top: 10px;
-    text-align: center;
+    margin-top: 10px !important;
+    text-align: right;
+}
+
+.bugLabel {
+    background: #314b57;
+    color:white;
+    text-indent: 10px;
 }
 

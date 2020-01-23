@@ -13,11 +13,13 @@ import {CookieStore} from "../../store/cookieStore";
 import NavLink from "react-bootstrap/NavLink";
 import {FolderCategory, FolderEvent, FolderItem} from "../contract";
 import Button from "react-bootstrap/Button";
+import {OrganizerStore} from "../../store/organizerStore";
+import {Event} from "../../classes/event";
 
 const history = createHashHistory();
 
 // Parent component for editing and viewing all info about an event, divides information into tabs.
-export class EventForm extends Component{
+export class EventForm extends Component {
     constructor(props) {
         super(props);
 
@@ -25,7 +27,6 @@ export class EventForm extends Component{
             activeTab: 0,
             editMode: false,
         };
-
     }
 
     // Handles when the user wants to edit the event
@@ -35,18 +36,28 @@ export class EventForm extends Component{
 
     // Handles when the user saves the event
     saveClicked = () => {
-        if(this.validateForm()){
+        if (this.validateForm()) {
             this.setState({edit: false});
             EventStore.editCurrentEvent().then(console.log("Lagret"));
-        } else{
+        } else {
             console.log("start date can not be after end date");
         }
     };
 
-    render(){
-        return(
+    render() {
+        if (!(EventStore.currentEvent)) {
+            if (sessionStorage.getItem("currentEvent")) {
+                let sess = JSON.parse(sessionStorage.getItem("currentEvent"));
+                EventStore.currentEvent = new Event(sess.eventID, sess.eventName, sess.startDate,
+                    sess.endDate, sess.startTime, sess.endTime, sess.address, sess.town,
+                    sess.zipCode, sess.status, sess.description, sess.publishDate,
+                    sess.publishTime, sess.organizer, sess.eventType, sess.picture);
+                OrganizerStore.currentOrganizer = sess.organizer;
+            }
+        }
+        return (
             <Tabs defaultActiveKey="0" id="tabs">
-                <Tab eventKey="0" title="Generelt" >
+                <Tab eventKey="0" title="Generelt">
                     <TabContent>
                         <div className="padding-bottom-20">
                             <GeneralInfo editMode={this.state.editMode}/>
@@ -54,23 +65,26 @@ export class EventForm extends Component{
                     </TabContent>
                 </Tab>
                 <Tab eventKey="1" title="Artister">
-                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
+                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
+                                editable={this.state.edit}>
                         <div className="padding-bottom-20">
                             <PerformerPanel/>
                         </div>
                     </TabContent>
                 </Tab>
                 <Tab eventKey="2" title="Personell">
-                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editable={this.state.edit}>
+                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
+                                editable={this.state.edit}>
                         <div className="padding-bottom-20">
-                            <CrewPanel />
+                            <CrewPanel/>
                         </div>
                     </TabContent>
                 </Tab>
                 <Tab eventKey="3" title="Dokumenter">
-                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked} editalbe={this.state.edit}>
+                    <TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
+                                editalbe={this.state.edit}>
                         <div className="padding-bottom-20">
-                        <DocumentationTab editable={true}/>
+                            <DocumentationTab editable={true}/>
                             <Button className={"mr-1"} onClick={() => {
                                 history.push("/dokumenter/" + EventStore.currentEvent.eventID)
                             }}>Gå til arrangementets dokumenter</Button>
@@ -80,4 +94,6 @@ export class EventForm extends Component{
             </Tabs>
         )
     }
+
+
 }
