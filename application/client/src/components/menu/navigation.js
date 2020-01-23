@@ -45,9 +45,9 @@ export class MobileMenu extends Component{
                         </div>
                     </div>
 
-                    <div className="col-8 text-right padding-20  padding-right-20 align-content-center">
-                        <FaUserCog size="30" onClick={this.goToUserProfile} className="pointer"/>
-                        <FaBars size="30" onClick={this.toggleExpand} className="pointer margin-left-30"/>
+                    <div className="col-8 text-right padding-30  padding-right-20 align-content-center">
+                        <FaUserCog size="30" onClick={this.goToUserProfile} className="pointer icon-hover"/>
+                        <FaBars size="30" onClick={this.toggleExpand} className="pointer margin-left-30 icon-hover"/>
                     </div>
                 </div>
                 {this.state.expand?

@@ -34,6 +34,10 @@ body{
     padding:20px;
 }
 
+.padding-30{
+    padding:30px;
+}
+
 .padding-25{
     padding:25px;
 }
@@ -164,7 +168,9 @@ body{
     padding:10px;
 }
 
-
+.icon-hover:hover{
+    color: #00799e;
+}
 
 .Nav-Menu{
     height: 100vh;
