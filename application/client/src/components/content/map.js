@@ -58,19 +58,12 @@ export class Map extends Component{
     };
 
     render(){
-        if (this.state.latLng == null){
-            return(
-                <div/>
-            )
-        }else{
-            return(
-                <MapsComponent
-                    isMarkerShown = {this.state.isMarkerShown}
-                    onMarkerClick = {this.handleMarkerClick}
-                    latLng = {this.props.latLng}
-                />
-            )
-        }
-
+        return(
+            <MapsComponent
+                isMarkerShown = {this.state.isMarkerShown}
+                onMarkerClick = {this.handleMarkerClick}
+                latLng = {this.props.latLng}
+            />
+        )
     }
 }
