@@ -19,7 +19,7 @@ export class CheckList extends React.Component {
         return (
             <Card className="p-1 border-0">
                 {this.props.issueList.map((issue) =>
-                    <Card className="mt-1" border="danger" >
+                    <Card key={issue} className="mt-1" border="danger" >
                         <Card.Body>
                             <Card.Text>
                             {issue}

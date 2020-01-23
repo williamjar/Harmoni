@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button, Card, Col, Form, Image, Row} from "react-bootstrap";
+import {Button, Card, Col, Form, Image, Row, Spinner} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
 import lorde from './lorde.jpg';
 import placeholder from './placeholder.jpg'
@@ -69,14 +69,15 @@ export class InfoForm extends Component {
             issueList: [],
             selectedFile: null,
             serverFile: null,
+            uploadingPicture: false,
+            savingInformation: false,
+            serverFile: null,
             pictureID: null
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-
-
 
     // Updates the state and the event store object when form input is changed
     handleChange(event){
@@ -153,7 +154,7 @@ export class InfoForm extends Component {
                                             <Form.Label>Type arrangement</Form.Label>
                                             <Form.Control as="select" value={this.state.eventType} name="eventType" onChange={this.handleChange}>
                                                 {EventStore.eventCategories.map((cat,i) => (
-                                                    <option value={i+1}>{cat}</option>
+                                                    <option key={cat} value={i+1}>{cat}</option>
                                                 ))
                                                 }
                                             </Form.Control>
@@ -196,7 +197,8 @@ export class InfoForm extends Component {
                                 <Row>
                                     <Col>
                                 <Form.Group>
-                                    <Button type="submit" variant="success">Lagre informasjon</Button>
+                                    <Button hidden={this.state.savingInformation} onmouseover={() => this.updateIssueList} type="submit" variant="success">Lagre informasjon</Button>
+                                    <Button hidden={!this.state.savingInformation} disabled variant={"success"}><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/> Lagrer informasjon</Button>
                                 </Form.Group>
                                     </Col>
                                 </Row>
@@ -210,8 +212,8 @@ export class InfoForm extends Component {
                             <h5 className={"mt-2"}>Last opp et bilde til arrangementet</h5>
                             <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2 w-25"/>
                             <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/>
-                            <Button type={"file"} variant={"secondary"} onClick={() => {
-                                console.log("Uploading image...");
+                            <Button hidden={this.state.uploadingPicture} type={"file"} variant={"secondary"} onClick={() => {
+                                this.setState({uploadingPicture: true});
                                 if(MegaValidator.validateFile(this.state.selectedFile)){
                                     let fileForm = new FormData();
                                     fileForm.append("description", this.state.selectedFile.name);
@@ -376,7 +378,6 @@ export class InfoForm extends Component {
         }
     }
 
-
     updateIssueList(){
         let list = [];
 
@@ -388,7 +389,7 @@ export class InfoForm extends Component {
 
         if(this.state.description===null){
             list.push("Mangler beskrivelse");
-        } else if(this.state.description.length<=1){
+        } else if(this.state.description.length <= 1){
             list.push("Mangler beskrivelse");
         }
 
@@ -428,11 +429,12 @@ export class InfoForm extends Component {
 
 
     submitForm(){
+
+        this.setState({savingInformation: true});
         this.setState({dateError: false});
         if(this.validateForm()){
-            console.log("form validated");
             this.save();
-            EventStore.editCurrentEvent().then(() => Alert.info("Arrangementet ble lagret."));
+            EventStore.editCurrentEvent().then(this.setState({savingInformation: false}));
             this.setState({edit:false});
         } else{
             this.setState({dateError: true});
