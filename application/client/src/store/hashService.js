@@ -11,9 +11,9 @@ export class hashService {
 
     /**
      * Encryption method used for hashing.
-     * @param {String} password - The password in plaintext.
-     * @param {String} salt - Random data used in the encryption process.
-     * @return {String} A combination of the salt and the encrypted password.
+     * @param {string} password - The password in plaintext.
+     * @param {string} salt - Random data used in the encryption process.
+     * @return {string} A combination of the salt and the encrypted password.
      */
     static sha512(password, salt) {
         let hash = crypto.createHmac('sha512', salt);

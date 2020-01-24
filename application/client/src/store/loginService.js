@@ -11,8 +11,8 @@ export class LoginService {
     /**
      * Checks if the entered password matches the password stored in the database for the entered email.
      * If the password matches the user is logged in to the system.
-     * @param {String} email - Email to check against database.
-     * @param {String} enteredPassword - Password to check against database.
+     * @param {string} email - Email to check against database.
+     * @param {string} enteredPassword - Password to check against database.
      * @param {function} callback
      */
     static loginOrganizer(email, enteredPassword, callback) {

@@ -15,7 +15,7 @@ export class BugStore extends Component {
     /**
      * Register new bug into the database.
      * @param {int} organizerID - The database ID of the logged in organizer.
-     * @param {String} description - Description of what went wrong.
+     * @param {string} description - Description of what went wrong.
      * @param {function} callback
      */
     static registerBug(organizerID, description, callback){

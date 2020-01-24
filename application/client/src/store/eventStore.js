@@ -28,7 +28,7 @@ export class EventStore {
     /**
      * Creates a new event in the database and sets it to be currentEvent.
      * @param {function} callback
-     * @param {String} eventName - The name of the event.
+     * @param {string} eventName - The name of the event.
      * @param {int} organizerID - The database ID of the logged in organizer.
      */
     static createEvent(callback, eventName, organizerID) {
@@ -249,7 +249,7 @@ export class EventStore {
     }
 
     /**
-     * Fills the variable eventCategories with Strings containing the event types defined in the database.
+     * Fills the variable eventCategories with strings containing the event types defined in the database.
      * @param {function} callback
      */
     static getEventCategories(callback) {
@@ -270,7 +270,7 @@ export class EventStore {
     /**
      * Format a javascript date into a format meant for the database.
      * @param {date} date - The date to be formatted
-     * @return {String} - The formatted date
+     * @return {string} - The formatted date
      */
     static formatDate(date) {
         let d = new Date(date),
@@ -287,7 +287,7 @@ export class EventStore {
     /**
      * Format a javascript time to a format meant for the database.
      * @param {date} date - The date to be formatted
-     * @return {String} - The formatted date
+     * @return {string} - The formatted date
      */
     static formatTime(date) {
         let d = new Date(date),

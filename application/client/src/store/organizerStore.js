@@ -49,7 +49,7 @@ export class OrganizerStore {
     /**
      * Updates the database with a new username for the
      * @param {int} organizerID - The database ID of the organizer.
-     * @param {String} newUsername - The new username to be replace the current one.
+     * @param {string} newUsername - The new username to be replace the current one.
      */
     static changeUsername(organizerID, newUsername) {
         let header = {
@@ -65,8 +65,8 @@ export class OrganizerStore {
     /**
      * Checks that the input password matches the one in database and if so update the database with a new password for the organizer.
      * @param {int} organizerID - The database ID of the organizer.
-     * @param {String} oldPassword - The input password meant to match the password currently in the database.
-     * @param {String} newPassword - The input password meant to replace the current password
+     * @param {string} oldPassword - The input password meant to match the password currently in the database.
+     * @param {string} newPassword - The input password meant to replace the current password
      * @param {function} callback - The status code for the function.
      */
     static changePassword(organizerID, oldPassword, newPassword, callback) {
@@ -91,7 +91,7 @@ export class OrganizerStore {
 
     /**
      * Updates the database with a new password for the organizer.
-     * @param {String} newPhoneNumber - The new phone number to replace the current one.
+     * @param {string} newPhoneNumber - The new phone number to replace the current one.
      */
     static changePhoneNumber(newPhoneNumber) {
         let header = {
