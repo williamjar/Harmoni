@@ -9,6 +9,7 @@ import {DocumentationTab} from "../documentationTab";
 import {EventStore} from "../../store/eventStore";
 import {OrganizerStore} from "../../store/organizerStore";
 import {Event} from "../../classes/event";
+import {Alert} from "../alerts";
 
 /**
  * @class EventForm

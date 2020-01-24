@@ -30,7 +30,7 @@ run_tests:
 pages:
   stage: deploy
   script:
-    ls public
+    ls .
   artifacts:
     paths:
       - public
