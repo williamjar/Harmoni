@@ -9,6 +9,8 @@
 
 .btn-primary {
     background:  #00799e !important;
+    border-color: #00799e !important;
+    outline-color: #00799e !important;
 }
 
 .btn-outline-primary {
@@ -21,6 +23,8 @@
     color: white !important;
 
 }
+
+
 
 
 
@@ -42,6 +46,22 @@ body{
     background-color: #314b57 !important;
     width: 100%;
     height: 100%;
+}
+
+
+.text-indent-20{
+    text-indent: 20px !important;
+}
+
+.icon-center{
+    text-align: center;
+    color: #D3D3D3;
+    font-size: 4em;
+    padding-top: 200px;
+}
+
+.upload {
+    align-content: center;
 }
 
 .main-color{
@@ -73,6 +93,14 @@ body{
 
 .padding-right-20{
     padding-right: 20px !important;
+}
+
+.padding-right-10{
+    padding-right: 10px !important;
+}
+
+.margin-right-10{
+    margin-right: 10px !important;
 }
 
 .padding-top-20{
@@ -264,6 +292,7 @@ body{
     background: #003E51;
     color:white;
     width: 100%;
+    cursor: pointer;
 }
 
 .drop-shadow-mobile-menu {
@@ -300,26 +329,29 @@ body{
     width: 100%;
     text-align: left;
     color:black;
-    padding:20px;
-    bottom: 40px;
-    background: lightgrey;
+    font-size: 15px;
+    padding-top:20px;
+    padding-bottom:20px;
+    bottom: 43px;
+
+}
+
+.user-nav:hover{
+    color:#00aaee !important;
+
+    background: rgba(232, 232, 232, 0.74);
+
 }
 
 .Nav-Menu .user-nav img{
-    border:1px solid black;
     border-radius: 25px;
     background: white;
+
 }
 
-.Nav-Menu .user-nav:hover{
-    background: #567d99;
-    color: white;
-}
-
-.user-nav img {
-    border: 1px solid black;
-    border-radius: 25px;
-    background: white;
+.menu-item{
+    display: flex;
+    align-items: center;
 }
 
 .user-nav-mobile{
@@ -360,6 +392,7 @@ body{
     background: #00525c !important;
     color: white;
     text-decoration: none;
+    cursor: pointer;
 }
 
 
@@ -376,6 +409,18 @@ body{
     -webkit-box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
     -moz-box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
     box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
+}
+
+.shadow-card{
+    -webkit-box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
+    -moz-box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
+    box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
+}
+
+.shadow-card:hover{
+    -webkit-box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
+    -moz-box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
+    box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
 }
 
 .content-container{
@@ -582,11 +627,19 @@ search-result-item{
 }
 
 .folder{
+    width: 100%;
+    text-align: left !important;
 }
 
 .folder:hover {
-    color: white;
+    color: white !important;
     background-color: #314b57;
+    width: 100%;
+    text-align: left;
+}
+
+.hover-white:hover{
+    color:white;
 }
 
 
