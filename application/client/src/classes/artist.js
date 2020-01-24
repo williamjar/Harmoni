@@ -5,7 +5,7 @@ import {Genre} from "./genre";
 
 /**
  * @classdesc This is an object for storing all the data required to define an artist
- * @extends {Contact}
+ * @see {Contact}
  */
 export class Artist extends Contact {
 

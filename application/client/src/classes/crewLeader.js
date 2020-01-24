@@ -2,7 +2,6 @@ import {CrewMember} from "./crewMember";
 
 /**
  * @deprecated This class is no longer in use, as it's utility has been consolidated in crewMember
- * @extends {CrewMember}
  * @see CrewMember
  */
 export class CrewLeader extends CrewMember{
