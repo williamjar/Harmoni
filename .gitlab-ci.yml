@@ -26,3 +26,10 @@ run_tests:
     - npm test
     - cd ../server
     - npm test
+
+pages:
+  script:
+    jsdoc -c jsdocConf.json -r ./application -d ./public
+  artifacts:
+    paths:
+      - public
