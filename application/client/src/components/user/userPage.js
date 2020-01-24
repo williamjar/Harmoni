@@ -392,8 +392,8 @@ export class ProfilePictureForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            profilePictureUploaded: true,
             savingInformation: false,
+            profilePicture: '',
             link: ''
         };
 
@@ -404,7 +404,9 @@ export class ProfilePictureForm extends React.Component {
 
     componentDidMount() {
         this.updateInfoPicture((profilePicture) => {
-            if(profilePicture !== null && profilePicture !== ''){
+            if(profilePicture !== null){
+                console.log("Denne skal ikke kjøreeeee");
+                console.log(profilePicture);
                 PictureService.previewPicture(profilePicture, (url) => {
                     this.setState({link: url});
                 });
@@ -416,7 +418,6 @@ export class ProfilePictureForm extends React.Component {
         OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
             if (statusCode === 200) {
                 let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
-
                 callback(databaseImage);
             } else {
             }
@@ -425,7 +426,7 @@ export class ProfilePictureForm extends React.Component {
 
 
     checkIfUserHasPicture(){
-        if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
+        if(this.state.link !== ''){
             return(<img width={"200px"} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
         }else {
             return(<img width={"200px"} src={require('./profile.png')} alt={"Standard bildet kunne ikke lastes inn"}/>);
@@ -485,7 +486,7 @@ export class ProfilePictureForm extends React.Component {
     }
 
     submitForm(callback) {
-        if (MegaValidator.validateFile(this.state.newProfilePicture) && this.state.profilePictureUploaded) {
+        if (MegaValidator.validateFile(this.state.newProfilePicture)) {
             let formData = new FormData();
             formData.append('description', this.state.newProfilePicture.name);
             formData.append('selectedFile', this.state.newProfilePicture);
@@ -494,7 +495,6 @@ export class ProfilePictureForm extends React.Component {
                 if (statusCode === 200 && link) {
                     const totalPath = __dirname + '../../../../server/' + link;
                     this.setState({profilePicture: totalPath});
-                    this.setState({profilePictureUploaded: false});
                 }
                 document.getElementById("error").innerHTML = "";
                 callback()
@@ -504,14 +504,6 @@ export class ProfilePictureForm extends React.Component {
             Alert.danger("Du har lastet opp en tom eller ugyldig filtype");
             document.getElementById("error").innerHTML = "Godkjente filtyper .png .jpg .jpeg";
         }
-    }
-}
-
-export class Link {
-    static currentLink;
-
-    static setCurrentLink(newLink){
-        this.currentLink = newLink;
     }
 }
 
