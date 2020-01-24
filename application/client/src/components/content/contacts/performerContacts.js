@@ -456,7 +456,7 @@ class AddPerformer extends React.Component {
                     </Row>
                 </Modal.Body>
                 <Modal.Footer className={"text-danger"}> {this.validateForm()}
-                    <Button variant="success" onClick={this.saveClicked}>Legg til</Button>
+                    <Button variant="success" disabled={!(this.validateForm()==='')} onClick={this.saveClicked}>Legg til</Button>
                 </Modal.Footer>
             </Modal>
         )
