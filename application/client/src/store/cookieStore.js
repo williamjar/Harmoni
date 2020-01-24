@@ -106,7 +106,6 @@ export class CookieStore{
             if (this.currentToken != null){
                 axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header}).then(response => response.data).then(IDResponse => {
                     if (IDResponse[0].organizerID){
-                        sessionStorage.setItem('currentUserID', JSON.stringify(this.currentUserID));
                         this.currentUserID = IDResponse[0].organizerID;
                         callback(200);
                     }

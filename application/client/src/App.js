@@ -149,10 +149,6 @@ export class App extends Component{
 
                 if (sessionStorage.getItem('loggedIn')){
                     currentState.loggedIn = true;
-                    OrganizerStore.getOrganizer(parseInt(sessionStorage.getItem('currentUserID')), () => {
-                        console.log("Organizer set in App");
-                    });
-                    console.log(sessionStorage);
                 }
                 else{
                     currentState.loggedIn = false;

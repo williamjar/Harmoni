@@ -784,10 +784,6 @@ export class RegisteredPerformers extends Component{
         )
     }
 
-    componentDidMount() {
-
-    }
-
     unAssignArtist = (artist) => {
         //Call to parent with performer object to remove from event.
         this.props.unAssignArtist(artist);

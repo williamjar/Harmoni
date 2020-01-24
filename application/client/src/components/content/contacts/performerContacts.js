@@ -213,8 +213,6 @@ export class ContactList extends React.Component {
         this.props.updateHandler(() => this.setState({showContact: false}))
     };
 
-    componentDidMount() {
-    }
 
     render() {
         return(

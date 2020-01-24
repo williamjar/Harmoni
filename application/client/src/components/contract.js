@@ -47,9 +47,6 @@ export class MyDocuments extends Component{
         )
     }
 
-    componentDidMount() {
-
-    }
 }
 
 //---------------- Events ------------------

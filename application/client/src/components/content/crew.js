@@ -372,14 +372,10 @@ export class CrewCard extends Component{
         return null;
     }
 
-    componentDidMount() {
-
-    }
-
     categoryHandler = (event) => {
         this.setState({
             crewCategoryID : event.target.value
-        })
+        });
         this.props.categoryHandler(event.target.value);
     };
 
@@ -697,9 +693,6 @@ export class RegisteredCrew extends Component{
                 </div>
             )
         }
-    }
-
-    componentDidMount() {
     }
 
     unassignCrew = (crew) => {
