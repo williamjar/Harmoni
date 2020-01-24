@@ -51,7 +51,6 @@ export class Dashboard extends React.Component {
         this.sortEvents(this.state.planning,e.target.value,(sorted) => {this.setState({planning: sorted});});
         this.sortEvents(this.state.archived,e.target.value, (sorted) => this.setState({archived: sorted}));
         this.sortEvents(this.state.cancelled,e.target.value, (sorted) => this.setState({cancelled: sorted}));
-        console.log(this.state.planning);
     };
 
     // Sends the user to create event screen when clicking the "plus"-button
@@ -186,14 +185,11 @@ export class Dashboard extends React.Component {
     }
 
     searchHandler(event) {
-        console.log("Event received");
         console.log(event);
 
         //TODO: may need to sett current event in event store perhaps and maybe some other variables?
         EventStore.currentEvent = event;
         RiderStore.storeAllRidersForEvent(() => {
-            console.log("Here comes the sun, nananana");
-            console.log(RiderStore.allRidersForCurrentEvent);
             history.push("/arrangementEdit/" + this.props.event.eventID);
         }, event.eventID);
         history.push(`/arrangementEdit/${event.eventID}`);
