@@ -6,10 +6,6 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch'
 
 const provider = new OpenStreetMapProvider();
 
-/**
- * @const {GoogleMap}
- * This constant is the actual map component that gets returned by the map.js Component
- */
 const MapsComponent =
 
     compose(  withProps({

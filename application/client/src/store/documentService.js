@@ -8,7 +8,7 @@ const axiosConfig = require("./axiosConfig");
 
 /**
  * @class DocumentService
- * @classdesc Store Class for functions related to accessing and modifying documents.
+ * @classdesc Store class for functions related to accessing and modifying documents.
  */
 export class DocumentService {
 
@@ -39,7 +39,7 @@ export class DocumentService {
      * Returns all documents for a specific artist in a list of document objects created with data from the database
      * @param {int} artistID - The databaseID of the artist
      * @param {int} eventID - The database ID of the event.
-     * @param {String} token - Generated token for artist to get access
+     * @param {string} token - Generated token for artist to get access
      * @param {function} callback
      */
     static getAllDocumentsForArtist(artistID, eventID, token, callback) {
@@ -70,7 +70,7 @@ export class DocumentService {
      * Adds a new document to the database. Document can be attached to either a crew member or an artist.
      * TODO is category here needed?
      * @param {int} eventID - The database ID of the event.
-     * @param {String} category - The category to add the event to
+     * @param {string} category - The category to add the event to
      * @param {int} artistID - The database ID of the artist to attach the document to. This and crewID can be left as null.
      * @param {int} crewID - The database ID of the crew to attach the document to. This and artistID can be left as null.
      * @param {int} documentCategoryID - The database ID of the document category to add the document to.
@@ -126,7 +126,7 @@ export class DocumentService {
 
     /**
      * Allows the artist to upload a document and store it in the database.
-     * @param {String} artistToken - Generated token for artist to get access
+     * @param {string} artistToken - Generated token for artist to get access
      * @param {int} eventID - The database ID of the event.
      * @param {int} artistID - The database ID of the artist to attach the document to. Either this or crewID is left as null.
      * @param {FormData} file - The database ID of the crew to attach the document to. Either this or artistID is left as null.
@@ -359,7 +359,7 @@ export class DocumentService {
 
     /**
      * Previews a document via a link from the server.
-     * @param {String} documentLink - The link to access the document.
+     * @param {string} documentLink - The link to access the document.
      */
     static previewDocument(documentLink) {
         if ((/\.(pdf)$/i).test(documentLink)) {

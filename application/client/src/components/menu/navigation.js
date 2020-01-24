@@ -119,6 +119,7 @@ export class NavBar extends Component {
 
                 <div className="center font-italic purple log-out" onClick={() => {
                     sessionStorage.setItem('token', null);
+                    sessionStorage.setItem('currentEvent', null);
                     sessionStorage.removeItem('loggedIn');
                     CookieStore.setCurrentToken(null);
                     CookieStore.setCurrentUserID(-1);

@@ -65,7 +65,7 @@ export class BugReview extends Component {
                                     <Col sm={2} >
                                         {this.formatDate(bug.date)}
                                     </Col>
-                                    <Col sm={2}>
+                                    <Col sm={2} align={"right"}>
                                         <button id={bug.bugID} onClick={this.deleteBug} className="btn btn-danger">Slett</button>
                                     </Col>
                                 </Row>
@@ -113,6 +113,7 @@ export class BugReview extends Component {
                         (mailStatus) => {
                             if (mailStatus === 200){
                                 Alert.info("Din tilbakemelding ble registrert")
+                                this.setState({description : ""});
                             }
                             else{
                                 Alert.info("Din tilbakemelding ble registrert, men det skjedde en glipp med vårt mailsystem, og vi vil ikke bli informert om bug'en. Vennligst prøv igjen om du ønsker det, eller send en epost til bedriftharmoni@gmail.com");
