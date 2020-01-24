@@ -9,8 +9,8 @@ import {FaMusic} from "react-icons/all";
 import {FaUsers} from "react-icons/all";
 import {FaFileSignature} from "react-icons/all";
 
-import harmoniLogo from './harmonilogo.png'
-import mobileLogo2 from './harmonilogo.png'
+import harmoniLogo from './Logo_large.png'
+import mobileLogo2 from './Logo_mobile.png'
 import fullLogo from './harmonilogofull.png'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
@@ -128,38 +128,38 @@ export class Menu extends Component{
             <ul className="nav nav-links text-left list-group-flush w-100 ">
 
                 <div className="w-100">
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/" exact={true}>
+                    <NavLink className="text-decoration-none  nav-link" to="/" exact={true}>
                     <li className="">
-                        <FaCalendarAlt/> Mine arrangement
+                        <span className="menu-item"> <FaCalendarAlt/><span className="padding-left-20"> Mine arrangement</span></span>
                     </li>
                     </NavLink>
 
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/opprett">
+                    <NavLink className="text-decoration-none nav-link" to="/opprett">
                     <li className="">
-                        <FaCalendarPlus/> Opprett arrangement
+                        <span className="menu-item"> <FaCalendarPlus/><span className="padding-left-20"> Opprett arrangement</span></span>
                     </li>
                     </NavLink>
 
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/artister">
+                    <NavLink className="text-decoration-none nav-link" to="/artister">
                     <li className="">
-                        <FaMusic/> Mine artister
+                        <span className="menu-item"> <FaMusic/><span className="padding-left-20"> Mine artister</span></span>
                     </li>
                     </NavLink>
 
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/personell">
+                    <NavLink className="text-decoration-none nav-link" to="/personell">
                     <li className="">
-                        <FaUsers/> Mitt personell
+                        <span className="menu-item"> <FaUsers/><span className="padding-left-20"> Mitt personell</span></span>
                     </li>
                     </NavLink>
 
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/dokumenter">
+                    <NavLink className="text-decoration-none nav-link" to="/dokumenter">
                     <li className="">
-                        <FaFileSignature/> Mine dokumenter
+                        <span className="menu-item"><FaFileSignature/><span className="padding-left-20"> Mine dokumenter</span></span>
                     </li>
                     </NavLink>
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/bug">
+                    <NavLink className="text-decoration-none nav-link" to="/bug">
                         <li className="">
-                            <FaBullhorn/> Rapporter feil
+                            <span className="menu-item"><FaBullhorn/><span className="padding-left-20"> Rapporter feil</span></span>
                         </li>
                     </NavLink>
 
@@ -214,13 +214,13 @@ export class UserProfileButton extends Component{
 
     render() {
         return(
-            <NavLink to="/brukerprofil">
+            <NavLink to="/brukerprofil" className={""}>
                 <div className="user-nav">
                     <Row className = {" no-gutters"}>
-                        <Col size = {2}>
+                        <Col size = {2} className={"text-center text-indent-20"}>
                             {this.checkForUpdate()}
                         </Col>
-                        <Col size = {10}>
+                        <Col size = {10} className={"padding-top-5 main-color"}>
                             <b>{this.state.username}</b>
                             <br/>
                             Arrangør
