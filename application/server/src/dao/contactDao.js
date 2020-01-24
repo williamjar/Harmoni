@@ -56,7 +56,7 @@ module.exports = class contactDao extends Dao {
      * gets passed on to the main DAO
      * @see Dao
      * @param {Array}list
-     * List of parameters [phone, contactID]
+     * List of parameters [phone, organizerID]
      */
     changePhoneNumber(callback, list) {
         super.query('UPDATE contact SET phone = ? WHERE contactID = (SELECT organizer.contactID from organizer WHERE organizerID = ?)', list, callback)
