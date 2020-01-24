@@ -338,14 +338,6 @@ app.put("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     });
 });
 
-//Create document in DB
-app.post("/api/:eventID/documents/create", (req, res) => {
-    documentationDao.insertDocument(req.params.eventID, req.body, (status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
-
 //Get document categories for event
 app.get("/api/event/:eventID/documents/categories", (req, res) => {
     console.log("/doc: fikk request fra klient");
