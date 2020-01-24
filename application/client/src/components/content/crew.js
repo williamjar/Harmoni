@@ -213,13 +213,13 @@ export class AddCrewType extends Component{
                 </Form.Row>
 
                 <Row className="no-gutter">
-                    <Col className="col-1">
+                    <Col className="col-2">
                         <Button variant="success" type="submit" onClick={this.submitForm}>
                             Lagre
                         </Button>
                     </Col>
-                    <Col className="col-1">
-                        <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelButton}>
+                    <Col className="col-2">
+                        <Button variant="secondary" type="cancel" className="padding-left-20" onClick={this.cancelButton}>
                             Avbryt
                         </Button>
                     </Col>
