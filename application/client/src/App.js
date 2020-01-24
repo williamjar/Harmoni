@@ -69,8 +69,6 @@ export class App extends Component{
     }
 
     changeProfilePicture = (profilePicture) => {
-        console.log("Changing in APP: ");
-        console.log(profilePicture);
         this.setState({profilePicture: profilePicture});
     };
 
@@ -112,7 +110,6 @@ export class App extends Component{
             );
         }
         else {
-            console.log("Not logged in");
             return(
                 <div className="Login-Container">
                     <HashRouter>
@@ -143,7 +140,6 @@ export class App extends Component{
             CookieStore.validateToken(validate => {
                 if (!validate){
                     sessionStorage.removeItem('loggedIn');
-                    console.log(this.props);
                     history.push("/");
                 }
                 else{
@@ -151,7 +147,6 @@ export class App extends Component{
                 }
 
                 if (sessionStorage.getItem('loggedIn')){
-                    console.log("User logged in");
                     currentState.loggedIn = true;
                 }
                 else{

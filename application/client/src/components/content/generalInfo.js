@@ -99,8 +99,6 @@ export class InfoForm extends Component {
     componentDidMount() {
         this.updateIssueList();
 
-        console.log(EventStore.currentEvent);
-
         if (EventStore.currentEvent.picture !== null && EventStore.currentEvent.picture > 0){
             this.setState({pictureID: EventStore.currentEvent.picture});
             PictureService.getPicture(EventStore.currentEvent.picture, picture => {
@@ -112,7 +110,6 @@ export class InfoForm extends Component {
             })
         }
         if (!(EventStore.eventCategories[0])) {
-            console.log("loaded categories over again");
             EventStore.getEventCategories(() => {
                 this.setState({eventTypes: EventStore.eventCategories});
             });
@@ -218,14 +215,11 @@ export class InfoForm extends Component {
                                     let fileForm = new FormData();
                                     fileForm.append("description", this.state.selectedFile.name);
                                     fileForm.append("selectedFile", this.state.selectedFile);
-                                    console.log(fileForm.get("selectedFile"));
                                     PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path, newPictureID) => {
                                         if (statusCode === 200 && path) {
-                                            console.log(newPictureID);
                                             PictureService.previewPicture(path, link => {
                                                 EventStore.currentEvent.picture = newPictureID;
                                                 this.setState({pictureID: newPictureID});
-                                                console.log(this.state.pictureID);
                                                 this.setState({serverFile: link});
                                                 Alert.success("Bildet ditt ble lastet opp")
                                             });
@@ -445,9 +439,6 @@ export class InfoForm extends Component {
     }
 
     save(){
-        console.log(this.state.description);
-        console.log(this.formatDate(this.state.startDate));
-        console.log(this.formatDate(this.state.endDate));
         EventStore.currentEvent.eventName = this.state.eventName;
         EventStore.currentEvent.startDate = this.formatDate(this.state.startDate);
         EventStore.currentEvent.endDate = this.formatDate(this.state.endDate);
@@ -459,7 +450,6 @@ export class InfoForm extends Component {
         EventStore.currentEvent.town = this.state.town;
         EventStore.currentEvent.description = this.state.description;
         EventStore.currentEvent.picture = this.state.pictureID;
-        console.log("SAVED EVENT: " + EventStore.currentEvent.toString());
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql
     formatDate(date) {
