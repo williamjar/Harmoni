@@ -2,6 +2,7 @@ import axios from 'axios';
 import {OrganizerStore} from "./organizerStore";
 import {EventStore} from "./eventStore";
 
+const axiosConfig = require("./axiosConfig");
 const publicKey = require('../cookieConfig').publicKey;
 const jwt = require('jsonwebtoken');
 
@@ -67,7 +68,7 @@ export class CookieStore{
             return null;
         }
 
-        return axios.post("http://localhost:8080/token", JSON.stringify(body), {headers: header}).then(res => res.data).then(res => {
+        return axios.post(axiosConfig.root + "/token", JSON.stringify(body), {headers: header}).then(res => res.data).then(res => {
                 if (res.error){
                     this.currentToken = null;
                     this.currentUserID = -1;
@@ -80,7 +81,7 @@ export class CookieStore{
             }
         ).then(() => {
             if (this.currentToken != null){
-                axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header}).then(response => response.data).then(IDResponse => {
+                axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header}).then(response => response.data).then(IDResponse => {
                     if (IDResponse[0].organizerID){
                         this.currentUserID = IDResponse[0].organizerID;
                         callback(200);

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import {CookieStore} from "./cookieStore";
 
+const axiosConfig = require('./axiosConfig.json');
+
 
 export class MailService{
 
@@ -24,7 +26,7 @@ export class MailService{
             attachmentLinks: attachmentLinks
         };
 
-        axios.post("http://localhost:8080/api/email", JSON.stringify(body), {headers: header}).then(response => {
+        axios.post(axiosConfig.root + "/api/email", JSON.stringify(body), {headers: header}).then(response => {
             if (response.status === 200){
                 callback(200, response.data);
             }

@@ -18,15 +18,15 @@ export class RegisterOrganizerService {
 
         let hashedPassword = hash.sha512(password,hash.generateSalt(16));
 
-        axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), {headers: header})
+        axios.post(axiosConfig.root + '/contact', JSON.stringify(contactBody), {headers: header})
             .then(res => {
                 return res.data.insertId;
             })
             .then(contactID => {
                 console.log("Contact registered: " + contactID);
-                axios.get("http://localhost:8080/organizer/username/" + username, {headers: header}).then(res => {
+                axios.get(axiosConfig.root + "/organizer/username/" + username, {headers: header}).then(res => {
                     if (res.data.length === 0) {
-                        axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header}).then(res => {
+                        axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header}).then(res => {
                             console.log("Registering an organizer with hash " + hashedPassword);
                             if (res.data.length === 0) {
                                 let organizerBody = {
@@ -34,7 +34,7 @@ export class RegisterOrganizerService {
                                     "password": hashedPassword,
                                     "contactID": contactID
                                 };
-                                return axios.post('http://localhost:8080/organizer', JSON.stringify(organizerBody), {headers: header}).then(res => {
+                                return axios.post(axiosConfig.root + '/organizer', JSON.stringify(organizerBody), {headers: header}).then(res => {
                                     console.log("Organizer posted");
                                     callback(200);
                                 }).catch(err => callback(500, err));
