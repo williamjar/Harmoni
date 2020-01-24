@@ -4,9 +4,11 @@ import {CookieStore} from "./cookieStore";
 import {hashService} from "./hashService";
 const axiosConfig = require("./axiosConfig");
 
+/**
+ * @class OrganizerStore
+ * @classdesc Store class for functions related to accessing and modifying organizer objects and the logged in user.
+ */
 export class OrganizerStore {
-
-    // organizerID, name, phone, email, username, pictureLink
 
     static currentOrganizer;
 

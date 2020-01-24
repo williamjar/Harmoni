@@ -7,7 +7,7 @@ let axiosConfig = require("./axiosConfig");
 
 /**
  * @class EventStore
- * @classdesc Store Class for functions related to accessing and modifying event objects.
+ * @classdesc Store class for functions related to accessing and modifying event objects.
  */
 export class EventStore {
 

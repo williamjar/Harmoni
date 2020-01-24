@@ -7,7 +7,7 @@ let axiosConfig = require("./axiosConfig");
 
 /**
  * @class CrewStore
- * @classdesc Store Class for functions related to accessing and modifying crew objects.
+ * @classdesc Store class for functions related to accessing and modifying crew objects.
  */
 export class CrewStore {
 

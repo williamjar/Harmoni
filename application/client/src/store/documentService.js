@@ -8,7 +8,7 @@ const axiosConfig = require("./axiosConfig");
 
 /**
  * @class DocumentService
- * @classdesc Store Class for functions related to accessing and modifying documents.
+ * @classdesc Store class for functions related to accessing and modifying documents.
  */
 export class DocumentService {
 

@@ -4,7 +4,7 @@ const axiosConfig = require("./axiosConfig");
 
 /**
  * @class ContactService
- * @classdesc Service Class for functions related to accessing and modifying contact objects.
+ * @classdesc Service class for functions related to accessing and modifying contact objects.
  */
 export class ContactService {
 

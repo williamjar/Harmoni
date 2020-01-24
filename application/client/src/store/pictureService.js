@@ -6,6 +6,10 @@ import {CookieStore} from "./cookieStore";
 
 const axiosConfig = require("./axiosConfig");
 
+/**
+ * @class ArtistService
+ * @classdesc Service class for functions related to accessing and modifying crew objects.
+ */
 export class PictureService {
 
     //Get picture

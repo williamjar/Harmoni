@@ -6,7 +6,7 @@ const axiosConfig = require("./axiosConfig");
 
 /**
  * @class BugStore
- * @classdesc Store Class for functions related to accessing and modifying bugs objects.
+ * @classdesc Store class for functions related to accessing and modifying bugs objects.
  */
 export class BugStore extends Component {
 

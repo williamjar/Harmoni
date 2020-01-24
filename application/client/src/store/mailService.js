@@ -1,19 +1,31 @@
 import axios from 'axios';
 import {CookieStore} from "./cookieStore";
 
+/**
+ * @class MailService
+ * @classdesc Mail class for functions related to sending out emails.
+ */
+export class MailService {
 
-export class MailService{
-
-    static sendGeneralEmail(emailTo, subject, emailBody, attachmentLinks, callback){
+    /**
+     * Sends an email
+     * @param {String,Array} emailTo - Email address of the recipient.
+     * @param {String} subject - Subject line of the email.
+     * @param {String} emailBody - Body of the email.
+     * @param {Array} attachmentLinks - Sends a Array of strings with the links to attachments.
+     * @param {function} callback
+     */
+    static sendGeneralEmail(emailTo, subject, emailBody, attachmentLinks, callback) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        if (attachmentLinks !== null){
-            attachmentLinks = attachmentLinks.map(e => {if (e === undefined) return null});
+        if (attachmentLinks !== null) {
+            attachmentLinks = attachmentLinks.map(e => {
+                if (e === undefined) return null
+            });
         }
-
 
         let body = {
             username: 'bedriftharmoni@gmail.com',
@@ -25,24 +37,48 @@ export class MailService{
         };
 
         axios.post("http://localhost:8080/api/email", JSON.stringify(body), {headers: header}).then(response => {
-            if (response.status === 200){
+            if (response.status === 200) {
                 callback(200, response.data);
-            }
-            else{
+            } else {
                 callback(500);
             }
         }).catch(err => callback(500, err));
     }
 
-    static sendGeneralEmailToOne(emailTo, subject, emailBody, attachmentLinks, callback){
+    /**
+     * Sends an email to a single recipient
+     * @param {String} emailTo - Email address of the recipient.
+     * @param {String} subject - Subject line of the email.
+     * @param {String} emailBody - Body of the email.
+     * @param {Array} attachmentLinks - Sends a Array of strings with the links to attachments.
+     * @param {function} callback
+     */
+    static sendGeneralEmailToOne(emailTo, subject, emailBody, attachmentLinks, callback) {
         this.sendGeneralEmail(emailTo, subject, emailBody, attachmentLinks, callback);
     }
 
-    static sendGeneralEmailToMany(emailToArray, subject, emailBody, attachmentLinks, callback){
+    /**
+     * Sends an email to multiple recipients
+     * @param {Array} emailToArray - Email address of the recipient.
+     * @param {String} subject - Subject line of the email.
+     * @param {String} emailBody - Body of the email.
+     * @param {Array} attachmentLinks - Sends a Array of strings with the links to attachments.
+     * @param {function} callback
+     */
+    static sendGeneralEmailToMany(emailToArray, subject, emailBody, attachmentLinks, callback) {
         this.sendGeneralEmail(emailToArray, subject, emailBody, attachmentLinks, callback);
     }
 
-    static sendCancelNotice(subject, emailBody, artists, crew, otherEmails, callback){
+    /**
+     * Sends a cancel notice email to all artists and crew
+     * @param {String} subject - Subject line of the email.
+     * @param {String} emailBody - Body of the email.
+     * @param {Array} artists - Array of artist objects to send the mail to.
+     * @param {Array} crew - Array of crew objects to send the mail to.
+     * @param {String} otherEmails - Body of the email.
+     * @param {function} callback
+     */
+    static sendCancelNotice(subject, emailBody, artists, crew, otherEmails, callback) {
         let artistEmails = artists.map(artist => artist.email);
         let crewEmails = crew.map(crewMember => crewMember.email);
         let allEmails = [].concat(artistEmails).concat(crewEmails.concat(otherEmails));
@@ -50,7 +86,14 @@ export class MailService{
         this.sendGeneralEmailToMany(allEmails, subject, emailBody, null, callback);
     }
 
-    static sendArtistInvitation(artist, subject, emailBody, callback){
+    /**
+     * Sends an email invitation to an artist.
+     * @param {Artist} artist - The artist who will be the recipient.
+     * @param {String} subject - Subject line of the email.
+     * @param {String} emailBody - Body of the email.
+     * @param {function} callback
+     */
+    static sendArtistInvitation(artist, subject, emailBody, callback) {
 
         console.log("Sending artist invitation");
 
