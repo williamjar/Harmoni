@@ -17,6 +17,7 @@ import {BugReview} from "./components/bugReview";
 import {PerformerContacts} from "./components/content/contacts/performerContacts";
 import {ArtistRegisterRiders} from "./components/artistComponents/artistRegisterRiders";
 import {CrewContacts} from "./components/content/contacts/crewContacts";
+import {OrganizerStore} from "./store/organizerStore";
 let history = createHashHistory();
 
 export class App extends Component{
@@ -148,6 +149,10 @@ export class App extends Component{
 
                 if (sessionStorage.getItem('loggedIn')){
                     currentState.loggedIn = true;
+                    OrganizerStore.getOrganizer(parseInt(sessionStorage.getItem('currentUserID')), () => {
+                        console.log("Organizer set in App");
+                    });
+                    console.log(sessionStorage);
                 }
                 else{
                     currentState.loggedIn = false;

@@ -351,10 +351,12 @@ export class PerformerCard extends Component{
 
     componentDidMount() {
         //Fetches all riders for current artist and event and stores them in state
-        this.setState({riders : RiderStore.allRidersForCurrentEvent});
 
         ArtistService.getAllGenres((res) => {
             this.setState({genreList : res});
+            RiderStore.storeAllRidersForEvent(() => {
+                this.setState({riders : RiderStore.allRidersForCurrentEvent});
+            }, EventStore.currentEvent.eventID);
         });
         this.setState({hasBeenPaid : this.state.performer.hasBeenPaid, contractSigned : this.state.performer.contractSigned, genre : this.state.performer.genre});
 
