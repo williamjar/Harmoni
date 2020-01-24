@@ -10,6 +10,10 @@ import {hashService} from "../../store/hashService";
 
 let history = createHashHistory();
 
+/**
+ * @class UserPage
+ * @classdesc Component for editing a user profile, profile picture and deleting user.
+ */
 export class UserPage extends React.Component {
     constructor(props) {
         super(props);

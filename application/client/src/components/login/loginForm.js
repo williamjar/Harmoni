@@ -4,8 +4,10 @@ import { NavLink } from 'react-router-dom';
 import {LoginService} from "../../store/loginService";
 import Logo from '../menu/Logo_large.png';
 
-/** @class representing a login form */
-
+/**
+ * @class LoginForm
+ * @classdesc Component for logging in the user.
+ */
 export class LoginForm extends React.Component {
     /**
      * Creates a log in form with states

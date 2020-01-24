@@ -5,9 +5,12 @@ import { createHashHistory } from 'history';
 import {NavLink} from "react-router-dom";
 import {MegaValidator} from "../../megaValidator";
 
-
 let history = createHashHistory();
 
+/**
+ * @class RegisterForm
+ * @classdesc Component for registering a new user.
+ */
 export class RegisterForm extends React.Component {
 
     constructor(props) {

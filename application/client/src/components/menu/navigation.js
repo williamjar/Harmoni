@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Row, Col} from 'react-bootstrap'
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { NavLink } from 'react-router-dom';
 import {FaCalendarAlt} from "react-icons/all";
@@ -8,13 +7,11 @@ import {FaCalendarPlus} from "react-icons/all";
 import {FaMusic} from "react-icons/all";
 import {FaUsers} from "react-icons/all";
 import {FaFileSignature} from "react-icons/all";
-
 import harmoniLogo from './Logo_large.png'
 import mobileLogo2 from './Logo_mobile.png'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {FaSignOutAlt} from "react-icons/all";
-
 import {FaBars} from "react-icons/all";
 import {FaUserCog} from "react-icons/all";
 import {FaBullhorn} from "react-icons/all";
@@ -24,6 +21,10 @@ let history = createHashHistory();
 
 let fontSize = 100;
 
+/**
+ * @class MobileMenu
+ * @classdesc Navigation menu for mobile display
+ */
 export class MobileMenu extends Component{
 
     constructor(props){
@@ -100,6 +101,10 @@ export class MobileMenu extends Component{
 
 }
 
+/**
+ * @class MobileMenu
+ * @classdesc Navigation menu for normal displays
+ */
 export class NavBar extends Component {
     render() {
         return (
