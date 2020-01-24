@@ -86,14 +86,23 @@ export class MobileMenu extends Component{
         )
     }
 
+    /**
+     * Collapses the mobile navigation field
+     */
     collapse = () => {
         this.setState({expand : false});
     };
 
+    /**
+     * Toggles the menu for mobile view
+     */
     toggleExpand = () => {
         this.setState({expand : !this.state.expand});
     };
 
+    /**
+     * Sends user to user profile
+     */
     goToUserProfile = () => {
         history.push("/brukerprofil");
         this.collapse();
@@ -142,6 +151,10 @@ export class NavBar extends Component {
     }
 }
 
+/**
+ * @class MMI
+ * @classdesc MMI is a component that lets user increase or decrease font size globally on site.
+ */
 export class MMI extends Component{
     render() {
         return(
@@ -159,6 +172,9 @@ export class MMI extends Component{
     }
 
 
+    /**
+     * Decreases the font globally for website
+     */
     decreaseFont = () => {
         let body = document.body;
         if(fontSize>85){
@@ -168,6 +184,9 @@ export class MMI extends Component{
 
     };
 
+    /**
+     * Increases the font size globally for website
+     */
     increaseFont = () => {
         let body = document.body;
         if(fontSize <160){
@@ -177,6 +196,10 @@ export class MMI extends Component{
     };
 }
 
+/**
+ * @class Menu
+ * @classdesc Menu holds the memu items with clickable links
+ */
 export class Menu extends Component{
     render() {
         return(
@@ -226,6 +249,11 @@ export class Menu extends Component{
 }
 
 
+
+/**
+ * @class UserProfileButton
+ * @classdesc UserProfileButton is a component showing user information with link to user profile
+ */
 export class UserProfileButton extends Component{
     constructor(props) {
         super(props);
@@ -246,6 +274,10 @@ export class UserProfileButton extends Component{
         })
     }
 
+    /**
+     * Gets the path to use for user profile picture
+     * @param path
+     */
     upload = (path) => {
         PictureService.previewPicture(path, (url) => {
             this.setState({link: url});
@@ -253,6 +285,11 @@ export class UserProfileButton extends Component{
 
     };
 
+    /**
+     * Checks if user picture is updated, and sets it if it has a new picture
+     * @returns {img}
+     * Returns new or placehold image
+     */
     checkForUpdate(){
         if(this.state.profilePicture !== this.props.profilePicture){
             this.upload(this.props.profilePicture);
@@ -286,6 +323,11 @@ export class UserProfileButton extends Component{
         )
     }
 
+    /**
+     * Updates information about user
+     * @param callback
+     * Function to update user image
+     */
     updateInfo(callback){
         OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
             if (statusCode === 200){
