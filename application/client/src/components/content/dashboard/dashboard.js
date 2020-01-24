@@ -23,7 +23,10 @@ import {Alert} from "../../alerts";
 const history = createHashHistory();
 
 
-// Component displaying all of the users events
+/**
+ * @class Dashboard
+ * classdesc Component for displaying the full list of events for the organizer, sort and filtering methods.
+ */
 export class Dashboard extends React.Component {
 
     constructor(props) {

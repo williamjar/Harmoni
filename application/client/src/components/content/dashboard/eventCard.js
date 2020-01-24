@@ -8,7 +8,10 @@ import {RiderStore} from "../../../store/riderStore";
 
 const history = createHashHistory();
 
-// Component displaying a single event as a row in the parent table
+/**
+ * @class EventCard
+ * classdesc Component for displaying an singular event on the dashboard.
+ */
 export class EventCard extends React.Component {
 
     state = {

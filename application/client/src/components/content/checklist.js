@@ -1,7 +1,10 @@
 import {Card} from 'react-bootstrap';
 import React from 'react';
 
-
+/**
+ * @class CheckList
+ * classdesc Component for displaying the list of information that the user need to fill in to the event.
+ */
 export class CheckList extends React.Component {
     constructor(props){
         super(props);
@@ -9,7 +12,6 @@ export class CheckList extends React.Component {
         mounted : true
         }
     }
-
 
     render(){
 

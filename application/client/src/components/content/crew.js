@@ -12,7 +12,10 @@ import {Alert} from "../alerts";
 import {MegaValidator} from "../../megaValidator";
 import {MailService} from "../../store/mailService";
 
-
+/**
+ * @class CreateEventSplash
+ * Component for creating a new event.
+ */
 export class CrewPanel extends Component{
 
     constructor(props){

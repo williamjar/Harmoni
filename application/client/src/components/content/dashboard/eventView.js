@@ -5,7 +5,10 @@ import Table from "react-bootstrap/Table";
 import {EventCard} from "./eventCard";
 import {FaAngleDown} from "react-icons/all";
 
-// Component for displaying a group of events(EventCard's) as a table
+/**
+ * @class EventView
+ * classdesc Component for displaying a table of events.
+ */
 export class EventView extends React.Component {
 
     state = {

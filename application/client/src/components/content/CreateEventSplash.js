@@ -10,6 +10,10 @@ import {Alert} from "../alerts";
 
 let history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 
+/**
+ * @class CreateEventSplash
+ * Component for creating a new event.
+ */
 export class CreateEventSplash extends Component{
     emptyMessage = "Navn kan ikke være tomt";
     error = false;
