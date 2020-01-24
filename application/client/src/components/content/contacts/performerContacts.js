@@ -27,6 +27,7 @@ export class PerformerContacts extends React.Component {
             performers: [],
             currentPerformer: null,
             showContact: false,
+            addNew: false,
             genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"],
         };
 
@@ -55,9 +56,9 @@ export class PerformerContacts extends React.Component {
         }, CookieStore.currentUserID);
     };
 
-    /*addClicked = () => {
-        this.setState({currentPerformer: new Artist})
-    };*/
+    addClicked = () => {
+        this.setState({addNew: true});
+    };
 
     render() {
         console.log(this.state.performers);
@@ -131,7 +132,7 @@ export class PerformerContacts extends React.Component {
                 </Card>
                 <Row>
                     <Col>
-                        <div className="btn btn-info btn-lg float-right" onClick>
+                        <div className="btn btn-info btn-lg float-right" onClick={this.addClicked}>
                             <FaPlusCircle className="mr-2"/>
                             Legg til artist
                         </div>
@@ -139,6 +140,7 @@ export class PerformerContacts extends React.Component {
                 </Row>
                 {console.log(this.state.currentPerformer)}
                 {this.state.currentPerformer !== null ? <ContactInfo show={this.state.show} contact={this.state.currentPerformer} onHide={this.hidePerformer}/> : null}
+                <AddPerformer show={this.state.addNew}/>
             </div>
         )
     }
@@ -323,6 +325,83 @@ export class ContactInfo extends React.Component {
                 <Modal.Footer>
                     {this.state.editable ? <Button variant="success" onClick={this.saveClicked}>Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}
                     <Button variant="danger">Slett</Button>
+                </Modal.Footer>
+            </Modal>
+        )
+    }
+}
+
+class AddPerformer extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            show: this.props.show,
+            contactName: "",
+            email: "",
+            phone: "",
+            genre: null,
+            genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"],
+        }
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.show !== this.state.show);
+    }
+
+    componentDidUpdate(props) {
+        this.setState({show: true});
+    }
+
+    hide = () => {
+        this.update( () => this.setState({show: false}));
+    };
+
+    render() {
+        return(
+            <Modal show={this.state.show} onHide={this.props.onHide}>
+                <Modal.Header closeButton>
+                    <FaUserCircle size={35} className="mr-1"/>
+                    <Modal.Title>
+                        <Form.Control name="contactName" type="text" value={this.state.contactName} onChange={this.handleChange}
+                        placeholder="Navn"/>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h5>Kontaktinformasjon</h5>
+                    <Row>
+                        <Col xs={1}>
+                            <FaEnvelopeSquare/>
+                        </Col>
+                        <Col>
+                            <Form.Control name="email" type="text" value={this.state.email} onChange={this.handleChange}
+                            placeholder="Epostadresse"/>
+                        </Col>
+                    </Row>
+                    <Row className="mb-4">
+                        <Col xs={1}>
+                            <FaPhone/>
+                        </Col>
+                        <Col>
+                            <Form.Control name="phone" type="text" value={this.state.phone} onChange={this.handleChange}
+                            placeholder="Telefon"/>
+                        </Col>
+                    </Row>
+                    <h5>Musikksjanger</h5>
+                    <Row>
+                        <Col xs={1}>
+                            <FaMusic/>
+                        </Col>
+                        <Col>
+                            <Form.Control name="genre" as="select" defaultValue={this.state.genre} onChange={this.handleChange}>{
+                                this.state.genres.map((genre,i) => {return <option value={i + 1}>{genre}</option>})
+                            }</Form.Control>
+                        </Col>
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="success" onClick={this.saveClicked}>Legg til</Button>
                 </Modal.Footer>
             </Modal>
         )
