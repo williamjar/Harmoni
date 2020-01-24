@@ -299,6 +299,7 @@ export class CrewStore {
      * Updates the the description for an existing crew member and saves it to the database.
      * @param {string} description - The database ID of the event.
      * @param {crewID} crewID - The database ID of the crew member.
+     * @return {Promise} The promise received from the database.
      */
     static updateCrewMember(description, crewID) {
 
@@ -321,6 +322,7 @@ export class CrewStore {
      * @param {int} eventID - The database ID of the event.
      * @param {int} crewCategoryID - The database ID of crew category the crew member will be assigned to.
      * @param {int} crewID - The database ID of the crew member.
+     * @return {Promise} The promise received from the database.
      */
     static updateCrewMemberEvent(isResponsible, contractSigned, hasBeenPaid, eventID, crewCategoryID, crewID) {
 
@@ -353,7 +355,11 @@ export class CrewStore {
             .then(response => console.log(response));
     }
 
-    //delete a crew member
+    /**
+     * Removes a crew member and his personal info from the database.
+     * @param {int} contactID - The database ID of the contact.
+     * @return {Promise} The promise received from the database.
+     */
     static deleteCrewMember(contactID) {
 
         let header = {
@@ -380,11 +386,12 @@ export class CrewStore {
     }
 
     /**
-     * Unassigns a crewmember from an event and updates the database.
+     * Unassigns a crew member from an event and updates the database.
      * @param {int} eventID - The database ID of the event.
      * @param {int} crewCategoryID - The database ID of crew category the crew member will be assigned to.
      * @param {int} crewID - The database ID of the crew member.
      * @param {function} callback
+     * @return {Promise} The promise received from the database.
      */
     static unassignCrewMemberFromEvent(eventID, crewCategoryID, crewID, callback){
 

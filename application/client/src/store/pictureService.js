@@ -46,7 +46,10 @@ export class PictureService {
     }
 
     /**
-     * TODO unused
+     * Inserts a picture into the database and assigns it to a user.
+     * @param {int} organizerID - Database ID of the organizer.
+     * @param TODO what type is this? {} fileForm - Description.
+     * @param {function} callback
      */
     static insertProfilePicture(organizerID, fileForm, callback) {
         for (let pair of fileForm.entries()) {
@@ -90,10 +93,10 @@ export class PictureService {
     }
 
     /**
-     *
-     * @param {int} eventID -
-     * @param {int} fileForm -
-     * @param {function} callback -
+     * Inserts a picture into the database and assigns it to an event.
+     * @param {int} eventID - The database ID of the event.
+     * @param TODO what type is this? {} fileForm - Description.
+     * @param {function} callback
      */
     static insertEventPicture(eventID, fileForm, callback) {
         let serverHeader = {
@@ -126,7 +129,11 @@ export class PictureService {
         });
     }
 
-
+    /**
+     * Returns the URL of a file to preview in the callback.
+     * @param {string} pictureLink - The database ID of the event.
+     * @param {function} callback
+     */
     static previewPicture(pictureLink, callback) {
         console.log("Link " + pictureLink);
         console.log("Kjører service");
@@ -163,7 +170,9 @@ export class PictureService {
     }
 
 
-    //Delete picture
+    /**
+     * TODO Unused - Delete?
+     */
     deletePicture(pictureID) {
         let header = {
             "Content-Type": "application/json",
