@@ -2,8 +2,10 @@ const Dao = require("./dao.js");
 
 //Sql queries for associated with Documentation
 /**
- * Methods to contact db with execution commands
+ * @classdesc Methods to contact db with execution commands
  * @class {documentationDao}
+ * @type {documentationDao}
+ * @see Dao
  */
 module.exports = class documentationDao extends Dao {
     getAllDocumentCategories(callback){

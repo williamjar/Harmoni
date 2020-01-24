@@ -4,6 +4,7 @@ const Dao = require('./dao.js');
  * @class artistDao
  * @classdesc A Database Access Object for artists
  * @type {artistDao}
+ * @see Dao
  */
 module.exports = class artistDao extends Dao {
 

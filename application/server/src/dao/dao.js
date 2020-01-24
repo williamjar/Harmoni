@@ -1,3 +1,8 @@
+/**
+ * @class Dao
+ * @classdesc The main Database Access Object
+ * @type {Dao}
+ */
 module.exports = class Dao {
     constructor(pool) {
         this.pool = pool;
