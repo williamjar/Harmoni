@@ -87,7 +87,9 @@ export class App extends Component{
                                         this.setState({loggedIn: false});
                                     }
                                     }/></div> :
-                                    <div className="col-12"><MobileMenu/></div>}
+                                    <div className="col-12"><MobileMenu logOut={() => {
+                                        this.setState({loggedIn: false});
+                                    }}/></div>}
                                 {this.state.mobileView?
                                     <div className="margin-bottom-30"><br/> </div>:null
                                 }
