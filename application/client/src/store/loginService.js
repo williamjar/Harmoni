@@ -1,10 +1,8 @@
 import axios from "axios";
 import {CookieStore} from "./cookieStore";
+import {hashService} from "./hashService";
 
 const axiosConfig = require('./axiosConfig');
-
-const hash = require('./hashService');
-import {hashService} from "./hashService";
 
 export class LoginService {
 
