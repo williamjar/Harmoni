@@ -2,7 +2,6 @@ import {
     app,
     documentationDao,
     pictureDao,
-    documentDao,
     organizerDao,
     eventDao,
     multer,
@@ -476,7 +475,7 @@ app.post("/api/document", (request, response) => {
 
 app.delete("/api/document/:documentID/:path*", (req, res) => {
     console.log("ID " + req.params.documentID + " Link " + req.params.path + req.params['0']);
-    documentDao.deleteOne((status, data) => {
+    documentationDao.deleteOne((status, data) => {
         res.status(status);
         res.json(data);
     }, req.params.documentID);

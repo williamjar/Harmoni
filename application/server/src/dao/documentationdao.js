@@ -79,6 +79,10 @@ module.exports = class documentationDao extends Dao {
         );
     }
 
+    deleteOne(callback, documentID) {
+        super.query('DELETE FROM document WHERE documentID = ? ', [documentID], callback);
+    }
+
     /**
      * Delete a document
      * @param {int} eventID - id of event
