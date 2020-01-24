@@ -161,7 +161,6 @@ export class Documents extends Component{
         }
         //PDF
         else if((/\.(pdf)$/i).test(fileName)){
-            console.log("pdf");
             return <FaFilePdf size = {25}/>
         }
         //Powerpoint
@@ -201,9 +200,12 @@ export class Documents extends Component{
 
     };
 
+
     render(){
         return(
             <section>
+                {console.log("TEST" + ("tester.txt").substr(("tester.txt").lastIndexOf('.') + 1))}
+                <Button>test meg</Button>
                 {this.state.document.map((item) => {
                     return (
                         <Accordion defaultActiveKey="1" >
@@ -309,7 +311,7 @@ class Info extends Component {
                 </Col>
                 <Col size = {3} className={"text-right"}>
                     <Button onClick = {() => this.props.deleteDocument(this.state.documentID, this.state.documentLink, this.state.documentCategoryID)} variant="danger"> Slett </Button>
-                </Col>api/organizer/picture
+                </Col>
             </Row>
         );
     }

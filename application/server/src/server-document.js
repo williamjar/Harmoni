@@ -27,18 +27,6 @@ function deleteFile(path) {
     }
 }
 
-function deleteAllFilesInFolder(path, callback) {
-    fs.readdir(path, (err, files) => {
-        if (err) console.log(err);
-        for (const file of files) {
-            fs.unlink(path + '/' + file, err => {
-                if (err) console.log(err);
-            });
-        }
-    });
-    callback();
-}
-
 function ensureFolderExists(path, mask, callback) {
     if (typeof mask == 'function') {
         callback = mask;
@@ -88,7 +76,6 @@ const fileStorage = multer.diskStorage({
 
     filename: (req, file, cb) => {
         const newFilename = uuidv4(path.extname(file.originalname)) + "_" + file.originalname;
-        console.log("Creating new file " + newFilename);
         cb(null, newFilename);
     }
 });
@@ -295,13 +282,6 @@ app.get("/api/:eventID/documents", (req, res) => {
     });
 });
 
-app.get("/api/:eventID/documents/:documentID", (req, res) => {
-    documentationDao.getOneDocument(req.params.eventID, req.params.documentID, (status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
-
 
 app.delete("/api/:eventID/documents/:documentCategory/:fileName", (req, res) => {
     documentationDao.deleteDocument(req.params.eventID, req.params.documentID, (status, data) => {
@@ -319,12 +299,6 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     });
 });
 
-app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
-    documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID, (status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
 
 app.put("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     documentationDao.changeDocumentCategory(req.params.eventID, req.params.documentCategoryID, req.body, (status, data) => {
@@ -335,20 +309,6 @@ app.put("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
 
 app.post("/api/:eventID/documents/create", (req, res) => {
     documentationDao.insertDocument(req.params.eventID, req.body, (status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
-
-app.post("/api/:eventID/documents/create/artist", (req, res) => {
-    documentationDao.insertDocumentArtist(req.params.eventID, req.body, (status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
-
-app.post("/api/:eventID/documents/create/crew", (req, res) => {
-    documentationDao.insertDocumentCrew(req.params.eventID, req.body, (status, data) => {
         res.status(status);
         res.json(data);
     });
@@ -513,21 +473,6 @@ app.post("/api/document", (request, response) => {
         });
 });
 
-app.put("/api/document/:documentID", (request, response) => {
-    console.log("Express: Request to change document " + request.params.documentID);
-    let val = [
-        request.body.eventID,
-        request.body.documentName,
-        request.body.documentLink,
-        request.body.artistID,
-        request.body.crewID,
-        request.body.documentCategoryID
-    ];
-    documentDao.updateOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, val, request.params.documentID);
-});
 
 app.delete("/api/document/:documentID/:path*", (req, res) => {
     console.log("ID " + req.params.documentID + " Link " + req.params.path + req.params['0']);
@@ -535,6 +480,5 @@ app.delete("/api/document/:documentID/:path*", (req, res) => {
         res.status(status);
         res.json(data);
     }, req.params.documentID);
-    console.log("DELETEING");
     deleteFile('./' + req.params.path + req.params['0']);
 });
