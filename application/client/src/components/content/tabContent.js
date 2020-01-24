@@ -77,20 +77,18 @@ export class TabContent extends Component {
         return null;
     }
 
-    // TODO Create a custom confirm window for these.
     deleteEvent = () => {
-        EventStore.deleteCurrentEvent().then(console.log('Event deleted!'));
-        history.push("/");
+        EventStore.deleteCurrentEvent().then( () => history.push("/"))
     };
 
     publishEvent = () => {
-        EventStore.publishCurrentEvent().then(console.log('Event published!'));
+        EventStore.publishCurrentEvent();
         this.setState({status : 1});
         Alert.success("Arrangementet har blitt publisert")
     };
 
     cancelEvent = () => {
-        EventStore.cancelCurrentEvent().then(console.log('Event cancelled!'));
+        EventStore.cancelCurrentEvent().then(() => Alert.danger("Arrangementet har blitt kansellert"));
         this.setState({status : 3});
 
         if (EventStore.currentEvent.artists.length > 0 || EventStore.currentEvent.crewMembers.length > 0){
@@ -100,12 +98,11 @@ export class TabContent extends Component {
                     Alert.info("Mail har blitt sendt til alle involverte om avlysningen");
             });
         }
-        Alert.danger("Arrangementet har blitt kansellert")
+
     };
 
     planEvent = () => {
-        EventStore.planCurrentEvent().then(console.log('Event sent to planning!'));
+        EventStore.planCurrentEvent().then(() => Alert.success("Arrangementet har blitt flyttet til under planlegging"));
         this.setState({status : 0});
-        Alert.success("Arrangementet har blitt flyttet til under planlegging")
     };
 }

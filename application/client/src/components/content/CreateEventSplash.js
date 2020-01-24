@@ -78,7 +78,6 @@ export class CreateEventSplash extends Component{
             this.setState(state);
         } else{
             if (!(EventStore.eventCategories[0])) {
-                console.log("loaded categories over again");
                 EventStore.getEventCategories(() => {
                 });
             }

@@ -14,8 +14,10 @@ import {MegaValidator} from "../../megaValidator";
 import {MailService} from "../../store/mailService";
 
 /**
- * @class CreateEventSplash
- * @classdesc Component for creating a new event.
+ * @class CrewPanel
+ * @classdesc Crewpanel is the edit page for crew members in an event, this.state keeps track of which components
+ * it should display at a given time and also holds the crew member who is selected for display on crew card, show the
+ * different crew categories added to the event and as well as an array (results) that is used to be searched against
  */
 export class CrewPanel extends Component{
 
@@ -196,9 +198,9 @@ export class CrewPanel extends Component{
         let currentState = this.state;
         currentState.crewSelected = crew;
         currentState.showCrewCard = true;
+        currentState.showRegisterNew = false;
         this.setState(currentState);
         this.setCategoryCurrentCrew();
-        this.hideRegisterNew();
     };
 }
 

@@ -35,7 +35,7 @@ export class CookieStore{
     }
 
     /**
-     * TODO
+     * Validates the logged in key in sessionStorage
      * @param {function} callback
      */
     static validateToken(callback){
@@ -59,8 +59,10 @@ export class CookieStore{
     }
 
     /**
-     * TODO
+     * Validates a artist token
+     * @deprecated No longer in use
      * @param {int} token
+     * The token to be validated
      * @param {function} callback
      */
     static validateArtistToken(token, callback){
@@ -73,9 +75,10 @@ export class CookieStore{
         }
     }
     /**
-     * TODO
+     * Checks that a toke associated with an email is valid
      * @param {string} email
      * @param {function} callback
+     * Function that gets called at the end of the method, a HTML code gets passed as a parameter.
      */
     static checkToken(email, callback){
         let header = {

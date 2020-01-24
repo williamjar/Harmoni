@@ -95,15 +95,9 @@ export class MailService {
      */
     static sendArtistInvitation(artist, subject, emailBody, callback) {
 
-        console.log("Sending artist invitation");
-
-        console.log(artist);
-
         let documentLinks = artist.documents.map(doc => doc.documentLink).filter(e => {
             return e;
         });
-
-        console.log(documentLinks);
 
         this.sendGeneralEmail(artist.email, subject, emailBody, documentLinks, callback);
     }

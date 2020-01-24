@@ -25,7 +25,6 @@ mocha.describe('Artist Service', function() {
             runSQLFile('../testData.sql', pool, () => {
                 RegisterOrganizerService.registerOrganizer('tester1', 'test@test.com', 'passord1', () => {
                     LoginService.loginOrganizer('test@test.com', 'passord1', () => {
-                        console.log("BEFORE IS DONE");
                         done();
                     });
                 });
@@ -36,13 +35,11 @@ mocha.describe('Artist Service', function() {
     mocha.describe('getArtist(artistID, callback)', () => {
         mocha.it('should return one artist if the ID exists', () => {
             ArtistService.getArtist(1, artist => {
-                console.log(artist);
                 assert.notEqual(artist, null);
             });
         });
         mocha.it('Should return null if the ID does not exist', () => {
             ArtistService.getArtist(0, artist => {
-                console.log(artist);
                 assert.equal(artist, null);
             });
         })

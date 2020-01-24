@@ -20,7 +20,6 @@ export class LoginService {
     static loginOrganizer(email, enteredPassword, callback) {
         hashService.getHashedFromEmail(enteredPassword, email, hashedPassword => {
             if (!hashedPassword) {
-                console.log("Email does not exist");
                 callback(502);
             } else {
                 let header = {
@@ -40,7 +39,6 @@ export class LoginService {
                         if (loginResponse.error) {
                             CookieStore.setCurrentToken(null);
                             CookieStore.setCurrentUserID(-1);
-                            console.log("Current token set to null");
                             callback(501);
                         } else {
                             axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header})
@@ -49,7 +47,6 @@ export class LoginService {
                                 })
                                 .then(emailResponse => {
                                     if (!(loginResponse.error && loginResponse.data.length > 0)) {
-                                        console.log("UserID and Token set");
                                         CookieStore.setCurrentUserID(emailResponse[0].organizerID);
                                         CookieStore.setCurrentToken(loginResponse.jwt);
                                         //The user logs in
@@ -57,7 +54,6 @@ export class LoginService {
                                     } else {
                                         CookieStore.setCurrentToken(null);
                                         CookieStore.setCurrentUserID(-1);
-                                        console.log("Current token set to null");
                                         //The user doesn't log in
                                         callback(500);
                                     }

@@ -44,7 +44,7 @@ const ticketDao = new TicketDao(pool);
 
 
 mocha.describe('Starting DAO test', function() {
-this.timeout(10000);
+this.timeout(100000);
     mocha.before(done => {
         try{
             runSQLFile('../create.sql', pool, done);

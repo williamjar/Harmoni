@@ -28,8 +28,9 @@ run_tests:
     - npm test
 
 pages:
+  stage: deploy
   script:
-    jsdoc -c jsdocConf.json -r ./application -d ./public
+    ls .
   artifacts:
     paths:
       - public

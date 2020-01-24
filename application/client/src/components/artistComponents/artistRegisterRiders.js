@@ -115,8 +115,6 @@ export class ArtistRegisterRiders extends Component{
                 }
                 else {
                     Alert.info("Noe hendte. Vennligst prøv igjen");
-                    console.log(status);
-                    console.log(data);
                 }
             });
 
@@ -142,10 +140,8 @@ export class ArtistRegisterRiders extends Component{
                     let currentState = this.state;
                     let currentRiders = currentState.riderElements;
                     currentRiders.push(newRider);
-                    console.log(currentRiders);
                     currentState.riderInput = "";
                     this.setState(currentState);
-                    console.log(this.state);
                     Alert.success("Rider er lagt til for arrangementet.")
                 }
                 else{
@@ -176,7 +172,6 @@ export class ArtistRegisterRiders extends Component{
                 });
                 RiderStore.getAllRidersForArtistByEvent(artistID, eventID, realToken, (status, res) => {
                     if (status === 200 && res){
-                        console.log(res);
                         this.setState({riderElements: res});
                     }
                     else{
@@ -284,7 +279,6 @@ class Rider extends Component{
     * parent and displays it in this component  */
 
     render(){
-        console.log(this.props);
         return(
             <Card className={"mt-2 mb-2 p-2"}>
                 <Card.Body className="row align-items-center">
