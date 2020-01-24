@@ -669,10 +669,10 @@ export class RegisteredCrew extends Component{
                     <div>Personell er ikke lagt til</div>
                     : null }
                     {this.props.categoryList.map(e => (
-                        <ul className="list-group">
+                        <ul key={e.crewCategoryID} className="list-group">
                             <b className="card-title">{e.crewCategoryName}</b>
                             {this.props.crewList !== undefined ? this.props.crewList.filter(c => c.crewCategoryName === e.crewCategoryName).map(c => (
-                                <li className="list-group-item pointer selection" onClick={() => {
+                                <li key={c.crewCategoryID} className="list-group-item pointer selection" onClick={() => {
                                     this.showCard(c)
                                 }}>
                                     <div className="row">

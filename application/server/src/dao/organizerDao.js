@@ -1,5 +1,11 @@
 const Dao = require('./dao.js');
 
+/**
+ * @class organizerDao
+ * @classdesc A Database Access Object for organizer
+ * @type {organizerDao}
+ * @see Dao
+ */
 module.exports = class organizerDao extends Dao {
 
     /**
