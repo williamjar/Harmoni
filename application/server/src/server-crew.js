@@ -135,12 +135,12 @@ app.put("/api/crew/:crewID/event/:eventID", (request, response) => {
     }, val)
 });
 
-app.delete("/api/crew/:crewID", (request, response) => {
+app.delete("/api/crew/:contactID", (request, response) => {
     console.log("request to delete crew");
     crewDao.deleteOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.crewID)
+    }, request.params.contactID)
 });
 
 app.delete("/api/crew-category/:crewCategoryID", (request, response) => {

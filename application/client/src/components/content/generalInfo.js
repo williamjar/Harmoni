@@ -126,7 +126,7 @@ export class InfoForm extends Component {
         if(this.state.edit){
             return(
                     <Row>
-                    <Col>
+                    <Col xs={12} md={6}>
                     <Card className="mb-2 border-0">
                         <Form onSubmit={this.handleSubmit}>
                             <Card.Body>
@@ -246,7 +246,7 @@ export class InfoForm extends Component {
             return (
                 <div>
                     <Row>
-                        <Col>
+                        <Col xs={12} md={6}>
                         <Card className="mb-2 border-0">
                             <Card className="m4 text-white" bg="danger" hidden={!(this.state.status===3)}><Card.Body>Dette arrangementet er kansellert, du kan gjennoppta arrangementet i menyen nedenfor</Card.Body></Card>
                             <Card.Body>

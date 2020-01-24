@@ -120,11 +120,16 @@ export class OrganizerStore {
     }
 
     static archiveOldEvents() {
-        axios.put(axiosConfig.root + '/api/archive/' + this.currentOrganizer.organizerID).then(response => {
-            if (response) {
-            }
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        console.log("archiving old events");
+        console.log(this.currentOrganizer.organizerID);
+        axios.put(axiosConfig.root + '/api/archive/' + this.currentOrganizer.organizerID,null,{headers: header}).then(response => {
+            console.log(response);
         });
     }
-
-
 }
