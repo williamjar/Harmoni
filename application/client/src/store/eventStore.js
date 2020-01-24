@@ -137,15 +137,12 @@ export class EventStore {
 
         axios.get(axiosConfig.root + "/api/events", {headers: header}).then(response => {
             this.allEvents = null;
-            response.data.map(event => {
-                this.allEvents.push(new Event(event.eventID, event.eventName,
-                    event.startDate, event.endDate, event.startTime,
-                    event.endTime, event.address, event.town,
-                    event.zipCode, event.status, event.description,
-                    event.publishDate, event.publishTime, event.organizerID,
-                    event.eventTypeID, event.picture));
-                return 0;
-            });
+            this.allEvents = response.data.map(event => new Event(event.eventID, event.eventName,
+                event.startDate, event.endDate, event.startTime,
+                event.endTime, event.address, event.town,
+                event.zipCode, event.status, event.description,
+                event.publishDate, event.publishTime, event.organizerID,
+                event.eventTypeID, event.picture));
 
             return !response.error;
         });

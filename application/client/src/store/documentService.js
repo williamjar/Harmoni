@@ -27,9 +27,10 @@ export class DocumentService {
         let documentsByCategoryForEvent = [];
 
         axios.get(axiosConfig.root + '/api/' + eventID + '/documents/category/' + documentCategoryID, {headers: header}).then(response => {
-            response.map(document => documentsByCategoryForEvent.push(new Document(response.data[i].documentID, response.data[i].eventID,
-                response.data[i].documentName, response.data[i].documentLink, response.data[i].artistID,
-                response.data[i].crewID, response.data[i].documentCategoryID)));
+            documentsByCategoryForEvent = response.data.map(document => (
+                new Document(document.documentID, document.eventID,
+                    document.documentName, document.documentLink, document.artistID,
+                    document.crewID, document.documentCategoryID)));
             callback(documentsByCategoryForEvent);
         });
     }

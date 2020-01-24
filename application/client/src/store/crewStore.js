@@ -54,11 +54,8 @@ export class CrewStore {
         axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response => {
             this.allCrewMembersForOrganizer = [];
 
-            response.data.map(data => {
-                this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
-                    data.crewCategoryName, data.contactName, data.phone, data.email));
-                return 0;
-            });
+            this.allCrewMembersForOrganizer = response.data.map(data => new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
+                data.crewCategoryName, data.contactName, data.phone, data.email));
 
             callback();
         });
@@ -79,11 +76,9 @@ export class CrewStore {
         axios.get(axiosConfig.root + '/api/crew/event/' + eventID, {headers: header}).then(response => {
             this.allCrewForCurrentEvent = [];
 
-            response.data.map(data => {
-                this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
-                    data.crewCategoryName, data.contactName, data.phone, data.email, (data.isResponsible === 1), (data.contractSigned === 1), (data.hasBeenPaid === 1)));
-                return 0;
-            });
+            this.allCrewForCurrentEvent = response.data.map(data => new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
+                data.crewCategoryName, data.contactName, data.phone, data.email, (data.isResponsible === 1), (data.contractSigned === 1), (data.hasBeenPaid === 1)))
+
             callback();
         });
     }
@@ -105,10 +100,8 @@ export class CrewStore {
         axios.get(axiosConfig.root + '/api/crew/categories/' + organizerID, {headers: header}).then(response => {
             this.allCrewCategoriesForOrganizer = [];
 
-            response.data.map(data => {
-                this.allCrewCategoriesForOrganizer.push(new CrewCategory (data.crewCategoryID, data.crewCategoryName));
-                return 0;
-            });
+            this.allCrewCategoriesForOrganizer = response.data.map(data => new CrewCategory (data.crewCategoryID, data.crewCategoryName));
+
             callback();
         });
     }
@@ -128,10 +121,7 @@ export class CrewStore {
         axios.get(axiosConfig.root + '/api/crew/event/' + eventID + '/categories', {headers: header}).then(response =>  {
             this.allCrewCategoriesForCurrentEvent = [];
 
-            response.data.map(data => {
-                this.allCrewCategoriesForCurrentEvent.push(new CrewCategory (data.crewCategoryID, data.crewCategoryName));
-                return 0;
-            });
+            this.allCrewCategoriesForCurrentEvent = response.data.map(data => new CrewCategory (data.crewCategoryID, data.crewCategoryName));
 
             callback();
         });

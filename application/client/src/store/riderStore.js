@@ -41,10 +41,10 @@ export class RiderStore {
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/rider', {headers: header})
             .then(response => {
 
-                this.allRidersForCurrentEvent = response.data.map(data => {
+                this.allRidersForCurrentEvent = response.data.map(data => (
                     new RiderElement(data.riderElementID, data.artistID,
-                        data.status, data.isDone === 1, data.description);
-                });
+                        data.status, data.isDone === 1, data.description)
+                ));
 
                 callback();
 
