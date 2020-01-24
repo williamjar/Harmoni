@@ -149,13 +149,11 @@ export class TicketStore {
      * @return {Promise} The returned promise from the database call.
      */
     static deleteTicket(eventID ,ticketTypeID, callback) {
-        console.log('Running deleteTicket');
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
         return axios.delete(axiosConfig.root + '/api/ticket/' + eventID + '/' + ticketTypeID , {headers: header}).then(response => {
-            console.log(response);
             if (response.status === 200){
                 callback(200);
             }

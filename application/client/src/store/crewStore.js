@@ -154,7 +154,6 @@ export class CrewStore {
         };
 
         axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
-            console.log("Axios post then");
             let crewBody = {
                 "description": description,
                 "organizerID": organizerID,
@@ -205,7 +204,6 @@ export class CrewStore {
         };
 
         axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(response => {
-            console.log("Axios post then");
             let crewBody = {
                 "description": description,
                 "organizerID": organizerID,
@@ -213,7 +211,6 @@ export class CrewStore {
             };
 
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response => {
-                console.log(response);
                 callback();
             });
         });
@@ -234,7 +231,7 @@ export class CrewStore {
         axios.post(axiosConfig.root + '/api/crew-category', {
             "crewCategoryName": categoryName,
             "organizerID": organizerID
-        },  {headers: header}).then(response => console.log(response));
+        },  {headers: header}).then(response => console.log("Category added"));
     }
 
     /**
@@ -265,25 +262,6 @@ export class CrewStore {
     }
 
     /**
-     * TODO - Currently unused - Update or delete?
-     */
-    static addDocumentToCrewMember(eventID, name, link, crewID, categoryID){
-
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        return axios.post(axiosConfig.root + '/api/document/crew', {
-            "eventID": eventID,
-            "documentName": name,
-            "documentLink": link,
-            "crewID": crewID,
-            "documentCategoryID": categoryID
-        },  {headers: header}).then(response => console.log(response));
-    }
-
-    /**
      * Updates the the description for an existing crew member and saves it to the database.
      * @param {string} description - The database ID of the event.
      * @param {crewID} crewID - The database ID of the crew member.
@@ -299,7 +277,7 @@ export class CrewStore {
         return axios.put(axiosConfig.root + '/api/crew/' + crewID, {
             "description": description,
             "crewID": crewID
-        },  {headers: header}).then(response => console.log(response));
+        },  {headers: header}).then(response => console.log("Crew updated"));
     }
 
     /**
@@ -326,7 +304,7 @@ export class CrewStore {
             "eventID": eventID,
             "crewCategoryID": crewCategoryID,
             "crewID": crewID
-        },  {headers: header}).then(response => console.log(response));
+        },  {headers: header}).then(response => console.log("Crew member updated"));
     }
 
     /**
@@ -340,7 +318,7 @@ export class CrewStore {
         };
 
         return axios.delete(axiosConfig.root + '/api/crew-category/' + crewCategoryID,  {headers: header})
-            .then(response => console.log(response));
+            .then(response => console.log("Category deleted"));
     }
 
     /**
@@ -356,7 +334,7 @@ export class CrewStore {
         };
 
         return axios.delete(axiosConfig.root + '/api/crew/' + contactID,  {headers: header})
-            .then(response => console.log(response));
+            .then(response => console.log("Crew member deleted"));
     }
 
     /**
@@ -370,7 +348,7 @@ export class CrewStore {
         };
 
         return axios.delete(axiosConfig.root + '/api/crew-category/' + crewCategoryID,  {headers: header})
-            .then(response => console.log(response));
+            .then(response => console.log("Crew category deleted"));
     }
 
     /**
@@ -402,7 +380,7 @@ export class CrewStore {
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.delete(axiosConfig.root + '/api/crew/assign/' + crewID + '/' + crewCategoryID + '/' + crewID, {headers: header}).then(response => console.log(response));
+        return axios.delete(axiosConfig.root + '/api/crew/assign/' + crewID + '/' + crewCategoryID + '/' + crewID, {headers: header}).then(response => console.log("Crew member unassigned"));
     }
 
 }

@@ -172,7 +172,6 @@ export class MMI extends Component{
         let body = document.body;
         if(fontSize <160){
             body.style.fontSize = `${fontSize += 15}%`;
-            console.log(fontSize);
         }
     };
 }

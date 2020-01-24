@@ -17,7 +17,6 @@ let history = createHashHistory();
 export class UserPage extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = {
             username: '',
             newUsername: '',
@@ -214,7 +213,6 @@ export class UserPage extends React.Component {
     updateInfo(callback) {
         OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
             if (statusCode === 200) {
-                console.log("User is here:" + OrganizerStore.currentOrganizer.username);
 
                 let databaseUsername = OrganizerStore.currentOrganizer.username;
                 let dataBaseEmail = OrganizerStore.currentOrganizer.email;
@@ -227,9 +225,6 @@ export class UserPage extends React.Component {
                 } else {
                     image = databaseImage;
                 }
-
-                console.log(databaseImage);
-                console.log(image);
 
                 this.setState(this.setState({
                     username: databaseUsername,
@@ -355,7 +350,6 @@ export class DeleteUserForm extends React.Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        console.log(this.state.confirmDeleteUser);
         this.setState({[name]: value,});
 
     }
@@ -405,8 +399,6 @@ export class ProfilePictureForm extends React.Component {
     componentDidMount() {
         this.updateInfoPicture((profilePicture) => {
             if(profilePicture !== null){
-                console.log("Denne skal ikke kjøreeeee");
-                console.log(profilePicture);
                 PictureService.previewPicture(profilePicture, (url) => {
                     this.setState({link: url});
                 });
