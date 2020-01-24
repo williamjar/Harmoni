@@ -78,6 +78,11 @@ export class Dashboard extends React.Component {
                 planning: EventStore.allEventsForOrganizer.filter(event => event.status === 0),
                 archived: EventStore.allEventsForOrganizer.filter(event => event.status === 2),
                 cancelled: EventStore.allEventsForOrganizer.filter(event => event.status === 3)
+            }, () => {
+                this.sortEvents(this.state.published,0, (sorted) => this.setState({published: sorted}));
+                this.sortEvents(this.state.planning,0,(sorted) => {this.setState({planning: sorted});});
+                this.sortEvents(this.state.archived,0, (sorted) => this.setState({archived: sorted}));
+                this.sortEvents(this.state.cancelled,0, (sorted) => this.setState({cancelled: sorted}));
             });
         }, CookieStore.currentUserID);
     }
@@ -216,25 +221,7 @@ export class Dashboard extends React.Component {
                 return (a.eventName > b.eventName ? 1 : a.eventName < b.eventName ? -1 : 0);
             });
             callback(sorted);
-        }
-            //TODO: If time, fix this so events can be sorted by price.
-        /*else if(sortBy == 1) {
-            let sorted = [];
-            TicketStore.getAllTickets(() => {
-                console.log(TicketStore.allTickets);
-                sorted = [].concat(events).sort((a,b) => {
-                    let price1 = Math.min.apply(Math, TicketStore.allTickets.filter(e => e.eventID = a.eventID).map(e => {
-                        return e.price;
-                    }));
-                    let price2 = Math.min.apply(Math, TicketStore.allTickets.filter(e => e.eventID = b.eventID).map(e => {
-                        return e.price;
-                    }));
-                    return price1>price2 ? 1 : price1<price2 ? -1 : 0;
-                });
-                console.log(sorted);
-            });
-            callback(sorted);
-        }*/ else if(sortBy == 2) {
+        } else if(sortBy == 2) {
             let sorted = [].concat(events).sort((a,b) => {
                 return (a.town > b.town ? 1 : a.town < b.town ? -1 : 0);
             });

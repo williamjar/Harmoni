@@ -16,7 +16,7 @@ export class CookieStore{
 
     /**
      * Set method for changing currentToken
-     * @param {String} newToken
+     * @param {string} newToken
      */
     static setCurrentToken(newToken){
         try{
@@ -75,7 +75,7 @@ export class CookieStore{
     }
     /**
      * TODO
-     * @param {String} email
+     * @param {string} email
      * @param {function} callback
      */
     static checkToken(email, callback){

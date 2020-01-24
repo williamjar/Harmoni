@@ -142,10 +142,10 @@ export class CrewStore {
     /**
      * Creates a new crew member and assigns it to the current event. The crew member is then stores in the database
      * @param {function} callback
-     * @param {String} name - The name of the new crew member.
-     * @param {String} phone - The phone of the new crew member.
-     * @param {String} email - The email of the new crew member.
-     * @param {String} description - A description the new crew member.
+     * @param {string} name - The name of the new crew member.
+     * @param {string} phone - The phone of the new crew member.
+     * @param {string} email - The email of the new crew member.
+     * @param {string} description - A description the new crew member.
      * @param {int} crewCategoryID - The database ID of the Crew category the new crew member will be added to.
      * @param {int} isResponsible - A boolean
      * @param {int} eventID - The database ID of the event.
@@ -195,10 +195,10 @@ export class CrewStore {
     //This crew member will not be assigned to an event
     /**
      * Creates a new crew member without assigning them to an event. The crew member is then stored in the database.
-     * @param {String} name - The name of the new crew member.
-     * @param {String} phone - The phone of the new crew member.
-     * @param {String} email - The email of the new crew member.
-     * @param {String} description - A description the new crew member.
+     * @param {string} name - The name of the new crew member.
+     * @param {string} phone - The phone of the new crew member.
+     * @param {string} email - The email of the new crew member.
+     * @param {string} description - A description the new crew member.
      * @param {int} crewCategoryID - The database ID of the Crew category the new crew member will be added to.
      * @param {int} organizerID - The database ID of the logged in organizer.
      */
@@ -233,7 +233,7 @@ export class CrewStore {
 
     /**
      * Creates a new crew category for that organizer and saves it to the database.
-     * @param {String} categoryName - The name of the new crew category.
+     * @param {string} categoryName - The name of the new crew category.
      * @param {int} organizerID - The database ID of the logged in organizer.
      */
     static addCategory(categoryName, organizerID){
@@ -297,7 +297,7 @@ export class CrewStore {
 
     /**
      * Updates the the description for an existing crew member and saves it to the database.
-     * @param {String} description - The database ID of the event.
+     * @param {string} description - The database ID of the event.
      * @param {crewID} crewID - The database ID of the crew member.
      */
     static updateCrewMember(description, crewID) {

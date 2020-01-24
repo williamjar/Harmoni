@@ -9,9 +9,9 @@ export class MailService {
 
     /**
      * Sends an email
-     * @param {String,Array} emailTo - Email address of the recipient.
-     * @param {String} subject - Subject line of the email.
-     * @param {String} emailBody - Body of the email.
+     * @param {{(string|string[])}} emailTo - Email address of the recipient.
+     * @param {string} subject - Subject line of the email.
+     * @param {string} emailBody - Body of the email.
      * @param {Array} attachmentLinks - Sends a Array of strings with the links to attachments.
      * @param {function} callback
      */
@@ -47,9 +47,9 @@ export class MailService {
 
     /**
      * Sends an email to a single recipient
-     * @param {String} emailTo - Email address of the recipient.
-     * @param {String} subject - Subject line of the email.
-     * @param {String} emailBody - Body of the email.
+     * @param {string} emailTo - Email address of the recipient.
+     * @param {string} subject - Subject line of the email.
+     * @param {string} emailBody - Body of the email.
      * @param {Array} attachmentLinks - Sends a Array of strings with the links to attachments.
      * @param {function} callback
      */
@@ -59,9 +59,9 @@ export class MailService {
 
     /**
      * Sends an email to multiple recipients
-     * @param {Array} emailToArray - Email address of the recipient.
-     * @param {String} subject - Subject line of the email.
-     * @param {String} emailBody - Body of the email.
+     * @param {string[]} emailToArray - Email address of the recipient.
+     * @param {string} subject - Subject line of the email.
+     * @param {string} emailBody - Body of the email.
      * @param {Array} attachmentLinks - Sends a Array of strings with the links to attachments.
      * @param {function} callback
      */
@@ -71,11 +71,11 @@ export class MailService {
 
     /**
      * Sends a cancel notice email to all artists and crew
-     * @param {String} subject - Subject line of the email.
-     * @param {String} emailBody - Body of the email.
+     * @param {string} subject - Subject line of the email.
+     * @param {string} emailBody - Body of the email.
      * @param {Array} artists - Array of artist objects to send the mail to.
      * @param {Array} crew - Array of crew objects to send the mail to.
-     * @param {String} otherEmails - Body of the email.
+     * @param {string} otherEmails - Body of the email.
      * @param {function} callback
      */
     static sendCancelNotice(subject, emailBody, artists, crew, otherEmails, callback) {
@@ -89,8 +89,8 @@ export class MailService {
     /**
      * Sends an email invitation to an artist.
      * @param {Artist} artist - The artist who will be the recipient.
-     * @param {String} subject - Subject line of the email.
-     * @param {String} emailBody - Body of the email.
+     * @param {string} subject - Subject line of the email.
+     * @param {string} emailBody - Body of the email.
      * @param {function} callback
      */
     static sendArtistInvitation(artist, subject, emailBody, callback) {
