@@ -45,6 +45,7 @@ export class GeneralInfo extends Component{
     }
 }
 
+
 // Component for editing or submitting general info about an event
 export class InfoForm extends Component {
 
