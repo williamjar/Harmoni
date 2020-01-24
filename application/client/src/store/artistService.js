@@ -3,7 +3,6 @@ import {Artist} from "../classes/artist.js"
 import {CookieStore} from "./cookieStore";
 import {Genre} from "../classes/genre";
 import {Document} from "../classes/document";
-import {Artist as artist} from "../classes/artist";
 import {ArtistEventInfo} from "../classes/artistEventInfo";
 
 const axiosConfig = require("./axiosConfig");
@@ -11,7 +10,6 @@ const axiosConfig = require("./axiosConfig");
 export class ArtistService {
 
     // artistID, name, phone, email, genre, organizer
-
     static getArtist(artistID, callback) {
 
         let header = {
@@ -120,7 +118,8 @@ export class ArtistService {
                 console.log(artistRes);
                 if (artistRes.data.insertId > -1){
                     console.log("artist");
-                    let artist = (new Artist(artistRes.data.insertId, contactRes.data.insertId, name, phone, email, genreID, organizerID));
+                    //artistID, contactID, name, phone, email, genre, organizer, hasBeenPaid, contractSigned
+                    let artist = (new Artist(artistRes.data.insertId, contactRes.data.insertId, name, phone, email, genreID, organizerID, false, false));
                     console.log(artist);
                     callback(artist);
                     return artist;
@@ -133,12 +132,12 @@ export class ArtistService {
         }).catch(err => console.log(err));
     }
 
-    static deleteArtist(artistID) {
+    static deleteArtist(contactID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete('/api/artist/organizer/' + artistID, {headers: header}).then(response => response.data);
+        return axios.delete(axiosConfig.root + '/api/artist/' + contactID, {headers: header}).then(response => response.data);
     }
 
     static getArtistForOrganizer(callback, organizerID) {
@@ -148,12 +147,9 @@ export class ArtistService {
             "x-access-token": CookieStore.currentToken
         };
         axios.get(axiosConfig.root + '/api/artist/organizer/' + organizerID, {headers: header}).then(response => {
-
-                for (let i = 0; i < response.data.length; i++) {
-                    allArtistByOrganizer.push(new Artist(response.data[i].artistID, response.data[i].contactID, response.data[i].contactName,
-                        response.data[i].phone, response.data[i].email, response.data[i].genreID,
-                        response.data[i].organizerID, response.data[i].hasBeenPaid === 1, response.data[i].contractSigned === 1));
-                }
+            allArtistByOrganizer = response.data.map(artist => new Artist(artist.artistID, artist.contactID, artist.contactName,
+                artist.phone, artist.email, artist.genreID,
+                artist.organizerID, artist.hasBeenPaid === 1, artist.contractSigned === 1));
                 callback(allArtistByOrganizer);
             }
         );
@@ -167,15 +163,15 @@ export class ArtistService {
         };
 
         axios.get(axiosConfig.root + '/api/artist/event/' + eventID, {headers: header}).then(response => {
-            response.data.map(artist =>
-                allArtistByEvent.push(new Artist(artist.artistID, artist.contactID, artist.contactName,
-                    artist.phone, artist.email, artist.genreID,
-                    artist.organizerID)));
+            allArtistByEvent = response.data.map(artist => new Artist(artist.artistID, artist.contactID, artist.contactName,
+                artist.phone, artist.email, artist.genreID,
+                artist.organizerID));
         }).then(() => {
             allArtistByEvent.map(artist => {
-                axios.get(axiosConfig.root + '/api/artist/documents/' + eventID + '/' + artist.artistID, {headers: header}).then(response => {
-                    response.data.map(document => artist.addDocument(new Document(document.documentID, document.documentLink, document.documentCategory)))
+                axios.get(axiosConfig.root + '/api/artist/documents/' + eventID + '/' + artist.artistID, {headers: header}).then(artistDocumentResponse => {
+                    artist.documents = artistDocumentResponse.data.map(document => new Document(document.documentID, document.eventID, document.documentName, document.documentLink, document.artistID, document.crewID, document.documentCategoryID));
                 }).then(() => artist);
+                return 0;
             });
         }).then(() => {
             callback(allArtistByEvent)

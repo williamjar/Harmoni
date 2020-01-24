@@ -1,10 +1,7 @@
 import axios from "axios";
 import {Organizer} from "../classes/organizer.js";
 import {CookieStore} from "./cookieStore";
-import {sha512} from "./hashService";
-import {DocumentCategory} from "../classes/documentCategory";
-
-const hash = require('./hashService');
+import {hashService} from "./hashService";
 const axiosConfig = require("./axiosConfig");
 
 export class OrganizerStore {
@@ -51,9 +48,9 @@ export class OrganizerStore {
     }
 
     static changePassword(organizerID, oldPassword, newPassword, callback) {
-        return hash.verifyPassword(organizerID, oldPassword, rightPassword => {
+        return hashService.verifyPassword(organizerID, oldPassword, rightPassword => {
             if (rightPassword) {
-                let newHashed = hash.sha512(newPassword, hash.generateSalt(16));
+                let newHashed = hashService.sha512(newPassword, hashService.generateSalt(16));
 
                 let header = {
                     "Content-Type": "application/json",
@@ -120,11 +117,16 @@ export class OrganizerStore {
     }
 
     static archiveOldEvents() {
-        axios.put(axiosConfig.root + '/api/archive/' + this.currentOrganizer.organizerID).then(response => {
-            if (response) {
-            }
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        console.log("archiving old events");
+        console.log(this.currentOrganizer.organizerID);
+        axios.put(axiosConfig.root + '/api/archive/' + this.currentOrganizer.organizerID,null,{headers: header}).then(response => {
+            console.log(response);
         });
     }
-
-
 }

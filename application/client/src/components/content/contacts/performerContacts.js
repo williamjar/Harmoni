@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Search} from "../search";
 import {Button, ButtonGroup, Card, Col, Form, Modal, Row} from "react-bootstrap";
 import {
-    FaAddressCard,
     FaAngleDown,
     FaCalendar,
     FaEnvelopeSquare,
@@ -16,6 +15,8 @@ import {ArtistService} from "../../../store/artistService";
 import {CookieStore} from "../../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import {ContactService} from "../../../store/contactService";
+import {Alert} from "../../alerts";
+import {MegaValidator} from "../../../megaValidator";
 
 export class PerformerContacts extends React.Component {
 
@@ -27,6 +28,7 @@ export class PerformerContacts extends React.Component {
             performers: [],
             currentPerformer: null,
             showContact: false,
+            addNew: false,
             genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"],
         };
 
@@ -34,19 +36,28 @@ export class PerformerContacts extends React.Component {
     }
 
     componentDidMount() {
-        ArtistService.getArtistForOrganizer((res) => this.setState({performers: res}), CookieStore.currentUserID);
+        ArtistService.getArtistForOrganizer((res) => this.setState({performers: res}, () => {
+            this.sortPerformers(this.state.performers);
+        }), CookieStore.currentUserID);
     }
+
+    sortPerformers = (performers) => {
+        let sorted = [].concat(performers).sort((a,b) => {
+            return a.contactName>b.contactName ? 1 : a.contactName<b.contactName ? -1 : 0;
+        });
+        this.setState({performers: sorted});
+    };
 
     filterPerformers = (e) => {
         this.setState({active: e.target.name});
     };
 
     searchHandler = (selected) => {
-        this.setState({currentPerformer: selected, show: true}, () => console.log(selected));
+        this.setState({currentPerformer: selected, show: true});
     };
 
     hidePerformer = () => {
-        this.update( () => this.setState({show: false}));
+        this.update( () => this.setState({show: false, addNew: false}));
     };
 
     update = (callback) => {
@@ -55,12 +66,11 @@ export class PerformerContacts extends React.Component {
         }, CookieStore.currentUserID);
     };
 
-    /*addClicked = () => {
-        this.setState({currentPerformer: new Artist})
-    };*/
+    addClicked = () => {
+        this.setState({addNew: true});
+    };
 
     render() {
-        console.log(this.state.performers);
         return(
             <div>
                 <Card className="border-0 m-4 artists">
@@ -131,14 +141,14 @@ export class PerformerContacts extends React.Component {
                 </Card>
                 <Row>
                     <Col>
-                        <div className="btn btn-info btn-lg float-right" onClick>
+                        <div className="btn btn-info btn-lg float-right" onClick={this.addClicked}>
                             <FaPlusCircle className="mr-2"/>
                             Legg til artist
                         </div>
                     </Col>
                 </Row>
-                {console.log(this.state.currentPerformer)}
                 {this.state.currentPerformer !== null ? <ContactInfo show={this.state.show} contact={this.state.currentPerformer} onHide={this.hidePerformer}/> : null}
+                <AddPerformer show={this.state.addNew} onHide={this.hidePerformer}/>
             </div>
         )
     }
@@ -151,7 +161,7 @@ export class ContactList extends React.Component {
 
         this.state = {
             unsorted: this.props.performers,
-            performers: [],
+            performers: this.props.performers,
             showContact: false,
             currentPerformer: null,
             genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"]
@@ -159,16 +169,15 @@ export class ContactList extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if(props.performers !== state.unsorted) {
+        if(props.performers !== state.performers) {
             return {
-                unsorted: props.performers
+                performers: props.performers
             }
         }
         return null;
     }
 
     viewPerformer = (e) => {
-        console.log("view clicked");
         this.setState({
             currentPerformer: this.state.performers.find(performer => {return performer.artistID === parseInt(e.target.id)})
         },() => this.setState({showContact: true}));
@@ -178,15 +187,7 @@ export class ContactList extends React.Component {
         this.props.updateHandler(() => this.setState({showContact: false}))
     };
 
-    sortPerformers = (performers) => {
-        let sorted = [].concat(performers).sort((a,b) => {
-            return a.contactName>b.contactName ? 1 : a.contactName<b.contactName ? -1 : 0;
-        });
-        this.setState({performers: sorted});
-    };
-
     componentDidMount() {
-        this.sortPerformers(this.props.performers);
     }
 
     render() {
@@ -201,8 +202,7 @@ export class ContactList extends React.Component {
                     </tr>
                 ))}
                 </tbody>
-                {console.log(this.state.currentPerformer)}
-                {this.state.currentPerformer !== null ? <ContactInfo show={this.state.showContact} contact={this.state.currentPerformer} onHide={this.hidePerformer}/> : null}
+                {this.state.currentPerformer !== null ? <ContactInfo show={this.state.showContact} contact={this.state.currentPerformer} onHide={this.hidePerformer} updateHandler={this.props.updateHandler}/> : null}
             </Table>
         )
     }
@@ -254,10 +254,9 @@ export class ContactInfo extends React.Component {
     };
 
     saveClicked = () => {
-        console.log(this.state.genre);
         ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
             ArtistService.updateArtistGenre(() => {
-                console.log(this.state.genre);
+                Alert.success("Kontaktinformasjon har blitt oppdatert");
                 this.setState({
                     show: false,
                     editable: false,
@@ -266,11 +265,38 @@ export class ContactInfo extends React.Component {
         })
     };
 
+    deletePerformer = (e) => {
+        ArtistService.deleteArtist(this.state.contact.contactID).then(r => {
+            Alert.success("Artist er slettet");
+            this.props.onHide();
+        });
+
+    };
+
     handleChange = (e) => {
         this.setState({[e.target.name]: e.target.value, show: false}, () => {
             this.setState({show: true});
         });
     };
+
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.contactName)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.contactName)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epost-adresse';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        else{
+            return '';
+        }
+    }
 
     render() {
         return(
@@ -287,7 +313,7 @@ export class ContactInfo extends React.Component {
                             <FaEnvelopeSquare/>
                         </Col>
                         <Col>
-                            {this.state.editable ? <Form.Control name="email" type="text" value={this.state.email}
+                            {this.state.editable ? <Form.Control name="email" type="email" value={this.state.email}
                             onChange={this.handleChange}/> : <a href={"mailto:" + this.state.email}>{this.state.email}</a>}
                         </Col>
                     </Row>
@@ -320,9 +346,115 @@ export class ContactInfo extends React.Component {
                         </Col>
                     </Row>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer className={"text-danger"}>
+                    {this.validateForm()}
                     {this.state.editable ? <Button variant="success" onClick={this.saveClicked}>Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}
-                    <Button variant="danger">Slett</Button>
+                    <Button variant="danger" onClick={this.deletePerformer}>Slett</Button>
+                </Modal.Footer>
+            </Modal>
+        )
+    }
+}
+
+class AddPerformer extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            show: this.props.show,
+            contactName: "",
+            email: "",
+            phone: "",
+            genre: 1,
+            genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"],
+        }
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.show !== this.state.show);
+    }
+
+    componentDidUpdate(props) {
+        this.setState({show: props.show});
+    }
+
+    handleChange = (e) => {
+        this.setState({[e.target.name]: e.target.value, show: false}, () => {
+            this.setState({show: true});
+        });
+    };
+
+    saveClicked = () => {
+        ArtistService.createArtist(() => {
+            this.props.onHide();
+            //Alert.success("Ny artist er registert");
+        }, this.state.contactName, this.state.phone, this.state.email, this.state.genre, CookieStore.currentUserID)
+    };
+
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.contactName)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.contactName)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epost-adresse';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        else{
+            return '';
+        }
+    }
+
+    render() {
+        return(
+            <Modal show={this.state.show} onHide={this.props.onHide}>
+                <Modal.Header closeButton>
+                    <FaUserCircle size={35} className="mr-1"/>
+                    <Modal.Title>
+                        <Form.Control name="contactName" type="text" value={this.state.contactName} onChange={this.handleChange}
+                        placeholder="Navn"/>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <h5>Kontaktinformasjon</h5>
+                    <Row>
+                        <Col xs={1}>
+                            <FaEnvelopeSquare/>
+                        </Col>
+                        <Col>
+                            <Form.Control name="email" type="email" value={this.state.email} onChange={this.handleChange}
+                            placeholder="Epostadresse"/>
+                        </Col>
+                    </Row>
+                    <Row className="mb-4">
+                        <Col xs={1}>
+                            <FaPhone/>
+                        </Col>
+                        <Col>
+                            <Form.Control name="phone" type="text" value={this.state.phone} onChange={this.handleChange}
+                            placeholder="Telefon"/>
+                        </Col>
+                    </Row>
+                    <h5>Musikksjanger</h5>
+                    <Row>
+                        <Col xs={1}>
+                            <FaMusic/>
+                        </Col>
+                        <Col>
+                            <Form.Control name="genre" as="select" defaultValue={1} onChange={this.handleChange}>{
+                                this.state.genres.map((genre,i) => {return <option value={i + 1}>{genre}</option>})
+                            }</Form.Control>
+                        </Col>
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer className={"text-danger"}> {this.validateForm()}
+                    <Button variant="success" disabled={!(this.validateForm()==='')} onClick={this.saveClicked}>Legg til</Button>
                 </Modal.Footer>
             </Modal>
         )

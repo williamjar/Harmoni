@@ -19,7 +19,7 @@ module.exports = class crewDao extends Dao {
     }
 
     deleteOne(callback, contactID) {
-        super.query('DELETE FROM crew WHERE crewID = ?', [contactID], callback);
+        super.query('DELETE FROM contact WHERE contactID = ?', [contactID], callback);
     }
 
     getAllForOrganizer(callback, organizerID) {
@@ -60,3 +60,4 @@ module.exports = class crewDao extends Dao {
 
 
 };
+

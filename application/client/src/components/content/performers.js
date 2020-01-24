@@ -6,7 +6,7 @@ import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {Search} from "./search";
 import Form from "react-bootstrap/Form";
-import {Col} from "react-bootstrap";
+import {Card, Col} from "react-bootstrap";
 import {ArtistService as artistService, ArtistService} from "../../store/artistService";
 import {CookieStore} from "../../store/cookieStore";
 import {RiderStore} from "../../store/riderStore";
@@ -19,7 +19,6 @@ import {DocumentService} from "../../store/documentService";
 import {Document} from "../../classes/document";
 import {Alert} from '../alerts.js';
 import {MegaValidator} from "../../megaValidator";
-import {Card} from "react-bootstrap";
 
 
 export class PerformerPanel extends Component{
@@ -90,6 +89,7 @@ export class PerformerPanel extends Component{
                 if(e.genreID === performer.genre){
                     this.setState({ genrePerformerSelected : e.genreName});
                 }
+                return 0;
             });
         });
     };
@@ -104,7 +104,7 @@ export class PerformerPanel extends Component{
                 currentState.performerSelected = {};
                 EventStore.currentEvent.artists = list;
                 this.setState(currentState);
-                this.toggleShowCard();
+                this.hideCard();
             }, EventStore.currentEvent.eventID);
         });
     };
@@ -128,6 +128,7 @@ export class PerformerPanel extends Component{
             performer.hasBeenPaid = artistEventInfo.hasBeenPaid;
             performer.contractSigned = artistEventInfo.contractSigned;
             currentState.showArtistCard = true;
+            currentState.showRegisterNew = false;
             this.setState(currentState);
             this.setGenreCurrentPerformer(performer);
         }, performer.artistID, EventStore.currentEvent.eventID);
@@ -153,6 +154,7 @@ export class PerformerPanel extends Component{
         this.setState(currentState);
         this.hideCard();
     };
+
 
     hideCard = () => {
         let currentState = this.state;
@@ -189,6 +191,7 @@ export class PerformerPanel extends Component{
         let currentState = this.state;
         currentState.performerSelected = selected;
         currentState.showArtistCard = true;
+        currentState.showRegisterNew = false;
         this.assignArtist(selected);
         this.setState(currentState);
 
@@ -302,11 +305,11 @@ export class PerformerCard extends Component{
                    </Col>
 
                    <Col>
-                       <Button variant="info" onClick={() => this.sendEmail()}>Send invitasjon</Button>
+                       <Button variant="primary" onClick={() => this.sendEmail()}>Send invitasjon</Button>
                    </Col>
 
                    <Col>
-                       <Button variant="success" onClick={() => this.save()} id="savePerformer">Lagre artist</Button>
+                       <Button variant="success" onClick={() => this.save()} id="savePerformer">Lagre informasjon</Button>
                    </Col>
 
                    </Row>
@@ -381,16 +384,13 @@ export class PerformerCard extends Component{
                 formData.set('description', files[i].name);
                 DocumentService.addDocument(EventStore.currentEvent.eventID, "Kontrakt", currentState.performer.artistID, null, 1, formData, (statusCode, returnData) => {
                     if (statusCode === 200){
-                        console.log("Document was successfully uploaded");
                         Alert.success("Dokumentet ble lastet opp");
-                        console.log(returnData.documentLink);
                         this.state.performer.addDocument(new Document(returnData.documentID, EventStore.currentEvent.eventID, files[i].name, returnData.documentLink, this.state.performer.artistID, null, 1));
                         fileInput.value = '';
                         currentState.numberOfFilesAlreadyUploaded += 1;
                         currentState.numberOfFilesAdded = 0;
                     }
                     else{
-                        console.log("Error uploading document");
                         Alert.danger("En feil skjedde under opplastning");
                     }
 
@@ -448,13 +448,9 @@ export class PerformerCard extends Component{
 
     sendEmail(){
         ArtistService.getArtistToken(this.state.performer.artistID, EventStore.currentEvent.eventID, (statusCode, token) => {
-            console.log(statusCode + " " + token);
             if (statusCode === 200 && token){
-                console.log("We're sending the email");
-
                 const linkFriendlyToken = token.replace(/\./g, "+");
 
-                console.log(linkFriendlyToken);
 
                 const emailBody = "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
                     "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
@@ -469,7 +465,7 @@ export class PerformerCard extends Component{
                             Alert.info("E-post ble sendt til artisten med informasjon.");
                         }
                         else{
-                            console.log("An error occured sending the email");
+                            Alert.danger("En feil skjedde under sending av epost");
                         }
                     });
             }
@@ -488,11 +484,10 @@ export class PerformerCard extends Component{
             if (rider.isModified){
                 RiderStore.updateRider(() => {
                     rider.isModified = false;
-                    console.log("Modified");
-                    console.log(rider);
 
                 }, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone ? 1 : 0, rider.description);
             }
+            return 0;
         });
 
         //TODO: Send signed contract and if artist has been hasBeenPaid
@@ -505,6 +500,7 @@ export class PerformerCard extends Component{
            if(e.genreName === this.state.genre){
                genreID = e.genreID;
            }
+           return 0;
         });
 
         artistService.updateArtistGenre(() => {
@@ -521,7 +517,6 @@ export class Rider extends Component{
     constructor(props){
         super(props);
 
-        console.log(this.props.riderObject.isDone);
         this.state = {
             taskDone: this.props.riderObject.isDone,
             status : this.props.riderObject.status,
@@ -573,7 +568,6 @@ export class Rider extends Component{
     };
 
     handleCheckBoxInput = (event) => {
-        console.log(event.target.checked);
         this.props.riderObject.isDone = event.target.checked;
         this.props.riderObject.isModified = true;
         this.setState({taskDone : this.props.riderObject.isDone});
@@ -618,7 +612,7 @@ export class RegisterPerformer extends Component{
             return 'Telefonnummer er ikke gyldig';
         }
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
-            return 'Vennligst skriv in en epostaddresse';
+            return 'Vennligst skriv in en epostadresse';
         }
         else{
             return '';
@@ -734,12 +728,6 @@ export class RegisterPerformer extends Component{
             let tempList = this.state.genreList.filter(e => e.genreName === this.state.genre);
             let genreID = tempList[0].genreID;
 
-
-            console.log("temp list");
-            console.log(tempList);
-
-
-            console.log(this.state.email);
             ArtistService.createArtist((artist) => {
 
                 this.props.submitFunction(artist); // Call to parent to update it's information in state.
@@ -795,8 +783,7 @@ export class RegisteredPerformers extends Component{
     }
 
     componentDidMount() {
-        console.log("list received");
-        console.log(this.props.performersAdded);
+
     }
 
     unAssignArtist = (artist) => {

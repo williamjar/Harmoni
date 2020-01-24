@@ -11,7 +11,7 @@ export class MegaValidator {
     }
 
     static validateUsername(oldUsername, newUsername) {
-        let illegalCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+        let illegalCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/;
         if (illegalCharacters.test(newUsername)) {
             return false;
         } else {
@@ -57,10 +57,10 @@ export class MegaValidator {
             return false;
         }
         if (file.name){
-            return (/\.(gif|jpeg|jpg|png)$/i).test(file.name);
+            return (/\.(jpeg|jpg|png)$/i).test(file.name);
         }
         else{
-            return (/\.(gif|jpeg|jpg|png)$/i).test(file)
+            return (/\.(jpeg|jpg|png)$/i).test(file)
         }
     }
 }

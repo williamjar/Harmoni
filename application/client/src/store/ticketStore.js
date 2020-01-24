@@ -1,7 +1,5 @@
-import {Genre} from "../classes/genre";
 import axios from "axios";
 import {TicketType} from "../classes/ticketType";
-import {CrewMember} from "../classes/crewMember";
 import {CookieStore} from "./cookieStore";
 
 
@@ -64,27 +62,22 @@ export class TicketStore {
     //return all tickets to an event in a list.
     static getAllTicketsForEvent(eventID, callback) {
 
-        this.allTicketsCurrentEvent = [];
-
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
         axios.get(axiosConfig.root + '/api/ticket/allTickets/' + eventID, {headers: header}).then(response =>  {
-            for (let i = 0; i < response.data.length; i++) {
-                this.allTicketsCurrentEvent.push(new TicketType(response.data[i].ticketTypeID, response.data[i].ticketTypeName , response.data[i].price, response.data[i].amount, response.data[i].releaseDate,
-                                                response.data[i].releaseTime, response.data[i].hasEndDate, response.data[i].endDate,
-                                                response.data[i].endTime, response.data[i].description));
-            }
+            this.allTicketsCurrentEvent = [];
+
+            this.allTicketsCurrentEvent = response.data.map(data => new TicketType(data.ticketTypeID, data.ticketTypeName, data.price, data.amount,
+                data.releaseDate, data.releaseTime, data.hasEndDate, data.endDate, data.endTime, data.description));
+
             callback();
         });
-
     }
 
     static getAllTickets(callback) {
-
-        this.allTickets = [];
 
         let header = {
             "Content-Type": "application/json",
@@ -92,11 +85,9 @@ export class TicketStore {
         };
 
         axios.get(axiosConfig.root + '/api/ticket', {headers: header}).then(response =>  {
-            for (let i = 0; i < response.data.length; i++) {
-                this.allTickets.push(new TicketType(response.data[i].ticketTypeID, response.data[i].ticketTypeName , response.data[i].price, response.data[i].amount, response.data[i].releaseDate,
-                    response.data[i].releaseTime, response.data[i].hasEndDate, response.data[i].endDate,
-                    response.data[i].endTime, response.data[i].description));
-            }
+            this.allTickets = [];
+            this.allTickets = response.data.map(data => new TicketType(data.ticketTypeID, data.ticketTypeName, data.price, data.amount,
+                    data.releaseDate, data.releaseTime, data.hasEndDate, data.endDate, data.endTime, data.description));
             callback();
         });
 

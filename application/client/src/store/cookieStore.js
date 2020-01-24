@@ -1,15 +1,22 @@
 import axios from 'axios';
-import {OrganizerStore} from "./organizerStore";
-import {EventStore} from "./eventStore";
 
+const axiosConfig = require("./axiosConfig");
 const publicKey = require('../cookieConfig').publicKey;
 const jwt = require('jsonwebtoken');
 
+/**
+ * @class CookieStore
+ * @classdesc Store Class for functions related to accessing and modifying tokens.
+ */
 export class CookieStore{
 
     static currentToken = null;
     static currentUserID = -1;
 
+    /**
+     * Set method for changing currentToken
+     * @param {String} newToken
+     */
     static setCurrentToken(newToken){
         try{
             this.currentToken = newToken;
@@ -19,10 +26,18 @@ export class CookieStore{
         }
     }
 
+    /**
+     * Set method for changing currentUserID
+     * @param {int} newID
+     */
     static setCurrentUserID(newID){
         this.currentUserID = newID;
     }
 
+    /**
+     * TODO
+     * @param {function} callback
+     */
     static validateToken(callback){
 
         if (sessionStorage.getItem("loggedIn")){
@@ -43,6 +58,11 @@ export class CookieStore{
         }
     }
 
+    /**
+     * TODO
+     * @param {int} token
+     * @param {function} callback
+     */
     static validateArtistToken(token, callback){
         try{
             jwt.verify(token, publicKey);
@@ -52,7 +72,11 @@ export class CookieStore{
             return false;
         }
     }
-
+    /**
+     * TODO
+     * @param {String} email
+     * @param {function} callback
+     */
     static checkToken(email, callback){
         let header = {
             'x-access-token': this.currentToken,
@@ -67,7 +91,7 @@ export class CookieStore{
             return null;
         }
 
-        return axios.post("http://localhost:8080/token", JSON.stringify(body), {headers: header}).then(res => res.data).then(res => {
+        return axios.post(axiosConfig.root + "/token", JSON.stringify(body), {headers: header}).then(res => res.data).then(res => {
                 if (res.error){
                     this.currentToken = null;
                     this.currentUserID = -1;
@@ -80,7 +104,7 @@ export class CookieStore{
             }
         ).then(() => {
             if (this.currentToken != null){
-                axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header}).then(response => response.data).then(IDResponse => {
+                axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header}).then(response => response.data).then(IDResponse => {
                     if (IDResponse[0].organizerID){
                         this.currentUserID = IDResponse[0].organizerID;
                         callback(200);

@@ -73,6 +73,41 @@ body{
     color: white;
 }
 
+.mmi{
+
+    font-size: 16pt;
+    letter-spacing: 10px;
+    user-focus: none;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                         supported by Chrome, Opera and Firefox */
+}
+
+.mmi-mobile{
+    padding: 30px 20px 20px 0;
+    text-align: right;
+    font-size:18pt;
+    letter-spacing: 10px;
+    font-size-adjust: initial;
+    user-focus: none;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                         supported by Chrome, Opera and Firefox */
+}
+
+.letter-mmi:hover{
+    font-weight: bold;
+}
+
+
 .main-color.active{
     color:#00525c !important;
 }
@@ -106,6 +141,10 @@ body{
 
 .margin-right-10{
     margin-right: 10px !important;
+}
+
+.margin-right-20{
+    margin-right: 20px !important;
 }
 
 .padding-top-20{
@@ -184,6 +223,10 @@ body{
     margin-top:10px !important;
 }
 
+.margin-top-20{
+    margin-top:20px !important;
+}
+
 .margin-bottom-20{
     margin-bottom: 20px;
 }
@@ -240,6 +283,7 @@ body{
      max-width: 100% !important;
     padding-left:30px;
     padding-right: 30px;
+    margin-top:30px;
 
  }
 
@@ -261,7 +305,7 @@ body{
 .Nav-Menu{
     height: 100vh;
     text-align: center;
-    padding-top: 50px;
+    padding-top: 0px;
     outline: 0px !important;
     border: none !important;
     z-index: 22000;
@@ -270,7 +314,7 @@ body{
 
 
 .Nav-Menu .nav-links{
-    padding-top: 75px;
+
     border: none !important;
     text-align: left;
     zoom: 80%;
@@ -484,6 +528,10 @@ body{
 
 .ml-2 {
     color: #003E51;
+}
+
+.showMore {
+    font-size: 18px;
 }
 
 /* Event registration */

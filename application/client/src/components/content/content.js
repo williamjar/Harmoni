@@ -1,11 +1,6 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {LoginForm} from "../login/loginForm";
-import {RegisterForm} from "../login/registerForm";
-import {UserPage} from "../user/userPage";
 import {Alert} from "../alerts";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 
 
 export class Content extends Component{
