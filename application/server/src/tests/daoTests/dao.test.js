@@ -16,7 +16,7 @@ import PicturDao from "../../dao/pictureDao";
 import RiderDao from "../../dao/riderDao"
 import TicketDao from   "../../dao/ticketDao";
 
-const GITLAB_CI = false;
+const GITLAB_CI = true;
 
 let config;
 
