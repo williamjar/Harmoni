@@ -15,6 +15,7 @@ import Table from "react-bootstrap/Table";
 import {CookieStore} from "../../../store/cookieStore";
 import {ContactService} from "../../../store/contactService";
 import {CrewStore} from "../../../store/crewStore";
+import {MegaValidator} from "../../../megaValidator";
 
 export class CrewContacts extends React.Component {
 
@@ -224,6 +225,25 @@ export class CrewContactInfo extends React.Component {
         this.props.onHide();
     };
 
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.contactName)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.contactName)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epost-adresse';
+        }
+        else{
+            return '';
+        }
+    };
+
     render() {
         return(
             <Modal show={this.state.show} onHide={this.props.onHide}>
@@ -259,7 +279,7 @@ export class CrewContactInfo extends React.Component {
                         </Card.Body>
                     }
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer className={"text-danger"}> {this.validateForm()}
                     {this.state.editable ? <Button variant="success" onClick={this.saveClicked}>Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}
                     <Button onClick={this.deleteCrew} variant="danger">Slett</Button>
                 </Modal.Footer>
@@ -303,6 +323,25 @@ class AddCrew extends React.Component {
         });
     };
 
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.contactName)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.contactName)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epost-adresse';
+        }
+        else{
+            return '';
+        }
+    };
+
     render() {
         return(
             <Modal show={this.state.show} onHide={this.props.onHide}>
@@ -340,7 +379,7 @@ class AddCrew extends React.Component {
                         </Col>
                     </Row>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer className={"text-danger"}> {this.validateForm()}
                     <Button variant="success" onClick={this.saveClicked}>Legg til</Button>
                 </Modal.Footer>
             </Modal>

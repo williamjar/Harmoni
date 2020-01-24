@@ -17,6 +17,7 @@ import {CookieStore} from "../../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import {ContactService} from "../../../store/contactService";
 import {CrewStore} from "../../../store/crewStore";
+import {MegaValidator} from "../../../megaValidator";
 
 export class PerformerContacts extends React.Component {
 
@@ -277,6 +278,25 @@ export class ContactInfo extends React.Component {
         });
     };
 
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.contactName)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.contactName)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epost-adresse';
+        }
+        else{
+            return '';
+        }
+    }
+
     render() {
         return(
             <Modal show={this.state.show} onHide={this.props.onHide}>
@@ -325,7 +345,8 @@ export class ContactInfo extends React.Component {
                         </Col>
                     </Row>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer className={"text-danger"}>
+                    {this.validateForm()}
                     {this.state.editable ? <Button variant="success" onClick={this.saveClicked}>Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}
                     <Button variant="danger" onClick={this.deletePerformer}>Slett</Button>
                 </Modal.Footer>
@@ -367,6 +388,25 @@ class AddPerformer extends React.Component {
         ArtistService.createArtist(() => {
             this.props.onHide();
         }, this.state.contactName, this.state.phone, this.state.email, this.state.genre, CookieStore.currentUserID)
+    };
+
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.contactName)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.contactName)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epost-adresse';
+        }
+        else{
+            return '';
+        }
     };
 
     render() {
@@ -411,7 +451,7 @@ class AddPerformer extends React.Component {
                         </Col>
                     </Row>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer className={"text-danger"}> {this.validateForm()}
                     <Button variant="success" onClick={this.saveClicked}>Legg til</Button>
                 </Modal.Footer>
             </Modal>
