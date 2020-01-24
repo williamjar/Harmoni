@@ -122,6 +122,7 @@ const eventPictureStorage = multer.diskStorage({
 const profilePictureStorage = multer.diskStorage({
 
     destination: (req, file, cb) => {
+        console.log("pic store");
 
         ensureFolderExists('./resources/', 0o744, err => {
             if (err) {
@@ -149,6 +150,7 @@ const profilePictureStorage = multer.diskStorage({
         }
     }
 });
+
 
 //init upload
 const uploadUserPicture = multer({
@@ -183,6 +185,7 @@ const uploadEventPicture = multer({
 const fileUpload = multer({storage: fileStorage});
 
 // PICTURE
+
 
 //Save picture to server
 app.post("/api/file/profilePicture", uploadUserPicture.single('selectedFile'), (req, res) => {
@@ -407,8 +410,12 @@ app.get("/file/preview/:path*", (req, res) => {
 app.get("/api/document/download/:path*", (req, res) => {
     var file = req.params.path + req.params['0'];
     fs.readFile(file, function(err, data){
-        //jpg/jpeg image
-    if((/\.(jpeg)$/i).test(req.params.path + req.params['0']) || (/\.(jpg)$/i).test(req.params.path + req.params['0'])){
+        //jpg image
+    if((/\.(jpeg)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("image/jpeg");
+    }
+    //jpeg image
+    else if((/\.(jpg)$/i).test(req.params.path + req.params['0'])){
         res.contentType("image/jpeg");
     }
     //Png image
@@ -522,10 +529,12 @@ app.put("/api/document/:documentID", (request, response) => {
     }, val, request.params.documentID);
 });
 
-app.delete("/api/document/:documentID", (request, response) => {
-    console.log("Express: Request to delete document " + request.params.documentID);
+app.delete("/api/document/:documentID/:path*", (req, res) => {
+    console.log("ID " + req.params.documentID + " Link " + req.params.path + req.params['0']);
     documentDao.deleteOne((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, request.params.documentID);
+        res.status(status);
+        res.json(data);
+    }, req.params.documentID);
+    console.log("DELETEING");
+    deleteFile('./' + req.params.path + req.params['0']);
 });

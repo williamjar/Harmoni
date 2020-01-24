@@ -75,7 +75,8 @@ export class Dashboard extends React.Component {
         if (CookieStore.currentUserID > -1){
             OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
                 if (statusCode === 200){
-                    OrganizerStore.archiveOldEvents();
+                    //OrganizerStore.archiveOldEvents();
+                    EventStore.archiveOldEvents();
                 }
             });
             return (

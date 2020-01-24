@@ -230,13 +230,14 @@ export class DocumentService {
         }, {headers: header}).then(response => response.data);
     }
 
-//TODO: Delete? change Document params if not
-    deleteDocument(id) {
+    static deleteDocument(documentID, documentLink) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete(axiosConfig.root + '/api/document/' + id, {headers: header}).then(response => response.data);
+        console.log("ID " + documentID + " Link ");
+        axios.delete(axiosConfig.root + '/api/document/' + documentID + '/' + documentLink, {headers: header})
+            .catch(error => console.log(error));
     }
 
     //TODO: Delete? change Document params if not
@@ -373,10 +374,16 @@ export class DocumentService {
 
             //Checks which content-type is correct to file extension name
             //jpg/jpeg image
-            if ((/\.(jpeg)$/i).test(documentLink) || (/\.(jpg)$/i).test(documentLink)) {
-                url = window.URL.createObjectURL(new Blob([res.data]
-                    , {type: "image/jpeg"}));
+            if((/\.(jpeg)$/i).test(documentLink)){
+               url = window.URL.createObjectURL(new Blob([res.data]
+                    ,{type: "image/jpeg"}));
             }
+
+            else if((/\.(jpg)$/i).test(documentLink)){
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    ,{type: "image/jpeg"}));
+            }
+
             //Png image
             else if ((/\.(png)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
