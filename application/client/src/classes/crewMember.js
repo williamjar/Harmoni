@@ -3,7 +3,7 @@ import {Contact} from "./contact";
 /**
  * @classdesc Class used to store all the information for a crew member. It also contains information on if a given crew member is responsible for their given
  * category. This necessitates that crewMember objects get created on a per event basis.
- * @extends {Contact}
+ * @see {Contact}
  */
 export class CrewMember extends Contact {
 

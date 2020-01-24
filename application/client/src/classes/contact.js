@@ -1,5 +1,6 @@
 /**
  * @classdesc Contact information of an Organizer, Artist, or Crew.
+ * @extends {Organizer, Artist, CrewMember, CrewLeader}
  */
 export class Contact {
     /**
