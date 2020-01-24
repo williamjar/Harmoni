@@ -2,6 +2,7 @@ import {Organizer} from "./organizer";
 import {Artist} from "./artist";
 import {RiderElement} from "./riderElement";
 
+
 /**
  * @classdesc The central class for the app. This class contains all the information for an event.
  */

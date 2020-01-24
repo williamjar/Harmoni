@@ -16,12 +16,26 @@ import {Event} from "../../classes/event";
 const history = createHashHistory();
 
 // Parent component for editing and viewing all info about an event, divides information into tabs.
+
+/**
+ * This is the EventForm class
+ */
 export class EventForm extends Component {
+
+    /**
+     *
+     * @param props
+     * it has cool props
+     */
     constructor(props) {
         super(props);
 
         this.handleButtonClick = this.handleButtonClick.bind(this);
 
+        /**
+         *
+         * @type {{editMode: boolean, activeTab: number}}
+         */
         this.state = {
             activeTab: 0,
             editMode: false,
