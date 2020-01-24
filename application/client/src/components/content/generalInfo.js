@@ -125,7 +125,7 @@ export class InfoForm extends Component {
         if(this.state.edit){
             return(
                     <Row>
-                    <Col>
+                    <Col xs={12} md={6}>
                     <Card className="mb-2 border-0">
                         <Form onSubmit={this.handleSubmit}>
                             <Card.Body>
@@ -245,7 +245,7 @@ export class InfoForm extends Component {
             return (
                 <div>
                     <Row>
-                        <Col>
+                        <Col xs={12} md={6}>
                         <Card className="mb-2 border-0">
                             <Card.Body>
                                 <Row>
