@@ -66,3 +66,4 @@ module.exports = class eventDao extends Dao {
         super.query("UPDATE event SET pictureID = ? where eventID = ?", [pictureID, eventID], callback);
     }
 };
+

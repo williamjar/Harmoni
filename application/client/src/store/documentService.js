@@ -78,8 +78,6 @@ export class DocumentService {
      * @param {function} callback
      */
     static addDocument(eventID, category, artistID, crewID, documentCategoryID, file, callback) {
-        console.log(eventID + "," + documentCategoryID);
-        console.log(file.get("selectedFile"));
 
         let header = {
             "x-access-token": CookieStore.currentToken
@@ -93,7 +91,6 @@ export class DocumentService {
                 };
 
                 if (!response.data.error) {
-                    console.log(response.data);
 
                     const path = response.data.path;
                     const name = response.data.name.split("_")[1];
@@ -108,7 +105,6 @@ export class DocumentService {
                         documentCategoryID: documentCategoryID
                     };
 
-                    console.log(body);
 
                     axios.post(axiosConfig.root + '/api/document', JSON.stringify(body), {headers: databaseHeader}).then(() => {
                         console.log(response.status);
@@ -200,9 +196,7 @@ export class DocumentService {
 
         axios.get(axiosConfig.root + "/api/document/categories", {headers: header})
             .then(response => {
-                console.log(response.data);
                 let categories = response.data.map(dataPiece => new DocumentCategory(dataPiece.documentCategoryID, dataPiece.documentCategoryName));
-                console.log(categories);
                 callback(categories);
             }).catch(callback(null)).catch(err => console.log(err));
     }

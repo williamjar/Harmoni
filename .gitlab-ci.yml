@@ -13,31 +13,16 @@ variables:
 before_script:
   - cd application/client
   - npm install
+  - cd ../server
+  - npm install
+  - cd ..
 
 # Run JEST test
 
 run_tests:
   stage: test
   script:
+    - cd client
     - npm test
-  artifacts:
-    paths:
-      #- application/server/coverage
-      - application/client/coverage
-
-# Publish coverage report on gitlab-pages
-pages:
-  stage: deploy
-  dependencies:
-    - run_tests
-  script:
-    - cd ..
-    - mkdir .public
-    - cp -r client/coverage/* .public
-
-    - mv .public public
-  artifacts:
-    paths:
-      - public
-  only:
-    - master
+    - cd ../server
+    - npm test

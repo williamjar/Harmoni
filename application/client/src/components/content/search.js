@@ -70,7 +70,7 @@ export class Search extends Component{
                                         {show.startDate.substr(0,10)}
                                     </div>
                                     <div className="col-lg-2 text-right col-sm-3">
-                                        {show.town === null ? "Ikke registrert sted":show.town}
+                                        {(show.town === null || show.town.trim() === "" ) ? <i>Ingen adresse</i>:show.town}
                                     </div>
                                 </div>
                             </div>

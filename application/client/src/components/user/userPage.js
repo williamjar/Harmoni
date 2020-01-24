@@ -366,7 +366,6 @@ export class DeleteUserForm extends React.Component {
     checkPasswordAndDeleteCurrentUser() {
 
         hashService.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
-            console.log("Password ? " + res);
             if (res) {
                 OrganizerStore.deleteCurrentOrganizer();
                 sessionStorage.setItem('token', null);
@@ -477,19 +476,16 @@ export class ProfilePictureForm extends React.Component {
             const target = event.target;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
-            console.log(this.state.confirmDeleteUser);
             this.setState({[name]: value,});
         }
     }
 
     submitForm(callback) {
         if (MegaValidator.validateFile(this.state.newProfilePicture) && this.state.profilePictureUploaded) {
-    console.log("Image validated");
             let formData = new FormData();
             formData.append('description', this.state.newProfilePicture.name);
             formData.append('selectedFile', this.state.newProfilePicture);
             PictureService.insertProfilePicture(OrganizerStore.currentOrganizer.organizerID, formData, (statusCode, link) => {
-                console.log("Image uploaded with status " + statusCode);
                 this.setState({savingInformation: false});
                 if (statusCode === 200 && link) {
                     const totalPath = __dirname + '../../../../server/' + link;
@@ -500,7 +496,6 @@ export class ProfilePictureForm extends React.Component {
                 callback()
             });
         } else {
-            console.log("Image not validated");
             this.setState({savingInformation: false});
             Alert.danger("Du har lastet opp en tom eller ugyldig filtype");
             document.getElementById("error").innerHTML = "Godkjente filtyper .png .jpg .jpeg";

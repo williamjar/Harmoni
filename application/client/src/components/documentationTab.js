@@ -75,7 +75,6 @@ export class DocumentationTab extends Component{
 
         DocumentService.getAllDocumentCategories(list => {
             if (list !== null){
-                console.log("not null");
                 this.setState({documentCategories: list});
             }
             else{

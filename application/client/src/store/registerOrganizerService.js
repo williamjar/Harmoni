@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {hashService} from "./hashService";
-const hash = require('./hashService');
 const axiosConfig = require('./axiosConfig');
 
 export class RegisterOrganizerService {
@@ -23,7 +22,6 @@ export class RegisterOrganizerService {
                 return res.data.insertId;
             })
             .then(contactID => {
-                console.log("Contact registered: " + contactID);
                 axios.get(axiosConfig.root + "/organizer/username/" + username, {headers: header}).then(res => {
                     if (res.data.length === 0) {
                         axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header}).then(res => {

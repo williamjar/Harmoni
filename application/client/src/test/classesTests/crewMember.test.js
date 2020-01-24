@@ -9,13 +9,8 @@ mocha.describe('Crewmember', () => {
         });
     });
     mocha.describe('Categories', () => {
-        mocha.it('Should have a length of several elements', () => {
-            let crewMember = CrewMember.getTestCrewMember()[0];
-            crewMember.addCrewCategory("Not lazy");
-            assert.equal(crewMember.crewCategories.length, 2);
-        });
         mocha.it('should have lazy work for the first element', () => {
-            assert.equal(CrewMember.getTestCrewMember()[0].crewCategories[0], 'Lazy work');
+            assert.equal(CrewMember.getTestCrewMember()[0].crewCategoryName, 'Lazy work');
         });
     });
 });

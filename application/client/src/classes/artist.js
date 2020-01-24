@@ -58,15 +58,13 @@ export class Artist extends Contact {
     }
 
     static getTestArtists() {
-        let artistOne = new Artist(0,
-            super.getTestContacts()[1].contactName,
-            super.getTestContacts()[1].phone,
-            super.getTestContacts()[1].email, new Genre(0, "Folk"), Organizer.getTestOrganizer()[0]);
 
-        let artistTwo = new Artist(1,
-            super.getTestContacts()[2].contactName,
-            super.getTestContacts()[2].phone,
-            super.getTestContacts()[2].email, new Genre(1, "Pop"), Organizer.getTestOrganizer()[0]);
+        let artistOne = new Artist(0, super.getTestContacts()[1].contactID, super.getTestContacts()[1].contactName, super.getTestContacts()[1].phone,
+                                    super.getTestContacts()[1].email, new Genre(0, "Folk"), Organizer.getTestOrganizer()[0], false, false);
+
+        let artistTwo = new Artist(0, super.getTestContacts()[2].contactID, super.getTestContacts()[2].contactName, super.getTestContacts()[2].phone,
+            super.getTestContacts()[2].email, new Genre(0, "Folk"), Organizer.getTestOrganizer()[0], false, false);
+
 
         artistOne.addDocument(Document.getTestDocuments()[0]);
 

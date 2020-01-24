@@ -7,7 +7,7 @@ module.exports = class contactDao extends Dao {
     }
 
     createOne(callback, list) {
-        super.query('INSERT INTO contact (contactName,phone,email) values(?, ?, ?)', list, callback);
+        super.query('INSERT INTO contact (contactName, phone, email) values(?, ?, ?)', list, callback);
     }
 
     updateOne(callback, list) {
