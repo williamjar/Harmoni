@@ -96,8 +96,11 @@ export class hashService {
         });
     }
 
-
-    /** Uses email to find the organizers organizerID */
+    /**
+     * Uses input email to return the the organizerID stored in the database in the callback.
+     * @param {String} email - The email address to search the database with.
+     * @param {function} callback.
+     */
     static getOrganizerID(email, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -114,7 +117,11 @@ export class hashService {
             });
     }
 
-    /** Uses organizerID to find the organizers password */
+    /**
+     * Uses input organizerID to return the the password stored in the database in the callback.
+     * @param {int} organizerID - The email address to search the database with.
+     * @param {function} callback.
+     */
     static getPassword(organizerID, callback) {
         let header = {
             "Content-Type": "application/json",
