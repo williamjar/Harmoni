@@ -12,6 +12,8 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {Alert} from "../components/alerts";
+import {CookieStore} from "../store/cookieStore";
+
 let reportBugs = "Hjelp oss med å finne feil i systemet";
 let listBugs = "Feil du alt har rapportert inn";
 
@@ -136,12 +138,14 @@ export class BugReview extends Component {
         List all all bugs from the database to from one organizer.
     */
     listBugs = () => {
-        console.log(OrganizerStore.currentOrganizer.organizerID);
-        BugStore.getAllBugsFromOrganizer(OrganizerStore.currentOrganizer.organizerID, () => {
-            this.setState(
-                {bugList: BugStore.allBugsReportedByOrganizer})
+        OrganizerStore.getOrganizer(CookieStore.currentUserID, (statusCode) => {
+            if (statusCode === 200){
+                BugStore.getAllBugsFromOrganizer(OrganizerStore.currentOrganizer.organizerID, () => {
+                    this.setState(
+                        {bugList: BugStore.allBugsReportedByOrganizer})
+                });
+            }
         });
-        console.log(this.state.bugList);
     };
 
     /*

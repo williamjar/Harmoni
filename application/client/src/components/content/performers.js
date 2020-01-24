@@ -240,7 +240,7 @@ export class PerformerCard extends Component{
                         <label htmlFor="genreSelect">Sjanger</label>
                         <select className="form-control" id="genreSelect" value={this.state.genre} onChange={this.genreHandler}>
                             {this.state.genreList.map(e =>
-                                <option>{e.genreName}</option>
+                                <option key={e.genreID}>{e.genreName}</option>
                             )}
                         </select>
                     </div>
@@ -354,10 +354,12 @@ export class PerformerCard extends Component{
 
     componentDidMount() {
         //Fetches all riders for current artist and event and stores them in state
-        this.setState({riders : RiderStore.allRidersForCurrentEvent});
 
         ArtistService.getAllGenres((res) => {
             this.setState({genreList : res});
+            RiderStore.storeAllRidersForEvent(() => {
+                this.setState({riders : RiderStore.allRidersForCurrentEvent});
+            }, EventStore.currentEvent.eventID);
         });
         this.setState({hasBeenPaid : this.state.performer.hasBeenPaid, contractSigned : this.state.performer.contractSigned, genre : this.state.performer.genre});
 
@@ -783,10 +785,6 @@ export class RegisteredPerformers extends Component{
 
             </div>
         )
-    }
-
-    componentDidMount() {
-
     }
 
     unAssignArtist = (artist) => {
