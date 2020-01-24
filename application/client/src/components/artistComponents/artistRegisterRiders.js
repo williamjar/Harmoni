@@ -20,6 +20,10 @@ import Card from "react-bootstrap/Card";
 import FormControl from "react-bootstrap/FormControl";
 import {Alert} from "../alerts";
 
+/**
+ * @class ArtistRegisterRiders
+ * @classdesc Used for the artist to be able to add, delete and edit riders for an event.
+ */
 export class ArtistRegisterRiders extends Component{
     constructor(props) {
         super(props);

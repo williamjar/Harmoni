@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/components/content/dashboard/dashboard.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/components/content/dashboard/dashboard.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component} from 'react';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+    Accordion,
+    Button,
+    Card,
+    ButtonGroup,
+    Col,
+    Row,
+    Table, Form
+} from "react-bootstrap";
+import {FaAngleDown, FaPlusCircle} from "react-icons/fa";
+import {EventView} from "./eventView";
+import {Search} from "../search";
+import {EventStore} from "../../../store/eventStore";
+import {CookieStore} from "../../../store/cookieStore";
+import {createHashHistory} from "history";
+import {RiderStore} from "../../../store/riderStore";
+import {OrganizerStore} from "../../../store/organizerStore";
+import {Alert} from "../../alerts";
+
+const history = createHashHistory();
+
+
+/**
+ * @class Dashboard
+ * classdesc Component for displaying the full list of events for the organizer, sort and filtering methods.
+ */
+export class Dashboard extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            active: "all",
+            events: [],
+            sortBy: 0,
+            published: [],
+            planning: [],
+            archived: [],
+            cancelled: [],
+            loading : true
+        };
+    }
+
+    // Method for filtering the organizer's events by status
+    filterEvents = (e) => {
+        this.setState({active: e.target.name});
+    };
+
+    // Sets what the user wants to sort by and calls sort method to sort all categories
+    sortSelected = (e) => {
+        this.sortEvents(this.state.published,e.target.value, (sorted) => this.setState({published: sorted}));
+        this.sortEvents(this.state.planning,e.target.value,(sorted) => {this.setState({planning: sorted});});
+        this.sortEvents(this.state.archived,e.target.value, (sorted) => this.setState({archived: sorted}));
+        this.sortEvents(this.state.cancelled,e.target.value, (sorted) => this.setState({cancelled: sorted}));
+    };
+
+    // Sends the user to create event screen when clicking the "plus"-button
+    addEventClicked = () => {
+        history.push("/opprett")
+    };
+
+    // Stores all the organizer's events before rendering the page
+    componentDidMount() {
+        OrganizerStore.getOrganizer(CookieStore.currentUserID, () => {
+            EventStore.archiveOldEvents().then(res => {
+                console.log(res);
+                if (res.data.changedRows > 0) {
+                    Alert.info(res.data.changedRows + " ferdige arrangementer vil bli flyttet til arkivert");
+                }
+            }).then( () => this.setState({loading:false}));
+        });
+
+        EventStore.storeAllEventsForOrganizer(() => {
+            this.setState({
+                events: EventStore.allEventsForOrganizer,
+                published: EventStore.allEventsForOrganizer.filter(event => event.status === 1),
+                planning: EventStore.allEventsForOrganizer.filter(event => event.status === 0),
+                archived: EventStore.allEventsForOrganizer.filter(event => event.status === 2),
+                cancelled: EventStore.allEventsForOrganizer.filter(event => event.status === 3)
+            }, () => {
+                this.sortEvents(this.state.published,0, (sorted) => this.setState({published: sorted}));
+                this.sortEvents(this.state.planning,0,(sorted) => {this.setState({planning: sorted});});
+                this.sortEvents(this.state.archived,0, (sorted) => this.setState({archived: sorted}));
+                this.sortEvents(this.state.cancelled,0, (sorted) => this.setState({cancelled: sorted}));
+            });
+        }, CookieStore.currentUserID);
+    }
+
+    render() {
+        if (this.state.loading) return (&lt;div>Loading&lt;/div>);
+        if (CookieStore.currentUserID > -1){
+            return (
+                &lt;div>
+                &lt;Card className={"border-0 justify-content-md-center m-4"}>
+                    &lt;h3 className={"mt-4 mb-4"}>Mine arrangement&lt;/h3>
+                    &lt;Search searchHandler={this.searchHandler} results={this.state.events}/>
+                    &lt;Row className="filterMenu mb-2 mt-2">
+                        &lt;Col>
+                            &lt;ButtonGroup size="sm">
+                                &lt;Button name="all" variant="secondary" active={this.state.active === "all"}
+                                        onClick={this.filterEvents}>Alle&lt;/Button>
+                                &lt;Button name="planning" variant="secondary" active={this.state.active === "planning"}
+                                        onClick={this.filterEvents}>Under Planlegging&lt;/Button>
+                                &lt;Button name="published" variant="secondary" active={this.state.active === "published"}
+                                        onClick={this.filterEvents}>Publisert&lt;/Button>
+                                &lt;Button name="archived" variant="secondary" active={this.state.active === "archived"}
+                                        onClick={this.filterEvents}>Arkiverte&lt;/Button>
+                                &lt;Button name="cancelled" variant="secondary" active={this.state.active === "cancelled"}
+                                        onClick={this.filterEvents}>Kansellerte&lt;/Button>
+                            &lt;/ButtonGroup>
+                        &lt;/Col>
+                &lt;/Row>
+                &lt;Row className="mb-2">
+                    &lt;Col xs={2}>
+                        &lt;Form.Control as="select" size="sm" onChange={this.sortSelected}>
+                            &lt;option disabled>Sorter etter..&lt;/option>
+                            &lt;option value={0}>Dato&lt;/option>
+                            &lt;option value={1}>Navn&lt;/option>
+                        &lt;option value={2}>Sted&lt;/option>
+                        &lt;/Form.Control>
+                    &lt;/Col>
+                &lt;/Row>
+
+                {this.state.active === "all" || this.state.active === "published" ?
+                    &lt;Accordion id="publishedEvents" defaultActiveKey="0">
+                    &lt;Row className="no-gutters">
+                        &lt;p>Publisert&lt;/p>
+                        &lt;Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
+                    &lt;/Row>
+                    &lt;Accordion.Collapse eventKey="0">
+                        &lt;Row className="no-gutters">
+                            {this.state.published.length > 0 ?
+                                &lt;EventView events={this.state.published}/> :
+                                &lt;NoEvents message="Du har ingen planlagte arrangement"/>}
+                        &lt;/Row>
+                    &lt;/Accordion.Collapse>
+                &lt;/Accordion> : null}
+                {this.state.active === "all" || this.state.active === "planning" ?
+                    &lt;Accordion id="plannedEvents" defaultActiveKey="0">
+                    &lt;Row className="no-gutters">
+                        &lt;p>Under planlegging&lt;/p>
+                        &lt;Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
+                    &lt;/Row>
+                    &lt;Accordion.Collapse eventKey="0">
+                        &lt;Row className="no-gutters">
+                            {this.state.planning.length > 0 ?
+                                &lt;EventView events={this.state.planning}/> :
+                                &lt;NoEvents message="Du har ingen arrangement under planlegging"/>}
+                        &lt;/Row>
+                    &lt;/Accordion.Collapse>
+                &lt;/Accordion> : null}
+                {this.state.active === "all" || this.state.active === "archived" ?
+                    &lt;Accordion id="archivedEvents" defaultActiveKey="1">
+                    &lt;Row className="no-gutters">
+                        &lt;p>Arkivert&lt;/p>
+                        &lt;Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
+                    &lt;/Row>
+                    &lt;Accordion.Collapse eventKey={this.state.active === "archived" ? "1" : "0"}>
+                        &lt;Row className="no-gutters">
+                            {this.state.archived.length > 0 ?
+                                &lt;EventView events={this.state.archived}/> :
+                                &lt;NoEvents message="Du har ingen arkiverte arrangement"/>}
+                        &lt;/Row>
+                    &lt;/Accordion.Collapse>
+                &lt;/Accordion> : null}
+
+                {this.state.active === "all" || this.state.active === "cancelled" ?
+                    &lt;Accordion id="cancelledEvents" defaultActiveKey="1">
+                    &lt;Row className="no-gutters">
+                        &lt;p>Kansellert&lt;/p>
+                        &lt;Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
+                    &lt;/Row>
+                    &lt;Accordion.Collapse eventKey={this.state.active === "cancelled" ? "1" : "0"}>
+                        &lt;Row className="no-gutters">
+                            {this.state.cancelled.length > 0 ?
+                                &lt;EventView events={this.state.cancelled}/> :
+                                &lt;NoEvents message="Du har ingen kansellerte arrangement"/>}
+                        &lt;/Row>
+                    &lt;/Accordion.Collapse>
+                &lt;/Accordion> : null}
+
+                &lt;/Card>
+
+                    &lt;div className="padding-top-40">&lt;/div>
+                            &lt;div onClick={this.addEventClicked} className=" bottom-right">
+                                &lt;FaPlusCircle className="ml-2 add-event" size={60}/>
+                            &lt;/div>
+
+                &lt;/div>
+            )
+        }
+        else{
+            return null;
+        }
+    }
+
+    searchHandler(event) {
+        console.log(event);
+
+        //TODO: may need to sett current event in event store perhaps and maybe some other variables?
+        EventStore.currentEvent = event;
+        RiderStore.storeAllRidersForEvent(() => {
+            history.push("/arrangementEdit/" + this.props.event.eventID);
+        }, event.eventID);
+        history.push(`/arrangementEdit/${event.eventID}`);
+    }
+
+    // Sorts the events by either date, price or location
+    sortEvents = (events, sortBy, callback) => {
+        if(sortBy === 0) {
+            let sorted = [].concat(events).sort((a,b) => {
+                a = new Date(a.startDate);
+                b = new Date(b.startDate);
+                return a>b ? 1 : a&lt;b ? -1 : 0;
+            });
+            callback(sorted);
+        } else if(sortBy === 1) {
+            let sorted = [].concat(events).sort((a,b) => {
+                return (a.eventName > b.eventName ? 1 : a.eventName &lt; b.eventName ? -1 : 0);
+            });
+            callback(sorted);
+        } else if(sortBy === 2) {
+            let sorted = [].concat(events).sort((a,b) => {
+                return (a.town > b.town ? 1 : a.town &lt; b.town ? -1 : 0);
+            });
+            callback(sorted);
+        }
+    };
+}
+
+// Component for displaying a feedback message if there is no events
+export class NoEvents extends Component {
+    render() {
+        return (
+            &lt;Table className="mb-4" striped>
+                &lt;tbody>
+                &lt;tr>
+                    &lt;td>{this.props.message}&lt;/td>
+                &lt;/tr>
+                &lt;/tbody>
+            &lt;/Table>
+        )
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="artistDao.html">artistDao</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="ArtistRegisterRiders.html">ArtistRegisterRiders</a></li><li><a href="ArtistService.html">ArtistService</a></li><li><a href="Bug.html">Bug</a></li><li><a href="bugDao.html">bugDao</a></li><li><a href="BugReview.html">BugReview</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="CheckList.html">CheckList</a></li><li><a href="Contact.html">Contact</a></li><li><a href="contactDao.html">contactDao</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="Content.html">Content</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CreateEventSplash.html">CreateEventSplash</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewContacts.html">CrewContacts</a></li><li><a href="crewDao.html">crewDao</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Dao.html">Dao</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentationTab.html">DocumentationTab</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="Documents.html">Documents</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventCard.html">EventCard</a></li><li><a href="eventDao.html">eventDao</a></li><li><a href="EventForm.html">EventForm</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="EventView.html">EventView</a></li><li><a href="FolderItem.html">FolderItem</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="Info.html">Info</a></li><li><a href="InfoForm.html">InfoForm</a></li><li><a href="LoginDao.html">LoginDao</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="MailService.html">MailService</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="MobileMenu.html">MobileMenu</a></li><li><a href="MyDocuments.html">MyDocuments</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="organizerDao.html">organizerDao</a></li><li><a href="OrganizerStore.html">OrganizerStore</a></li><li><a href="PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerContacts_PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerPanel.html">PerformerPanel</a></li><li><a href="pictureDao.html">pictureDao</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="PictureService.html">PictureService</a></li><li><a href="RegisterForm.html">RegisterForm</a></li><li><a href="RegisterOrganizerService.html">RegisterOrganizerService</a></li><li><a href="riderDao.html">riderDao</a></li><li><a href="RiderElement.html">RiderElement</a></li><li><a href="RiderStore.html">RiderStore</a></li><li><a href="Search.html">Search</a></li><li><a href="SimpleContent.html">SimpleContent</a></li><li><a href="TabContent.html">TabContent</a></li><li><a href="Ticket.html">Ticket</a></li><li><a href="TicketAll.html">TicketAll</a></li><li><a href="ticketDao.html">ticketDao</a></li><li><a href="TicketStore.html">TicketStore</a></li><li><a href="TicketType.html">TicketType</a></li><li><a href="UserPage.html">UserPage</a></li><li>{documentationDao}</li></ul><h3>Global</h3><ul><li><a href="global.html#deleteFile">deleteFile</a></li><li><a href="global.html#ensureFolderExists">ensureFolderExists</a></li><li><a href="global.html#eventPictureStorage">eventPictureStorage</a></li><li><a href="global.html#fileStorage">fileStorage</a></li><li><a href="global.html#fileUpload">fileUpload</a></li><li><a href="global.html#profilePictureStorage">profilePictureStorage</a></li><li><a href="global.html#uploadEventPicture">uploadEventPicture</a></li><li><a href="global.html#uploadUserPicture">uploadUserPicture</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 21:40:15 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

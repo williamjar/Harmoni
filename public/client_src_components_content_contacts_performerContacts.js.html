@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/components/content/contacts/performerContacts.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/components/content/contacts/performerContacts.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import {Search} from "../search";
+import {Button, ButtonGroup, Card, Col, Form, Modal, Row} from "react-bootstrap";
+import {
+    FaAngleDown,
+    FaCalendar,
+    FaEnvelopeSquare,
+    FaEye,
+    FaMusic,
+    FaPhone, FaPlusCircle,
+    FaUserCircle
+} from "react-icons/all";
+import Table from "react-bootstrap/Table";
+import {ArtistService} from "../../../store/artistService";
+import {CookieStore} from "../../../store/cookieStore";
+import Accordion from "react-bootstrap/Accordion";
+import {ContactService} from "../../../store/contactService";
+import {Alert} from "../../alerts";
+import {MegaValidator} from "../../../megaValidator";
+
+/**
+ * @class PerformerContacts
+ * @classdesc Component for displaying all artists related to an organizer in a contact list
+ */
+export class PerformerContacts extends React.Component {
+
+    /**
+     *
+     * @param props,
+     */
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            active: "all",
+            performers: [],
+            currentPerformer: null,
+            showContact: false,
+            addNew: false,
+            genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"],
+        };
+
+        this.update = this.update.bind(this);
+    }
+
+    componentDidMount() {
+        ArtistService.getArtistForOrganizer((res) => this.setState({performers: res}, () => {
+            this.sortPerformers(this.state.performers);
+        }), CookieStore.currentUserID);
+    }
+
+    /**
+     *
+     * @param performers - An array of performer-objects
+     * @description Sorts an array of performers alphabetically by name
+     */
+    sortPerformers = (performers) => {
+        let sorted = [].concat(performers).sort((a,b) => {
+            return a.contactName>b.contactName ? 1 : a.contactName&lt;b.contactName ? -1 : 0;
+        });
+        this.setState({performers: sorted});
+    };
+
+    /**
+     *
+     * @param e - Event triggering the function
+     * @description Updates the state and tells the component what genre to filter by
+     */
+    filterPerformers = (e) => {
+        this.setState({active: e.target.name});
+    };
+
+    /**
+     *
+     * @param selected - The selected element from the artist search
+     * @description Handles when the user selects an element in search and updates current performer in state
+     */
+    searchHandler = (selected) => {
+        this.setState({currentPerformer: selected, show: true});
+    };
+
+    /**
+     * @description Handles when the user closes the contact info pop up
+     */
+    hidePerformer = () => {
+        this.update( () => this.setState({show: false, addNew: false}));
+    };
+
+    /**
+     *
+     * @param callback - Function called when the query to the database has completed
+     * @description Updates the array of performers with a new fetch from the database
+     */
+    update = (callback) => {
+        ArtistService.getArtistForOrganizer((res) => {
+            this.setState({performers: res}, () => callback());
+        }, CookieStore.currentUserID);
+    };
+
+    /**
+     * @description Handles when the user clicks "add new" and shows a dialog
+     */
+    addClicked = () => {
+        this.setState({addNew: true});
+    };
+
+    render() {
+        return(
+            &lt;div>
+                &lt;Card className="border-0 m-4 artists">
+                    &lt;Row>
+                        &lt;Col>
+                            &lt;h3 className={"mt-4 mb-4"}>Mine artister&lt;/h3>
+                        &lt;/Col>
+                        &lt;Col>
+                        &lt;/Col>
+                    &lt;/Row>
+                    &lt;Search searchHandler={this.searchHandler} results={this.state.performers}/>
+                    &lt;Row className="filterMenu mb-2 mt-2">
+                        &lt;Col>
+                            &lt;ButtonGroup size="sm">
+                                &lt;Button name="all" variant="secondary" active={this.state.active === "all"}
+                                        onClick={this.filterPerformers}>Alle&lt;/Button>
+                                &lt;Button name="Pop" variant="secondary" active={this.state.active === "Pop"}
+                                        onClick={this.filterPerformers}>Pop&lt;/Button>
+                                &lt;Button name="Rock" variant="secondary" active={this.state.active === "Rock"}
+                                        onClick={this.filterPerformers}>Rock&lt;/Button>
+                                &lt;Button name="Metal" variant="secondary" active={this.state.active === "Metal"}
+                                        onClick={this.filterPerformers}>Metal&lt;/Button>
+                                &lt;Button name="Blues" variant="secondary" active={this.state.active === "Blues"}
+                                        onClick={this.filterPerformers}>Blues&lt;/Button>
+                                &lt;Button name="Hip Hop" variant="secondary" active={this.state.active === "Hip Hop"}
+                                        onClick={this.filterPerformers}>Hip Hop&lt;/Button>
+                                &lt;Button name="Electronic Dance Music" variant="secondary" active={this.state.active === "Electronic Dance Music"}
+                                        onClick={this.filterPerformers}>EDM&lt;/Button>
+                                &lt;Button name="Jazz" variant="secondary" active={this.state.active === "Jazz"}
+                                        onClick={this.filterPerformers}>Jazz&lt;/Button>
+                                &lt;Button name="Country" variant="secondary" active={this.state.active === "Country"}
+                                        onClick={this.filterPerformers}>Country&lt;/Button>
+                                &lt;Button name="Klassisk" variant="secondary" active={this.state.active === "Klassisk"}
+                                        onClick={this.filterPerformers}>Klassisk&lt;/Button>
+                                &lt;Button name="Annet" variant="secondary" active={this.state.active === "Annet"}
+                                        onClick={this.filterPerformers}>Annet&lt;/Button>
+                            &lt;/ButtonGroup>
+                        &lt;/Col>
+                    &lt;/Row>
+                    {this.state.performers.length !== null ? this.state.genres.map((genre, i) => {
+                        if(this.state.performers.find(performer => {return performer.genre === i + 1}) &amp;&amp; (this.state.active === genre || this.state.active === "all")) {
+                            return(
+                                &lt;Accordion key={genre} id={genre} defaultActiveKey="0">
+                                    &lt;Row className="no-gutters primary-color-dark">
+                                        &lt;p>{genre}&lt;/p>
+                                        &lt;Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
+                                    &lt;/Row>
+                                    &lt;Accordion.Collapse eventKey="0">
+                                        &lt;Row className="no-gutters">
+                                            &lt;ContactList performers={this.state.performers.filter(performer => performer.genre === i + 1)} updateHandler={this.update}/>
+                                        &lt;/Row>
+                                    &lt;/Accordion.Collapse>
+                                &lt;/Accordion>)
+                        } else {
+                            return null;
+                        }
+                    }) : &lt;div className="mt-5 center">
+                            Du har ingen registrerte artister
+                    &lt;/div>}
+                &lt;/Card>
+                &lt;Row>
+                    &lt;Col>
+                        &lt;div className="btn btn-info btn-lg float-right" onClick={this.addClicked}>
+                            &lt;FaPlusCircle className="mr-2"/>
+                            Legg til artist
+                        &lt;/div>
+                    &lt;/Col>
+                &lt;/Row>
+                {this.state.currentPerformer !== null ? &lt;ContactInfo show={this.state.show} contact={this.state.currentPerformer} onHide={this.hidePerformer}/> : null}
+                &lt;AddPerformer show={this.state.addNew} onHide={this.hidePerformer}/>
+            &lt;/div>
+        )
+    }
+}
+
+export class ContactList extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            unsorted: this.props.performers,
+            performers: this.props.performers,
+            showContact: false,
+            currentPerformer: null,
+            genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"]
+        }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if(props.performers !== state.performers) {
+            return {
+                performers: props.performers
+            }
+        }
+        return null;
+    }
+
+    viewPerformer = (e) => {
+        this.setState({
+            currentPerformer: this.state.performers.find(performer => {return performer.artistID === parseInt(e.target.id)})
+        },() => this.setState({showContact: true}));
+    };
+
+    hidePerformer = () => {
+        this.props.updateHandler(() => this.setState({showContact: false}))
+    };
+
+
+    render() {
+        return(
+            &lt;Table responsive hover>
+                &lt;tbody>
+                {this.state.performers.map(performer => (
+                    &lt;tr align='center' className="contact pointer" onClick={this.viewPerformer} id={performer.artistID} key={performer.artistID}>
+                        &lt;td align="left" id={performer.artistID}>{performer.contactName}&lt;/td>
+                        &lt;td id={performer.artistID}>&lt;/td>
+                    &lt;/tr>
+                ))}
+                &lt;/tbody>
+                {this.state.currentPerformer !== null ? &lt;ContactInfo show={this.state.showContact} contact={this.state.currentPerformer} onHide={this.hidePerformer} updateHandler={this.props.updateHandler}/> : null}
+            &lt;/Table>
+        )
+    }
+}
+
+export class ContactInfo extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            show: this.props.show,
+            contact: this.props.contact,
+            contactName: this.props.contact.contactName,
+            email: this.props.contact.email,
+            phone: this.props.contact.phone,
+            genre: this.props.contact.genre,
+            genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"],
+            editable: false,
+        }
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return ((nextProps.show !== this.state.show) || (nextProps.contact !== this.state.contact &amp;&amp; this.state.editable !== true))
+    }
+
+    componentDidUpdate(props) {
+        if(this.state.editable) {
+            this.setState({show: props.show});
+        } else {
+            this.setState({
+                contact: props.contact,
+                contactName: this.state.contact.contactName,
+                email: this.state.contact.email,
+                phone: this.state.contact.phone,
+                genre: this.state.contact.genre
+            }, () => this.setState({show: props.show}, ));
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            contact: this.props.contact,
+        }, () => this.setState({show: this.props.show}));
+    }
+
+    editClicked = () => {
+        this.setState({editable: true, show: false}, () => this.setState({show: true}));
+    };
+
+    saveClicked = () => {
+        ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
+            ArtistService.updateArtistGenre(() => {
+                Alert.success("Kontaktinformasjon har blitt oppdatert");
+                this.setState({
+                    show: false,
+                    editable: false,
+                }, () => this.setState({show: true}));
+            }, this.state.contact.artistID, parseInt(this.state.genre), CookieStore.currentUserID, this.state.contact.contactID)
+        })
+    };
+
+    deletePerformer = (e) => {
+        ArtistService.deleteArtist(this.state.contact.contactID).then(r => {
+            Alert.success("Artist er slettet");
+            this.props.onHide();
+        });
+
+    };
+
+    handleChange = (e) => {
+        this.setState({[e.target.name]: e.target.value, show: false}, () => {
+            this.setState({show: true});
+        });
+    };
+
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.contactName)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.contactName)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epost-adresse';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        else{
+            return '';
+        }
+    }
+
+    render() {
+        return(
+            &lt;Modal show={this.state.show} onHide={this.props.onHide}>
+                &lt;Modal.Header closeButton>
+                    &lt;FaUserCircle size={35} className="mr-1"/>
+                    &lt;Modal.Title>{this.state.editable ? &lt;Form.Control name="contactName" type="text" value={this.state.contactName}
+                    onChange={this.handleChange}/> : this.state.contactName}&lt;/Modal.Title>
+                &lt;/Modal.Header>
+                &lt;Modal.Body>
+                    &lt;h5>Kontakt&lt;/h5>
+                    &lt;Row>
+                        &lt;Col xs={1}>
+                            &lt;FaEnvelopeSquare/>
+                        &lt;/Col>
+                        &lt;Col>
+                            {this.state.editable ? &lt;Form.Control name="email" type="email" value={this.state.email}
+                            onChange={this.handleChange}/> : &lt;a href={"mailto:" + this.state.email}>{this.state.email}&lt;/a>}
+                        &lt;/Col>
+                    &lt;/Row>
+                    &lt;Row className="mb-4">
+                        &lt;Col xs={1}>
+                            &lt;FaPhone/>
+                        &lt;/Col>
+                        &lt;Col>
+                            {this.state.editable ? &lt;Form.Control name="phone" type="text" value={this.state.phone}
+                            onChange={this.handleChange}/> : this.state.phone}
+                        &lt;/Col>
+                    &lt;/Row>
+                    &lt;h5>Artistinfo&lt;/h5>
+                    &lt;Row>
+                        &lt;Col xs={1}>
+                            &lt;FaMusic/>
+                        &lt;/Col>
+                        &lt;Col>
+                            {this.state.editable ? &lt;Form.Control name="genre" as="select" defaultValue={this.state.genre}
+                            onChange={this.handleChange}>{
+                                this.state.genres.map((genre,i) => {return &lt;option value={i + 1}>{genre}&lt;/option>})
+                            }&lt;/Form.Control> : this.state.genres[this.state.genre - 1]}
+                        &lt;/Col>
+                    &lt;/Row>
+                    &lt;Row>
+                        &lt;Col xs={1}>
+                            &lt;FaCalendar/>
+                        &lt;/Col>
+                        &lt;Col>
+                        &lt;/Col>
+                    &lt;/Row>
+                &lt;/Modal.Body>
+                &lt;Modal.Footer className={"text-danger"}>
+                    {this.validateForm()}
+                    {this.state.editable ? &lt;Button variant="success" onClick={this.saveClicked}>Lagre&lt;/Button> : &lt;Button variant="secondary" onClick={this.editClicked}>Rediger&lt;/Button>}
+                    &lt;Button variant="danger" onClick={this.deletePerformer}>Slett&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+        )
+    }
+}
+
+class AddPerformer extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            show: this.props.show,
+            contactName: "",
+            email: "",
+            phone: "",
+            genre: 1,
+            genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"],
+        }
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.show !== this.state.show);
+    }
+
+    componentDidUpdate(props) {
+        this.setState({show: props.show});
+    }
+
+    handleChange = (e) => {
+        this.setState({[e.target.name]: e.target.value, show: false}, () => {
+            this.setState({show: true});
+        });
+    };
+
+    saveClicked = () => {
+        ArtistService.createArtist(() => {
+            this.props.onHide();
+            //Alert.success("Ny artist er registert");
+        }, this.state.contactName, this.state.phone, this.state.email, this.state.genre, CookieStore.currentUserID)
+    };
+
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.contactName)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.contactName)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epost-adresse';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        else{
+            return '';
+        }
+    }
+
+    render() {
+        return(
+            &lt;Modal show={this.state.show} onHide={this.props.onHide}>
+                &lt;Modal.Header closeButton>
+                    &lt;FaUserCircle size={35} className="mr-1"/>
+                    &lt;Modal.Title>
+                        &lt;Form.Control name="contactName" type="text" value={this.state.contactName} onChange={this.handleChange}
+                        placeholder="Navn"/>
+                    &lt;/Modal.Title>
+                &lt;/Modal.Header>
+                &lt;Modal.Body>
+                    &lt;h5>Kontaktinformasjon&lt;/h5>
+                    &lt;Row>
+                        &lt;Col xs={1}>
+                            &lt;FaEnvelopeSquare/>
+                        &lt;/Col>
+                        &lt;Col>
+                            &lt;Form.Control name="email" type="email" value={this.state.email} onChange={this.handleChange}
+                            placeholder="Epostadresse"/>
+                        &lt;/Col>
+                    &lt;/Row>
+                    &lt;Row className="mb-4">
+                        &lt;Col xs={1}>
+                            &lt;FaPhone/>
+                        &lt;/Col>
+                        &lt;Col>
+                            &lt;Form.Control name="phone" type="text" value={this.state.phone} onChange={this.handleChange}
+                            placeholder="Telefon"/>
+                        &lt;/Col>
+                    &lt;/Row>
+                    &lt;h5>Musikksjanger&lt;/h5>
+                    &lt;Row>
+                        &lt;Col xs={1}>
+                            &lt;FaMusic/>
+                        &lt;/Col>
+                        &lt;Col>
+                            &lt;Form.Control name="genre" as="select" defaultValue={1} onChange={this.handleChange}>{
+                                this.state.genres.map((genre,i) => {return &lt;option key={i} value={i + 1}>{genre}&lt;/option>})
+                            }&lt;/Form.Control>
+                        &lt;/Col>
+                    &lt;/Row>
+                &lt;/Modal.Body>
+                &lt;Modal.Footer className={"text-danger"}> {this.validateForm()}
+                    &lt;Button variant="success" disabled={!(this.validateForm()==='')} onClick={this.saveClicked}>Legg til&lt;/Button>
+                &lt;/Modal.Footer>
+            &lt;/Modal>
+        )
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="artistDao.html">artistDao</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="ArtistRegisterRiders.html">ArtistRegisterRiders</a></li><li><a href="ArtistService.html">ArtistService</a></li><li><a href="Bug.html">Bug</a></li><li><a href="bugDao.html">bugDao</a></li><li><a href="BugReview.html">BugReview</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="CheckList.html">CheckList</a></li><li><a href="Contact.html">Contact</a></li><li><a href="contactDao.html">contactDao</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="Content.html">Content</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CreateEventSplash.html">CreateEventSplash</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewContacts.html">CrewContacts</a></li><li><a href="crewDao.html">crewDao</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Dao.html">Dao</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentationTab.html">DocumentationTab</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="Documents.html">Documents</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventCard.html">EventCard</a></li><li><a href="eventDao.html">eventDao</a></li><li><a href="EventForm.html">EventForm</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="EventView.html">EventView</a></li><li><a href="FolderItem.html">FolderItem</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="Info.html">Info</a></li><li><a href="InfoForm.html">InfoForm</a></li><li><a href="LoginDao.html">LoginDao</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="MailService.html">MailService</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="MobileMenu.html">MobileMenu</a></li><li><a href="MyDocuments.html">MyDocuments</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="organizerDao.html">organizerDao</a></li><li><a href="OrganizerStore.html">OrganizerStore</a></li><li><a href="PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerContacts_PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerPanel.html">PerformerPanel</a></li><li><a href="pictureDao.html">pictureDao</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="PictureService.html">PictureService</a></li><li><a href="RegisterForm.html">RegisterForm</a></li><li><a href="RegisterOrganizerService.html">RegisterOrganizerService</a></li><li><a href="riderDao.html">riderDao</a></li><li><a href="RiderElement.html">RiderElement</a></li><li><a href="RiderStore.html">RiderStore</a></li><li><a href="Search.html">Search</a></li><li><a href="SimpleContent.html">SimpleContent</a></li><li><a href="TabContent.html">TabContent</a></li><li><a href="Ticket.html">Ticket</a></li><li><a href="TicketAll.html">TicketAll</a></li><li><a href="ticketDao.html">ticketDao</a></li><li><a href="TicketStore.html">TicketStore</a></li><li><a href="TicketType.html">TicketType</a></li><li><a href="UserPage.html">UserPage</a></li><li>{documentationDao}</li></ul><h3>Global</h3><ul><li><a href="global.html#deleteFile">deleteFile</a></li><li><a href="global.html#ensureFolderExists">ensureFolderExists</a></li><li><a href="global.html#eventPictureStorage">eventPictureStorage</a></li><li><a href="global.html#fileStorage">fileStorage</a></li><li><a href="global.html#fileUpload">fileUpload</a></li><li><a href="global.html#profilePictureStorage">profilePictureStorage</a></li><li><a href="global.html#uploadEventPicture">uploadEventPicture</a></li><li><a href="global.html#uploadUserPicture">uploadUserPicture</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 21:40:15 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

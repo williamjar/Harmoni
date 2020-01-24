@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/components/ticket.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/components/ticket.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import {Row, Spinner} from 'react-bootstrap';
+import Form from "react-bootstrap/Form";
+import Col from "react-bootstrap/Col";
+import Accordion from "react-bootstrap/Accordion";
+import {TicketStore} from "../store/ticketStore";
+import {EventStore} from "../store/eventStore";
+
+
+/*
+    Static labels to guide the users witch type om information
+    they are supposed to fill inn.
+*/
+let nameTicekt = 'Billettnavn';
+let priceTicket = 'Billettpris';
+let amountTicket = 'Antall tilgj. billetter';
+let releaseDate = 'Start salgsdato';
+let releaseTime ='Start salgstid';
+let endDate = 'Slutt salgsdato';
+let endTime = 'Slutt salgstid';
+let description = 'Beskrivelse';
+
+/**
+ * @class Ticket
+ * @classdesc Component to share all the ticket components
+ */
+export class Ticket extends Component{
+    render(){
+        return(
+            &lt;Card className={"border-0"}>
+                    &lt;TicketAll/>
+            &lt;/Card>
+        );
+    }
+}
+
+/**
+ * @class TicketAll
+ * @classdesc The component both fetch tickets from database, post new tickets
+ and delete tickets from the database.
+ */
+export class TicketAll extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            ticketTypeName: '',
+            price : '',
+            amount : '',
+            releaseDate : null,
+            endDate : null,
+            releaseTime : null,
+            endTime : null,
+            description : '',
+            ticketList : [],
+            savingInformation: false,
+            loading: false,
+            dateError: false,
+            noEndSellingDate: false
+        };
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    render() {
+        if(this.state.loading){
+            return(&lt;Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>);
+        }
+
+        return(
+            &lt;Card className={"border-0 mb-3 p-4"}>
+                    {this.state.ticketList.map(ticket => (
+                        &lt;Card key={ticket} className={"shadow mb-3"}>
+                            &lt;Card.Body>
+                            &lt;Form>
+                                &lt;Row className="ticketStyle" >
+                                    &lt;Col>
+                                        &lt;Form.Text>{nameTicekt}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            value={ticket.ticketTypeName}
+                                            readOnly
+                                            plaintext
+                                        />
+
+                                    &lt;/Col>
+                                    &lt;Col>
+                                        &lt;Form.Text>{priceTicket}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            value={ticket.price}
+                                            readOnly
+                                            plaintext
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col>
+                                        &lt;Form.Text>{amountTicket}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            value={ticket.amount}
+                                            readOnly
+                                            plaintext
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col>
+                                        &lt;Form.Text>{releaseDate}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            value={this.formatDate(ticket.releaseDate)}
+                                            readOnly
+                                            plaintext
+                                        />
+                                    &lt;/Col>
+
+                                    &lt;Col>
+                                        &lt;Form.Text>{releaseTime}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            value={ticket.releaseTime}
+                                            readOnly
+                                            plaintext
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+
+                                &lt;Row className="ticketStyle">
+                                    &lt;Col>
+                                        &lt;Form.Text>{description}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            value={ticket.description}
+                                            readOnly
+                                            plaintext
+                                        />
+                                    &lt;/Col>
+
+                                    &lt;Col/>
+                                    &lt;Col/>
+                                    &lt;Col>
+                                        &lt;Form.Text>{endDate}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            value={this.checkIfNull(this.formatDate(ticket.endDate))}
+                                            readOnly
+                                            plaintext
+                                        />
+                                    &lt;/Col>
+
+                                    &lt;Col>
+                                        &lt;Form.Text>{endTime}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            value={ticket.endTime}
+                                            readOnly
+                                            plaintext
+                                        />
+                                    &lt;/Col>
+
+                                &lt;/Row>
+                                &lt;Row className="ticketStyle">
+                                    &lt;Col>
+                                        &lt;Button variant="danger" id={ticket.ticketTypeID} onClick={this.deleteTicket}>Fjern billett&lt;/Button>
+                                    &lt;/Col>
+
+                                &lt;/Row>
+                            &lt;/Form>
+                            &lt;/Card.Body>
+                        &lt;/Card>
+                    ))}
+
+
+                &lt;Accordion>
+                    &lt;Accordion.Toggle as={Button} variant="link" eventKey="0">
+                        + Opprett ny billettype til arrangmentet
+                    &lt;/Accordion.Toggle>
+                    &lt;Accordion.Collapse eventKey="0">
+                        &lt;Card className={"border-0"}>
+                            &lt;Form onSubmit={this.handleSubmit}>
+                                &lt;Row className="ticketStyle">
+                                    &lt;Col>
+                                        &lt;Form.Text>{nameTicekt}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            name = "ticketTypeName"
+                                            placeholder = "Billettnavn"
+                                            value = {this.state.ticketTypeName}
+                                            onChange = {this.handleInputChange}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col>
+                                        &lt;Form.Text>{priceTicket}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            name = "price"
+                                            placeholder="Pris"
+                                            max="1000000"
+                                            type="number"
+                                            onChange = {this.handleInputChange}
+                                            value = {this.state.price}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col>
+                                        &lt;Form.Text>{amountTicket}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            name = "amount"
+                                            placeholder="Antall tilgj."
+                                            type="number"
+                                            max="1000000"
+                                            onChange = {this.handleInputChange}
+                                            value = {this.state.amount}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col>
+                                        &lt;Form.Text>{releaseDate}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            type = "date"
+                                            name = "releaseDate"
+                                            onChange={this.handleInputChange}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col >
+                                        &lt;Form.Text>{releaseTime}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            type = "time"
+                                            name = "releaseTime"
+                                            onChange={this.handleInputChange}
+                                        />
+                                    &lt;/Col>
+
+                                &lt;/Row>
+                                &lt;Row className="ticketStyle">
+                                    &lt;Col>
+                                        &lt;Form.Text>{description}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            name = "description"
+                                            placeholder="Beskrivelse"
+                                            onChange={this.handleInputChange}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col/>
+                                    &lt;Col/>
+                                    &lt;Col>
+                                        &lt;Form.Text>{endDate}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            type ="date"
+                                            name = "endDate"
+                                            onChange={this.handleInputChange}
+                                            disabled={!this.state.noEndSellingDate}
+                                        />
+                                    &lt;/Col>
+
+                                    &lt;Col>
+                                        &lt;Form.Text>{endTime}&lt;/Form.Text>
+                                        &lt;Form.Control
+                                            type = "time"
+                                            name = "endTime"
+                                            onChange={this.handleInputChange}
+                                            disabled={!this.state.noEndSellingDate}
+                                        />
+                                    &lt;/Col>
+
+                                &lt;/Row>
+                                &lt;Row className="ticketStyle">
+                                &lt;Col>
+
+                                &lt;Button variant="success" type="submit"  disabled={!this.validateForm()} onClick={this.handleSubmit}>
+                                    Legg til billett
+                                &lt;/Button>
+                                    &lt;Form.Text hidden={!this.state.dateError} className={"text-danger"}>Sluttdato for salg av billett kan ikke være før startdato&lt;/Form.Text>
+                                &lt;/Col>
+                                    &lt;Col/>
+                                    &lt;Col/>
+
+                                    &lt;Col >
+                                        &lt;Form.Check
+                                            type="checkbox"
+                                            name="noEndSellingDate"
+                                            label="Sett sluttdato og tid for salg av billett"
+                                            value={this.state.noEndSellingDate}
+                                            checked={this.state.noEndSellingDate}
+                                            onChange={this.handleInputChange}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col/>
+                                &lt;/Row>
+                            &lt;/Form>
+                        &lt;/Card>
+                    &lt;/Accordion.Collapse>
+                &lt;/Accordion>
+            &lt;/Card>
+        );
+    }
+    /*
+        Fetches all tickets from the databse the moment the page opens.
+    */
+    componentDidMount() {
+        this.listTickets();
+    }
+
+    validateForm(){
+        return this.validateDate() &amp;&amp; this.state.ticketTypeName !== '' &amp;&amp; this.state.price !== '' &amp;&amp; this.state.amount !== '' &amp;&amp; this.state.releaseDate !== null &amp;&amp; this.state.releaseTime !== null;
+    }
+
+
+    checkIfNull(obamium){
+
+        if(obamium === null){
+            return obamium + " er ikke satt";
+        }
+
+        if(obamium === 'torsdag 1. januar 1970'){
+            return "Sluttdato er ikke satt";
+        }
+
+        return obamium;
+    }
+
+    validateDate(){
+        if(!this.state.noEndSellingDate) return true;
+
+        if(this.state.endDate ===null) return false;
+
+        if(this.state.releaseDate===this.state.endDate){
+            return this.state.releaseTime &lt; this.state.endTime;
+        }
+
+        return this.state.releaseDate &lt; this.state.endDate;
+    }
+
+    formatDate = (d) => {
+        let options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+        let date = new Date(d);
+        return date.toLocaleDateString("nb-NO", options).toLocaleLowerCase();
+    };
+
+    /*
+        Updates all the states when changed.
+    */
+    handleInputChange(event) {
+        console.log("validateform:" + this.validateForm());
+        console.log("validatedate:" + this.validateDate());
+        console.log(this.state.noEndSellingDate);
+        let target = event.target;
+        let value = target.type === 'checkbox' ? target.checked : target.value;
+        let name = target.name;
+        this.setState({[name]: value,});
+
+    }
+
+    /*
+        Post the new ticket in the database and notifies the user
+        with an alert message.
+    */
+    handleSubmit(event){
+        event.preventDefault();
+        TicketStore.addTicket(EventStore.currentEvent.eventID,
+            this.state.ticketTypeName, this.state.price, this.state.amount,
+            this.formatDateToSql(this.state.releaseDate), this.state.releaseTime, this.formatDateToSql(this.state.endDate),
+            this.state.endTime, this.state.description, statusCode => {
+                if (statusCode === 200){
+                    TicketStore.getAllTicketsForEvent(EventStore.currentEvent.eventID, () => {
+                        this.setState({ticketList: TicketStore.allTicketsCurrentEvent});
+
+
+                    });
+                }else{
+                    alert("Det oppsto et problem. Vennligs prøv igjen.");
+                }
+            });
+
+       this.setState( {
+            ticketTypeName: '',
+            price : '',
+            amount : '',
+            description : '',
+        });
+
+    };
+
+    /*
+        List all tickets from the database to one spesific event.
+    */
+    listTickets = () => {
+        this.setState({loading:true});
+        TicketStore.getAllTicketsForEvent( EventStore.currentEvent.eventID, () => {
+            this.setState(
+                { ticketList : TicketStore.allTicketsCurrentEvent});
+            this.setState({loading: false});
+        });
+    };
+
+    /*
+        Deletes ticket in the database and nd notifies the user
+        with an alert message.
+    */
+    deleteTicket = (event) => {
+        TicketStore.deleteTicket(EventStore.currentEvent.eventID, event.target.id, statusCode => {
+            if (statusCode === 200){
+
+                this.setState({savingInformation: false});
+                this.listTickets();
+            }
+            else{
+                alert("Det oppsto et problem. Prøv igjen, eller ta kontakt med oss!");
+            }
+        }).then();
+
+    };
+
+
+    formatDateToSql(date) {
+        let d = new Date(date);
+        let month = "" + (d.getMonth() +1);
+        let day = "" + (d.getDate());
+        let year = d.getFullYear();
+
+        if(month.length &lt; 2) {
+            month = "0" + month;
+        }
+        if(day.length &lt; 2) {
+            day = "0" + day;
+        }
+
+        return [year, month, day].join("-");
+    }
+
+
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="artistDao.html">artistDao</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="ArtistRegisterRiders.html">ArtistRegisterRiders</a></li><li><a href="ArtistService.html">ArtistService</a></li><li><a href="Bug.html">Bug</a></li><li><a href="bugDao.html">bugDao</a></li><li><a href="BugReview.html">BugReview</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="CheckList.html">CheckList</a></li><li><a href="Contact.html">Contact</a></li><li><a href="contactDao.html">contactDao</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="Content.html">Content</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CreateEventSplash.html">CreateEventSplash</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewContacts.html">CrewContacts</a></li><li><a href="crewDao.html">crewDao</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Dao.html">Dao</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentationTab.html">DocumentationTab</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="Documents.html">Documents</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventCard.html">EventCard</a></li><li><a href="eventDao.html">eventDao</a></li><li><a href="EventForm.html">EventForm</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="EventView.html">EventView</a></li><li><a href="FolderItem.html">FolderItem</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="Info.html">Info</a></li><li><a href="InfoForm.html">InfoForm</a></li><li><a href="LoginDao.html">LoginDao</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="MailService.html">MailService</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="MobileMenu.html">MobileMenu</a></li><li><a href="MyDocuments.html">MyDocuments</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="organizerDao.html">organizerDao</a></li><li><a href="OrganizerStore.html">OrganizerStore</a></li><li><a href="PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerContacts_PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerPanel.html">PerformerPanel</a></li><li><a href="pictureDao.html">pictureDao</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="PictureService.html">PictureService</a></li><li><a href="RegisterForm.html">RegisterForm</a></li><li><a href="RegisterOrganizerService.html">RegisterOrganizerService</a></li><li><a href="riderDao.html">riderDao</a></li><li><a href="RiderElement.html">RiderElement</a></li><li><a href="RiderStore.html">RiderStore</a></li><li><a href="Search.html">Search</a></li><li><a href="SimpleContent.html">SimpleContent</a></li><li><a href="TabContent.html">TabContent</a></li><li><a href="Ticket.html">Ticket</a></li><li><a href="TicketAll.html">TicketAll</a></li><li><a href="ticketDao.html">ticketDao</a></li><li><a href="TicketStore.html">TicketStore</a></li><li><a href="TicketType.html">TicketType</a></li><li><a href="UserPage.html">UserPage</a></li><li>{documentationDao}</li></ul><h3>Global</h3><ul><li><a href="global.html#deleteFile">deleteFile</a></li><li><a href="global.html#ensureFolderExists">ensureFolderExists</a></li><li><a href="global.html#eventPictureStorage">eventPictureStorage</a></li><li><a href="global.html#fileStorage">fileStorage</a></li><li><a href="global.html#fileUpload">fileUpload</a></li><li><a href="global.html#profilePictureStorage">profilePictureStorage</a></li><li><a href="global.html#uploadEventPicture">uploadEventPicture</a></li><li><a href="global.html#uploadUserPicture">uploadUserPicture</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 21:40:15 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import {Search} from "./search";
 import Form from "react-bootstrap/Form";
 import {Col} from "react-bootstrap";
 import {CrewStore} from "../../store/crewStore";
+import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
@@ -12,7 +13,10 @@ import {Alert} from "../alerts";
 import {MegaValidator} from "../../megaValidator";
 import {MailService} from "../../store/mailService";
 
-
+/**
+ * @class CreateEventSplash
+ * @classdesc Component for creating a new event.
+ */
 export class CrewPanel extends Component{
 
     constructor(props){
@@ -84,6 +88,7 @@ export class CrewPanel extends Component{
         currentState.crewSelected.contractSigned = false;
         currentState.crewCategorySelected = this.state.crewCategoryList[0].crewCategoryID;
         currentState.showCrewCard = true;
+        this.hideRegisterNew();
         this.setState(currentState);
     };
 
@@ -193,6 +198,7 @@ export class CrewPanel extends Component{
         currentState.showCrewCard = true;
         this.setState(currentState);
         this.setCategoryCurrentCrew();
+        this.hideRegisterNew();
     };
 }
 
@@ -411,19 +417,14 @@ export class CrewCard extends Component{
     };
 
     sendEmail(){
-        MailService.sendGeneralEmailToOne(this.props.crewSelected.email, "Event plan", "You have been invited to work on " + EventStore.currentEvent.eventName + ". Welcome!", null, (status, data) => {
+        MailService.sendGeneralEmailToOne(this.props.crewSelected.email, "Event plan", "You have been invited to work on " + EventStore.currentEvent.eventName + " by " + OrganizerStore.currentOrganizer.contactName +
+            ". If you have any questions you can contact us on phone no.: " + OrganizerStore.currentOrganizer.phone + " or email: " + OrganizerStore.currentOrganizer.email + ". Welcome!", null, (status, data) => {
             if(status === 200){
-                Alert.info("Email was sent");
+                Alert.info("Email ble sendt til " + this.props.crewSelected.contactName);
             } else{
-                Alert.danger("Email was not sent. Ensure the mail is correct.");
+                Alert.danger("Email ble ikke sendt. Sjekk at emailen er korrekt.");
             }
         });
-    }
-
-    save = () => {
-        /* Save function to gather all information in the Performer Card that needs to be stored */
-
-        //TODO: Send invitation
     }
 }
 

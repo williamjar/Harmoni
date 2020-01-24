@@ -20,11 +20,14 @@ import {Document} from "../../classes/document";
 import {Alert} from '../alerts.js';
 import {MegaValidator} from "../../megaValidator";
 
-
+/**
+ * @class PerformerPanel
+ * @classdesc Performerpanel is the edit page for artist in an event, this.state keeps track of which components
+ * it should display at a given time and aso holds the performer who is selected for display on artist card, and also a
+ * array (results) that is used to be searched against
+ */
 export class PerformerPanel extends Component{
-    /* Performerpanel is the edit page for artist in an event, this.state keeps track of which components
-    * it should display at a given time and aso holds the performer who is selected for display on artist card, and also a
-    * array (results) that is used to be searched against  */
+
 
     constructor(props){
         super(props);

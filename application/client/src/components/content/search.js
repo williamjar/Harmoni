@@ -4,13 +4,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 
-
+/**
+ * @class Search
+ * @classdesc Search component is a universal search bar component that displays matching search results
+ */
 export class Search extends Component{
-    /* Search component is a universal search bar component that displays matching search results
+    /*
     Takes in props:
     this.props.results : array that should be searched against
     this.props.searchHandler : a parent method that receives an object of the person or event that was selected.
-
     This searchbar checks against .contactName
      */
 
@@ -23,11 +25,9 @@ export class Search extends Component{
             results : [this.props.results],
         };
 
-
         this.handleSearchInput = this.handleSearchInput.bind(this);
         this.searchHandler = this.searchHandler.bind(this);
     }
-
 
     render() {
         return(
@@ -39,14 +39,10 @@ export class Search extends Component{
                         aria-describedby="basic-addon2"
                         onChange={this.handleSearchInput}
                         className="rounded-pill"
-
-
                     />
                 </InputGroup>
 
                 <div className="results" id="style-5">
-
-
                     {(this.state.showSearchResults && this.props.results[0] !== undefined && this.props.results[0].contactName !==  undefined &&  this.state.results.length !== 0)?
                         this.state.results.filter(e => e.contactName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map((show, index) =>
                         <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>
@@ -86,7 +82,6 @@ export class Search extends Component{
         this.setState(currentState);
     }
 
-
     static getDerivedStateFromProps(props, state) {
         /* Updates props according to parent state change*/
         if(props.results !== state.results) {
@@ -100,7 +95,6 @@ export class Search extends Component{
     toggleShowResults = () => {
         setTimeout(() => {this.setState({showSearchResults: !this.state.showSearchResults})}, 150);
     };
-
 
     searchHandler(input){
         setTimeout(() => {this.setState({showSearchResults: false})}, 180);

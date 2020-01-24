@@ -1,4 +1,4 @@
-import {app} from "./server";
+    import {app} from "./server";
 
 const nodeMailer = require("nodemailer");
 const mailConfig = require('./mailConfig');

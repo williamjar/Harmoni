@@ -23,10 +23,10 @@ let endDate = 'Slutt salgsdato';
 let endTime = 'Slutt salgstid';
 let description = 'Beskrivelse';
 
-
-/*
-    Component to share all the ticket components
-*/
+/**
+ * @class Ticket
+ * @classdesc Component to share all the ticket components
+ */
 export class Ticket extends Component{
     render(){
         return(
@@ -37,10 +37,11 @@ export class Ticket extends Component{
     }
 }
 
-/*
-    The component both fetch tickets from database, post new tickets
-    and delete tickets from the database.
-*/
+/**
+ * @class TicketAll
+ * @classdesc The component both fetch tickets from database, post new tickets
+ and delete tickets from the database.
+ */
 export class TicketAll extends Component {
 
     constructor(props) {

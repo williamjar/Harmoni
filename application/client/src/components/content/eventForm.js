@@ -10,8 +10,10 @@ import {EventStore} from "../../store/eventStore";
 import {OrganizerStore} from "../../store/organizerStore";
 import {Event} from "../../classes/event";
 
-// Parent component for editing and viewing all info about an event, divides information into tabs.
-
+/**
+ * @class EventForm
+ * @classdesc Parent component for editing and viewing all info about an event, divides information into tabs.
+ */
 export class EventForm extends Component {
 
     constructor(props) {

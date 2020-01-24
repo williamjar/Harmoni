@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/components/content/generalInfo.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/components/content/generalInfo.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component} from 'react';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Button, Card, Col, Form, Image, Row, Spinner} from "react-bootstrap";
+import {FaCalendarAlt, FaClock, FaHouseDamage} from "react-icons/fa";
+import placeholder from './placeholder.jpg'
+import {Ticket} from "../ticket";
+import {EventStore} from "../../store/eventStore";
+import {PictureService} from "../../store/pictureService";
+import {CheckList} from "./checklist";
+import {MegaValidator} from "../../megaValidator";
+import {Alert} from "../alerts";
+import {Map} from "./map";
+
+/**
+ * @class EventForm
+ * @classdesc Component for viewing or editing the general info about an event.
+ * The component changes if the event is in "edit mode" or not
+ */
+export class GeneralInfo extends Component{
+
+    constructor(props){
+        super(props);
+        this.state = {
+
+        };
+    }
+
+    render(){
+        return(
+            &lt;div>
+                &lt;InfoForm editMode={this.props.editMode}/>
+                &lt;Row>
+                    &lt;Col>
+                        &lt;Card className="mb-2 border-0">
+                            &lt;Card.Title>Billetter&lt;/Card.Title>
+                            &lt;Ticket/>
+                        &lt;/Card>
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/div>
+        )
+    }
+}
+
+/**
+ * @class InfoForm
+ * Component for editing or submitting general info about an event
+ */
+export class InfoForm extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            edit: this.props.editMode,
+            eventName: EventStore.currentEvent.eventName,
+            startDate: EventStore.currentEvent.startDate,
+            endDate: EventStore.currentEvent.endDate,
+            startTime: EventStore.currentEvent.startTime,
+            endTime: EventStore.currentEvent.endTime,
+            address: EventStore.currentEvent.address,
+            zipCode: EventStore.currentEvent.zipCode,
+            town: EventStore.currentEvent.town,
+            description: EventStore.currentEvent.description,
+            eventType: EventStore.currentEvent.eventType,
+            status: EventStore.currentEvent.status,
+            eventTypes: [],
+            dateError: false,
+            issueList: [],
+            selectedFile: null,
+            uploadingPicture: false,
+            savingInformation: false,
+            serverFile: null,
+            pictureID: null
+        };
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    // Updates the state and the event store object when form input is changed
+    handleChange(event){
+        this.updateIssueList();
+        this.setState({savingInformation:false});
+        const target = event.target;
+        if (target.name === 'selectedFile'){
+            this.setState({[target.name]: target.files[0]});
+        }
+        else{
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+
+            this.setState({[name]: value,});
+        }
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.submitForm();
+    }
+
+    componentDidMount() {
+        this.updateIssueList();
+
+        if (EventStore.currentEvent.picture !== null &amp;&amp; EventStore.currentEvent.picture > 0){
+            this.setState({pictureID: EventStore.currentEvent.picture});
+            PictureService.getPicture(EventStore.currentEvent.picture, picture => {
+                if (picture !== null){
+                    PictureService.previewPicture(picture.pictureLink, link => {
+                        this.setState({serverFile: link});
+                    });
+                }
+            })
+        }
+        if (!(EventStore.eventCategories[0])) {
+            EventStore.getEventCategories(() => {
+                this.setState({eventTypes: EventStore.eventCategories});
+            });
+        }
+    }
+
+    render() {
+        if(this.state.edit){
+            return(
+                    &lt;Row className="margin-bottom-20">
+                    &lt;Col xs={12} md={6}>
+                    &lt;Card className="mb-2 border-0">
+                        &lt;Form onSubmit={this.handleSubmit}>
+                            &lt;Card.Body>
+                                &lt;Row>
+                                    &lt;Col>
+                                     &lt;Form.Text>Tittel på arrangementet&lt;/Form.Text>
+                                    &lt;Form.Control size="lg" type="text" value={this.state.eventName} name="eventName" placeholder="Tittel" onChange={this.handleChange}/>
+                                    &lt;/Col>
+                                &lt;/Row>
+                                &lt;br/>
+                                &lt;Form.Group>
+                                    &lt;Row className="mb-2">
+                                        &lt;Col xs="5">
+                                            &lt;FaCalendarAlt className="mr-1"/>
+                                            &lt;Form.Label>Start&lt;/Form.Label>
+                                            &lt;Form.Control type="date" placeholder={this.formatDateFromSql(this.state.startDate)} value={this.formatDateFromSql(this.state.startDate)} name="startDate" onChange={this.handleChange}/>
+                                        &lt;/Col>
+                                        &lt;Col xs="3">
+                                            &lt;FaClock className="mr-1"/>
+                                            &lt;Form.Label>Tid&lt;/Form.Label>
+                                            &lt;Form.Control type="time" value={this.state.startTime} name="startTime" onChange={this.handleChange}/>
+                                        &lt;/Col>
+                                        &lt;Col>
+                                            &lt;Form.Label>Type arrangement&lt;/Form.Label>
+                                            &lt;Form.Control as="select" value={this.state.eventType} name="eventType" onChange={this.handleChange}>
+                                                {EventStore.eventCategories.map((cat,i) => (
+                                                    &lt;option key={cat} value={i+1}>{cat}&lt;/option>
+                                                ))
+                                                }
+                                            &lt;/Form.Control>
+                                        &lt;/Col>
+                                    &lt;/Row>
+                                    &lt;Row className="mb-4">
+                                        &lt;Col xs="5">
+                                            &lt;FaCalendarAlt className="mr-1"/>
+                                            &lt;Form.Label>Slutt&lt;/Form.Label>
+                                            &lt;Form.Control type="date" placeholder={this.formatDateFromSql(this.state.endDate)} value={this.formatDateFromSql(this.state.endDate)} name="endDate" onChange={this.handleChange}/>
+                                        &lt;/Col>
+                                        &lt;Col xs="3">
+                                            &lt;FaClock className="mr-1"/>
+                                            &lt;Form.Label>Tid&lt;/Form.Label>
+                                            &lt;Form.Control type="time" value={this.state.endTime} name="endTime" onChange={this.handleChange}/>
+                                        &lt;/Col>
+                                    &lt;/Row>
+                                    &lt;Row className="mb-4">
+                                        &lt;Col xs="5">
+                                            &lt;FaHouseDamage className="mr-1"/>
+                                            &lt;Form.Label>Adresse&lt;/Form.Label>
+                                            &lt;Form.Control type="text" value={this.state.address} name="address" onChange={this.handleChange}/>
+                                        &lt;/Col>
+                                        &lt;Col xs="3">
+                                            &lt;Form.Label>Postnummer&lt;/Form.Label>
+                                            &lt;Form.Control style={{width : '4.5rem'}} type="tel" maxLength="4" value={this.state.zipCode} name="zipCode" onChange={this.handleChange}/>
+                                        &lt;/Col>
+                                        &lt;Col xs="3">
+                                            &lt;Form.Label>By&lt;/Form.Label>
+                                            &lt;Form.Control type="text" value={this.state.town} name="town" onChange={this.handleChange}/>
+                                        &lt;/Col>
+                                    &lt;/Row>
+                                    &lt;Row>
+                                        &lt;Col>
+                                            &lt;Form.Label>Beskrivelse&lt;/Form.Label>
+                                            &lt;Form.Control as="textarea" rows="3" value={this.state.description} name="description" onChange={this.handleChange}/>
+                                        &lt;/Col>
+                                    &lt;/Row>
+                                &lt;/Form.Group>
+                                &lt;Row>
+                                    &lt;Col>
+                                &lt;Form.Group>
+                                    &lt;Button hidden={this.state.savingInformation} onmouseover={() => this.updateIssueList} type="submit" variant="success">Lagre informasjon&lt;/Button>
+                                    &lt;Button hidden={!this.state.savingInformation} disabled variant={"success"}>&lt;Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/> Lagrer informasjon&lt;/Button>
+                                &lt;/Form.Group>
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Card.Body>
+                        &lt;/Form>
+                    &lt;/Card>
+                    &lt;/Col>
+                        &lt;Col align={"center"}>
+                            &lt;CheckList issueList={this.state.issueList}/>
+                            &lt;div className="padding-top-30">
+                            &lt;Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="" width={"500px"}/>
+                            &lt;/div>
+                            &lt;h5 className={"mt-2"}>Last opp et bilde til arrangementet&lt;/h5>
+
+                            &lt;span className="btn btn-secondary btn-file margin-right-20">Legg til bilde
+                                &lt;input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/>&lt;/span>
+
+                            &lt;Button type={"file"} variant={"success"} onClick={() => {
+                                this.setState({uploadingPicture: true});
+                                if(MegaValidator.validateFile(this.state.selectedFile)){
+                                    let fileForm = new FormData();
+                                    fileForm.append("description", this.state.selectedFile.name);
+                                    fileForm.append("selectedFile", this.state.selectedFile);
+                                    PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path, newPictureID) => {
+                                        if (statusCode === 200 &amp;&amp; path) {
+                                            PictureService.previewPicture(path, link => {
+                                                EventStore.currentEvent.picture = newPictureID;
+                                                this.setState({pictureID: newPictureID});
+                                                this.setState({serverFile: link});
+                                                Alert.success("Bildet ditt ble lastet opp")
+                                            });
+                                        }
+                                        else{
+                                            Alert.danger("Beklager, det har oppstått en feil med opplastningen")
+                                        }
+                                    });
+                                }
+                                else{
+                                    Alert.danger("Beklager, det har oppstått en feil med opplastningen")
+                                }
+                            }}>Last opp bilde&lt;/Button>
+                        &lt;/Col>
+                    &lt;/Row>
+
+            )}
+        else{
+            return (
+                &lt;div>
+                    &lt;Row>
+                        &lt;Col xs={12} md={6}>
+                        &lt;Card className="mb-2 border-0">
+                            &lt;Card className="m4 text-white" bg="danger" hidden={!(this.state.status===3)}>&lt;Card.Body>Dette arrangementet er kansellert, du kan gjennoppta arrangementet i menyen nedenfor&lt;/Card.Body>&lt;/Card>
+                            &lt;Card.Body>
+                                &lt;Row>
+                                    &lt;Col>
+                                        &lt;Card.Title className={"h2 font-weight-bold"}>{EventStore.currentEvent.eventName}&lt;/Card.Title>
+                                    &lt;/Col>
+                                &lt;/Row>
+                                &lt;Form.Group>
+                                    &lt;Row className="mb-2">
+                                        &lt;Col xs="5">
+                                            &lt;Row>
+                                                &lt;Col>
+                                                    &lt;FaCalendarAlt className="mr-1"/>
+                                                    &lt;Form.Label>Start&lt;/Form.Label>
+                                                &lt;/Col>
+                                            &lt;/Row>
+                                            {EventStore.currentEvent.startDate !== null ?
+                                                this.formatDate(EventStore.currentEvent.startDate) :
+                                                null}
+                                        &lt;/Col>
+                                        &lt;Col xs="3">
+                                            &lt;Row>
+                                                &lt;Col>
+                                                    &lt;FaClock className="mr-1"/>
+                                                    &lt;Form.Label>Tid&lt;/Form.Label>
+                                                &lt;/Col>
+                                            &lt;/Row>
+                                            {EventStore.currentEvent.startTime}
+
+                                        &lt;/Col>
+                                        &lt;Col>
+                                            &lt;Row>
+                                                &lt;Col>
+                                                    &lt;Form.Label>Kategori:&lt;/Form.Label>
+                                                &lt;/Col>
+                                            &lt;/Row>
+                                            {EventStore.eventCategories[EventStore.currentEvent.eventType-1]}
+                                        &lt;/Col>
+                                    &lt;/Row>
+                                    &lt;Row className="mb-4">
+                                        &lt;Col xs="5">
+                                            &lt;Row>
+                                                &lt;Col>
+                                                    &lt;FaCalendarAlt className="mr-1"/>
+                                                    &lt;Form.Label>Slutt&lt;/Form.Label>
+                                                &lt;/Col>
+                                            &lt;/Row>
+                                            {EventStore.currentEvent.endDate !== null ?
+                                                this.formatDate(EventStore.currentEvent.endDate) :
+                                                null}
+                                        &lt;/Col>
+                                        &lt;Col xs="3">
+                                            &lt;Row>
+                                                &lt;Col>
+                                                    &lt;FaClock className="mr-1"/>
+                                                    &lt;Form.Label>Tid&lt;/Form.Label>
+                                                &lt;/Col>
+                                            &lt;/Row>
+                                            {EventStore.currentEvent.endTime}
+                                        &lt;/Col>
+                                    &lt;/Row>
+                                    &lt;Row className="mb-4">
+                                        &lt;Col xs="5">
+                                            &lt;Row>
+                                                &lt;Col>
+                                                    &lt;FaHouseDamage className="mr-1"/>
+                                                    &lt;Form.Label>Adresse&lt;/Form.Label>
+                                                &lt;/Col>
+                                            &lt;/Row>
+                                            {EventStore.currentEvent.address}
+                                        &lt;/Col>
+                                        &lt;Col xs="3">
+                                            &lt;Row>
+                                                &lt;Col>
+                                                    &lt;Form.Label>Postnummer&lt;/Form.Label>
+                                                &lt;/Col>
+                                            &lt;/Row>
+                                            {EventStore.currentEvent.zipCode}
+                                        &lt;/Col>
+                                        &lt;Col xs="3">
+                                            &lt;Row>
+                                                &lt;Col>
+                                                    &lt;Form.Label>Poststed&lt;/Form.Label>
+                                                &lt;/Col>
+                                            &lt;/Row>
+                                            {EventStore.currentEvent.town}
+                                        &lt;/Col>
+                                    &lt;/Row>
+                                    &lt;Row>
+                                        &lt;Col>
+                                            &lt;Row className="mt-2">
+                                                &lt;Col>
+                                                    &lt;Card.Title>Beskrivelse&lt;/Card.Title>
+                                                    {EventStore.currentEvent.description}
+                                                &lt;/Col>
+                                            &lt;/Row>
+                                        &lt;/Col>
+                                    &lt;/Row>
+                                &lt;/Form.Group>
+                                &lt;Form.Group>
+                                    &lt;Button variant="info" disabled={this.state.status===2 || this.state.status === 3} onClick={() => this.editMode()}>Rediger informasjon&lt;/Button>
+                                &lt;/Form.Group>
+                            &lt;/Card.Body>
+
+                        &lt;/Card>
+                        &lt;/Col>
+
+
+                        &lt;Col>
+                            &lt;Card className={"border-0"}>
+                                &lt;Card.Body align={"center"}>
+                                    &lt;Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className=""/>
+                                &lt;/Card.Body>
+                            &lt;/Card>
+                        &lt;/Col>
+
+                    &lt;/Row>
+                    {this.state.address !== null &amp;&amp; this.state.address.trim() !== "" ? &lt;Row className = "padding-bottom-20">
+                        &lt;Col>
+                            &lt;Map
+                                location = {this.state.address + ", " + this.state.town}
+                            />
+                        &lt;/Col>
+                    &lt;/Row> : null}
+
+                &lt;/div>
+
+            );
+        }
+    }
+
+    updateIssueList(){
+        let list = [];
+
+        if(this.state.eventName===null) {
+            list.push("Mangler tittel");
+        } else if (this.state.eventName.length &lt;= 1) {
+            list.push("Mangler tittel");
+        }
+
+        if(this.state.description===null){
+            list.push("Mangler beskrivelse");
+        } else if(this.state.description.length &lt;= 1){
+            list.push("Mangler beskrivelse");
+        }
+
+        if(this.state.address===null || this.state.zipCode===null || this.state.town===null) {
+            list.push("Addresse er ikke satt");
+        } else if(this.state.address.length&lt;=1 || this.state.zipCode.length&lt;=1 || this.state.town.length&lt;=1) {
+            list.push("Addresse er ikke satt");
+        }
+
+        if(this.state.startDate===null || this.state.endDate===null){
+            list.push("Dato er ikke satt");
+        } else if(this.state.startDate.length&lt;=1 || this.state.endDate.length&lt;=1){
+            list.push("Dato er ikke satt");
+        }
+
+        if(this.state.startTime===null || this.state.endTime===null){
+            list.push("Tidspunkt er ikke satt");
+        } else if (this.state.startTime.length&lt;=1 || this.state.endTime.length&lt;=1){
+            list.push("Tidspunkt er ikke satt");
+        }
+
+        this.setState({issueList: list})
+    }
+
+
+    validateForm(){
+        if(this.state.startDate===this.state.endDate){
+            return this.state.startTime &lt; this.state.endTime;
+        }
+
+        return this.state.startDate &lt; this.state.endDate;
+    }
+
+    editMode(){
+        this.setState({edit:true});
+    }
+
+
+    submitForm(){
+
+        this.setState({savingInformation: true});
+        this.setState({dateError: false});
+        if(this.validateForm()){
+            this.save();
+            EventStore.editCurrentEvent().then(this.setState({savingInformation: false}));
+            this.setState({edit:false});
+        } else{
+            this.setState({dateError: true});
+            Alert.danger("Arrangementet kan ikke slutte før det har startet. Sjekk dato og tid.");
+        }
+    }
+
+    save(){
+        EventStore.currentEvent.eventName = this.state.eventName;
+        EventStore.currentEvent.startDate = this.formatDate(this.state.startDate);
+        EventStore.currentEvent.endDate = this.formatDate(this.state.endDate);
+        EventStore.currentEvent.startTime = this.state.startTime;
+        EventStore.currentEvent.endTime = this.state.endTime;
+        EventStore.currentEvent.eventType = this.state.eventType;
+        EventStore.currentEvent.address = this.state.address;
+        EventStore.currentEvent.zipCode = this.state.zipCode;
+        EventStore.currentEvent.town = this.state.town;
+        EventStore.currentEvent.description = this.state.description;
+        EventStore.currentEvent.picture = this.state.pictureID;
+    }
+    // Converts a javascript date to a format compatible with both datepicker and mysql
+    formatDate(date) {
+        let d = new Date(date);
+        let month = "" + (d.getMonth() +1);
+        let day = "" + (d.getDate());
+        let year = d.getFullYear();
+
+        if(month.length &lt; 2) {
+            month = "0" + month;
+        }
+        if(day.length &lt; 2) {
+            day = "0" + day;
+        }
+        return [year, month, day].join("-");
+    }
+
+
+    formatDateFromSql(date){
+        //2019-12-31T23:00:00.000Z
+        let newDate = date.split('T');
+        return newDate[0];
+    }
+}
+
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="artistDao.html">artistDao</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="ArtistRegisterRiders.html">ArtistRegisterRiders</a></li><li><a href="ArtistService.html">ArtistService</a></li><li><a href="Bug.html">Bug</a></li><li><a href="bugDao.html">bugDao</a></li><li><a href="BugReview.html">BugReview</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="CheckList.html">CheckList</a></li><li><a href="Contact.html">Contact</a></li><li><a href="contactDao.html">contactDao</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="Content.html">Content</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CreateEventSplash.html">CreateEventSplash</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewContacts.html">CrewContacts</a></li><li><a href="crewDao.html">crewDao</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Dao.html">Dao</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentationTab.html">DocumentationTab</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="Documents.html">Documents</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventCard.html">EventCard</a></li><li><a href="eventDao.html">eventDao</a></li><li><a href="EventForm.html">EventForm</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="EventView.html">EventView</a></li><li><a href="FolderItem.html">FolderItem</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="Info.html">Info</a></li><li><a href="InfoForm.html">InfoForm</a></li><li><a href="LoginDao.html">LoginDao</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="MailService.html">MailService</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="MobileMenu.html">MobileMenu</a></li><li><a href="MyDocuments.html">MyDocuments</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="organizerDao.html">organizerDao</a></li><li><a href="OrganizerStore.html">OrganizerStore</a></li><li><a href="PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerContacts_PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerPanel.html">PerformerPanel</a></li><li><a href="pictureDao.html">pictureDao</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="PictureService.html">PictureService</a></li><li><a href="RegisterForm.html">RegisterForm</a></li><li><a href="RegisterOrganizerService.html">RegisterOrganizerService</a></li><li><a href="riderDao.html">riderDao</a></li><li><a href="RiderElement.html">RiderElement</a></li><li><a href="RiderStore.html">RiderStore</a></li><li><a href="Search.html">Search</a></li><li><a href="SimpleContent.html">SimpleContent</a></li><li><a href="TabContent.html">TabContent</a></li><li><a href="Ticket.html">Ticket</a></li><li><a href="TicketAll.html">TicketAll</a></li><li><a href="ticketDao.html">ticketDao</a></li><li><a href="TicketStore.html">TicketStore</a></li><li><a href="TicketType.html">TicketType</a></li><li><a href="UserPage.html">UserPage</a></li><li>{documentationDao}</li></ul><h3>Global</h3><ul><li><a href="global.html#deleteFile">deleteFile</a></li><li><a href="global.html#ensureFolderExists">ensureFolderExists</a></li><li><a href="global.html#eventPictureStorage">eventPictureStorage</a></li><li><a href="global.html#fileStorage">fileStorage</a></li><li><a href="global.html#fileUpload">fileUpload</a></li><li><a href="global.html#profilePictureStorage">profilePictureStorage</a></li><li><a href="global.html#uploadEventPicture">uploadEventPicture</a></li><li><a href="global.html#uploadUserPicture">uploadUserPicture</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 21:40:15 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

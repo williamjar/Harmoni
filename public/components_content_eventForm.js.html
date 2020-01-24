@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/content/eventForm.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/content/eventForm.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Tab, Tabs,} from "react-bootstrap";
+import {TabContent} from "./tabContent";
+import {PerformerPanel, PerformersView} from "./performers";
+import {GeneralInfo} from "./generalInfo";
+import {Map} from "./map";
+import {CrewPanel, CrewTab} from "./crew";
+import {DocumentationTab} from "../documentationTab";
+import {EventStore} from "../../store/eventStore";
+import {createHashHistory} from "history";
+import Button from "react-bootstrap/Button";
+import {OrganizerStore} from "../../store/organizerStore";
+import {Event} from "../../classes/event";
+
+const history = createHashHistory();
+
+// Parent component for editing and viewing all info about an event, divides information into tabs.
+
+/**
+ * This is the EventForm class
+ */
+export class EventForm extends Component {
+
+    /**
+     *
+     * @param props
+     * it has cool props
+     */
+    constructor(props) {
+        super(props);
+
+        this.handleButtonClick = this.handleButtonClick.bind(this);
+
+        /**
+         * @type {boolean} editMode
+         * @type {int} activeTab
+         */
+        this.state = {
+            activeTab: 0,
+            editMode: false,
+        };
+    }
+
+    handleSelect = tab => {
+        this.setState({activeTab: tab});
+    };
+
+    handleButtonClick = () => {
+        let tab = this.state.activeTab;
+        if (tab &lt; 3) {
+            tab++;
+        }
+        this.setState({activeTab: tab});
+    };
+
+    // Handles when the user wants to edit the event
+    editClicked = () => {
+        this.setState({edit: true})
+    };
+
+    // Handles when the user saves the event
+    saveClicked = () => {
+        if (this.validateForm()) {
+            this.setState({edit: false});
+            EventStore.editCurrentEvent().then(console.log("Lagret"));
+        } else {
+            console.log("start date can not be after end date");
+        }
+    };
+
+    render() {
+        // On page reload uses sessionstorage to set set the currentEvent variable.
+        if (!(EventStore.currentEvent)) {
+            if (sessionStorage.getItem("currentEvent")) {
+                let sess = JSON.parse(sessionStorage.getItem("currentEvent"));
+                EventStore.currentEvent = new Event(sess.eventID, sess.eventName, sess.startDate,
+                    sess.endDate, sess.startTime, sess.endTime, sess.address, sess.town,
+                    sess.zipCode, sess.status, sess.description, sess.publishDate,
+                    sess.publishTime, sess.organizer, sess.eventType, sess.picture);
+                OrganizerStore.currentOrganizer = sess.organizer;
+            }
+        }
+        return (
+            &lt;Tabs activeKey={this.state.activeTab} id="tabs" onSelect={this.handleSelect}>
+                &lt;Tab eventKey="0" title="Generelt" value={0}>
+                    &lt;TabContent tab={this.state.activeTab} btnClick={this.handleButtonClick}>
+                        &lt;div className="padding-bottom-20">
+                            &lt;GeneralInfo editMode={this.state.editMode}/>
+                        &lt;/div>
+                    &lt;/TabContent>
+                &lt;/Tab>
+                &lt;Tab eventKey={1} title="Artister" >
+                    &lt;TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
+                                editable={this.state.edit} tab={this.state.activeTab} btnClick={this.handleButtonClick}>
+                        &lt;div className="padding-bottom-20">
+                            &lt;PerformerPanel/>
+                        &lt;/div>
+                    &lt;/TabContent>
+                &lt;/Tab>
+                &lt;Tab eventKey="2" title="Personell">
+                    &lt;TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
+                                editable={this.state.edit} tab={this.state.activeTab} btnClick={this.handleButtonClick}>
+                        &lt;div className="padding-bottom-20">
+                            &lt;CrewPanel/>
+                        &lt;/div>
+                    &lt;/TabContent>
+                &lt;/Tab>
+                &lt;Tab eventKey="3" title="Dokumenter">
+                    &lt;TabContent editClicked={this.editClicked} saveClicked={this.saveClicked}
+                                editable={this.state.edit} tab={this.state.activeTab} btnClick={this.handleButtonClick}>
+                        &lt;div className="padding-bottom-20">
+                            &lt;DocumentationTab editable={true}/>
+                        &lt;/div>
+                    &lt;/TabContent>
+                &lt;/Tab>
+            &lt;/Tabs>
+        );
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="Bug.html">Bug</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="Contact.html">Contact</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewCategoryEvent.html">CrewCategoryEvent</a></li><li><a href="CrewLeader.html">CrewLeader</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventForm.html">EventForm</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginForm__mounted.html">_mounted</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="RiderElement.html">RiderElement</a></li></ul><h3>Global</h3><ul><li><a href="global.html#This">This</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 14:53:47 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

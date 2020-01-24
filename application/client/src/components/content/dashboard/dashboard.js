@@ -23,7 +23,10 @@ import {Alert} from "../../alerts";
 const history = createHashHistory();
 
 
-// Component displaying all of the users events
+/**
+ * @class Dashboard
+ * classdesc Component for displaying the full list of events for the organizer, sort and filtering methods.
+ */
 export class Dashboard extends React.Component {
 
     constructor(props) {
@@ -53,6 +56,8 @@ export class Dashboard extends React.Component {
         this.sortEvents(this.state.archived,e.target.value, (sorted) => this.setState({archived: sorted}));
         this.sortEvents(this.state.cancelled,e.target.value, (sorted) => this.setState({cancelled: sorted}));
     };
+
+
 
     // Sends the user to create event screen when clicking the "plus"-button
     addEventClicked = () => {

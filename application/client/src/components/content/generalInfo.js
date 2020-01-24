@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Card, Col, Form, Image, Row, Spinner} from "react-bootstrap";
 import {FaCalendarAlt, FaClock, FaHouseDamage} from "react-icons/fa";
@@ -13,8 +12,11 @@ import {MegaValidator} from "../../megaValidator";
 import {Alert} from "../alerts";
 import {Map} from "./map";
 
-// Component for viewing or editing the general info about an event
-// The component changes if the event is in "edit mode" or not
+/**
+ * @class EventForm
+ * @classdesc Component for viewing or editing the general info about an event.
+ * The component changes if the event is in "edit mode" or not
+ */
 export class GeneralInfo extends Component{
 
     constructor(props){
@@ -41,8 +43,10 @@ export class GeneralInfo extends Component{
     }
 }
 
-
-// Component for editing or submitting general info about an event
+/**
+ * @class InfoForm
+ * Component for editing or submitting general info about an event
+ */
 export class InfoForm extends Component {
 
     constructor(props) {

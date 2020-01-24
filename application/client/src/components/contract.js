@@ -9,18 +9,18 @@ import Accordion from "react-bootstrap/Accordion";
 import {CookieStore} from "../store/cookieStore";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
-
 const history = createHashHistory();
 
+/**
+ * @class FolderItem
+ * @classdesc Component for document folders.
+ */
 export class FolderItem extends Component{
     constructor(props){
         super(props);
         this.state= {
         }
     }
-
-
-
     render(){
         return(
             <div className={"card folder"}>
@@ -32,10 +32,10 @@ export class FolderItem extends Component{
     }
 }
 
-
-
-
-
+/**
+ * @class MyDocuments
+ * @classdesc A component over a users documents.
+ */
 export class MyDocuments extends Component{
 
     render(){
@@ -50,6 +50,10 @@ export class MyDocuments extends Component{
 }
 
 //---------------- Events ------------------
+/**
+ * @class MyDocuments
+ * @classdesc A component for a folder of a event.
+ */
 export class FolderEvent extends Component{
     constructor(props){
         super(props);
@@ -100,6 +104,10 @@ export class FolderEvent extends Component{
 
 }
 
+/**
+ * @class MyDocuments
+ * @classdesc A component for a category of folders.
+ */
 export class FolderCategory extends Component {
     constructor(props){
         super(props);
@@ -151,7 +159,10 @@ export class FolderCategory extends Component {
     }
 }
 
-
+/**
+ * @class Documents
+ * @classdesc Component for deleting and sorting documents.
+ */
 export class Documents extends Component{
     constructor(props){
         super(props);
@@ -266,8 +277,6 @@ export class Documents extends Component{
         this.setState({documents: listSorted, active: e.target.name});
     };
 
-
-
     render(){
         return(
             <div className="padding-top-30-mobile">
@@ -303,6 +312,10 @@ export class Documents extends Component{
     }
 }
 
+/**
+ * @class Info
+ * @classdesc Component for previewing and downloading documents.
+ */
 class Info extends Component {
     constructor(props){
         super(props);

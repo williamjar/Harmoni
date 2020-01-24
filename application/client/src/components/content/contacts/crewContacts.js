@@ -3,7 +3,6 @@ import {Search} from "../search";
 import {Button, Card, Col, Form, Modal, Row} from "react-bootstrap";
 import {
     FaEnvelopeSquare,
-    FaEye,
     FaPhone, FaPlusCircle,
     FaUserCircle
 } from "react-icons/all";
@@ -14,6 +13,10 @@ import {CrewStore} from "../../../store/crewStore";
 import {Alert} from "../../alerts";
 import {MegaValidator} from "../../../megaValidator";
 
+/**
+ * @class CrewContacts
+ * classdesc Component for displaying all crew related to an organizer in a contact list
+ */
 export class CrewContacts extends React.Component {
 
     constructor(props) {
