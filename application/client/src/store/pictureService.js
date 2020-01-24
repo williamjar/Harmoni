@@ -32,20 +32,6 @@ export class PictureService {
     }
 
     /**
-     * TODO unused
-     */
-    updatePicture(pictureID, pictureLink) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        axios.post(axiosConfig.root + '/api/organizer/picture/insert/' + pictureID, {
-            pictureLink: pictureLink
-        }, {headers: header})
-            .catch(error => console.log(error));
-    }
-
-    /**
      * Inserts a picture into the database and assigns it to a user.
      * @param {int} organizerID - Database ID of the organizer.
      * @param TODO what type is this? {} fileForm - Description.
@@ -158,18 +144,4 @@ export class PictureService {
                 callback(fileURL);
             })
     }
-
-
-    /**
-     * TODO Unused - Delete?
-     */
-    deletePicture(pictureID) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        axios.post(axiosConfig.root + '/api/organizer/picture/delete/' + pictureID, [], {headers: header})
-            .catch(error => console.log(error));
-    }
-
 }

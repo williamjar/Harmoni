@@ -70,27 +70,6 @@ export class EventStore {
         }).catch(console.log("Error in eventStore"));
     }
 
-    /**
-     * TODO Delete?
-     */
-    static storeCurrentEvent(eventID, callback) {
-
-        //Populates currentEvent
-
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        return axios.get(axiosConfig.root + "/login", {headers: header}).then(response => {
-            this.currentEvent = new Event(response.data[0].eventID, response.data[0].eventName,
-                response.data[0].startDate, response.data[0].endDate, response.data[0].startTime,
-                response.data[0].endTime, response.data[0].address, response.data[0].town,
-                response.data[0].zipCode, response.data[0].status, response.data[0].description,
-                response.data[0].publishDate, response.data[0].publishTime, response.data[0].organizerID,
-                response.data[0].eventType, response.data[0].pictureID);
-        }).then(() => callback());
-    }
 
     /**
      * Sends the data of the current event to update that event in the database. Current event is defined by the currentEvent variable.
@@ -124,28 +103,6 @@ export class EventStore {
         return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, body, {headers: header});
     }
 
-    /**
-     * TODO - Delete?
-     */
-    static storeAllEvents() {
-
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        axios.get(axiosConfig.root + "/api/events", {headers: header}).then(response => {
-            this.allEvents = null;
-            this.allEvents = response.data.map(event => new Event(event.eventID, event.eventName,
-                event.startDate, event.endDate, event.startTime,
-                event.endTime, event.address, event.town,
-                event.zipCode, event.status, event.description,
-                event.publishDate, event.publishTime, event.organizerID,
-                event.eventTypeID, event.picture));
-
-            return !response.error;
-        });
-    }
 
     /**
      * Removes the current event from the database. Current event is defined by the currentEvent variable.
