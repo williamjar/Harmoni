@@ -9,6 +9,8 @@
 
 .btn-primary {
     background:  #00799e !important;
+    border-color: #00799e !important;
+    outline-color: #00799e !important;
 }
 
 .btn-outline-primary {
@@ -330,13 +332,14 @@ body{
     font-size: 15px;
     padding-top:20px;
     padding-bottom:20px;
-    bottom: 45px;
+    bottom: 43px;
 
 }
 
 .user-nav:hover{
     color:#00aaee !important;
-    outline: 1px solid #003E51;
+
+    background: rgba(232, 232, 232, 0.74);
 
 }
 
@@ -385,6 +388,7 @@ body{
     background: #00525c !important;
     color: white;
     text-decoration: none;
+    cursor: pointer;
 }
 
 
