@@ -237,7 +237,7 @@ export class PerformerCard extends Component{
                         <label htmlFor="genreSelect">Sjanger</label>
                         <select className="form-control" id="genreSelect" value={this.state.genre} onChange={this.genreHandler}>
                             {this.state.genreList.map(e =>
-                                <option>{e.genreName}</option>
+                                <option key={e.genreID}>{e.genreName}</option>
                             )}
                         </select>
                     </div>

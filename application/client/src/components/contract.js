@@ -79,7 +79,7 @@ export class FolderEvent extends Component{
 
                     {this.state.events.map((item) => {
                         return (
-                            <Col className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.eventID)}>
+                            <Col key={item.eventID} className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.eventID)}>
                                 <FolderItem name = {item.eventName}/>
                             </Col>
                         );
@@ -131,7 +131,7 @@ export class FolderCategory extends Component {
 
                     {this.state.folderSpecs.map((item) => {
                         return (
-                            <Col className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.documentCategoryID)}>
+                            <Col key={item.documentCategoryID} className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.documentCategoryID)}>
                                 <FolderItem name = {item.documentCategoryName}/>
                             </Col>
                         );
@@ -275,7 +275,7 @@ export class Documents extends Component{
                 </Row>
                 {this.state.document.map((item) => {
                     return (
-                        <Accordion defaultActiveKey="1" >
+                        <Accordion key={item.documentID} defaultActiveKey="1" >
                             <Row className = {"w-100 text-primary border-bottom"}>
                                 <Col>
                                     <Accordion.Toggle as={Button} variant="link text-dark" eventKey="0" className={"folder"}>

@@ -155,7 +155,7 @@ export class PerformerContacts extends React.Component {
                     {this.state.performers.length !== null ? this.state.genres.map((genre, i) => {
                         if(this.state.performers.find(performer => {return performer.genre === i + 1}) && (this.state.active === genre || this.state.active === "all")) {
                             return(
-                                <Accordion id={genre} defaultActiveKey="0">
+                                <Accordion key={genre} id={genre} defaultActiveKey="0">
                                     <Row className="no-gutters primary-color-dark">
                                         <p>{genre}</p>
                                         <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
@@ -482,7 +482,7 @@ class AddPerformer extends React.Component {
                         </Col>
                         <Col>
                             <Form.Control name="genre" as="select" defaultValue={1} onChange={this.handleChange}>{
-                                this.state.genres.map((genre,i) => {return <option value={i + 1}>{genre}</option>})
+                                this.state.genres.map((genre,i) => {return <option key={i} value={i + 1}>{genre}</option>})
                             }</Form.Control>
                         </Col>
                     </Row>
