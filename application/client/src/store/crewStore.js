@@ -285,14 +285,14 @@ export class CrewStore {
     }
 
     //delete a crew member
-    static deleteCrewMember(crewID) {
+    static deleteCrewMember(contactID) {
 
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.delete(axiosConfig.root + '/api/crew/' + crewID,  {headers: header})
+        return axios.delete(axiosConfig.root + '/api/crew/' + contactID,  {headers: header})
             .then(response => console.log(response));
     }
 

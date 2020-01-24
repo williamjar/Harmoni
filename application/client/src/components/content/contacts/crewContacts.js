@@ -12,9 +12,7 @@ import {
     FaUserCircle
 } from "react-icons/all";
 import Table from "react-bootstrap/Table";
-import {ArtistService} from "../../../store/artistService";
 import {CookieStore} from "../../../store/cookieStore";
-import Accordion from "react-bootstrap/Accordion";
 import {ContactService} from "../../../store/contactService";
 import {CrewStore} from "../../../store/crewStore";
 
@@ -44,7 +42,7 @@ export class CrewContacts extends React.Component {
         this.setState({currentCrew: selected, show: true}, () => console.log(selected));
     };
 
-    hideCrew = () => {
+    onHide = () => {
         this.update( () => this.setState({crew: CrewStore.allCrewMembersForOrganizer}, () => {
             this.setState({show: false});
         }));
@@ -88,7 +86,7 @@ export class CrewContacts extends React.Component {
                     </Col>
                 </Row>
                 {console.log(this.state.currentCrew)}
-                {this.state.currentCrew !== null ? <CrewContactInfo show={this.state.show} contact={this.state.currentCrew} onHide={this.hideCrew}/> : null}
+                {this.state.currentCrew !== null ? <CrewContactInfo show={this.state.show} contact={this.state.currentCrew} onHide={this.onHide}/> : null}
             </div>
         )
     }
@@ -123,7 +121,7 @@ export class CrewContactList extends React.Component {
         },() => this.setState({showContact: true}));
     };
 
-    hidePerformer = () => {
+    onHide = () => {
         this.props.updateHandler(() => this.setState({showContact: false}))
     };
 
@@ -159,7 +157,7 @@ export class CrewContactList extends React.Component {
                     </tr>
                 ))}
                 </tbody>
-                {this.state.currentCrew !== null ? <CrewContactInfo show={this.state.showContact} contact={this.state.currentCrew} crewCategories={this.state.crewCategory} onHide={this.hidePerformer}/> : null}
+                {this.state.currentCrew !== null ? <CrewContactInfo updateHandler={this.onHide} show={this.state.showContact} contact={this.state.currentCrew} crewCategories={this.state.crewCategory} onHide={this.onHide}/> : null}
             </Table>
         )
     }
@@ -224,6 +222,12 @@ export class CrewContactInfo extends React.Component {
         });
     };
 
+    deleteCrew = (e) => {
+        CrewStore.deleteCrewMember(this.state.contact.contactID);
+        this.props.onHide();
+        this.props.updateHandler();
+    };
+
     render() {
         return(
             <Modal show={this.state.show} onHide={this.props.onHide}>
@@ -261,7 +265,7 @@ export class CrewContactInfo extends React.Component {
                 </Modal.Body>
                 <Modal.Footer>
                     {this.state.editable ? <Button variant="success" onClick={this.saveClicked}>Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}
-                    <Button variant="danger">Slett</Button>
+                    <Button onClick={this.deleteCrew} variant="danger">Slett</Button>
                 </Modal.Footer>
             </Modal>
         )
