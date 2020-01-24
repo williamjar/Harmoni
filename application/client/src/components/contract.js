@@ -149,7 +149,10 @@ export class Documents extends Component{
 
     componentDidMount() {
         documentService.getAllDocumentsByCategoryForEvent(this.props.match.params.eventID, this.props.match.params.documentCategoryID,(list) => {
-            this.setState({document: list});
+            this.setState({document: list}, () => {
+                this.order();
+            });
+
         });
     }
 
@@ -200,13 +203,28 @@ export class Documents extends Component{
 
     };
 
+    order = () => {
+        console.log();
+        if(this.state.document !== null){
+            this.state.document.sort(function(a, b){
+                let fileA = a.documentName.substr(a.documentName.lastIndexOf('.') + 1);
+                let fileB = b.documentName.substr(b.documentName.lastIndexOf('.') + 1);
+                if(fileA < fileB) { return -1; }
+                if(fileA > fileB) { return 1; }
+                return 0;
+            })
+        }
+    };
+
 
     render(){
         return(
             <section>
+
                 {console.log("TEST" + ("tester.txt").substr(("tester.txt").lastIndexOf('.') + 1))}
-                <Button>test meg</Button>
+                <Button onClick = {this.order()}> test meg</Button>
                 {this.state.document.map((item) => {
+                    {console.log()}
                     return (
                         <Accordion defaultActiveKey="1" >
                             <Row className = {"w-100 text-primary border-bottom"}>
