@@ -79,8 +79,7 @@ export class TabContent extends Component {
 
     // TODO Create a custom confirm window for these.
     deleteEvent = () => {
-        EventStore.deleteCurrentEvent();
-        history.push("/");
+        EventStore.deleteCurrentEvent().then( () => history.push("/"))
     };
 
     publishEvent = () => {
