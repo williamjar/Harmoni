@@ -1,31 +1,40 @@
-# Harmoni Team 7
-
-"Harmoni" is a web application for creating and organizing events. 
-
+# Harmoni - team 7
 
 ![logo picture Harmoni](https://gitlab.stud.idi.ntnu.no/williaj/harmoni-team-7/raw/master/application/client/src/components/menu/Logo_large.png)
 
 
+"Harmoni" is a web application for creating and organizing events. You can keep track of events, and artist, crew and documents that are tied to that event.  
+
+
+###[Go to our wiki](https://gitlab.stud.idi.ntnu.no/williaj/harmoni-team-7/-/wikis/home)
+
+___
+###Quick start installation guide
+
 
 To run our system, run these commands in a command window with [git](https://git-scm.com/downloads "git download page") installed. You also need [npm and node](https://nodejs.org/en/ "npm and node"). We have used node 13 for our project, and recommend you use the same. 
 
-`git clone https://gitlab.stud.idi.ntnu.no/williaj/harmoni-team-7.git`
+```javascript
 
-`cd harmoni-team-7/application/server`
+git clone https://gitlab.stud.idi.ntnu.no/williaj/harmoni-team-7.git
+
+cd harmoni-team-7/application/server
  
-`npm install`
+npm install
+```
 
 This will take some time.
-
-`npm start`
-
+```
+npm start
+```
 This will start the server running on port 8080 on localhost of your machine.
+```
+cd ../client
 
-`cd ../client`
+npm install
 
-`npm install`
-
-`npm start` 
+npm start
+```
 
 Your development server will now start on [localhost:3000](http://localhost:3000 "Your local machine").
 
