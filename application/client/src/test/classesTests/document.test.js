@@ -7,9 +7,9 @@ mocha.describe('Document constructor', () => {
         assert.equal(Document.getTestDocuments()[0].documentID, 0);
     });
     mocha.it('Should have a link', () => {
-        assert.equal(Document.getTestDocuments()[0].documentLink, 'artistContract.pdf');
+        assert.equal(Document.getTestDocuments()[0].documentLink, 'Link here');
     });
     mocha.it('Should have a category', () => {
-        assert.equal(Document.getTestDocuments()[0].documentCategory, 'Contracts');
+        assert.notEqual(Document.getTestDocuments()[0].documentCategoryID, -1);
     });
 });

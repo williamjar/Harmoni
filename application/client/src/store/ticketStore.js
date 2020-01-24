@@ -70,11 +70,8 @@ export class TicketStore {
         axios.get(axiosConfig.root + '/api/ticket/allTickets/' + eventID, {headers: header}).then(response =>  {
             this.allTicketsCurrentEvent = [];
 
-            response.data.map(data => {
-                this.allTicketsCurrentEvent.push(new TicketType(data.ticketTypeID, data.ticketTypeName, data.price, data.amount,
-                    data.releaseDate, data.releaseTime, data.hasEndDate, data.endDate, data.endTime, data.description));
-                return 0;
-            });
+            this.allTicketsCurrentEvent = response.data.map(data => new TicketType(data.ticketTypeID, data.ticketTypeName, data.price, data.amount,
+                data.releaseDate, data.releaseTime, data.hasEndDate, data.endDate, data.endTime, data.description));
 
             callback();
         });
@@ -88,14 +85,9 @@ export class TicketStore {
         };
 
         axios.get(axiosConfig.root + '/api/ticket', {headers: header}).then(response =>  {
-                this.allTickets = [];
-
-                response.data.map(data => {
-                    this.allTickets.push(new TicketType(data.ticketTypeID, data.ticketTypeName, data.price, data.amount,
-                        data.releaseDate, data.releaseTime, data.hasEndDate, data.endDate, data.endTime, data.description));
-                    return 0;
-                });
-
+            this.allTickets = [];
+            this.allTickets = response.data.map(data => new TicketType(data.ticketTypeID, data.ticketTypeName, data.price, data.amount,
+                    data.releaseDate, data.releaseTime, data.hasEndDate, data.endDate, data.endTime, data.description));
             callback();
         });
 

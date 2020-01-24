@@ -116,13 +116,8 @@ export class Event {
     }
 
     getRiderFromArtist(artist) {
-        let retArr = [];
-        for (let i = 0; i < this.riderElements.length; i++) {
-            if (this.riderElements[i][0].artistID === artist.artistID) {
-                retArr.push(this.riderElements[i][1]);
-            }
-        }
-        return retArr;
+        return this.riderElements.filter(riderElement =>riderElement[0].artistID === artist.artistID)
+            .map(riderElement => riderElement[1]);
     }
 
     toString() {

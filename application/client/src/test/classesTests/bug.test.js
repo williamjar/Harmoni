@@ -8,7 +8,7 @@ mocha.describe('Bug', () => {
            assert.equal(Bug.getTestBugs()[0].bugID, 0);
        });
        mocha.it('should have a date', () => {
-           assert.equal(Bug.getTestBugs()[0].bugDate, "20200108");
+           assert.equal(Bug.getTestBugs()[0].date, "20200108");
        });
        mocha.it('should have a description', () => {
            assert.equal(Bug.getTestBugs()[0].description, "Stuff gone \'rong");

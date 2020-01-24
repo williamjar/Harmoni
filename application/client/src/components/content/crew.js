@@ -9,7 +9,6 @@ import {CookieStore} from "../../store/cookieStore";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
 import {Alert} from "../alerts";
-import {MailService} from "../../store/mailService";
 import {MegaValidator} from "../../megaValidator";
 
 
@@ -79,6 +78,10 @@ export class CrewPanel extends Component{
     searchHandler = (selected) => {
         let currentState = this.state;
         currentState.crewSelected = selected;
+        currentState.crewSelected.isResponsible = false;
+        currentState.crewSelected.hasBeenPaid = false;
+        currentState.crewSelected.contractSigned = false;
+        currentState.crewCategorySelected = this.state.crewCategoryList[0].crewCategoryID;
         currentState.showCrewCard = true;
         this.setState(currentState);
     };
@@ -261,8 +264,6 @@ export class CrewCard extends Component{
             crewCategoryID : this.props.crewCategoryID,
             crewCategoryName : this.props.crewSelected.crewCategoryName,
             description : this.props.crewSelected.description,
-            numberOfFilesChosenForUpload : 0,
-            numberOfFilesAlreadyUploaded : 0,
             isResponsible : this.props.crewSelected.isResponsible,
             contractSigned : this.props.crewSelected.contractSigned,
             hasBeenPaid : this.props.crewSelected.contractSigned
@@ -296,12 +297,13 @@ export class CrewCard extends Component{
                 <div className="row">
                     <div className="col-12">
                         Beskrivelse<br/>
+                    </div>
 
                         <div className="col-12">
                             <input type="text" className="form-control" value={this.state.description} id="description" onChange={this.handleInputDescription}/>
                         </div>
 
-                    </div>
+
                 </div>
 
                 <div className="row padding-top-20">
@@ -335,11 +337,11 @@ export class CrewCard extends Component{
 
                 <div className="row padding-top-20">
                     <div className="col-5">
-                        <button className = "btn-success" onClick={() => this.sendEmail()}>Send email med forespørsel</button>
+                        <button className = "btn btn-primary" onClick={() => this.sendEmail()}>Send email med forespørsel</button>
                     </div>
 
                     <div className="col-5">
-                        <button className="btn-success" onClick={() => this.updateCrewMember()} id="saveCrew">Lagre</button>
+                        <button className="btn btn-success" onClick={() => this.updateCrewMember()} id="saveCrew">Lagre informasjon</button>
                     </div>
                 </div>
 
@@ -466,6 +468,9 @@ export class AddCrewMember extends Component{
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
             return 'Vennligst skriv in en epost-adresse';
         }
+        if(this.state.selectedCategoryID < 1){
+            return 'Vennligst velg en kategori';
+        }
         else{
             return '';
         }
@@ -512,7 +517,7 @@ export class AddCrewMember extends Component{
                         </Row>
                         <Row>
                             <Col size={1}>
-                                <button className="btn btn-success" onClick={this.toggleRegisterCrewTypeForm}>Ny kategori</button>
+                                <button className="btn btn-success margin-top-20" onClick={this.toggleRegisterCrewTypeForm}>Ny kategori</button>
                             </Col>
                         </Row>
                     </Form.Group>
@@ -524,8 +529,8 @@ export class AddCrewMember extends Component{
                         :null}
 
                     <Form.Group>
+                        <input type="checkbox" onClick={this.handleIsResponsibleChange} className="margin-right-10"/>
                         <Form.Label>Hovedansvarlig</Form.Label>
-                        <input type="checkbox" onClick={this.handleIsResponsibleChange}/>
                     </Form.Group>
 
                     <Row className="no-gutter">
@@ -671,7 +676,7 @@ export class RegisteredCrew extends Component{
                     {this.props.categoryList.map(e => (
                         <ul className="list-group">
                             <b className="card-title">{e.crewCategoryName}</b>
-                            {this.props.crewList != undefined ? this.props.crewList.filter(c => c.crewCategoryName === e.crewCategoryName).map(c => (
+                            {this.props.crewList !== undefined ? this.props.crewList.filter(c => c.crewCategoryName === e.crewCategoryName).map(c => (
                                 <li className="list-group-item pointer selection" onClick={() => {
                                     this.showCard(c)
                                 }}>

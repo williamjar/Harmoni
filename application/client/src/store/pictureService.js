@@ -113,15 +113,13 @@ export class PictureService {
 
 
     static previewPicture(pictureLink, callback){
-            console.log("Link " + pictureLink);
-            console.log("Kjører service");
+
             axios.get(axiosConfig.root + '/file/preview/' + pictureLink, {
                 method: "GET",
                 responseType: "blob"
                 //Force to receive data in a Blob Format
             }).then(response => {
                 //Create a Blob from the image Stream
-                console.log(response.data);
                 let blob;
                 if((/\.(jpg)$/i).test(pictureLink)){
                     blob = new Blob([response.data], {
@@ -141,9 +139,7 @@ export class PictureService {
                     blob = null
                 }
                 //Build a URL from the file
-                console.log(blob);
                 const fileURL = URL.createObjectURL(blob);
-                console.log("HER KOMMER FIL URL " + fileURL);
                 //Open the URL on new Window
                 callback(fileURL);
             })
