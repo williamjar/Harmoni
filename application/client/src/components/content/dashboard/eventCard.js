@@ -33,20 +33,15 @@ export class EventCard extends React.Component {
             <Card className={"m-2 p-2 shadow-sm pointer main-color-hover"} onClick={this.viewEvent}>
                 <Card.Body>
                     <Row>
-                        <Col >{this.props.event.eventName} {this.props.event.town !== "" && this.props.event.town !== null ? " - " + this.props.event.town : null}</Col>
-                        <Col align="right">{this.formatDate(this.props.event.startDate)}</Col>
+                        <Col className="col-lg-8 col-sm-4">{this.props.event.eventName}</Col>
+                        <Col className="col-lg-2 text-left col-sm-5">{this.formatDate(this.props.event.startDate)}</Col>
+                        <Col className="col-lg-2 text-right col-sm-3">{this.props.event.town !== "" && this.props.event.town !== null ? this.props.event.town : <div className="font-italic">Ingen adresse</div>}</Col>
                 </Row>
                 </Card.Body>
             </Card>
 
         )
     }
-
-    /*<tr align='center'>
-<td align="left">{this.formatDate(this.props.event.startDate)}</td>
-<td>{this.props.event.eventName} {this.props.event.town !== "" && this.props.event.town !== null ? " - " + this.props.event.town : null}</td>
-<td align="right"><Button variant="outline-primary" onClick={this.viewEvent}>Vis </Button></td>
-</tr>*/
 
     componentDidMount() {
         let date = this.formatDate(this.props.event.startDate);
