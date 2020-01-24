@@ -127,6 +127,7 @@ export class NavBar extends Component {
                     CookieStore.setCurrentUserID(-1);
                     history.push("/");
                     this.props.logOut();
+                    window.location.reload();
                 }}>
                     Logg av <FaSignOutAlt size={20}/>
                 </div>

@@ -54,6 +54,8 @@ export class Dashboard extends React.Component {
         this.sortEvents(this.state.cancelled,e.target.value, (sorted) => this.setState({cancelled: sorted}));
     };
 
+
+
     // Sends the user to create event screen when clicking the "plus"-button
     addEventClicked = () => {
         history.push("/opprett")
