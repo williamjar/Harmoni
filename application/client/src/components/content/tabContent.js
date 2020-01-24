@@ -79,10 +79,12 @@ export class TabContent extends Component {
 
     // TODO Create a custom confirm window for these.
     deleteEvent = () => {
+        EventStore.deleteCurrentEvent();
         history.push("/");
     };
 
     publishEvent = () => {
+        EventStore.publishCurrentEvent();
         this.setState({status : 1});
         Alert.success("Arrangementet har blitt publisert")
     };
@@ -104,6 +106,5 @@ export class TabContent extends Component {
     planEvent = () => {
         EventStore.planCurrentEvent().then(() => Alert.success("Arrangementet har blitt flyttet til under planlegging"));
         this.setState({status : 0});
-
     };
 }
