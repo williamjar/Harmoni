@@ -3,19 +3,15 @@ import React, {Component} from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Card, Col, Form, Image, Row, Spinner} from "react-bootstrap";
-import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
-import lorde from './lorde.jpg';
+import {FaCalendarAlt, FaClock, FaHouseDamage} from "react-icons/fa";
 import placeholder from './placeholder.jpg'
-import {Ticket, TicketView} from "../ticket";
+import {Ticket} from "../ticket";
 import {EventStore} from "../../store/eventStore";
-import {createHashHistory} from "history";
 import {PictureService} from "../../store/pictureService";
 import {CheckList} from "./checklist";
 import {MegaValidator} from "../../megaValidator";
 import {Alert} from "../alerts";
 import {Map} from "./map";
-
-const history = createHashHistory();
 
 // Component for viewing or editing the general info about an event
 // The component changes if the event is in "edit mode" or not
@@ -481,8 +477,7 @@ export class InfoForm extends Component {
     formatDateFromSql(date){
         //2019-12-31T23:00:00.000Z
         let newDate = date.split('T');
-        let convertedDate = newDate[0];
-        return convertedDate;
+        return newDate[0];
     }
 }
 

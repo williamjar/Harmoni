@@ -1,7 +1,6 @@
 import axios from "axios";
 import {Event} from "../classes/event.js";
 import {CookieStore} from "./cookieStore";
-import {Artist} from "../classes/artist";
 import {OrganizerStore} from "./organizerStore";
 
 let axiosConfig = require("./axiosConfig");
@@ -126,11 +125,7 @@ export class EventStore {
                     response.data[i].eventTypeID, response.data[i].picture));
             }
 
-            if (response.error) {
-                return false;
-            } else {
-                return true;
-            }
+            return !response.error;
         });
     }
 

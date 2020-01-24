@@ -1,7 +1,6 @@
 import axios from 'axios';
-const crypto = require('crypto');
 const hash = require('./hashService');
-const root = require('./axiosConfig').root;
+const axiosConfig = require('./axiosConfig');
 
 export class RegisterOrganizerService {
 

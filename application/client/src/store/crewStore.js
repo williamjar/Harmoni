@@ -48,7 +48,7 @@ export class CrewStore {
 
                 this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
                     data.crewCategoryName, data.contactName, data.phone, data.email));
-
+                return 0;
             });
 
             callback();
@@ -70,6 +70,7 @@ export class CrewStore {
 
                 this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
                     data.crewCategoryName, data.contactName, data.phone, data.email, (data.isResponsible === 1), (data.contractSigned === 1), (data.hasBeenPaid === 1)));
+                return 0;
             });
 
             callback();
@@ -90,8 +91,8 @@ export class CrewStore {
 
             response.data.map(data => {
                 this.allCrewCategoriesForOrganizer.push(new CrewCategory (data.crewCategoryID, data.crewCategoryName));
+                return 0;
             });
-
             callback();
         });
     }
@@ -111,7 +112,7 @@ export class CrewStore {
             response.data.map(data => {
 
                 this.allCrewCategoriesForCurrentEvent.push(new CrewCategory (data.crewCategoryID, data.crewCategoryName));
-
+                return 0;
             });
 
             callback();

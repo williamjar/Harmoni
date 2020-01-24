@@ -13,7 +13,7 @@ export class MailService{
         };
 
         if (attachmentLinks !== null){
-            attachmentLinks = attachmentLinks.map(e => {if (e === undefined) return null});
+            attachmentLinks = attachmentLinks.map(e => {if (e === undefined) return null; else return e});
         }
 
 

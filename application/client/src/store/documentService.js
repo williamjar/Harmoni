@@ -1,7 +1,6 @@
 import axios from "axios";
 import {Document} from "../classes/document.js"
 import {DocumentCategory} from "../classes/documentCategory";
-import {EventStore} from "./eventStore";
 import {CookieStore} from "./cookieStore";
 import {Contact} from "../classes/contact";
 

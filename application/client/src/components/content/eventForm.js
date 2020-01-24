@@ -2,18 +2,13 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
-import {PerformerPanel, PerformersView} from "./performers";
+import {PerformerPanel} from "./performers";
 import {GeneralInfo} from "./generalInfo";
-import {Map} from "./map";
-import {CrewPanel, CrewTab} from "./crew";
+import {CrewPanel} from "./crew";
 import {DocumentationTab} from "../documentationTab";
 import {EventStore} from "../../store/eventStore";
-import {createHashHistory} from "history";
-import Button from "react-bootstrap/Button";
 import {OrganizerStore} from "../../store/organizerStore";
 import {Event} from "../../classes/event";
-
-const history = createHashHistory();
 
 // Parent component for editing and viewing all info about an event, divides information into tabs.
 export class EventForm extends Component {

@@ -1,6 +1,5 @@
 import axios from "axios";
 import {CookieStore} from "./cookieStore";
-import {EventStore} from "./eventStore";
 
 const axiosConfig = require('./axiosConfig');
 

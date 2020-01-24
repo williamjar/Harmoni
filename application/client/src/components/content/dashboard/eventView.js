@@ -3,7 +3,6 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Table from "react-bootstrap/Table";
 import {EventCard} from "./eventCard";
-import {Card, CardGroup, CardStock, ListGroup} from "react-bootstrap";
 
 // Component for displaying a group of events(EventCard's) as a table
 export class EventView extends React.Component {

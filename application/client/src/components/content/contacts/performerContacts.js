@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Search} from "../search";
 import {Button, ButtonGroup, Card, Col, Form, Modal, Row} from "react-bootstrap";
 import {
-    FaAddressCard,
     FaAngleDown,
     FaCalendar,
     FaEnvelopeSquare,
@@ -16,7 +15,6 @@ import {ArtistService} from "../../../store/artistService";
 import {CookieStore} from "../../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import {ContactService} from "../../../store/contactService";
-import {CrewStore} from "../../../store/crewStore";
 
 export class PerformerContacts extends React.Component {
 

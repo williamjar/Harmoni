@@ -16,7 +16,6 @@ import {Search} from "../search";
 import {EventStore} from "../../../store/eventStore";
 import {CookieStore} from "../../../store/cookieStore";
 import {createHashHistory} from "history";
-import {TicketStore} from "../../../store/ticketStore";
 import {RiderStore} from "../../../store/riderStore";
 import {OrganizerStore} from "../../../store/organizerStore";
 import {Alert} from "../../alerts";
@@ -204,14 +203,14 @@ export class Dashboard extends React.Component {
 
     // Sorts the events by either date, price or location
     sortEvents = (events, sortBy, callback) => {
-        if(sortBy == 0) {
+        if(sortBy === 0) {
             let sorted = [].concat(events).sort((a,b) => {
                 a = new Date(a.startDate);
                 b = new Date(b.startDate);
                 return a>b ? 1 : a<b ? -1 : 0;
             });
             callback(sorted);
-        } else if(sortBy == 1) {
+        } else if(sortBy === 1) {
             let sorted = [].concat(events).sort((a,b) => {
                 return (a.eventName > b.eventName ? 1 : a.eventName < b.eventName ? -1 : 0);
             });
@@ -234,7 +233,7 @@ export class Dashboard extends React.Component {
                 console.log(sorted);
             });
             callback(sorted);
-        }*/ else if(sortBy == 2) {
+        }*/ else if(sortBy === 2) {
             let sorted = [].concat(events).sort((a,b) => {
                 return (a.town > b.town ? 1 : a.town < b.town ? -1 : 0);
             });

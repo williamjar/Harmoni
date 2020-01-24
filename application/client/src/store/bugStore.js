@@ -1,7 +1,6 @@
 import axios from "axios";
 import {CookieStore} from "./cookieStore";
 import {Component} from "react";
-import {TicketType} from "../classes/ticketType";
 import {Bug} from "../classes/bug";
 const axiosConfig = require("./axiosConfig");
 

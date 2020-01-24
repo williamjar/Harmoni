@@ -11,7 +11,6 @@ import Row from "react-bootstrap/Row";
 import {DocumentService} from "../../store/documentService";
 import {Alert} from "../alerts";
 import {Document} from "../../classes/document";
-import {MailService} from "../../store/mailService";
 import {MegaValidator} from "../../megaValidator";
 
 
@@ -392,7 +391,7 @@ export class CrewCard extends Component{
     categoryHandler = (event) => {
         this.setState({
             crewCategoryID : event.target.value
-        })
+        });;
         this.props.categoryHandler(event.target.value);
     };
 
@@ -447,7 +446,7 @@ export class CrewCard extends Component{
         /* Save function to gather all information in the Crew Card that needs to be stored */
 
         //TODO: Send signed contract and if artist has been payed
-    }
+    };
 
     //TODO: Change states that show if files are added to server
     addFile = () =>{
@@ -489,9 +488,9 @@ export class CrewCard extends Component{
     };
 
 
-    sendEmail(){
+    /*sendEmail(){
 
-        /*  MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
+          MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
               "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
               "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
               "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
@@ -502,14 +501,14 @@ export class CrewCard extends Component{
                   else{
                       console.log("An error occured sending the email");
                   }
-              }); */
-    }
+              });
+    }*/
 
-    save = () => {
-        /* Save function to gather all information in the Performer Card that needs to be stored */
+    /*save = () => {
+         Save function to gather all information in the Performer Card that needs to be stored
 
         //TODO: Send signed contract and if artist has been hasBeenPaid
-    }
+    }*/
 }
 
 export class AddCrewMember extends Component{
@@ -750,7 +749,7 @@ export class RegisteredCrew extends Component{
                                 <div>Personell er ikke lagt til</div>
                                 : <b className="card-title">{e.crewCategoryName}</b>}
 
-                            {this.props.crewList != undefined ? this.props.crewList.filter(c => c.crewCategoryName === e.crewCategoryName).map(c => (
+                            {this.props.crewList !== undefined ? this.props.crewList.filter(c => c.crewCategoryName === e.crewCategoryName).map(c => (
                                 <li className="list-group-item pointer selection" onClick={() => {
                                     this.showCard(c)
                                 }}>

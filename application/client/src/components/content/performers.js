@@ -6,7 +6,7 @@ import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {Search} from "./search";
 import Form from "react-bootstrap/Form";
-import {Col} from "react-bootstrap";
+import {Card, Col} from "react-bootstrap";
 import {ArtistService as artistService, ArtistService} from "../../store/artistService";
 import {CookieStore} from "../../store/cookieStore";
 import {RiderStore} from "../../store/riderStore";
@@ -19,7 +19,6 @@ import {DocumentService} from "../../store/documentService";
 import {Document} from "../../classes/document";
 import {Alert} from '../alerts.js';
 import {MegaValidator} from "../../megaValidator";
-import {Card} from "react-bootstrap";
 
 
 export class PerformerPanel extends Component{
@@ -90,6 +89,7 @@ export class PerformerPanel extends Component{
                 if(e.genreID === performer.genre){
                     this.setState({ genrePerformerSelected : e.genreName});
                 }
+                return 0;
             });
         });
     };
@@ -493,6 +493,7 @@ export class PerformerCard extends Component{
 
                 }, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone ? 1 : 0, rider.description);
             }
+            return 0;
         });
 
         //TODO: Send signed contract and if artist has been hasBeenPaid
@@ -505,6 +506,7 @@ export class PerformerCard extends Component{
            if(e.genreName === this.state.genre){
                genreID = e.genreID;
            }
+           return 0;
         });
 
         artistService.updateArtistGenre(() => {

@@ -1,6 +1,4 @@
 import axios from 'axios';
-import {OrganizerStore} from "./organizerStore";
-import {EventStore} from "./eventStore";
 
 const axiosConfig = require("./axiosConfig");
 const publicKey = require('../cookieConfig').publicKey;

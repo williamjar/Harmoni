@@ -1,6 +1,5 @@
 import axios from "axios";
 import {PictureElement} from "../classes/pictureElement";
-import {EventStore} from "./eventStore";
 import {OrganizerStore} from "./organizerStore";
 import {CookieStore} from "./cookieStore";
 
