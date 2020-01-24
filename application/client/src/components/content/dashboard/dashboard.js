@@ -51,7 +51,6 @@ export class Dashboard extends React.Component {
         this.sortEvents(this.state.planning,e.target.value,(sorted) => {this.setState({planning: sorted});});
         this.sortEvents(this.state.archived,e.target.value, (sorted) => this.setState({archived: sorted}));
         this.sortEvents(this.state.cancelled,e.target.value, (sorted) => this.setState({cancelled: sorted}));
-        console.log(this.state.planning);
     };
 
     // Sends the user to create event screen when clicking the "plus"-button
@@ -80,6 +79,7 @@ export class Dashboard extends React.Component {
                 }
             });
             return (
+                <div>
                 <Card className={"border-0 justify-content-md-center m-4"}>
                     <h3 className={"mt-4 mb-4"}>Mine arrangement</h3>
                     <Search searchHandler={this.searchHandler} results={this.state.events}/>
@@ -169,14 +169,14 @@ export class Dashboard extends React.Component {
                     </Accordion.Collapse>
                 </Accordion> : null}
 
-                    <Row>
-                        <Col className="pull-right" size={12}>
-                            <div onClick={this.addEventClicked} align="right">
-                                <FaPlusCircle className="ml-2" size={60}/>
-                            </div>
-                        </Col>
-                    </Row>
                 </Card>
+
+                    <div className="padding-top-40"></div>
+                            <div onClick={this.addEventClicked} className=" bottom-right">
+                                <FaPlusCircle className="ml-2 add-event" size={60}/>
+                            </div>
+
+                </div>
             )
         }
         else{
@@ -185,14 +185,11 @@ export class Dashboard extends React.Component {
     }
 
     searchHandler(event) {
-        console.log("Event received");
         console.log(event);
 
         //TODO: may need to sett current event in event store perhaps and maybe some other variables?
         EventStore.currentEvent = event;
         RiderStore.storeAllRidersForEvent(() => {
-            console.log("Here comes the sun, nananana");
-            console.log(RiderStore.allRidersForCurrentEvent);
             history.push("/arrangementEdit/" + this.props.event.eventID);
         }, event.eventID);
         history.push(`/arrangementEdit/${event.eventID}`);
