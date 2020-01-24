@@ -33,7 +33,7 @@ const MapsComponent =
 
 /**
  * @Class Map Class
- * responsible for creating a google maps component with a pin for an event's location, the position (lat long) of the map is decided by leaflet geosearch using OpenStreetMap
+ * @classdesc for creating a google maps component with a pin for an event's location, the position (lat long) of the map is decided by leaflet geosearch using OpenStreetMap
  * The parent is responsible for providing a location as promps
  */
 export class Map extends Component{
