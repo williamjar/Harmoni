@@ -305,7 +305,7 @@ export class PerformerCard extends Component{
                    </Col>
 
                    <Col>
-                       <Button variant="info" onClick={() => this.sendEmail()}>Send invitasjon</Button>
+                       <Button variant="primary" onClick={() => this.sendEmail()}>Send invitasjon</Button>
                    </Col>
 
                    <Col>

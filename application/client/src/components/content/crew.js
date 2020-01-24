@@ -295,12 +295,13 @@ export class CrewCard extends Component{
                 <div className="row">
                     <div className="col-12">
                         Beskrivelse<br/>
+                    </div>
 
                         <div className="col-12">
                             <input type="text" className="form-control" value={this.state.description} id="description" onChange={this.handleInputDescription}/>
                         </div>
 
-                    </div>
+
                 </div>
 
                 <div className="row padding-top-20">
@@ -334,11 +335,11 @@ export class CrewCard extends Component{
 
                 <div className="row padding-top-20">
                     <div className="col-5">
-                        <button className = "btn-success" onClick={() => this.sendEmail()}>Send email med forespørsel</button>
+                        <button className = "btn btn-primary" onClick={() => this.sendEmail()}>Send email med forespørsel</button>
                     </div>
 
                     <div className="col-5">
-                        <button className="btn-success" onClick={() => this.updateCrewMember()} id="saveCrew">Lagre</button>
+                        <button className="btn btn-success" onClick={() => this.updateCrewMember()} id="saveCrew">Lagre informasjon</button>
                     </div>
                 </div>
 
@@ -511,7 +512,7 @@ export class AddCrewMember extends Component{
                         </Row>
                         <Row>
                             <Col size={1}>
-                                <button className="btn btn-success" onClick={this.toggleRegisterCrewTypeForm}>Ny kategori</button>
+                                <button className="btn btn-success margin-top-20" onClick={this.toggleRegisterCrewTypeForm}>Ny kategori</button>
                             </Col>
                         </Row>
                     </Form.Group>
@@ -523,8 +524,8 @@ export class AddCrewMember extends Component{
                         :null}
 
                     <Form.Group>
+                        <input type="checkbox" onClick={this.handleIsResponsibleChange} className="margin-right-10"/>
                         <Form.Label>Hovedansvarlig</Form.Label>
-                        <input type="checkbox" onClick={this.handleIsResponsibleChange}/>
                     </Form.Group>
 
                     <Row className="no-gutter">
