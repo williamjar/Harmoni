@@ -12,8 +12,10 @@ import {
 } from "./server";
 
 
-
-
+/**
+ * Delete a file from the server
+ * @param {string} path: The path to the file on the server (relative to server directory)
+ */
 function deleteFile(path) {
     try {
         fs.unlink(path, function (err) {
@@ -26,6 +28,12 @@ function deleteFile(path) {
     }
 }
 
+/**
+ * Ensures a folder exists. Not recursive, so make one at a time.
+ * @param {string} path: The path we want to know if exists, relative to server.
+ * @param mask: Always 0o777, I think
+ * @param {function} callback returns with error if there is one while creating
+ */
 function ensureFolderExists(path, mask, callback) {
     if (typeof mask == 'function') {
         callback = mask;
@@ -44,6 +52,10 @@ function ensureFolderExists(path, mask, callback) {
     })
 }
 
+/**
+ * The configuration for the storage of files
+ * @type {DiskStorage}
+ */
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         const eventID = req.params.eventID;
@@ -79,6 +91,10 @@ const fileStorage = multer.diskStorage({
     }
 });
 
+/**
+ * The configuration for the storage of event pictures
+ * @type {DiskStorage}
+ */
 const eventPictureStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         ensureFolderExists('./resources', 0o744, err => {
@@ -105,6 +121,10 @@ const eventPictureStorage = multer.diskStorage({
     }
 });
 
+/**
+ * The configuration for the storage of profile pictures
+ * @type {DiskStorage}
+ */
 const profilePictureStorage = multer.diskStorage({
 
     destination: (req, file, cb) => {
@@ -138,7 +158,10 @@ const profilePictureStorage = multer.diskStorage({
 });
 
 
-//init upload
+/**
+ * Configuration of uploading profile picture
+ * @type {Multer|undefined}
+ */
 const uploadUserPicture = multer({
     storage: profilePictureStorage,
     limits: {fileSize: 5000000000},
@@ -153,6 +176,10 @@ const uploadUserPicture = multer({
     }
 });
 
+/**
+ * Configuration for uploading event picture
+ * @type {Multer|undefined}
+ */
 const uploadEventPicture = multer({
     storage: eventPictureStorage,
     limits: {fileSize: 5000000000},
@@ -168,12 +195,13 @@ const uploadEventPicture = multer({
     }
 });
 
+/**
+ * Configuration for uploading files
+ * @type {Multer|undefined}
+ */
 const fileUpload = multer({storage: fileStorage});
 
-// PICTURE
-
-
-//Save picture to server
+//Save profile picture to server
 app.post("/api/file/profilePicture", uploadUserPicture.single('selectedFile'), (req, res) => {
     try {
         res.send({name: req.file.filename, path: req.file.path});
@@ -182,6 +210,7 @@ app.post("/api/file/profilePicture", uploadUserPicture.single('selectedFile'), (
     }
 });
 
+//Save file to server
 app.post("/api/file/eventPicture", uploadEventPicture.single("selectedFile"), (req, res) => {
    try{
        res.send({name: req.file.filename, path: req.file.path});
@@ -190,6 +219,7 @@ app.post("/api/file/eventPicture", uploadEventPicture.single("selectedFile"), (r
    }
 });
 
+//Adding picture to organizer in DB
 app.post("/api/organizer/picture", (request, response) => {
     console.log("Request to add a picture");
     pictureDao.insertPicture(request.body.path, (status, data) => {
@@ -198,6 +228,7 @@ app.post("/api/organizer/picture", (request, response) => {
     });
 });
 
+//Adding picture to event in DB
 app.post("/api/event/picture", (request, response) => {
     console.log("Request to add an event picture");
     pictureDao.insertPicture(request.body.path, (status, data) => {
@@ -206,7 +237,7 @@ app.post("/api/event/picture", (request, response) => {
     });
 });
 
-//Delete picture
+//Delete organizer picture
 app.delete("/api/organizer/picture/delete/:pictureID", (request, response) => {
     console.log("Request to delete a picture");
     pictureDao.deleteOne((status, data) => {
@@ -215,7 +246,7 @@ app.delete("/api/organizer/picture/delete/:pictureID", (request, response) => {
     }, request.params.pictureID);
 });
 
-//Update picture
+//Update picture on organizer
 app.put("/api/organizer/picture/update/:pictureID", (request, response) => {
     console.log("Request to update a picture");
     pictureDao.updateOne((status, data) => {
@@ -242,7 +273,7 @@ app.put("/api/event/picture/:eventID", (request, response) => {
     });
 });
 
-//Get one picture
+//Get one picture for organizer
 app.get("/api/organizer/picture/:pictureID", (require, response) => {
     console.log("Request to get the picture of an organizer");
     pictureDao.getPicture((status, data) => {
@@ -263,7 +294,7 @@ app.post("/artistapi/file/document/:eventID/:documentCategoryID", fileUpload.sin
     res.send({name: req.file.filename, path: req.file.path});
 });
 
-
+//Get all document categories for event
 app.get("/api/:eventID/documents/category", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getAllDocumentCategories((status, data) => {
@@ -272,7 +303,7 @@ app.get("/api/:eventID/documents/category", (req, res) => {
     });
 });
 
-
+//Get all documents for event
 app.get("/api/:eventID/documents", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getAllDocuments(req.params.eventID, (status, data) => {
@@ -281,7 +312,7 @@ app.get("/api/:eventID/documents", (req, res) => {
     });
 });
 
-
+//Delete file from category
 app.delete("/api/:eventID/documents/:documentCategory/:fileName", (req, res) => {
     documentationDao.deleteDocument(req.params.eventID, req.params.documentID, (status, data) => {
         res.status(status);
@@ -291,6 +322,7 @@ app.delete("/api/:eventID/documents/:documentCategory/:fileName", (req, res) => 
     });
 });
 
+//Get documents by category
 app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     documentationDao.getDocumentsByCategory(req.params.eventID, req.params.documentCategoryID, (status, data) => {
         res.status(status);
@@ -298,7 +330,7 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     });
 });
 
-
+//Update document category
 app.put("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     documentationDao.changeDocumentCategory(req.params.eventID, req.params.documentCategoryID, req.body, (status, data) => {
         res.status(status);
@@ -306,6 +338,7 @@ app.put("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     });
 });
 
+//Create document in DB
 app.post("/api/:eventID/documents/create", (req, res) => {
     documentationDao.insertDocument(req.params.eventID, req.body, (status, data) => {
         res.status(status);
@@ -313,7 +346,7 @@ app.post("/api/:eventID/documents/create", (req, res) => {
     });
 });
 
-
+//Get document categories for event
 app.get("/api/event/:eventID/documents/categories", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getAllDocumentCategoriesForEvent(req.params.eventID, (status, data) => {
@@ -323,6 +356,7 @@ app.get("/api/event/:eventID/documents/categories", (req, res) => {
     });
 });
 
+//Get artist info from document id
 app.get("/api/document/info/artist/:documentID", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getArtistInfoConnectedToDocument(req.params.documentID, (status, data) => {
@@ -332,6 +366,7 @@ app.get("/api/document/info/artist/:documentID", (req, res) => {
     });
 });
 
+//Get crew info from document
 app.get("/api/document/info/crew/:documentID", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getCrewInfoConnectedToDocument(req.params.documentID, (status, data) => {
@@ -341,6 +376,7 @@ app.get("/api/document/info/crew/:documentID", (req, res) => {
     });
 });
 
+//Get documents by category for event
 app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     console.log("/doc: fikk request fra klient");
     documentationDao.getAllDocumentsByCategoryForEvent(req.params.eventID,req.params.documentCategoryID, (status, data) => {
@@ -350,6 +386,7 @@ app.get("/api/:eventID/documents/category/:documentCategoryID", (req, res) => {
     });
 });
 
+//Preview a file
 app.get("/file/preview/:path*", (req, res) => {
     console.log("Path");
     const path = req.params.path + req.params['0'];
@@ -366,6 +403,7 @@ app.get("/file/preview/:path*", (req, res) => {
     }
 });
 
+//Download a document
 app.get("/document/download/:path*", (req, res) => {
     const file = req.params.path + req.params['0'];
     fs.readFile(file, function(err, data){
@@ -447,6 +485,7 @@ app.get("/document/download/:path*", (req, res) => {
     })
 });
 
+//Get all document categories
 app.get("/api/document/categories", (request, response) => {
     console.log("Request for all document categories");
     documentationDao.getAllDocumentCategories((status, data) => {
@@ -457,7 +496,7 @@ app.get("/api/document/categories", (request, response) => {
 
 // TODO Her er det sikkert noe duplikat
 //DOCUMENT
-
+//Add document
 app.post("/api/document", (request, response) => {
     console.log("Express: Request to add a document");
     documentationDao.insertDocument(request.body.eventID,
@@ -472,7 +511,7 @@ app.post("/api/document", (request, response) => {
         });
 });
 
-
+//Delete document from server
 app.delete("/api/document/:documentID/:path*", (req, res) => {
     console.log("ID " + req.params.documentID + " Link " + req.params.path + req.params['0']);
     documentationDao.deleteOne((status, data) => {
