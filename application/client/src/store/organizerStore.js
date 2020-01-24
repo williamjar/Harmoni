@@ -49,8 +49,7 @@ export class OrganizerStore {
     /**
      * Updates the database with a new username for the
      * @param {int} organizerID - The database ID of the organizer.
-     * @param {String} newUsername - The new username username of
-     * @param {function} callback
+     * @param {String} newUsername - The new username to be replace the current one.
      */
     static changeUsername(organizerID, newUsername) {
         let header = {
@@ -63,6 +62,13 @@ export class OrganizerStore {
         }, {headers: header}).catch(error => console.log(error));
     }
 
+    /**
+     * Checks that the input password matches the one in database and if so update the database with a new password for the organizer.
+     * @param {int} organizerID - The database ID of the organizer.
+     * @param {String} oldPassword - The input password meant to match the password currently in the database.
+     * @param {String} newPassword - The input password meant to replace the current password
+     * @param {function} callback - The status code for the function.
+     */
     static changePassword(organizerID, oldPassword, newPassword, callback) {
         return hashService.verifyPassword(organizerID, oldPassword, rightPassword => {
             if (rightPassword) {
@@ -83,6 +89,10 @@ export class OrganizerStore {
         });
     }
 
+    /**
+     * Updates the database with a new password for the organizer.
+     * @param {String} newPhoneNumber - The new phone number to replace the current one.
+     */
     static changePhoneNumber(newPhoneNumber) {
         let header = {
             "Content-Type": "application/json",
@@ -96,6 +106,9 @@ export class OrganizerStore {
         }, {headers: header}).catch(error => console.log(error));
     }
 
+    /**
+     * TODO
+     */
     static changeUserImage(pictureLink) {
         let header = {
             "Content-Type": "application/json",
@@ -112,21 +125,15 @@ export class OrganizerStore {
         }).catch(error => console.log(error));
     }
 
-    static getAllEvents(organizerId) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        return axios.get(`/organizer/${organizerId}/events`, {headers: header});
-    }
-
+    /**
+     * Deletes the current organizer from the database.
+     * @return {Promise} - The promise received from the database.
+     */
     static deleteCurrentOrganizer() {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-
-        console.log("CONTACT ID " + this.currentOrganizer.contactID);
         return axios.delete(axiosConfig.root + '/api/contact/' + this.currentOrganizer.contactID, {headers: header}).then( res => {
             console.log("Deleted User: " + res);
         }).catch(e => console.log("Error deleting user - " + e));
