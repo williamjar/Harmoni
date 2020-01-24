@@ -79,8 +79,6 @@ export class DocumentService {
      * @param {function} callback
      */
     static addDocument(eventID, category, artistID, crewID, documentCategoryID, file, callback) {
-        console.log(eventID + "," + documentCategoryID);
-        console.log(file.get("selectedFile"));
 
         let header = {
             "x-access-token": CookieStore.currentToken

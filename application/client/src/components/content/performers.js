@@ -384,16 +384,13 @@ export class PerformerCard extends Component{
                 formData.set('description', files[i].name);
                 DocumentService.addDocument(EventStore.currentEvent.eventID, "Kontrakt", currentState.performer.artistID, null, 1, formData, (statusCode, returnData) => {
                     if (statusCode === 200){
-                        console.log("Document was successfully uploaded");
                         Alert.success("Dokumentet ble lastet opp");
-                        console.log(returnData.documentLink);
                         this.state.performer.addDocument(new Document(returnData.documentID, EventStore.currentEvent.eventID, files[i].name, returnData.documentLink, this.state.performer.artistID, null, 1));
                         fileInput.value = '';
                         currentState.numberOfFilesAlreadyUploaded += 1;
                         currentState.numberOfFilesAdded = 0;
                     }
                     else{
-                        console.log("Error uploading document");
                         Alert.danger("En feil skjedde under opplastning");
                     }
 
@@ -451,13 +448,9 @@ export class PerformerCard extends Component{
 
     sendEmail(){
         ArtistService.getArtistToken(this.state.performer.artistID, EventStore.currentEvent.eventID, (statusCode, token) => {
-            console.log(statusCode + " " + token);
             if (statusCode === 200 && token){
-                console.log("We're sending the email");
-
                 const linkFriendlyToken = token.replace(/\./g, "+");
 
-                console.log(linkFriendlyToken);
 
                 const emailBody = "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
                     "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
@@ -472,7 +465,7 @@ export class PerformerCard extends Component{
                             Alert.info("E-post ble sendt til artisten med informasjon.");
                         }
                         else{
-                            console.log("An error occured sending the email");
+                            Alert.danger("En feil skjedde under sending av epost");
                         }
                     });
             }
@@ -491,8 +484,6 @@ export class PerformerCard extends Component{
             if (rider.isModified){
                 RiderStore.updateRider(() => {
                     rider.isModified = false;
-                    console.log("Modified");
-                    console.log(rider);
 
                 }, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone ? 1 : 0, rider.description);
             }
@@ -526,7 +517,6 @@ export class Rider extends Component{
     constructor(props){
         super(props);
 
-        console.log(this.props.riderObject.isDone);
         this.state = {
             taskDone: this.props.riderObject.isDone,
             status : this.props.riderObject.status,
@@ -578,7 +568,6 @@ export class Rider extends Component{
     };
 
     handleCheckBoxInput = (event) => {
-        console.log(event.target.checked);
         this.props.riderObject.isDone = event.target.checked;
         this.props.riderObject.isModified = true;
         this.setState({taskDone : this.props.riderObject.isDone});
@@ -739,12 +728,6 @@ export class RegisterPerformer extends Component{
             let tempList = this.state.genreList.filter(e => e.genreName === this.state.genre);
             let genreID = tempList[0].genreID;
 
-
-            console.log("temp list");
-            console.log(tempList);
-
-
-            console.log(this.state.email);
             ArtistService.createArtist((artist) => {
 
                 this.props.submitFunction(artist); // Call to parent to update it's information in state.
@@ -800,8 +783,7 @@ export class RegisteredPerformers extends Component{
     }
 
     componentDidMount() {
-        console.log("list received");
-        console.log(this.props.performersAdded);
+
     }
 
     unAssignArtist = (artist) => {
