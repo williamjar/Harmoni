@@ -25,12 +25,6 @@ export class Artist extends Contact {
      * The genre of the artist
      * @param {Organizer} organizer
      * The organizer that has registered the artist
-     * @param {boolean} hasBeenPaid
-     * @deprecated
-     * Whether the artist has been paid (not in use, see artistEventInfo)
-     * @param {boolean} contractSigned
-     * @deprecated
-     * Whether the artist's contract has been signed (not in use, see artistEventInfo)
      */
     constructor(artistID, contactID, name, phone, email, genre, organizer) {
         super(contactID, name, phone, email);
@@ -39,8 +33,6 @@ export class Artist extends Contact {
         this.organizer = organizer;
         this.events = [];
         this.documents = [];
-        this.hasBeenPaid = hasBeenPaid;
-        this.contractSigned = contractSigned;
     }
 
     addEvent(event) {
