@@ -7,7 +7,7 @@ module.exports = class artistDao extends Dao {
     }
 
     getAllForOrganizer(callback, organizerID) {
-        super.query('SELECT * FROM artist, contact, event_artist WHERE organizerID = ? AND artist.contactID = contact.contactID AND artist.artistID=event_artist.artistID', [organizerID], callback);
+        super.query('SELECT * FROM artist, contact WHERE organizerID = ? AND artist.contactID = contact.contactID ', [organizerID], callback);
     }
 
     getAllForEvent(callback, eventID) {
@@ -26,8 +26,8 @@ module.exports = class artistDao extends Dao {
         super.query('UPDATE artist SET genreID = ? WHERE artistID = ?', list, callback);
     }
 
-    deleteOne(callback, artistID) {
-        super.query('DELETE FROM artist WHERE artistID = ?', [artistID], callback);
+    deleteOne(callback, contactID) {
+        super.query('DELETE FROM contact WHERE contactID = ?', [contactID], callback);
     }
 
     addDocument(callback, list) {
