@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Col, Row} from "react-bootstrap";
-import {FaFileUpload,FaAngleDown,FaFileImage, FaFilePowerpoint,FaFileExcel,FaFileArchive,FaFileWord, FaFilePdf, FaFileAlt, FaFolderOpen} from "react-icons/all";
+import {FaCalendarTimes, FaFileUpload,FaAngleDown,FaFileImage, FaFilePowerpoint,FaFileExcel,FaFileArchive,FaFileWord, FaFilePdf, FaFileAlt, FaFolderOpen} from "react-icons/all";
 import { createHashHistory } from 'history';
 import {DocumentService as documentService} from "../store/documentService";
 import {EventStore as eventStore} from "../store/eventStore";
@@ -70,11 +70,22 @@ export class FolderEvent extends Component{
     handleClick(eventID){
         history.push("/dokumenter/" + eventID);
     }
+    check(){
+        if(this.state.events.length === 0){
+            return(
+                <section className={"icon-center"}>
+                    <FaCalendarTimes size={200}/>
+                    <h1 className={"padding-top-10"}>Ingen opprettede arrangementer</h1>
+                </section>
+            );
+        }
+    }
 
     render() {
 
         return (
             <div className="padding-top-30-mobile">
+                {this.check()}
                 <Row>
 
                     {this.state.events.map((item) => {

@@ -232,7 +232,6 @@ export class ContactList extends React.Component {
                     <tr align='center' className="contact pointer" onClick={this.viewPerformer} id={performer.artistID} key={performer.artistID}>
                         <td align="left" id={performer.artistID}>{performer.contactName}</td>
                         <td id={performer.artistID}></td>
-                        <td align="right" id={performer.artistID}><FaEye size={30} id={performer.artistID}>Vis</FaEye></td>
                     </tr>
                 ))}
                 </tbody>

@@ -137,7 +137,7 @@ export class CrewContactList extends React.Component {
         return(
             <Table responsive hover>
                 <thead>
-                <tr align='center' onClick={this.viewCrew}>
+                <tr align='center'>
                     <th align="left">Navn</th>
                     <th>Telefon</th>
                     <th></th>
@@ -148,7 +148,7 @@ export class CrewContactList extends React.Component {
                     <tr align='center' className="contact pointer" onClick={this.viewCrew} id={crew.crewID} key={crew.crewID}>
                         <td align="left" id={crew.crewID}>{crew.contactName}</td>
                         <td id={crew.crewID}>{crew.phone}</td>
-                        <td align="right" id={crew.crewID}><FaEye size={30} id={crew.crewID}>Vis</FaEye></td>
+                        <td align="right" id={crew.crewID}></td>
                     </tr>
                 ))}
                 </tbody>
