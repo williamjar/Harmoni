@@ -16,7 +16,7 @@ import PicturDao from "../../dao/pictureDao";
 import RiderDao from "../../dao/riderDao"
 import TicketDao from   "../../dao/ticketDao";
 
-const GITLAB_CI = true;
+const GITLAB_CI = false;
 
 let config;
 
@@ -43,15 +43,11 @@ const ticketDao = new TicketDao(pool);
 
 
 
-mocha.describe('Starting DAO test', () => {
-
+mocha.describe('Starting DAO test', function() {
+this.timeout(10000);
     mocha.before(done => {
         try{
-            runSQLFile('../create.sql', pool, () => {
-                runSQLFile('../testData.sql', pool, () => {
-                    done();
-                });
-            });
+            runSQLFile('../create.sql', pool, done);
         }
         catch (e) {
             done();
