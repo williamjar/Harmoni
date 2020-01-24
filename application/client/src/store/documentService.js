@@ -66,37 +66,6 @@ export class DocumentService {
             });
     }
 
-//TODO: Delete? change Document params if not
-    getAllDocumentsForOrganizer(organizerID) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        let allDocumentsByOrganizer = [];
-        axios.get(axiosConfig.root + '/api/organizer/' + organizerID + '/documents', {headers: header}).then(response => {
-            for (let i = 0; i < response.data.length; i++) {
-                allDocumentsByOrganizer.push(new Document(response.data[i].documentID, response.data[i].documentLink,
-                    response.data[i].documentCategory));
-            }
-        });
-        return allDocumentsByOrganizer;
-    }
-
-//TODO: Delete? change Document params if not
-    getAllDocumentsForEvent(eventID) {
-        let allDocumentsByEvent = [];
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        axios.get(axiosConfig.root + '/api/events/' + eventID + '/documents', {headers: header}).then(response => {
-            for (let i = 0; i < response.data.length; i++) {
-                allDocumentsByEvent.push(new Document(response.data[i].documentID, response.data[i].documentLink,
-                    response.data[i].documentCategory));
-            }
-        });
-        return allDocumentsByEvent;
-    }
 
     /**
      * Adds a new document to the database. Document can be attached to either a crew member or an artist.
@@ -214,22 +183,6 @@ export class DocumentService {
             });
     }
 
-//TODO: Delete? change Document params if not
-    updateDocument(documentID, eventID, name, link, artistID, crewID, categoryID) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        return axios.put(axiosConfig.root + '/api/document/' + documentID, {
-            "eventID": eventID,
-            "documentName": name,
-            "documentLink": link,
-            "artistID": artistID,
-            "crewID": crewID,
-            "documentCategoryID": categoryID
-        }, {headers: header}).then(response => response.data);
-    }
-
     static deleteDocument(documentID, documentLink) {
         let header = {
             "Content-Type": "application/json",
@@ -240,25 +193,7 @@ export class DocumentService {
             .catch(error => console.log(error));
     }
 
-    //TODO: Delete? change Document params if not
-    insertDocumentArtist(eventID, folderName, documentCategoryID, artistID) {
-        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/artist/' + artistID)
-            .then(res => console.log(res.data))
-            .catch(err => console.error(err));
-    }
-
-    //TODO: Delete? change Document params if not
-    insertDocumentCrew(eventID, folderName, documentCategoryID, crewID) {
-        axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/crew/' + crewID)
-            .then(res => console.log(res.data))
-            .catch(err => console.error(err));
-    }
-
-    /**
-     * Returns a list of Document Category objects for the categories created with data from the database in the callback.
-     * @param {function} callback
-     */
-    static getAllDocumentCategories(callback) {
+    static getAllDocumentCategories(callback){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -296,28 +231,6 @@ export class DocumentService {
         }).catch(res => console.log(res));
     }
 
-    static getOneDocument(eventID, documentID, callback) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        let document;
-
-
-        axios.get(axiosConfig.root + '/api/' + eventID + '/documents/' + documentID, {headers: header}).then(response => {
-            console.log(response.data.length);
-            for (let i = 0; i < response.data.length; i++) {
-                document = new Document(response.data[i].documentID, response.data[i].eventID,
-                    response.data[i].documentName, response.data[i].documentLink, response.data[i].artistID,
-                    response.data[i].crewID, response.data[i].documentCategoryID);
-            }
-            console.log(document.documentName);
-
-            callback(document);
-        }).catch(res => console.log(res));
-    }
-
     /**
      * Returns a contact object for an artist created with data from the database in the callback.
      * @param {int} documentID - Generated token for artist to get access
@@ -331,12 +244,12 @@ export class DocumentService {
 
         let artist;
         axios.get(axiosConfig.root + '/api/document/info/artist/' + documentID, {headers: header}).then(response => {
-            if (response.data[0] !== undefined) {
-                console.log("Lengde artist: " + response.data.length);
-                console.log("Data: " + response.data[0].contactName);
-                artist = new Contact(response.data[0].contactName, response.data[0].phone, response.data[0].email);
-                callback(artist);
-            }
+           if(response.data[0] !== undefined){
+               console.log("Lengde artist: " + response.data.length);
+               console.log("Data: " + response.data[0].contactName);
+               artist = new Contact(response.data[0].contactID, response.data[0].contactName,response.data[0].phone,response.data[0].email);
+               callback(artist);
+           }
             return undefined;
         }).catch(res => console.log(res));
     }
@@ -354,21 +267,16 @@ export class DocumentService {
 
         let crew;
         axios.get(axiosConfig.root + '/api/document/info/crew/' + documentID, {headers: header}).then(response => {
-            if (response.data[0] !== undefined) {
-                crew = new Contact(response.data[0].contactName, response.data[0].phone, response.data[0].email);
+            if(response.data[0] !== undefined){
+                crew = new Contact(response.data[0].contactID, response.data[0].contactName,response.data[0].phone,response.data[0].email);
                 callback(crew);
             }
             return undefined;
         }).catch(res => console.log(res));
     }
 
-    /**
-     * Downloads a document via a link from the server.
-     * @param {String} documentLink - The link to access the document.
-     * @param {String} documentName - The name of the document.
-     */
-    static downloadDocument(documentLink, documentName) {
-        axios.get(axiosConfig.root + '/api/document/download/' + documentLink,
+    static downloadDocument(documentLink, doucmentName){
+        axios.get(axiosConfig.root + '/document/download/' + documentLink,
             {responseType: 'arraybuffer'}).then(res => {
             let url;
 

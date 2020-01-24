@@ -88,11 +88,3 @@ app.put("/api/organizer/:organizerID/change/username", (request, response) => {
     });
 });
 
-app.put("/api/organizer/picture/:pictureID/:path*", (req, res) => {
-    console.log("Request to change profile picture for organizer");
-    organizerDao.changeOrganizerProfilePicture(req.params.pictureID, req.params.path + req.params['0'],  (status, data) => {
-        res.status(status);
-        res.json(data);
-    });
-});
-
