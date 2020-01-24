@@ -363,7 +363,7 @@ class AddCrew extends React.Component {
                             <FaEnvelopeSquare/>
                         </Col>
                         <Col>
-                            <Form.Control name="email" type="text" value={this.state.email} onChange={this.handleChange}
+                            <Form.Control name="email" type="email" value={this.state.email} onChange={this.handleChange}
                                           placeholder="Epostadresse"/>
                         </Col>
                     </Row>
@@ -372,7 +372,7 @@ class AddCrew extends React.Component {
                             <FaPhone/>
                         </Col>
                         <Col>
-                            <Form.Control name="phone" type="text" value={this.state.phone} onChange={this.handleChange}
+                            <Form.Control name="phone" type="email" value={this.state.phone} onChange={this.handleChange}
                                           placeholder="Telefon"/>
                         </Col>
                     </Row>

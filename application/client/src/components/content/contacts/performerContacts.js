@@ -291,6 +291,7 @@ export class ContactInfo extends React.Component {
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
             return 'Vennligst skriv in en epost-adresse';
         }
+        if(!MegaValidator.validateEmail())
         if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
             return 'Telefonnummer er ikke gyldig';
         }
@@ -314,7 +315,7 @@ export class ContactInfo extends React.Component {
                             <FaEnvelopeSquare/>
                         </Col>
                         <Col>
-                            {this.state.editable ? <Form.Control name="email" type="text" value={this.state.email}
+                            {this.state.editable ? <Form.Control name="email" type="email" value={this.state.email}
                             onChange={this.handleChange}/> : <a href={"mailto:" + this.state.email}>{this.state.email}</a>}
                         </Col>
                     </Row>
@@ -429,7 +430,7 @@ class AddPerformer extends React.Component {
                             <FaEnvelopeSquare/>
                         </Col>
                         <Col>
-                            <Form.Control name="email" type="text" value={this.state.email} onChange={this.handleChange}
+                            <Form.Control name="email" type="email" value={this.state.email} onChange={this.handleChange}
                             placeholder="Epostadresse"/>
                         </Col>
                     </Row>
