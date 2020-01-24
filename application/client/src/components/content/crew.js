@@ -243,7 +243,7 @@ export class AddCrewType extends Component{
             Alert.warning("Du kan ikke ha en blank kategori");
         } else{
             CrewStore.addCategory(this.state.crewType, CookieStore.currentUserID);
-            Alert.success("kategorien" + this.state.crewType + " har blitt lagt til");
+            Alert.success("Kategorien " + this.state.crewType + " har blitt lagt til");
             this.props.submit();
         }
     };
