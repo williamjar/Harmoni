@@ -27,11 +27,10 @@ export class DocumentService {
         let documentsByCategoryForEvent = [];
 
         axios.get(axiosConfig.root + '/api/' + eventID + '/documents/category/' + documentCategoryID, {headers: header}).then(response => {
-            for (let i = 0; i < response.data.length; i++) {
-                documentsByCategoryForEvent.push(new Document(response.data[i].documentID, response.data[i].eventID,
-                    response.data[i].documentName, response.data[i].documentLink, response.data[i].artistID,
-                    response.data[i].crewID, response.data[i].documentCategoryID));
-            }
+            documentsByCategoryForEvent = response.data.map(document => (
+                new Document(document.documentID, document.eventID,
+                    document.documentName, document.documentLink, document.artistID,
+                    document.crewID, document.documentCategoryID)));
             callback(documentsByCategoryForEvent);
         });
     }
@@ -92,7 +91,6 @@ export class DocumentService {
                 };
 
                 if (!response.data.error) {
-                    console.log(response.data);
 
                     const path = response.data.path;
                     const name = response.data.name.split("_")[1];
@@ -107,7 +105,6 @@ export class DocumentService {
                         documentCategoryID: documentCategoryID
                     };
 
-                    console.log(body);
 
                     axios.post(axiosConfig.root + '/api/document', JSON.stringify(body), {headers: databaseHeader}).then(() => {
                         console.log(response.status);
@@ -199,9 +196,7 @@ export class DocumentService {
 
         axios.get(axiosConfig.root + "/api/document/categories", {headers: header})
             .then(response => {
-                console.log(response.data);
                 let categories = response.data.map(dataPiece => new DocumentCategory(dataPiece.documentCategoryID, dataPiece.documentCategoryName));
-                console.log(categories);
                 callback(categories);
             }).catch(callback(null)).catch(err => console.log(err));
     }
@@ -220,10 +215,7 @@ export class DocumentService {
         let currentCategories = [];
 
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/documents/categories', {headers: header}).then(response => {
-            for (let i = 0; i < response.data.length; i++) {
-                currentCategories.push(new DocumentCategory(response.data[i].documentCategoryID,
-                    response.data[i].documentCategoryName));
-            }
+            currentCategories = response.data.map(category => new DocumentCategory(category.documentCategoryID, category.documentCategoryName));
 
             callback(currentCategories);
         }).catch(res => console.log(res));

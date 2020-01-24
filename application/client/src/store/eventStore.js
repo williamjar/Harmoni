@@ -137,14 +137,12 @@ export class EventStore {
 
         axios.get(axiosConfig.root + "/api/events", {headers: header}).then(response => {
             this.allEvents = null;
-            for (let i = 0; i < response.data.length; i++) {
-                this.allEvents.push(new Event(response.data[i].eventID, response.data[i].eventName,
-                    response.data[i].startDate, response.data[i].endDate, response.data[i].startTime,
-                    response.data[i].endTime, response.data[i].address, response.data[i].town,
-                    response.data[i].zipCode, response.data[i].status, response.data[i].description,
-                    response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
-                    response.data[i].eventTypeID, response.data[i].picture));
-            }
+            this.allEvents = response.data.map(event => new Event(event.eventID, event.eventName,
+                event.startDate, event.endDate, event.startTime,
+                event.endTime, event.address, event.town,
+                event.zipCode, event.status, event.description,
+                event.publishDate, event.publishTime, event.organizerID,
+                event.eventTypeID, event.picture));
 
             return !response.error;
         });
@@ -232,14 +230,13 @@ export class EventStore {
 
             console.log("EventStore: data length: " + response.data.length);
 
-            for (let i = 0; i < response.data.length; i++) {
-                this.allEventsForOrganizer.push(new Event(response.data[i].eventID, response.data[i].eventName,
-                    response.data[i].startDate, response.data[i].endDate, response.data[i].startTime,
-                    response.data[i].endTime, response.data[i].address, response.data[i].town,
-                    response.data[i].zipCode, response.data[i].status, response.data[i].description,
-                    response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
-                    response.data[i].eventTypeID, response.data[i].pictureID));
-            }
+            this.allEventsForOrganizer = response.data.map(event => (
+                new Event(event.eventID, event.eventName,
+                    event.startDate, event.endDate, event.startTime,
+                    event.endTime, event.address, event.town,
+                    event.zipCode, event.status, event.description,
+                    event.publishDate, event.publishTime, event.organizerID,
+                    event.eventTypeID, event.pictureID)));
             callback();
         });
     }
@@ -256,9 +253,7 @@ export class EventStore {
 
         axios.get(axiosConfig.root + "/api/event-type", {headers: header}).then(response => {
             this.eventCategories = [];
-            for (let i = 0; i < response.data.length; i++) {
-                this.eventCategories.push(response.data[i].eventTypeName);
-            }
+            this.eventCategories = response.data.map(data => data.eventTypeName)
             callback();
         });
     }

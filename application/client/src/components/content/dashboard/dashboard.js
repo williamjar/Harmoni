@@ -219,7 +219,7 @@ export class Dashboard extends React.Component {
                 return (a.eventName > b.eventName ? 1 : a.eventName < b.eventName ? -1 : 0);
             });
             callback(sorted);
-        } else if(sortBy == 2) {
+        } else if(sortBy === 2) {
             let sorted = [].concat(events).sort((a,b) => {
                 return (a.town > b.town ? 1 : a.town < b.town ? -1 : 0);
             });
