@@ -12,10 +12,13 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {Alert} from "../components/alerts";
-
 let reportBugs = "Hjelp oss med å finne feil i systemet";
 let listBugs = "Feil du alt har rapportert inn";
 
+/**
+ * @class BugReview
+ * @classdesc Component for submitting and displaying bugs.
+ */
 export class BugReview extends Component {
     constructor(props) {
         super(props);

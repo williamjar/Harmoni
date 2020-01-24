@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
 
-
 /**
- * Renders alert messages using Bootstrap classes.
+ * @class Alert
+ * @classdesc Renders alert messages using Bootstrap classes.
  */
 export class Alert extends Component {
     alerts = [];
