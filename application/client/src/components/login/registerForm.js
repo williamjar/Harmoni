@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form, Button, Card, Row, Col, Spinner, Modal, Container} from 'react-bootstrap'
+import {Form, Button, Card, Row, Col, Spinner, Modal} from 'react-bootstrap'
 import {RegisterOrganizerService} from "../../store/registerOrganizerService";
 import { createHashHistory } from 'history';
 import {NavLink} from "react-router-dom";

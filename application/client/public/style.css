@@ -143,6 +143,10 @@ body{
     margin-right: 10px !important;
 }
 
+.margin-right-20{
+    margin-right: 20px !important;
+}
+
 .padding-top-20{
     padding-top: 20px;
 }
@@ -520,6 +524,10 @@ body{
 
 .ml-2 {
     color: #003E51;
+}
+
+.showMore {
+    font-size: 18px;
 }
 
 /* Event registration */

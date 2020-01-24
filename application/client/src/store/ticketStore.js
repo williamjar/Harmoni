@@ -1,7 +1,5 @@
-import {Genre} from "../classes/genre";
 import axios from "axios";
 import {TicketType} from "../classes/ticketType";
-import {CrewMember} from "../classes/crewMember";
 import {CookieStore} from "./cookieStore";
 
 

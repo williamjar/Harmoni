@@ -1,11 +1,10 @@
 import React from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button, Col, Row, Card} from "react-bootstrap";
+import {Col, Row, Card} from "react-bootstrap";
 import { createHashHistory } from 'history';
 import {EventStore} from "../../../store/eventStore";
 import {RiderStore} from "../../../store/riderStore";
-import {Rider} from "../performers";
 
 const history = createHashHistory();
 

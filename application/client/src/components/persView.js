@@ -14,7 +14,7 @@ export class PersonellView extends Component{
     //personell = [{name : 'Tore'}, {name : 'Oda'}, {name : 'Herman'}];
     tickets = TicketType.getTestTicketTypes();
     personell = CrewMember.getTestCrewMember();
-    leader = CrewLeader.getTestCrewLeader()
+    leader = CrewLeader.getTestCrewLeader();
 
 
     render() {

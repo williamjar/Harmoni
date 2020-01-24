@@ -3,19 +3,15 @@ import React, {Component} from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Card, Col, Form, Image, Row, Spinner} from "react-bootstrap";
-import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
-import lorde from './lorde.jpg';
+import {FaCalendarAlt, FaClock, FaHouseDamage} from "react-icons/fa";
 import placeholder from './placeholder.jpg'
-import {Ticket, TicketView} from "../ticket";
+import {Ticket} from "../ticket";
 import {EventStore} from "../../store/eventStore";
-import {createHashHistory} from "history";
 import {PictureService} from "../../store/pictureService";
 import {CheckList} from "./checklist";
 import {MegaValidator} from "../../megaValidator";
 import {Alert} from "../alerts";
 import {Map} from "./map";
-
-const history = createHashHistory();
 
 // Component for viewing or editing the general info about an event
 // The component changes if the event is in "edit mode" or not
@@ -126,7 +122,7 @@ export class InfoForm extends Component {
     render() {
         if(this.state.edit){
             return(
-                    <Row>
+                    <Row className="margin-bottom-20">
                     <Col xs={12} md={6}>
                     <Card className="mb-2 border-0">
                         <Form onSubmit={this.handleSubmit}>
@@ -206,13 +202,17 @@ export class InfoForm extends Component {
                         </Form>
                     </Card>
                     </Col>
-                        <Col>
+                        <Col align={"center"}>
                             <CheckList issueList={this.state.issueList}/>
-
+                            <div className="padding-top-30">
+                            <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="" width={"500px"}/>
+                            </div>
                             <h5 className={"mt-2"}>Last opp et bilde til arrangementet</h5>
-                            <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2 w-25"/>
-                            <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/>
-                            <Button hidden={this.state.uploadingPicture} type={"file"} variant={"secondary"} onClick={() => {
+
+                            <span className="btn btn-secondary btn-file margin-right-20">Legg til bilde
+                                <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/></span>
+
+                            <Button hidden={this.state.uploadingPicture} type={"file"} variant={"success"} onClick={() => {
                                 this.setState({uploadingPicture: true});
                                 if(MegaValidator.validateFile(this.state.selectedFile)){
                                     let fileForm = new FormData();
@@ -359,8 +359,8 @@ export class InfoForm extends Component {
 
                         <Col>
                             <Card className={"border-0"}>
-                                <Card.Body>
-                                    <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2 w-75"/>
+                                <Card.Body align={"center"}>
+                                    <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className=""/>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -481,8 +481,7 @@ export class InfoForm extends Component {
     formatDateFromSql(date){
         //2019-12-31T23:00:00.000Z
         let newDate = date.split('T');
-        let convertedDate = newDate[0];
-        return convertedDate;
+        return newDate[0];
     }
 }
 

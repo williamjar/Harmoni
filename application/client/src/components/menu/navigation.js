@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Row, Col, Card} from 'react-bootstrap'
+import {Row, Col} from 'react-bootstrap'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { NavLink } from 'react-router-dom';
@@ -11,7 +11,6 @@ import {FaFileSignature} from "react-icons/all";
 
 import harmoniLogo from './Logo_large.png'
 import mobileLogo2 from './Logo_mobile.png'
-import fullLogo from './harmonilogofull.png'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {FaSignOutAlt} from "react-icons/all";

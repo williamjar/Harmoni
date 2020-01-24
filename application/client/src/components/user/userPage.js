@@ -1,15 +1,12 @@
 import React from 'react';
-import {Button, Card, Col, Form, Row, Table, Image, Accordion, FormControl, Spinner, Modal} from 'react-bootstrap'
+import {Button, Card, Col, Form, Row, Table, Accordion, Spinner, Modal} from 'react-bootstrap'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {PictureService} from "../../store/pictureService";
 import {MegaValidator} from "../../megaValidator";
-import {LoginService} from "../../store/loginService";
-import {DocumentService as documentService} from "../../store/documentService";
-import {hashService} from "../../store/hashService";
 import {createHashHistory} from "history";
 import {Alert} from "../alerts";
-
+import {hashService} from "../../store/hashService";
 
 let history = createHashHistory();
 
@@ -496,7 +493,7 @@ export class ProfilePictureForm extends React.Component {
                 this.setState({savingInformation: false});
                 if (statusCode === 200 && link) {
                     const totalPath = __dirname + '../../../../server/' + link;
-                    this.state.profilePicture = totalPath;
+                    this.setState({profilePicture: totalPath});
                     this.setState({profilePictureUploaded: false});
                 }
                 document.getElementById("error").innerHTML = "";

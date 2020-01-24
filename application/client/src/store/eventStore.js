@@ -146,11 +146,7 @@ export class EventStore {
                     response.data[i].eventTypeID, response.data[i].picture));
             }
 
-            if (response.error) {
-                return false;
-            } else {
-                return true;
-            }
+            return !response.error;
         });
     }
 

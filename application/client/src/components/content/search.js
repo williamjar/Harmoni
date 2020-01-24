@@ -59,7 +59,7 @@ export class Search extends Component{
                         </div>
                         ):null}
 
-                    {(this.state.showSearchResults && this.props.results[0] !== undefined && this.props.results[0].eventName != undefined) ?
+                    {(this.state.showSearchResults && this.props.results[0] !== undefined && this.props.results[0].eventName !== undefined) ?
                         this.state.results.filter(e => e.eventName.toLowerCase().trim().indexOf(this.state.searchInput.toLowerCase()) > -1 && this.state.searchInput.trim() !== "").map((show, index) =>
                             <div className="card-title card-header search-result-item" tabIndex={index} onClick={() => this.searchHandler(show)}>
                                 <div className="row no-gutters">

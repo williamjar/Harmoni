@@ -51,7 +51,7 @@ export class LoginForm extends React.Component {
                 <Form onSubmit={this.handleSubmit} className={"align-items-center"}>
                     <Card.Body>
                         <div className="login-logo">
-                            <img src={Logo} />
+                            <img alt={"Harmoni Logo"} src={Logo} />
                         </div>
                         <Card.Title className="mb-4">Logg inn</Card.Title>
                         <Form.Group>

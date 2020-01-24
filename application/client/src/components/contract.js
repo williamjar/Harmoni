@@ -274,7 +274,6 @@ export class Documents extends Component{
                     </Col>
                 </Row>
                 {this.state.document.map((item) => {
-                    {console.log()}
                     return (
                         <Accordion defaultActiveKey="1" >
                             <Row className = {"w-100 text-primary border-bottom"}>
