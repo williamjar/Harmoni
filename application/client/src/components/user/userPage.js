@@ -60,7 +60,7 @@ export class UserPage extends React.Component {
                 <div className="justify-content-md-center m-5">
 
                     <Row>
-                        <Col>
+                        <Col xs={12} md={6}>
                             <Card className={"p-2 card border-0"}>
                                 <Card.Title>Brukerprofil</Card.Title>
                                 <Table borderless>

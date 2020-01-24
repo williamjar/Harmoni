@@ -144,18 +144,10 @@ export class PerformerContacts extends React.Component {
                             </ButtonGroup>
                         </Col>
                     </Row>
-                    <Row className="mb-2">
-                        <Col xs={2}>
-                            <Form.Control as="select" size="sm" onChange={this.sortSelected}>
-                                <option selected disabled>Sorter etter..</option>
-                                <option value={0}>Navn</option>
-                            </Form.Control>
-                        </Col>
-                    </Row>
                     {this.state.performers.length !== null ? this.state.genres.map((genre, i) => {
                         if(this.state.performers.find(performer => {return performer.genre === i + 1}) && (this.state.active === genre || this.state.active === "all")) {
                             return(
-                                <Accordion id={genre} defaultActiveKey="0">
+                                <Accordion key={genre} id={genre} defaultActiveKey="0">
                                     <Row className="no-gutters primary-color-dark">
                                         <p>{genre}</p>
                                         <Accordion.Toggle as={FaAngleDown} variant="link" eventKey="0" size={20}/>
@@ -221,8 +213,6 @@ export class ContactList extends React.Component {
         this.props.updateHandler(() => this.setState({showContact: false}))
     };
 
-    componentDidMount() {
-    }
 
     render() {
         return(
@@ -481,7 +471,7 @@ class AddPerformer extends React.Component {
                         </Col>
                         <Col>
                             <Form.Control name="genre" as="select" defaultValue={1} onChange={this.handleChange}>{
-                                this.state.genres.map((genre,i) => {return <option value={i + 1}>{genre}</option>})
+                                this.state.genres.map((genre,i) => {return <option key={i} value={i + 1}>{genre}</option>})
                             }</Form.Control>
                         </Col>
                     </Row>

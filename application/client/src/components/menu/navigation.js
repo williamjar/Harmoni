@@ -145,8 +145,8 @@ export class MMI extends Component{
     render() {
         return(
             <div className="text-right">
-                <span onClick={this.decreaseFont} className="pointer letter-mmi">
-                    a
+                <span onClick={this.decreaseFont} className="pointer letter-mmi mmi-lower-a-icon">
+                    A
                 </span>
                 <span onClick={this.increaseFont} className="pointer letter-mmi">
                     A
