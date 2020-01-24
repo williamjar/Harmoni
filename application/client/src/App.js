@@ -1,9 +1,9 @@
 import React from 'react';
 import {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Menu, MobileMenu, NavBar, UserProfileButton} from "./components/menu/navigation";
+import {MobileMenu, NavBar} from "./components/menu/navigation";
 import {Content, SimpleContent} from "./components/content/content";
-import {HashRouter, NavLink, Route} from 'react-router-dom';
+import {HashRouter, Route} from 'react-router-dom';
 import {Dashboard} from "./components/content/dashboard/dashboard";
 import {LoginForm} from "./components/login/loginForm";
 import {RegisterForm} from "./components/login/registerForm";
@@ -12,10 +12,9 @@ import {UserPage} from "./components/user/userPage";
 import {EventForm} from "./components/content/eventForm";
 import {CookieStore} from "./store/cookieStore";
 import { createHashHistory } from 'history';
-import {Contracts, MyDocuments, Documents, FolderCategory, FolderEvent} from "./components/contract";
+import {MyDocuments, Documents, FolderCategory} from "./components/contract";
 import {BugReview} from "./components/bugReview";
 import {PerformerContacts} from "./components/content/contacts/performerContacts";
-import {EventStore} from "./store/eventStore";
 import {ArtistRegisterRiders} from "./components/artistComponents/artistRegisterRiders";
 import {CrewContacts} from "./components/content/contacts/crewContacts";
 let history = createHashHistory();
@@ -70,8 +69,6 @@ export class App extends Component{
     }
 
     changeProfilePicture = (profilePicture) => {
-        console.log("Changing in APP: ");
-        console.log(profilePicture);
         this.setState({profilePicture: profilePicture});
     };
 
@@ -87,7 +84,9 @@ export class App extends Component{
                                         this.setState({loggedIn: false});
                                     }
                                     }/></div> :
-                                    <div className="col-12"><MobileMenu/></div>}
+                                    <div className="col-12"><MobileMenu logOut={() => {
+                                        this.setState({loggedIn: false});
+                                    }}/></div>}
                                 {this.state.mobileView?
                                     <div className="margin-bottom-30"><br/> </div>:null
                                 }
@@ -101,8 +100,8 @@ export class App extends Component{
                                 <Route exact path="/dokumenter/:eventID" render={(props) => <Content page ={<FolderCategory{...props} />}/>}/>
                                 <Route exact path="/dokumenter/:eventID/:documentCategoryID" render={(props) => <Content page = {<Documents{...props} />}/>}/>
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage changeProfilePicture = {this.changeProfilePicture}/>}/>} />
-                                <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
-                                <Route exact path="/arrangementEdit/:id"  component={() => <Content page={<EventForm/>} />} />
+                                <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm edit={true}/>} />} />
+                                <Route exact path="/arrangementEdit/:id"  component={() => <Content page={<EventForm edit={false}/>} />} />
                                 <Route exact path="/bug" component={() => <Content page={<BugReview/>}/>}/>
                             </div>
                         </div>
@@ -111,7 +110,6 @@ export class App extends Component{
             );
         }
         else {
-            console.log("Not logged in");
             return(
                 <div className="Login-Container">
                     <HashRouter>
@@ -142,7 +140,6 @@ export class App extends Component{
             CookieStore.validateToken(validate => {
                 if (!validate){
                     sessionStorage.removeItem('loggedIn');
-                    console.log(this.props);
                     history.push("/");
                 }
                 else{
@@ -150,7 +147,6 @@ export class App extends Component{
                 }
 
                 if (sessionStorage.getItem('loggedIn')){
-                    console.log("User logged in");
                     currentState.loggedIn = true;
                 }
                 else{

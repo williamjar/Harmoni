@@ -6,6 +6,10 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch'
 
 const provider = new OpenStreetMapProvider();
 
+/**
+ * @const {GoogleMap}
+ * This constant is the actual map component that gets returned by the map.js Component
+ */
 const MapsComponent =
 
     compose(  withProps({
@@ -27,6 +31,11 @@ const MapsComponent =
 
     );
 
+/**
+ * @Class Map Class
+ * @classdesc for creating a google maps component with a pin for an event's location, the position (lat long) of the map is decided by leaflet geosearch using OpenStreetMap
+ * The parent is responsible for providing a location as promps
+ */
 export class Map extends Component{
 
     state = {
@@ -41,7 +50,7 @@ export class Map extends Component{
             console.log("Results from OpenStreetMap:");
             console.log(results);
 
-            if (results.length == 0){
+            if (results.length === 0){
                 this.setState({latLng: {lat: 0, lng: 0}});
             }else {
                 let lat = parseFloat(results[0].y);
@@ -52,6 +61,11 @@ export class Map extends Component{
         })
     }
 
+    /**
+     * Responsible for finding the latitude and longitude of an address provided by the parent Component as a prop
+     * @param callback to prevent async issues
+     * @returns {Promise<void>}
+     */
     async getLatLng(callback){
         let results = await provider.search({query: this.state.location});
         callback(results);

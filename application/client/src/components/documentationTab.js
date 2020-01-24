@@ -1,11 +1,7 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Card from "react-bootstrap/Card";
-import Dropzone from 'react-dropzone';
-import { FaArrowAltCircleDown } from 'react-icons/fa';
 import {DocumentService} from "../store/documentService";
 import {EventStore} from "../store/eventStore";
-import {Col} from "react-bootstrap";
 import {DocumentCategory} from "../classes/documentCategory";
 import Button from "react-bootstrap/Button";
 import {Alert} from "./alerts";
@@ -94,7 +90,6 @@ export class DocumentationTab extends Component{
 
 
     render(){
-        const {description, selectedFile} = this.state;
         return (
             <div className="document-event center-v padding-top-30 text-center">
 
@@ -124,7 +119,7 @@ export class DocumentationTab extends Component{
                                 onChange={this.onChange}
                             />
                         </span>
-                        <Button type="button" className={"mr-1 margin-left-10 btn-success btn-lg"} onClick={this.onSubmit}>Last opp fil</Button>
+                        <Button type="button" variant={"success"} className={"mr-1 margin-left-10 btn-success btn-lg"} onClick={this.onSubmit}>Last opp fil</Button>
 
                 </div>
                 <section id = {"error"} className={"text-info col padding-top-10"}/>

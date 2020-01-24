@@ -2,10 +2,15 @@ import React from 'react';
 import {Form, Button, Card, Spinner} from 'react-bootstrap'
 import { NavLink } from 'react-router-dom';
 import {LoginService} from "../../store/loginService";
-
 import Logo from '../menu/Logo_large.png';
 
+/** @class representing a login form */
+
 export class LoginForm extends React.Component {
+    /**
+     * Creates a log in form with states
+     * @constructor
+     */
     _mounted = false;
     constructor(props) {
         super(props);
@@ -46,7 +51,7 @@ export class LoginForm extends React.Component {
                 <Form onSubmit={this.handleSubmit} className={"align-items-center"}>
                     <Card.Body>
                         <div className="login-logo">
-                            <img src={Logo} />
+                            <img alt={"Harmoni Logo"} src={Logo} />
                         </div>
                         <Card.Title className="mb-4">Logg inn</Card.Title>
                         <Form.Group>

@@ -2,29 +2,38 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Tab, Tabs,} from "react-bootstrap";
 import {TabContent} from "./tabContent";
-import {PerformerPanel, PerformersView} from "./performers";
+import {PerformerPanel} from "./performers";
 import {GeneralInfo} from "./generalInfo";
-import {Map} from "./map";
-import {CrewPanel, CrewTab} from "./crew";
+import {CrewPanel} from "./crew";
 import {DocumentationTab} from "../documentationTab";
 import {EventStore} from "../../store/eventStore";
-import {createHashHistory} from "history";
-import Button from "react-bootstrap/Button";
 import {OrganizerStore} from "../../store/organizerStore";
 import {Event} from "../../classes/event";
 
-const history = createHashHistory();
-
 // Parent component for editing and viewing all info about an event, divides information into tabs.
+
+/**
+ * This is the EventForm class
+ */
 export class EventForm extends Component {
+
+    /**
+     *
+     * @param props
+     * it has cool props
+     */
     constructor(props) {
         super(props);
 
         this.handleButtonClick = this.handleButtonClick.bind(this);
 
+        /**
+         * @type {boolean} editMode
+         * @type {int} activeTab
+         */
         this.state = {
             activeTab: 0,
-            editMode: false,
+            editMode: this.props.edit,
         };
     }
 

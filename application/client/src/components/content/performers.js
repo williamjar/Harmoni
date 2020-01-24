@@ -6,7 +6,7 @@ import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {Search} from "./search";
 import Form from "react-bootstrap/Form";
-import {Col} from "react-bootstrap";
+import {Card, Col} from "react-bootstrap";
 import {ArtistService as artistService, ArtistService} from "../../store/artistService";
 import {CookieStore} from "../../store/cookieStore";
 import {RiderStore} from "../../store/riderStore";
@@ -19,7 +19,6 @@ import {DocumentService} from "../../store/documentService";
 import {Document} from "../../classes/document";
 import {Alert} from '../alerts.js';
 import {MegaValidator} from "../../megaValidator";
-import {Card} from "react-bootstrap";
 
 
 export class PerformerPanel extends Component{
@@ -90,6 +89,7 @@ export class PerformerPanel extends Component{
                 if(e.genreID === performer.genre){
                     this.setState({ genrePerformerSelected : e.genreName});
                 }
+                return 0;
             });
         });
     };
@@ -104,7 +104,7 @@ export class PerformerPanel extends Component{
                 currentState.performerSelected = {};
                 EventStore.currentEvent.artists = list;
                 this.setState(currentState);
-                this.toggleShowCard();
+                this.hideCard();
             }, EventStore.currentEvent.eventID);
         });
     };
@@ -128,6 +128,7 @@ export class PerformerPanel extends Component{
             performer.hasBeenPaid = artistEventInfo.hasBeenPaid;
             performer.contractSigned = artistEventInfo.contractSigned;
             currentState.showArtistCard = true;
+            currentState.showRegisterNew = false;
             this.setState(currentState);
             this.setGenreCurrentPerformer(performer);
         }, performer.artistID, EventStore.currentEvent.eventID);
@@ -153,6 +154,7 @@ export class PerformerPanel extends Component{
         this.setState(currentState);
         this.hideCard();
     };
+
 
     hideCard = () => {
         let currentState = this.state;
@@ -189,6 +191,7 @@ export class PerformerPanel extends Component{
         let currentState = this.state;
         currentState.performerSelected = selected;
         currentState.showArtistCard = true;
+        currentState.showRegisterNew = false;
         this.assignArtist(selected);
         this.setState(currentState);
 
@@ -493,6 +496,7 @@ export class PerformerCard extends Component{
 
                 }, rider.riderID, rider.artistID, EventStore.currentEvent.eventID, rider.status, rider.isDone ? 1 : 0, rider.description);
             }
+            return 0;
         });
 
         //TODO: Send signed contract and if artist has been hasBeenPaid
@@ -505,6 +509,7 @@ export class PerformerCard extends Component{
            if(e.genreName === this.state.genre){
                genreID = e.genreID;
            }
+           return 0;
         });
 
         artistService.updateArtistGenre(() => {
@@ -618,7 +623,7 @@ export class RegisterPerformer extends Component{
             return 'Telefonnummer er ikke gyldig';
         }
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
-            return 'Vennligst skriv in en epostaddresse';
+            return 'Vennligst skriv in en epostadresse';
         }
         else{
             return '';

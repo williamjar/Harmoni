@@ -5,6 +5,10 @@ import {CrewCategory} from "../classes/crewCategory";
 
 let axiosConfig = require("./axiosConfig");
 
+/**
+ * @class CrewStore
+ * @classdesc Store Class for functions related to accessing and modifying crew objects.
+ */
 export class CrewStore {
 
     /*
@@ -15,8 +19,11 @@ export class CrewStore {
     static allCrewCategoriesForCurrentEvent = [];
     static allCrewForCurrentEvent = [];
 
-
-    //get a crew member
+    /**
+     * Returns a Crew Object with data from the database and returns it in the callback
+     * @param {int} crewID - The database ID of the crew member.
+     * @param {function} callback
+     */
     static getCrewMember(crewID, callback) {
 
         let header = {
@@ -32,10 +39,12 @@ export class CrewStore {
     }
 
 
-    //store/get all crew members for an organizer
+    /**
+     * Returns a Crew Object with data from the database and returns it in the callback
+     * @param {function} callback
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     */
     static storeAllCrewMembersForOrganizer(callback, organizerID) {
-
-        this.allCrewMembersForOrganizer = [];
 
         let header = {
             "Content-Type": "application/json",
@@ -43,21 +52,24 @@ export class CrewStore {
         };
 
         axios.get(axiosConfig.root + '/api/crew/organizer/' + organizerID, {headers: header}).then(response => {
+            this.allCrewMembersForOrganizer = [];
 
             response.data.map(data => {
-
                 this.allCrewMembersForOrganizer.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
                     data.crewCategoryName, data.contactName, data.phone, data.email));
-
+                return 0;
             });
 
             callback();
         });
     }
 
-    //store/get all crew members for an event
+    /**
+     * Sets the variable allCrewForCurrentEvent as a list of Crew objects created with data from the database
+     * @param {function} callback
+     * @param {int} eventID - The database ID of the event.
+     */
     static storeAllCrewMembersForEvent(callback, eventID) {
-        this.allCrewForCurrentEvent = [];
 
         let header = {
             "Content-Type": "application/json",
@@ -65,21 +77,25 @@ export class CrewStore {
         };
 
         axios.get(axiosConfig.root + '/api/crew/event/' + eventID, {headers: header}).then(response => {
+            this.allCrewForCurrentEvent = [];
 
             response.data.map(data => {
-
                 this.allCrewForCurrentEvent.push(new CrewMember(data.crewID, data.contactID, data.description, data.crewCategoryID,
                     data.crewCategoryName, data.contactName, data.phone, data.email, (data.isResponsible === 1), (data.contractSigned === 1), (data.hasBeenPaid === 1)));
+                return 0;
             });
-
             callback();
         });
     }
 
-    // store/get all crew categories for an organizer
+    /**
+     * Sets the variable allCrewCategoriesForOrganizer as a list of CrewCategory objects created with data from the database
+     * @param {function} callback
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     */
     static storeAllCrewCategoriesForOrganizer(callback, organizerID) {
 
-        this.allCrewCategoriesForOrganizer = [];
+
 
         let header = {
             "Content-Type": "application/json",
@@ -87,19 +103,22 @@ export class CrewStore {
         };
 
         axios.get(axiosConfig.root + '/api/crew/categories/' + organizerID, {headers: header}).then(response => {
+            this.allCrewCategoriesForOrganizer = [];
 
             response.data.map(data => {
                 this.allCrewCategoriesForOrganizer.push(new CrewCategory (data.crewCategoryID, data.crewCategoryName));
+                return 0;
             });
-
             callback();
         });
     }
 
-    // store/get all crew categories for an event
+    /**
+     * Sets the variable allCrewCategoriesForEvent as a list of CrewCategory objects created with data from the database
+     * @param {function} callback
+     * @param {int} eventID - The database ID of the event.
+     */
     static storeAllCrewCategoriesForEvent(callback, eventID) {
-
-        this.allCrewCategoriesForCurrentEvent = [];
 
         let header = {
             "Content-Type": "application/json",
@@ -107,18 +126,29 @@ export class CrewStore {
         };
 
         axios.get(axiosConfig.root + '/api/crew/event/' + eventID + '/categories', {headers: header}).then(response =>  {
+            this.allCrewCategoriesForCurrentEvent = [];
 
             response.data.map(data => {
-
                 this.allCrewCategoriesForCurrentEvent.push(new CrewCategory (data.crewCategoryID, data.crewCategoryName));
-
+                return 0;
             });
 
             callback();
         });
     }
 
-    //register a new crew member and set as assigned for current event
+    /**
+     * Creates a new crew member and assigns it to the current event. The crew member is then stores in the database
+     * @param {function} callback
+     * @param {String} name - The name of the new crew member.
+     * @param {String} phone - The phone of the new crew member.
+     * @param {String} email - The email of the new crew member.
+     * @param {String} description - A description the new crew member.
+     * @param {int} crewCategoryID - The database ID of the Crew category the new crew member will be added to.
+     * @param {int} isResponsible - A boolean
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     */
     static createCrewMemberForEvent(callback, name, phone, email, description, crewCategoryID, isResponsible, eventID, organizerID){
         //TODO: Needs a Callback
 
@@ -161,6 +191,15 @@ export class CrewStore {
 
     //create new crew member (for use in "Personell"-overview and not in edit event).
     //This crew member will not be assigned to an event
+    /**
+     * Creates a new crew member without assigning them to an event. The crew member is then stored in the database.
+     * @param {String} name - The name of the new crew member.
+     * @param {String} phone - The phone of the new crew member.
+     * @param {String} email - The email of the new crew member.
+     * @param {String} description - A description the new crew member.
+     * @param {int} crewCategoryID - The database ID of the Crew category the new crew member will be added to.
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     */
     static createCrewMember(name, phone, email, description, organizerID, callback) {
         //TODO: Needs a Callback
 
@@ -190,7 +229,11 @@ export class CrewStore {
         });
     }
 
-    //add a new category
+    /**
+     * Creates a new crew category for that organizer and saves it to the database.
+     * @param {String} categoryName - The name of the new crew category.
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     */
     static addCategory(categoryName, organizerID){
 
         let header = {
@@ -204,7 +247,16 @@ export class CrewStore {
         },  {headers: header}).then(response => console.log(response));
     }
 
-    //assign a crew member to an event
+    /**
+     * Assigns an existing crew member to a crew category in an event and saves it to the database.
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} categoryID - The database ID of crew category the crew member will be assigned to.
+     * @param {int} crewID - The database ID of the crew member.
+     * @param {int} isResponsible - (True/False) Whether the crew member is set to be the responsible for that category.
+     * @param {int} contractSigned - (True/False) Whether the crew member has signed a contract or not.
+     * @param {int} hasBeenPaid - (True/False) Whether the crew member has been payed or not.
+     * @param {function} callback
+     */
     static assignCrewMemberToEvent(eventID, categoryID, crewID, isResponsible, contractSigned, hasBeenPaid, callback){
 
         let header = {
@@ -222,7 +274,9 @@ export class CrewStore {
         },  {headers: header}).then(response => callback(response.data));
     }
 
-    //add a document to a crew member
+    /**
+     * TODO - Currently unused - Update or delete?
+     */
     static addDocumentToCrewMember(eventID, name, link, crewID, categoryID){
 
         let header = {
@@ -239,7 +293,11 @@ export class CrewStore {
         },  {headers: header}).then(response => console.log(response));
     }
 
-    //update a crew member
+    /**
+     * Updates the the description for an existing crew member and saves it to the database.
+     * @param {String} description - The database ID of the event.
+     * @param {crewID} crewID - The database ID of the crew member.
+     */
     static updateCrewMember(description, crewID) {
 
         let header = {
@@ -253,8 +311,15 @@ export class CrewStore {
         },  {headers: header}).then(response => console.log(response));
     }
 
-    //update crew member as leader in a category for an event.
-    //it is possible for a crew member to be a leader for more than one category
+    /**
+     * Update crew member as responsible in a category for an event.
+     * @param {int} isResponsible - (True/False) Whether the crew member is set to be the responsible for that category.
+     * @param {int} contractSigned - (True/False) Whether the crew member has signed a contract or not.
+     * @param {int} hasBeenPaid - (True/False) Whether the crew member has been payed or not.
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} crewCategoryID - The database ID of crew category the crew member will be assigned to.
+     * @param {int} crewID - The database ID of the crew member.
+     */
     static updateCrewMemberEvent(isResponsible, contractSigned, hasBeenPaid, eventID, crewCategoryID, crewID) {
 
         let header = {
@@ -272,7 +337,9 @@ export class CrewStore {
         },  {headers: header}).then(response => console.log(response));
     }
 
-    //delete a category
+    /**
+     * TODO - Currently unused - Update or delete?
+     */
     static deleteCategory(crewCategoryID) {
 
         let header = {
@@ -296,7 +363,9 @@ export class CrewStore {
             .then(response => console.log(response));
     }
 
-    //delete crew category
+    /**
+     * TODO - Currently unused - Update or delete?
+     */
     static deleteCrewCategory(crewCategoryID) {
 
         let header = {
@@ -308,7 +377,13 @@ export class CrewStore {
             .then(response => console.log(response));
     }
 
-    //remove crew member from event
+    /**
+     * Unassigns a crewmember from an event and updates the database.
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} crewCategoryID - The database ID of crew category the crew member will be assigned to.
+     * @param {int} crewID - The database ID of the crew member.
+     * @param {function} callback
+     */
     static unassignCrewMemberFromEvent(eventID, crewCategoryID, crewID, callback){
 
         let header = {
@@ -320,7 +395,9 @@ export class CrewStore {
             .then(response => callback(response.data));
     }
 
-    //delete crew member
+    /**
+     * TODO - Currently unused - Update or delete?
+     */
     static unassignCrewMember(crewCategoryID, crewID) {
 
         let header = {
