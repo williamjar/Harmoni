@@ -1,6 +1,7 @@
 import axios from "axios";
 import {Event} from "../classes/event.js";
 import {CookieStore} from "./cookieStore";
+import {OrganizerStore} from "./organizerStore";
 let axiosConfig = require("./axiosConfig");
 
 
@@ -165,13 +166,21 @@ export class EventStore {
         return axios.delete(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, {headers: header});
     }
 
+    /**
+     * Removes the current event from the database. Current event is defined by the currentEvent variable.
+     * @return {Promise} The promise received from the database.
+     */
     static archiveOldEvents() {
-        axios.put(axiosConfig.root + '/api/archive/' + this.currentOrganizer.organizerID).then(response => {
+        return axios.put(axiosConfig.root + '/api/archive/' + OrganizerStore.currentOrganizer.organizerID).then(response => {
             if (response) {
             }
         });
     }
 
+    /**
+     * Changes the database data of the current event to set it to published. Current event is defined by the currentEvent variable.
+     * @return {Promise} The promise received from the database.
+     */
     static publishCurrentEvent() {
         let header = {
             "Content-Type": "application/json",
@@ -182,6 +191,10 @@ export class EventStore {
         });
     }
 
+    /**
+     * Changes the database data of the current event to set it to cancelled. Current event is defined by the currentEvent variable.
+     * @return {Promise} The promise received from the database.
+     */
     static cancelCurrentEvent() {
         let header = {
             "Content-Type": "application/json",
@@ -191,6 +204,10 @@ export class EventStore {
         });
     }
 
+    /**
+     * Changes the database data of the current event to set it to under planning. Current event is defined by the currentEvent variable.
+     * @return {Promise} The promise received from the database.
+     */
     static planCurrentEvent() {
         let header = {
             "Content-Type": "application/json",
@@ -220,7 +237,6 @@ export class EventStore {
                     response.data[i].publishDate, response.data[i].publishTime, response.data[i].organizerID,
                     response.data[i].eventTypeID, response.data[i].pictureID));
             }
-
             callback();
         });
     }
