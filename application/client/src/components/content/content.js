@@ -14,7 +14,9 @@ export class Content extends Component{
     render(){
         return(
             <div className="content">
+                <div className="padding-top-25-mobile">
                 <Alert/>
+                </div>
                 <div className="card min-height-800 content-container">
                     <div className="card-body">
                 {this.props.page}

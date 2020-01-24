@@ -84,7 +84,7 @@ app.put("/api/events/:eventID/status/:status", (request, response) => {
 
 // Set all published events that has ended to archive
 app.put("/api/archive/:organizerID", (request, response) => {
-    console.log("Express: request to archive event " + request.params.eventID);
+    console.log("Express: request to archive events");
     eventDao.archiveOldEvents((status, data) => {
         response.status(status);
         response.json(data);
