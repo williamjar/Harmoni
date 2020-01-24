@@ -79,6 +79,10 @@ export class CrewPanel extends Component{
     searchHandler = (selected) => {
         let currentState = this.state;
         currentState.crewSelected = selected;
+        currentState.crewSelected.isResponsible = false;
+        currentState.crewSelected.hasBeenPaid = false;
+        currentState.crewSelected.contractSigned = false;
+        currentState.crewCategorySelected = this.state.crewCategoryList[0].crewCategoryID;
         currentState.showCrewCard = true;
         this.setState(currentState);
     };
@@ -261,8 +265,6 @@ export class CrewCard extends Component{
             crewCategoryID : this.props.crewCategoryID,
             crewCategoryName : this.props.crewSelected.crewCategoryName,
             description : this.props.crewSelected.description,
-            numberOfFilesChosenForUpload : 0,
-            numberOfFilesAlreadyUploaded : 0,
             isResponsible : this.props.crewSelected.isResponsible,
             contractSigned : this.props.crewSelected.contractSigned,
             hasBeenPaid : this.props.crewSelected.contractSigned
@@ -465,6 +467,9 @@ export class AddCrewMember extends Component{
         }
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
             return 'Vennligst skriv in en epost-adresse';
+        }
+        if(this.state.selectedCategoryID < 1){
+            return 'Vennligst velg en kategori';
         }
         else{
             return '';
