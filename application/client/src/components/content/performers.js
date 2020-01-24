@@ -621,7 +621,7 @@ export class RegisterPerformer extends Component{
             return 'Telefonnummer er ikke gyldig';
         }
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
-            return 'Vennligst skriv in en epostaddresse';
+            return 'Vennligst skriv in en epostadresse';
         }
         else{
             return '';
