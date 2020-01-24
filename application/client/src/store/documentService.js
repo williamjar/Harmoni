@@ -275,7 +275,7 @@ export class DocumentService {
         }).catch(res => console.log(res));
     }
 
-    static downloadDocument(documentLink, doucmentName){
+    static downloadDocument(documentLink, documentName){
         axios.get(axiosConfig.root + '/document/download/' + documentLink,
             {responseType: 'arraybuffer'}).then(res => {
             let url;
