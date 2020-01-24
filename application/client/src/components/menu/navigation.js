@@ -214,13 +214,13 @@ export class UserProfileButton extends Component{
 
     render() {
         return(
-            <NavLink to="/brukerprofil">
+            <NavLink to="/brukerprofil" className={""}>
                 <div className="user-nav">
                     <Row className = {" no-gutters"}>
-                        <Col size = {2}>
+                        <Col size = {2} className={"text-center text-indent-20"}>
                             {this.checkForUpdate()}
                         </Col>
-                        <Col size = {10}>
+                        <Col size = {10} className={"padding-top-5 main-color"}>
                             <b>{this.state.username}</b>
                             <br/>
                             Arrangør

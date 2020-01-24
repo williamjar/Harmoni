@@ -46,6 +46,11 @@ body{
     height: 100%;
 }
 
+
+.text-indent-20{
+    text-indent: 20px !important;
+}
+
 .icon-center{
     text-align: center;
     color: #D3D3D3;
@@ -285,6 +290,7 @@ body{
     background: #003E51;
     color:white;
     width: 100%;
+    cursor: pointer;
 }
 
 .drop-shadow-mobile-menu {
@@ -321,19 +327,23 @@ body{
     width: 100%;
     text-align: left;
     color:black;
-
     font-size: 15px;
-    bottom: 70px;
+    padding-top:20px;
+    padding-bottom:20px;
+    bottom: 45px;
 
 }
 
 .user-nav:hover{
     color:#00aaee !important;
+    outline: 1px solid #003E51;
+
 }
 
 .Nav-Menu .user-nav img{
     border-radius: 25px;
     background: white;
+
 }
 
 
