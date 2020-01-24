@@ -349,6 +349,10 @@ body{
 
 }
 
+.menu-item{
+    display: flex;
+    align-items: center;
+}
 
 .user-nav-mobile{
     position: relative;

@@ -130,36 +130,36 @@ export class Menu extends Component{
                 <div className="w-100">
                     <NavLink className="text-decoration-none  nav-link" to="/" exact={true}>
                     <li className="">
-                        <FaCalendarAlt/> Mine arrangement
+                        <span className="menu-item"> <FaCalendarAlt/><span className="padding-left-20"> Mine arrangement</span></span>
                     </li>
                     </NavLink>
 
                     <NavLink className="text-decoration-none nav-link" to="/opprett">
                     <li className="">
-                        <FaCalendarPlus/> Opprett arrangement
+                        <span className="menu-item"> <FaCalendarPlus/><span className="padding-left-20"> Opprett arrangement</span></span>
                     </li>
                     </NavLink>
 
                     <NavLink className="text-decoration-none nav-link" to="/artister">
                     <li className="">
-                        <FaMusic/> Mine artister
+                        <span className="menu-item"> <FaMusic/><span className="padding-left-20"> Mine artister</span></span>
                     </li>
                     </NavLink>
 
                     <NavLink className="text-decoration-none nav-link" to="/personell">
                     <li className="">
-                        <FaUsers/> Mitt personell
+                        <span className="menu-item"> <FaUsers/><span className="padding-left-20"> Mitt personell</span></span>
                     </li>
                     </NavLink>
 
                     <NavLink className="text-decoration-none nav-link" to="/dokumenter">
                     <li className="">
-                        <FaFileSignature/> Mine dokumenter
+                        <span className="menu-item"><FaFileSignature/><span className="padding-left-20"> Mine dokumenter</span></span>
                     </li>
                     </NavLink>
                     <NavLink className="text-decoration-none nav-link" to="/bug">
                         <li className="">
-                            <FaBullhorn/> Rapporter feil
+                            <span className="menu-item"><FaBullhorn/><span className="padding-left-20"> Rapporter feil</span></span>
                         </li>
                     </NavLink>
 
