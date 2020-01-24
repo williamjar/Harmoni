@@ -47,7 +47,7 @@ export class CrewContacts extends React.Component {
     };
 
     searchHandler = (selected) => {
-        this.setState({currentCrew: selected, show: true}, () => console.log(selected));
+        this.setState({currentCrew: selected, show: true});
     };
 
     hideCrew = () => {
@@ -83,7 +83,6 @@ export class CrewContacts extends React.Component {
                     <Search searchHandler={this.searchHandler} results={this.state.crew}/>
                     {this.state.crew.length !== null ?
                         <Row className="no-gutters mt-2">
-                            {console.log(this.state.crew)}
                             <CrewContactList crew={this.state.crew} updateHandler={this.update}/>
                         </Row> : <div className="mt-5 center">
                         Du har ingen registrerte personell
@@ -97,7 +96,6 @@ export class CrewContacts extends React.Component {
                         </div>
                     </Col>
                 </Row>
-                {console.log(this.state.currentCrew)}
                 {this.state.currentCrew !== null ? <CrewContactInfo show={this.state.show} contact={this.state.currentCrew} onHide={this.hideCrew}/> : null}
                 <AddCrew show={this.state.addNew} onHide={this.hideCrew}/>
             </div>
@@ -128,7 +126,6 @@ export class CrewContactList extends React.Component {
     }
 
     viewCrew = (e) => {
-        console.log("view clicked");
         this.setState({
             currentCrew: this.state.crew.find(crew => {return crew.crewID === parseInt(e.target.id)})
         },() => this.setState({showContact: true}));
@@ -137,10 +134,6 @@ export class CrewContactList extends React.Component {
     hidePerformer = () => {
         this.props.updateHandler(() => this.setState({showContact: false}))
     };
-
-    componentDidMount() {
-        console.log(this.state.unsorted);
-    }
 
     render() {
         return(
@@ -153,7 +146,6 @@ export class CrewContactList extends React.Component {
                 </tr>
                 </thead>
                 <tbody>
-                {console.log(this.state.crew)}
                 {this.state.crew.map(crew => (
                     <tr align='center' className="contact pointer" onClick={this.viewCrew} id={crew.crewID} key={crew.crewID}>
                         <td align="left" id={crew.crewID}>{crew.contactName}</td>
@@ -162,7 +154,7 @@ export class CrewContactList extends React.Component {
                     </tr>
                 ))}
                 </tbody>
-                {this.state.currentCrew !== null ? <CrewContactInfo show={this.state.showContact} contact={this.state.currentCrew} crewCategories={this.state.crewCategory} onHide={this.hidePerformer}/> : null}
+                {this.state.currentCrew !== null ? <CrewContactInfo show={this.state.showContact} contact={this.state.currentCrew} crewCategories={this.state.crewCategory} onHide={this.hidePerformer} updateHandler={this.props.updateHandler}/> : null}
             </Table>
         )
     }
@@ -230,7 +222,6 @@ export class CrewContactInfo extends React.Component {
     deleteCrew = (e) => {
         CrewStore.deleteCrewMember(this.state.contact.contactID);
         this.props.onHide();
-        this.props.updateHandler();
     };
 
     render() {
@@ -306,7 +297,6 @@ class AddCrew extends React.Component {
     };
 
     saveClicked = () => {
-        console.log(this.state);
         CrewStore.createCrewMember(this.state.contactName, this.state.phone, this.state.email, this.state.description, CookieStore.currentUserID, () => {
             this.setState({contactName: "", email: "", phone: "", description: ""});
             this.props.onHide();

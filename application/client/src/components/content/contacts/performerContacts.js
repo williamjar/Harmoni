@@ -16,6 +16,7 @@ import {ArtistService} from "../../../store/artistService";
 import {CookieStore} from "../../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import {ContactService} from "../../../store/contactService";
+import {CrewStore} from "../../../store/crewStore";
 
 export class PerformerContacts extends React.Component {
 
@@ -52,11 +53,11 @@ export class PerformerContacts extends React.Component {
     };
 
     searchHandler = (selected) => {
-        this.setState({currentPerformer: selected, show: true}, () => console.log(selected));
+        this.setState({currentPerformer: selected, show: true});
     };
 
     hidePerformer = () => {
-        this.update( () => this.setState({show: false, addNew: false}, () => console.log(this.state.performers)));
+        this.update( () => this.setState({show: false, addNew: false}));
     };
 
     update = (callback) => {
@@ -70,7 +71,6 @@ export class PerformerContacts extends React.Component {
     };
 
     render() {
-        console.log(this.state.performers);
         return(
             <div>
                 <Card className="border-0 m-4 artists">
@@ -147,7 +147,6 @@ export class PerformerContacts extends React.Component {
                         </div>
                     </Col>
                 </Row>
-                {console.log(this.state.currentPerformer)}
                 {this.state.currentPerformer !== null ? <ContactInfo show={this.state.show} contact={this.state.currentPerformer} onHide={this.hidePerformer}/> : null}
                 <AddPerformer show={this.state.addNew} onHide={this.hidePerformer}/>
             </div>
@@ -179,7 +178,6 @@ export class ContactList extends React.Component {
     }
 
     viewPerformer = (e) => {
-        console.log("view clicked");
         this.setState({
             currentPerformer: this.state.performers.find(performer => {return performer.artistID === parseInt(e.target.id)})
         },() => this.setState({showContact: true}));
@@ -204,8 +202,7 @@ export class ContactList extends React.Component {
                     </tr>
                 ))}
                 </tbody>
-                {console.log(this.state.currentPerformer)}
-                {this.state.currentPerformer !== null ? <ContactInfo show={this.state.showContact} contact={this.state.currentPerformer} onHide={this.hidePerformer}/> : null}
+                {this.state.currentPerformer !== null ? <ContactInfo show={this.state.showContact} contact={this.state.currentPerformer} onHide={this.hidePerformer} updateHandler={this.props.updateHandler}/> : null}
             </Table>
         )
     }
@@ -257,16 +254,21 @@ export class ContactInfo extends React.Component {
     };
 
     saveClicked = () => {
-        console.log(this.state.genre);
         ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
             ArtistService.updateArtistGenre(() => {
-                console.log(this.state.genre);
                 this.setState({
                     show: false,
                     editable: false,
                 }, () => this.setState({show: true}));
             }, this.state.contact.artistID, parseInt(this.state.genre), CookieStore.currentUserID, this.state.contact.contactID)
         })
+    };
+
+    deletePerformer = (e) => {
+        ArtistService.deleteArtist(this.state.contact.contactID).then(r => {
+            this.props.onHide();
+        });
+
     };
 
     handleChange = (e) => {
@@ -325,7 +327,7 @@ export class ContactInfo extends React.Component {
                 </Modal.Body>
                 <Modal.Footer>
                     {this.state.editable ? <Button variant="success" onClick={this.saveClicked}>Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}
-                    <Button variant="danger">Slett</Button>
+                    <Button variant="danger" onClick={this.deletePerformer}>Slett</Button>
                 </Modal.Footer>
             </Modal>
         )
@@ -362,7 +364,6 @@ class AddPerformer extends React.Component {
     };
 
     saveClicked = () => {
-        console.log(this.state);
         ArtistService.createArtist(() => {
             this.props.onHide();
         }, this.state.contactName, this.state.phone, this.state.email, this.state.genre, CookieStore.currentUserID)

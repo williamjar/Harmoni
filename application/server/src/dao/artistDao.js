@@ -26,8 +26,8 @@ module.exports = class artistDao extends Dao {
         super.query('UPDATE artist SET genreID = ? WHERE artistID = ?', list, callback);
     }
 
-    deleteOne(callback, artistID) {
-        super.query('DELETE FROM artist WHERE artistID = ?', [artistID], callback);
+    deleteOne(callback, contactID) {
+        super.query('DELETE FROM contact WHERE contactID = ?', [contactID], callback);
     }
 
     addDocument(callback, list) {
