@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/store/riderStore.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/store/riderStore.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from "axios";
+import {RiderElement} from "../classes/riderElement"
+import {CookieStore} from "./cookieStore";
+
+const axiosConfig = require("./axiosConfig");
+
+/**
+ * @class RiderStore
+ * @classdesc Store class for functions related to accessing and modifying riders.
+ */
+export class RiderStore {
+    static allRidersForCurrentEvent = [];
+
+    static addToAllRidersForCurrentArtistAndEvent(rider) {
+        this.allRidersForCurrentEvent.push(rider);
+    }
+
+    // TODO DELETE?
+    static getRider(riderID) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        return axios.get(axiosConfig.root + '/api/rider/' + riderID, {headers: header})
+            .then(response => {
+                    return new RiderElement(response.data[0].riderID, response.data[0].artistID,
+                        response.data[0].eventID, response.data[0].status, response.data[0].isDone,
+                        response.data[0].description);
+                }
+            )
+            .catch(error => console.log(error));
+    }
+
+    /**
+     * Fills the allRidersForCurrentEvent variable with rider objects belonging to a specific event via data from the database.
+     * @param {function} callback
+     * @param {int} eventID - The database ID of the event.
+     */
+    static storeAllRidersForEvent(callback, eventID) {
+        this.allRidersForCurrentEvent = [];
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        axios.get(axiosConfig.root + '/api/event/' + eventID + '/rider', {headers: header})
+            .then(response => {
+
+                console.log(response);
+
+                this.allRidersForCurrentEvent = response.data.map(data => (
+                    new RiderElement(data.riderElementID, data.artistID,
+                        data.status, (data.isDone === 1), data.description)
+                ));
+
+                console.log(this.allRidersForCurrentEvent);
+
+                callback();
+            })
+            .catch(error => console.log(error));
+    }
+
+
+    /**
+     * Creates a new rider element and inserts it into the database.
+     * The created rider element is returned in the callback as a rider element object.
+     * @param {function} callback
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} eventID - The database ID of the event.
+     * @param {string} description - A description of the rider element.
+     */
+    static createNewRiderElement(callback, artistID, eventID, description) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        axios.post(axiosConfig.root + '/api/rider', {
+            artistID: artistID,
+            eventID: eventID,
+            description: description
+        }, {headers: header}).then(response => {
+            callback(new RiderElement(response.data.insertId, artistID, "", false, description));
+        }).catch(error => console.log(error));
+    }
+
+    /**
+     * Creates a new rider element and inserts it into the database.
+     * The created rider element is returned in the callback as a rider element object.
+     * @param {string} artistToken - The access token to be modify database.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} eventID - The database ID of the event.
+     * @param {string} description - A description of the rider element.
+     * @param {function} callback
+     */
+    static createNewRiderElementFromArtistLogin(artistToken, artistID, eventID, description, callback) {
+        const header = {
+            "Content-Type": "application/json",
+            "x-access-token": artistToken
+        };
+        const data = {
+            artistID: artistID,
+            eventID: eventID,
+            description: description
+        };
+        axios.post(axiosConfig.root + "/artistapi/rider", JSON.stringify(data), {headers: header}).then(response => {
+            callback(200, new RiderElement(response.data.insertId, artistID, "", false, description));
+        }).catch(() => callback(500));
+    }
+
+    /**
+     * Changes the data of a specific rider in the database.
+     * @param {function} callback
+     * @param {string} riderElementID - The access token to be modify database.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} eventID - The database ID of the event.
+     * @param {string} status - A note on how the rider is going.
+     * @param {int} isDone - (True/False) Is the rider element complete or not.
+     * @param {string} description - A description of the rider element.
+     */
+    static updateRider(callback, riderElementID, artistID, eventID, status, isDone, description) {
+        console.log("From rider store: " + riderElementID + artistID + eventID + status + isDone + description);
+
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        axios.put(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider/' + riderElementID, {
+            riderElementID: riderElementID,
+            artistID: artistID,
+            eventID: eventID,
+            status: status,
+            isDone: isDone,
+            description: description
+        }, {headers: header}).then(response => {
+            callback();
+        }).catch(error => console.log(error));
+    }
+
+    /**
+     * Deletes a specific rider in the database.
+     * @param {function} callback
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {string} riderID - The database ID of the rider.
+     */
+    static deleteRider(callback, eventID, artistID, riderID) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        axios.delete(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider/' + riderID, {headers: header}).then(callback()).catch(error => console.log(error));
+    }
+
+    /**
+     * Deletes a rider from the database via the specific artist API.
+     * @param {int} artistToken -
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {string} riderID - The database ID of the rider.
+     * @param {function} callback
+     */
+    static deleteRiderFromArtistPage(artistToken, eventID, artistID, riderID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": artistToken
+        };
+        axios.delete(axiosConfig.root + "/artistapi/rider/" + eventID + "/" + artistID + "/" + riderID, {headers: header})
+            .then(response => {
+                callback(response.status, response.data);
+            })
+    }
+
+    /**
+     * Changes the data of a specific rider in the database.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} eventID - The database ID of the event.
+     * @param {string} token - The access token to be modify database.
+     * @param {function} callback
+     */
+    static getAllRidersForArtistByEvent(artistID, eventID, token, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": token
+        };
+        axios.get(axiosConfig.root + "/artistapi/event/" + eventID + "/artist/" + artistID + "/rider", {headers: header}).then(response => {
+            if (response.data &amp;&amp; response.data.length > 0) {
+                callback(200, response.data.map(riderElement => new RiderElement(riderElement.riderElementID, artistID, riderElement.status, riderElement.isDone, riderElement.description)));
+            } else {
+                callback(500);
+            }
+        })
+    }
+}
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="artistDao.html">artistDao</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="ArtistRegisterRiders.html">ArtistRegisterRiders</a></li><li><a href="ArtistService.html">ArtistService</a></li><li><a href="Bug.html">Bug</a></li><li><a href="bugDao.html">bugDao</a></li><li><a href="BugReview.html">BugReview</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="CheckList.html">CheckList</a></li><li><a href="Contact.html">Contact</a></li><li><a href="contactDao.html">contactDao</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="Content.html">Content</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CreateEventSplash.html">CreateEventSplash</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewContacts.html">CrewContacts</a></li><li><a href="crewDao.html">crewDao</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Dao.html">Dao</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentationTab.html">DocumentationTab</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="Documents.html">Documents</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventCard.html">EventCard</a></li><li><a href="eventDao.html">eventDao</a></li><li><a href="EventForm.html">EventForm</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="EventView.html">EventView</a></li><li><a href="FolderItem.html">FolderItem</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="Info.html">Info</a></li><li><a href="InfoForm.html">InfoForm</a></li><li><a href="LoginDao.html">LoginDao</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="MailService.html">MailService</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="MobileMenu.html">MobileMenu</a></li><li><a href="MyDocuments.html">MyDocuments</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="organizerDao.html">organizerDao</a></li><li><a href="OrganizerStore.html">OrganizerStore</a></li><li><a href="PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerContacts_PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerPanel.html">PerformerPanel</a></li><li><a href="pictureDao.html">pictureDao</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="PictureService.html">PictureService</a></li><li><a href="RegisterForm.html">RegisterForm</a></li><li><a href="RegisterOrganizerService.html">RegisterOrganizerService</a></li><li><a href="riderDao.html">riderDao</a></li><li><a href="RiderElement.html">RiderElement</a></li><li><a href="RiderStore.html">RiderStore</a></li><li><a href="Search.html">Search</a></li><li><a href="SimpleContent.html">SimpleContent</a></li><li><a href="TabContent.html">TabContent</a></li><li><a href="Ticket.html">Ticket</a></li><li><a href="TicketAll.html">TicketAll</a></li><li><a href="ticketDao.html">ticketDao</a></li><li><a href="TicketStore.html">TicketStore</a></li><li><a href="TicketType.html">TicketType</a></li><li><a href="UserPage.html">UserPage</a></li><li>{documentationDao}</li></ul><h3>Global</h3><ul><li><a href="global.html#deleteFile">deleteFile</a></li><li><a href="global.html#ensureFolderExists">ensureFolderExists</a></li><li><a href="global.html#eventPictureStorage">eventPictureStorage</a></li><li><a href="global.html#fileStorage">fileStorage</a></li><li><a href="global.html#fileUpload">fileUpload</a></li><li><a href="global.html#profilePictureStorage">profilePictureStorage</a></li><li><a href="global.html#uploadEventPicture">uploadEventPicture</a></li><li><a href="global.html#uploadUserPicture">uploadUserPicture</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 21:40:15 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

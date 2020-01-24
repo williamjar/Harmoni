@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/components/contract.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/components/contract.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Button, Col, Row} from "react-bootstrap";
+import {FaCalendarTimes, FaFileUpload,FaAngleDown,FaFileImage, FaFilePowerpoint,FaFileExcel,FaFileArchive,FaFileWord, FaFilePdf, FaFileAlt, FaFolderOpen} from "react-icons/all";
+import { createHashHistory } from 'history';
+import {DocumentService as documentService} from "../store/documentService";
+import {EventStore as eventStore} from "../store/eventStore";
+import Accordion from "react-bootstrap/Accordion";
+import {CookieStore} from "../store/cookieStore";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+
+const history = createHashHistory();
+
+/**
+ * @class FolderItem
+ * @classdesc Component for document folders.
+ */
+export class FolderItem extends Component{
+    constructor(props){
+        super(props);
+        this.state= {
+        }
+    }
+    render(){
+        return(
+            &lt;div className={"card folder"}>
+                &lt;div className={"card-body"}>
+                    &lt;FaFolderOpen/> {this.props.name}
+                &lt;/div>
+            &lt;/div>
+        )
+    }
+}
+
+/**
+ * @class MyDocuments
+ * @classdesc A component over a users documents.
+ */
+export class MyDocuments extends Component{
+
+    render(){
+        return(
+            &lt;div>
+                &lt;FolderEvent>
+                &lt;/FolderEvent>
+            &lt;/div>
+        )
+    }
+
+}
+
+//---------------- Events ------------------
+/**
+ * @class MyDocuments
+ * @classdesc A component for a folder of a event.
+ */
+export class FolderEvent extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            events: []
+        }
+    }
+
+    componentDidMount() {
+        eventStore.storeAllEventsForOrganizer(() => {
+            this.setState({events: eventStore.allEventsForOrganizer});
+        }, CookieStore.currentUserID);
+    }
+
+    handleClick(eventID){
+        history.push("/dokumenter/" + eventID);
+    }
+    check(){
+        if(this.state.events.length === 0){
+            return(
+                &lt;section className={"icon-center"}>
+                    &lt;FaCalendarTimes size={200}/>
+                    &lt;h1 className={"padding-top-10"}>Ingen opprettede arrangementer&lt;/h1>
+                &lt;/section>
+            );
+        }
+    }
+
+    render() {
+
+        return (
+            &lt;div className="padding-top-30-mobile">
+                {this.check()}
+                &lt;Row>
+
+                    {this.state.events.map((item) => {
+                        return (
+                            &lt;Col key={item.eventID} className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.eventID)}>
+                                &lt;FolderItem name = {item.eventName}/>
+                            &lt;/Col>
+                        );
+                    })}
+
+                &lt;/Row>
+            &lt;/div>
+        );
+    }
+
+}
+
+/**
+ * @class MyDocuments
+ * @classdesc A component for a category of folders.
+ */
+export class FolderCategory extends Component {
+    constructor(props){
+        super(props);
+        this.state= {
+            folderSpecs: []
+        }
+    }
+
+    componentDidMount() {
+        documentService.getAllDocumentCategoriesForEvent(this.props.match.params.eventID, (list) => {
+            this.setState({folderSpecs: list});
+        });
+
+    }
+
+
+    handleClick(documentCategoryID){
+        history.push("/dokumenter/" + this.props.match.params.eventID + "/" + documentCategoryID);
+    }
+
+    check(){
+        if(this.state.folderSpecs.length === 0){
+           return(
+               &lt;section className={"icon-center"}>
+                   &lt;FaFileUpload size={200}/>
+                   &lt;h1 className={"padding-top-10"}>Ingen opplastede dokumenter&lt;/h1>
+               &lt;/section>
+           );
+        }
+    }
+
+    render() {
+        return (
+            &lt;div className="padding-top-30-mobile">
+                {this.check()}
+                &lt;Row>
+
+                    {this.state.folderSpecs.map((item) => {
+                        return (
+                            &lt;Col key={item.documentCategoryID} className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.documentCategoryID)}>
+                                &lt;FolderItem name = {item.documentCategoryName}/>
+                            &lt;/Col>
+                        );
+                    })}
+                &lt;/Row>
+            &lt;/div>
+
+        );
+    }
+}
+
+/**
+ * @class Documents
+ * @classdesc Component for deleting and sorting documents.
+ */
+export class Documents extends Component{
+    constructor(props){
+        super(props);
+        this.state= {
+            document: [],
+            active: "nylige"
+        }
+    }
+
+    componentDidMount() {
+        documentService.getAllDocumentsByCategoryForEvent(this.props.match.params.eventID, this.props.match.params.documentCategoryID,(list) => {
+            this.setState(
+                {document: list.sort(function(a, b){
+                    if(a.documentID > b.documentID) { return -1; }
+                    if(a.documentID &lt; b.documentID) { return 1; }
+                    return 0;
+                })
+                });
+
+        });
+    }
+
+    //Returns which icon should be displayed
+    checkFileType(fileName){
+        //Picture
+        if((/\.(ai)$/i).test(fileName) || (/\.(jpeg)$/i).test(fileName) || (/\.(jpg)$/i).test(fileName) || (/\.(png)$/i).test(fileName)){
+            return &lt;FaFileImage size = {25}/>
+        }
+        //PDF
+        else if((/\.(pdf)$/i).test(fileName)){
+            return &lt;FaFilePdf size = {25}/>
+        }
+        //Powerpoint
+        else if((/\.(pptx)$/i).test(fileName) || (/\.(ppt)$/i).test(fileName)){
+            return &lt;FaFilePowerpoint size = {25}/>
+        }
+        //Excel
+        else if((/\.(xlsx)$/i).test(fileName) || (/\.(xls)$/i).test(fileName)){
+            return &lt;FaFileExcel size = {25}/>
+        }
+        //Word
+        else if((/\.(docx)$/i).test(fileName) || (/\.(doc)$/i).test(fileName)){
+            return &lt;FaFileWord size = {25}/>
+        }
+        //Compressed File
+        else if((/\.(rar)$/i).test(fileName) || (/\.(7z)$/i).test(fileName) || (/\.(zip)$/i).test(fileName)){
+            return &lt;FaFileArchive size = {25}/>
+        }
+        else {
+            return &lt;FaFileAlt size = {25}/>
+        }
+    }
+
+    deleteDocument = (documentID, documentLink, documentCategoryID) => {
+        let document =  this.state.document.find(e => e.documentID === documentID);
+        let index = this.state.document.indexOf(document);
+        let currentState = this.state;
+        currentState.document.splice(index, 1);
+        this.setState(currentState);
+
+        documentService.deleteDocument(documentID, documentLink);
+
+        if(this.state.document.length === 0){
+            history.push('/dokumenter');
+        }
+
+
+    };
+
+    orderByNewest = (e) => {
+        let listSorted = this.state.document;
+
+        if(listSorted !== null){
+            listSorted.sort(function(a, b){
+                let fileA = a.documentID;
+                let fileB = b.documentID;
+                if(fileA > fileB) { return -1; }
+                if(fileA &lt; fileB) { return 1; }
+                return 0;
+            })
+        }
+        this.setState({documents: listSorted, active: e.target.name});
+    };
+
+    orderByFileExt = (e) => {
+        let listSorted = this.state.document;
+
+        if(listSorted !== null){
+            listSorted.sort(function(a, b){
+                let fileA = a.documentName.substr(a.documentName.lastIndexOf('.') + 1);
+                let fileB = b.documentName.substr(b.documentName.lastIndexOf('.') + 1);
+                if(fileA &lt; fileB) { return -1; }
+                if(fileA > fileB) { return 1; }
+                return 0;
+            })
+        }
+        this.setState({documents: listSorted, active: e.target.name});
+    };
+
+    orderByFileName = (e) => {
+        let listSorted = this.state.document;
+
+        if(listSorted !== null){
+            listSorted.sort(function(a, b){
+                let fileA = a.documentName.toLowerCase();
+                let fileB = b.documentName.toLowerCase();
+                if(fileA &lt; fileB) { return -1; }
+                if(fileA > fileB) { return 1; }
+                return 0;
+            })
+        }
+        this.setState({documents: listSorted, active: e.target.name});
+    };
+
+    render(){
+        return(
+            &lt;div className="padding-top-30-mobile">
+            &lt;section>
+                &lt;Row className = {"padding-bottom-10"}>
+                    &lt;Col>
+                          &lt;ButtonGroup>
+                            &lt;Button name="nylige" onClick = {this.orderByNewest} variant="secondary" active={this.state.active === "nylige"}>Nylige&lt;/Button>
+                            &lt;Button name = "filnavn" onClick = {this.orderByFileName} variant="secondary" active={this.state.active === "filnavn"}>Filnavn&lt;/Button>
+                            &lt;Button name = "filtype" onClick = {this.orderByFileExt} variant="secondary" active={this.state.active === "filtype"}>Filtype&lt;/Button>
+                        &lt;/ButtonGroup>
+                    &lt;/Col>
+                &lt;/Row>
+                {this.state.document.map((item) => {
+                    return (
+                        &lt;Accordion key={item.documentID} defaultActiveKey="1" >
+                            &lt;Row className = {"w-100 text-primary border-bottom"}>
+                                &lt;Col>
+                                    &lt;Accordion.Toggle as={Button} variant="link text-dark" eventKey="0" className={"folder"}>
+                                        {this.checkFileType(item.documentName)} {item.documentName} &lt;FaAngleDown/>
+                                    &lt;/Accordion.Toggle>
+                                &lt;/Col>
+                            &lt;/Row>
+                            &lt;Accordion.Collapse eventKey="0">
+                                &lt;Info eventID = {this.props.match.params.eventID} documentCategoryID = {this.props.match.params.documentCategoryID} deleteDocument = {this.deleteDocument} documentID = {item.documentID} documentLink = {item.documentLink} documentName = {item.documentName}/>
+                            &lt;/Accordion.Collapse>
+                        &lt;/Accordion>
+                    );
+                })}
+            &lt;/section>
+            &lt;/div>
+        )
+    }
+}
+
+/**
+ * @class Info
+ * @classdesc Component for previewing and downloading documents.
+ */
+class Info extends Component {
+    constructor(props){
+        super(props);
+        this.state= {
+            documentID: this.props.documentID,
+            documentLink: this.props.documentLink,
+            documentName: this.props.documentName,
+            eventID: this.props.eventID,
+            documentCategoryID: this.props.documentCategoryID,
+            artist: {},
+            crew: {}
+        }
+    }
+
+    downloadDocument(){
+        documentService.downloadDocument(this.state.documentLink, this.state.documentName);
+    }
+
+    viewHandler = async () => {
+        documentService.previewDocument(this.state.documentLink);
+    };
+
+    previewButton(){
+        if ((/\.(pdf)$/i).test(this.state.documentLink)) {
+            return (
+                &lt;Button variant="outline-info" onClick={this.viewHandler}> Åpne &lt;/Button>
+            );
+        }
+    }
+
+    componentDidMount() {
+        documentService.getArtistInfoConnectedToDocument(this.state.documentID,(artistObj) => {
+            this.setState({artist: artistObj});
+        });
+
+        documentService.getCrewInfoConnectedToDocument(this.state.documentID,(crewObj) => {
+            this.setState({crew: crewObj});
+        });
+    }
+
+    associatedContact(){
+        if(this.state.crew !== undefined &amp;&amp; this.state.crew.contactName !== undefined){
+                return(
+                    &lt;Row className ={"border-bottom"}>
+                        &lt;Col className = {"font-weight-bold font-italic"}>Crew:&lt;/Col>
+                        &lt;Col>{this.state.crew.contactName}&lt;/Col>
+                    &lt;/Row>
+                );
+
+        } else if(this.state.artist !== undefined &amp;&amp; this.state.artist.contactName !== undefined ){
+            return(
+                &lt;Row className ={"border-bottom"}>
+                    &lt;Col className = {"font-weight-bold font-italic"}>Artist:&lt;/Col>
+                    &lt;Col>{this.state.artist.contactName}&lt;/Col>
+                &lt;/Row>
+            );
+        } else {
+            return(
+                &lt;Row className ={"border-bottom"}>
+                    &lt;Col className = {"font-weight-bold font-italic"}>Dokumentet har ingen tilknytning&lt;/Col>
+                &lt;/Row>
+            );
+        }
+    }
+
+
+    render() {
+        return (
+            &lt;Row className = {"bg-light padding-top-20 padding-bottom-20"}>
+                &lt;Col size = {4}>
+                    &lt;Button variant="primary" className="margin-right-10" onClick = {() => this.downloadDocument()}> Last ned &lt;/Button>
+                    {this.previewButton()}
+                &lt;/Col>
+                &lt;Col size = {5}>
+                    &lt;Row>
+                        &lt;Col className = {"padding-bottom-10"}>
+                            Tilkobling til:
+                        &lt;/Col>
+
+                    &lt;/Row>
+                    {this.associatedContact()}
+                &lt;/Col>
+                &lt;Col size = {3} className={"text-right"}>
+                    &lt;Button onClick = {() => this.props.deleteDocument(this.state.documentID, this.state.documentLink, this.state.documentCategoryID)} variant="danger"> Slett &lt;/Button>
+                &lt;/Col>
+            &lt;/Row>
+        );
+    }
+}
+
+
+
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="artistDao.html">artistDao</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="ArtistRegisterRiders.html">ArtistRegisterRiders</a></li><li><a href="ArtistService.html">ArtistService</a></li><li><a href="Bug.html">Bug</a></li><li><a href="bugDao.html">bugDao</a></li><li><a href="BugReview.html">BugReview</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="CheckList.html">CheckList</a></li><li><a href="Contact.html">Contact</a></li><li><a href="contactDao.html">contactDao</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="Content.html">Content</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CreateEventSplash.html">CreateEventSplash</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewContacts.html">CrewContacts</a></li><li><a href="crewDao.html">crewDao</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Dao.html">Dao</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentationTab.html">DocumentationTab</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="Documents.html">Documents</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventCard.html">EventCard</a></li><li><a href="eventDao.html">eventDao</a></li><li><a href="EventForm.html">EventForm</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="EventView.html">EventView</a></li><li><a href="FolderItem.html">FolderItem</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="Info.html">Info</a></li><li><a href="InfoForm.html">InfoForm</a></li><li><a href="LoginDao.html">LoginDao</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="MailService.html">MailService</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="MobileMenu.html">MobileMenu</a></li><li><a href="MyDocuments.html">MyDocuments</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="organizerDao.html">organizerDao</a></li><li><a href="OrganizerStore.html">OrganizerStore</a></li><li><a href="PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerContacts_PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerPanel.html">PerformerPanel</a></li><li><a href="pictureDao.html">pictureDao</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="PictureService.html">PictureService</a></li><li><a href="RegisterForm.html">RegisterForm</a></li><li><a href="RegisterOrganizerService.html">RegisterOrganizerService</a></li><li><a href="riderDao.html">riderDao</a></li><li><a href="RiderElement.html">RiderElement</a></li><li><a href="RiderStore.html">RiderStore</a></li><li><a href="Search.html">Search</a></li><li><a href="SimpleContent.html">SimpleContent</a></li><li><a href="TabContent.html">TabContent</a></li><li><a href="Ticket.html">Ticket</a></li><li><a href="TicketAll.html">TicketAll</a></li><li><a href="ticketDao.html">ticketDao</a></li><li><a href="TicketStore.html">TicketStore</a></li><li><a href="TicketType.html">TicketType</a></li><li><a href="UserPage.html">UserPage</a></li><li>{documentationDao}</li></ul><h3>Global</h3><ul><li><a href="global.html#deleteFile">deleteFile</a></li><li><a href="global.html#ensureFolderExists">ensureFolderExists</a></li><li><a href="global.html#eventPictureStorage">eventPictureStorage</a></li><li><a href="global.html#fileStorage">fileStorage</a></li><li><a href="global.html#fileUpload">fileUpload</a></li><li><a href="global.html#profilePictureStorage">profilePictureStorage</a></li><li><a href="global.html#uploadEventPicture">uploadEventPicture</a></li><li><a href="global.html#uploadUserPicture">uploadUserPicture</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 21:40:15 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
