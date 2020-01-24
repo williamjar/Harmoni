@@ -212,7 +212,7 @@ export class InfoForm extends Component {
                             <span className="btn btn-secondary btn-file margin-right-20">Legg til bilde
                                 <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/></span>
 
-                            <Button hidden={this.state.uploadingPicture} type={"file"} variant={"success"} onClick={() => {
+                            <Button type={"file"} variant={"success"} onClick={() => {
                                 this.setState({uploadingPicture: true});
                                 if(MegaValidator.validateFile(this.state.selectedFile)){
                                     let fileForm = new FormData();
