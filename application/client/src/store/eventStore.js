@@ -196,7 +196,7 @@ export class EventStore {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/0", {headers: header}).then(response => {
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/0", null, {headers: header}).then(response => {
         });
     }
 

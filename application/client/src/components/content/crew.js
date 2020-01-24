@@ -10,6 +10,7 @@ import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
 import {Alert} from "../alerts";
 import {MegaValidator} from "../../megaValidator";
+import {MailService} from "../../store/mailService";
 
 
 export class CrewPanel extends Component{
@@ -414,19 +415,13 @@ export class CrewCard extends Component{
     };
 
     sendEmail(){
-
-        /*  MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
-              "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
-              "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
-              "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
-              "Regards, " + OrganizerStore.currentOrganizer.username, (statusCode) => {
-                  if (statusCode === 200){
-                      console.log("Email sent successfully");
-                  }
-                  else{
-                      console.log("An error occured sending the email");
-                  }
-              }); */
+        MailService.sendGeneralEmailToOne(this.props.crewSelected.email, "Event plan", "You have been invited to work on " + EventStore.currentEvent.eventName + ". Welcome!", null, (status, data) => {
+            if(status === 200){
+                Alert.info("Email was sent");
+            } else{
+                Alert.danger("Email was not sent. Ensure the mail is correct.");
+            }
+        });
     }
 
     save = () => {

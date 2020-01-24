@@ -9,7 +9,6 @@ import Logo from '../menu/Logo_large.png';
 export class LoginForm extends React.Component {
     /**
      * Creates a log in form with states
-     * @constructor
      */
     _mounted = false;
     constructor(props) {
