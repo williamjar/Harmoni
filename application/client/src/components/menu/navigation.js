@@ -23,6 +23,7 @@ import { createHashHistory } from 'history';
 import {PictureService} from "../../store/pictureService";
 let history = createHashHistory();
 
+let fontSize = 100;
 
 export class MobileMenu extends Component{
 
@@ -46,9 +47,15 @@ export class MobileMenu extends Component{
                         </div>
                     </div>
 
-                    <div className="col-8 text-right padding-30  padding-right-20 align-content-center">
+                    <div className="col-5 text-right mmi-mobile">
+                        <MMI/>
+                    </div>
+                    <div className="col-3 padding-30  padding-right-20 text-right">
+
                         <FaUserCog size="30" onClick={this.goToUserProfile} className="pointer icon-hover"/>
+
                         <FaBars size="30" onClick={this.toggleExpand} className="pointer margin-left-30 icon-hover"/>
+
                     </div>
                 </div>
                 {this.state.expand?
@@ -94,15 +101,20 @@ export class MobileMenu extends Component{
 
 }
 
-export class NavBar extends Component{
-    render(){
-        return(
+export class NavBar extends Component {
+    render() {
+        return (
             <div className="Nav-Menu card">
                 <div className="logoImg">
-                <img src={harmoniLogo} alt=""/>
+                    <img src={harmoniLogo} alt=""/>
                 </div>
 
+                <div className="padding-top-20 mmi">
+                <MMI/>
+                </div>
                 <Menu/>
+
+
 
                 <UserProfileButton profilePicture={this.props.profilePicture}/>
 
@@ -120,6 +132,41 @@ export class NavBar extends Component{
             </div>
         )
     }
+}
+
+export class MMI extends Component{
+    render() {
+        return(
+            <div className="text-right">
+                <span onClick={this.decreaseFont} className="pointer letter-mmi">
+                    a
+                </span>
+                <span onClick={this.increaseFont} className="pointer letter-mmi">
+                    A
+                </span>
+
+
+            </div>
+        )
+    }
+
+
+    decreaseFont = () => {
+        let body = document.body;
+        if(fontSize>85){
+            body.style.fontSize = `${fontSize -= 15}%`;
+        }
+
+
+    };
+
+    increaseFont = () => {
+        let body = document.body;
+        if(fontSize <160){
+            body.style.fontSize = `${fontSize += 15}%`;
+            console.log(fontSize);
+        }
+    };
 }
 
 export class Menu extends Component{
