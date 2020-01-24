@@ -41,8 +41,17 @@ export class PictureService {
 
     //Insert picture
     static insertProfilePicture(organizerID, fileForm, callback){
-        axios.post('http://localhost:8080/api/file/profilePicture', fileForm)
+        for(let pair of fileForm.entries()){
+            console.log(pair);
+        }
+
+        let serverHeader = {
+            "x-access-token": CookieStore.currentToken
+        };
+
+        axios.post('http://localhost:8080/api/file/profilePicture', fileForm, {headers: serverHeader})
             .then(response => {
+                console.log(response.data);
                 let databaseHeader = {
                     "Content-Type": "application/json",
                     "x-access-token": CookieStore.currentToken
@@ -55,6 +64,8 @@ export class PictureService {
                 };
                 axios.post('http://localhost:8080/api/organizer/picture', JSON.stringify(body), {headers: databaseHeader})
                     .then(response => {
+                        console.log("Response.data: ");
+                        console.log(response.data);
                         let organizerPictureBody = {
                             pictureID: response.data.insertId
                         };
@@ -103,15 +114,13 @@ export class PictureService {
 
 
     static previewPicture(pictureLink, callback){
-
-        console.log(axiosConfig.root + "/file/preview/" + pictureLink);
-
+            console.log("Link " + pictureLink);
+            console.log("Kjører service");
             axios.get(axiosConfig.root + '/file/preview/' + pictureLink, {
                 method: "GET",
                 responseType: "blob"
                 //Force to receive data in a Blob Format
             }).then(response => {
-                console.log("After .get");
                 //Create a Blob from the image Stream
                 console.log(response.data);
                 let blob;
@@ -139,9 +148,6 @@ export class PictureService {
                 //Open the URL on new Window
                 callback(fileURL);
             })
-                .catch(error => {
-                    console.log(error);
-                });
     }
 
 

@@ -44,6 +44,17 @@ body{
     height: 100%;
 }
 
+.icon-center{
+    text-align: center;
+    color: #D3D3D3;
+    font-size: 4em;
+    padding-top: 200px;
+}
+
+.upload {
+    align-content: center;
+}
+
 .main-color{
     color:#00525c !important;
 }
@@ -73,6 +84,14 @@ body{
 
 .padding-right-20{
     padding-right: 20px !important;
+}
+
+.padding-right-10{
+    padding-right: 10px !important;
+}
+
+.margin-right-10{
+    margin-right: 10px !important;
 }
 
 .padding-top-20{
@@ -582,11 +601,19 @@ search-result-item{
 }
 
 .folder{
+    width: 100%;
+    text-align: left !important;
 }
 
 .folder:hover {
-    color: white;
+    color: white !important;
     background-color: #314b57;
+    width: 100%;
+    text-align: left;
+}
+
+.hover-white:hover{
+    color:white;
 }
 
 

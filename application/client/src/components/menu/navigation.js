@@ -9,8 +9,8 @@ import {FaMusic} from "react-icons/all";
 import {FaUsers} from "react-icons/all";
 import {FaFileSignature} from "react-icons/all";
 
-import harmoniLogo from './Logo_large.png'
-import mobileLogo2 from './Logo_mobile.png'
+import harmoniLogo from './harmonilogo.png'
+import mobileLogo2 from './harmonilogo.png'
 import fullLogo from './harmonilogofull.png'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
@@ -22,6 +22,7 @@ import {FaBullhorn} from "react-icons/all";
 import { createHashHistory } from 'history';
 import {PictureService} from "../../store/pictureService";
 let history = createHashHistory();
+
 
 export class MobileMenu extends Component{
 
@@ -103,7 +104,7 @@ export class NavBar extends Component{
 
                 <Menu/>
 
-                <UserProfileButton/>
+                <UserProfileButton profilePicture={this.props.profilePicture}/>
 
                 <div className="center font-italic purple log-out" onClick={() => {
                     sessionStorage.setItem('token', null);
@@ -171,49 +172,60 @@ export class Menu extends Component{
 
 
 export class UserProfileButton extends Component{
-
     constructor(props) {
         super(props);
         this.state = {
             username: '',
-            profilePicture: '',
-            link: ''
+            link: '',
+            profilePicture: ''
         };
     }
 
     componentDidMount() {
         this.updateInfo((profilePicture) => {
-            if(profilePicture !== null && profilePicture !== ''){
+            if (profilePicture !== null && profilePicture !== '') {
                 PictureService.previewPicture(profilePicture, (url) => {
-                    this.setState({link: url})
+                    this.setState({link: url});
                 });
             }
         })
     }
 
-    checkIfUserHasPicture(){
-        if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
-            return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
-        }else {
-            return(<img width={50} src={require('../user/profile.png')} alt={"test"}/>);
+    upload = (path) => {
+        PictureService.previewPicture(path, (url) => {
+            this.setState({link: url});
+        });
+
+    };
+
+    checkForUpdate(){
+        if(this.state.profilePicture !== this.props.profilePicture){
+            this.upload(this.props.profilePicture);
+            this.setState({profilePicture: this.props.profilePicture})
+        }else{
+            if(this.state.link !== ''){
+                return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
+            } else {
+                return(<img width={50} src={require('../user/profile.png')} alt={"standard profilbilde"}/>);
+            }
+
         }
     }
-
 
     render() {
         return(
             <NavLink to="/brukerprofil">
                 <div className="user-nav">
-                    <div className="row no-gutters">
-                        {this.checkIfUserHasPicture()}
-                        <div className="col-lg-9">
-                            <div className="padding-left-15">
-                                <b>{this.state.username}</b><br/>
-                                Arrangør
-                            </div>
-                        </div>
-
-                    </div>
+                    <Row className = {" no-gutters"}>
+                        <Col size = {2}>
+                            {this.checkForUpdate()}
+                        </Col>
+                        <Col size = {10}>
+                            <b>{this.state.username}</b>
+                            <br/>
+                            Arrangør
+                        </Col>
+                    </Row>
                 </div>
             </NavLink>
         )
@@ -225,10 +237,8 @@ export class UserProfileButton extends Component{
                 let databaseUsername = OrganizerStore.currentOrganizer.username;
                 let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
 
-
                 this.setState(this.setState({
                     username: databaseUsername,
-                    profilePicture: databaseImage
                 }));
                 callback(databaseImage);
             }
