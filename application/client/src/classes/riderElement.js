@@ -4,7 +4,7 @@
 export class RiderElement{
     /**
      *
-     * @type {boolean}
+     *
      */
     isModified = false;
 
