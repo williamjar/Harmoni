@@ -6,10 +6,10 @@
 "Harmoni" is a web application for creating and organizing events. You can keep track of events, and artist, crew and documents that are tied to that event.  
 
 
-###[Go to our wiki](https://gitlab.stud.idi.ntnu.no/williaj/harmoni-team-7/-/wikis/home)
+<h2>[Go to our wiki](https://gitlab.stud.idi.ntnu.no/williaj/harmoni-team-7/-/wikis/home)</h2>
 
 ___
-###Quick start installation guide
+<h2>Quick start installation guide</h2>
 
 
 To run our system, run these commands in a command window with [git](https://git-scm.com/downloads "git download page") installed. You also need [npm and node](https://nodejs.org/en/ "npm and node"). We have used node 13 for our project, and recommend you use the same. 
