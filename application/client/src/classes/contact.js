@@ -1,4 +1,18 @@
+/**
+ * @classdesc Contact information of an Organizer, Artist, or Crew.
+ */
 export class Contact {
+    /**
+     *
+     * @param {int}contactID
+     * The ID of the contact object. Generated from the Database
+     * @param {String}contactName
+     * The name of the contact
+     * @param {String}phone
+     * The phone number for the contact
+     * @param {string}email
+     * The email for the contact
+     */
     constructor(contactID, contactName, phone, email) {
         this.contactID = contactID;
         this.contactName = contactName;

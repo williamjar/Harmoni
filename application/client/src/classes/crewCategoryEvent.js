@@ -1,3 +1,6 @@
+/**
+ * @classdesc Utility class for
+ */
 export class CrewCategoryEvent {
 
     constructor(crewCategoryID, eventID, responsible){

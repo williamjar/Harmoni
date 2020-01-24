@@ -1,5 +1,8 @@
 import {Contact} from "./contact";
 
+/**
+ * @classdesc Class used to store all the information fo a crew member
+ */
 export class CrewMember extends Contact {
 
 
