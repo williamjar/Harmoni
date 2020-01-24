@@ -8,6 +8,10 @@ import {ArtistEventInfo} from "../classes/artistEventInfo";
 
 const axiosConfig = require("./axiosConfig");
 
+/**
+ * @class ArtistService
+ * @classdesc Service class for functions related to accessing and modifying crew objects.
+ */
 export class ArtistService {
 
     // artistID, name, phone, email, genre, organizer

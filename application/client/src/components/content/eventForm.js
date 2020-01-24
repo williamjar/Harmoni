@@ -26,7 +26,7 @@ export class EventForm extends Component {
 
         this.state = {
             activeTab: 0,
-            editMode: false,
+            editMode: this.props.edit,
         };
     }
 

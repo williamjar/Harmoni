@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 /**
  * @class CookieStore
- * @classdesc Store Class for functions related to accessing and modifying tokens.
+ * @classdesc Store class for functions related to accessing and modifying tokens.
  */
 export class CookieStore{
 

@@ -5,7 +5,7 @@ let axiosConfig = require("./axiosConfig");
 
 /**
  * @class hashService
- * @classdesc Service Class for functions related to encryption.
+ * @classdesc Service class for functions related to encryption.
  */
 export class hashService {
 

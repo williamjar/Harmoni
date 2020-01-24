@@ -15,6 +15,8 @@ import {ArtistService} from "../../../store/artistService";
 import {CookieStore} from "../../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import {ContactService} from "../../../store/contactService";
+import {Alert} from "../../alerts";
+import {MegaValidator} from "../../../megaValidator";
 
 /**
  * @class PerformerContacts
@@ -288,6 +290,7 @@ export class ContactInfo extends React.Component {
     saveClicked = () => {
         ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
             ArtistService.updateArtistGenre(() => {
+                Alert.success("Kontaktinformasjon har blitt oppdatert");
                 this.setState({
                     show: false,
                     editable: false,
@@ -298,6 +301,7 @@ export class ContactInfo extends React.Component {
 
     deletePerformer = (e) => {
         ArtistService.deleteArtist(this.state.contact.contactID).then(r => {
+            Alert.success("Artist er slettet");
             this.props.onHide();
         });
 
@@ -308,6 +312,26 @@ export class ContactInfo extends React.Component {
             this.setState({show: true});
         });
     };
+
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.contactName)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.contactName)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epost-adresse';
+        }
+        if(!MegaValidator.validateEmail())
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        else{
+            return '';
+        }
+    }
 
     render() {
         return(
@@ -324,7 +348,7 @@ export class ContactInfo extends React.Component {
                             <FaEnvelopeSquare/>
                         </Col>
                         <Col>
-                            {this.state.editable ? <Form.Control name="email" type="text" value={this.state.email}
+                            {this.state.editable ? <Form.Control name="email" type="email" value={this.state.email}
                             onChange={this.handleChange}/> : <a href={"mailto:" + this.state.email}>{this.state.email}</a>}
                         </Col>
                     </Row>
@@ -357,7 +381,8 @@ export class ContactInfo extends React.Component {
                         </Col>
                     </Row>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer className={"text-danger"}>
+                    {this.validateForm()}
                     {this.state.editable ? <Button variant="success" onClick={this.saveClicked}>Lagre</Button> : <Button variant="secondary" onClick={this.editClicked}>Rediger</Button>}
                     <Button variant="danger" onClick={this.deletePerformer}>Slett</Button>
                 </Modal.Footer>
@@ -398,8 +423,28 @@ class AddPerformer extends React.Component {
     saveClicked = () => {
         ArtistService.createArtist(() => {
             this.props.onHide();
+            //Alert.success("Ny artist er registert");
         }, this.state.contactName, this.state.phone, this.state.email, this.state.genre, CookieStore.currentUserID)
     };
+
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.contactName)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.contactName)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epost-adresse';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        else{
+            return '';
+        }
+    }
 
     render() {
         return(
@@ -418,7 +463,7 @@ class AddPerformer extends React.Component {
                             <FaEnvelopeSquare/>
                         </Col>
                         <Col>
-                            <Form.Control name="email" type="text" value={this.state.email} onChange={this.handleChange}
+                            <Form.Control name="email" type="email" value={this.state.email} onChange={this.handleChange}
                             placeholder="Epostadresse"/>
                         </Col>
                     </Row>
@@ -443,8 +488,8 @@ class AddPerformer extends React.Component {
                         </Col>
                     </Row>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="success" onClick={this.saveClicked}>Legg til</Button>
+                <Modal.Footer className={"text-danger"}> {this.validateForm()}
+                    <Button variant="success" disabled={!(this.validateForm()==='')} onClick={this.saveClicked}>Legg til</Button>
                 </Modal.Footer>
             </Modal>
         )

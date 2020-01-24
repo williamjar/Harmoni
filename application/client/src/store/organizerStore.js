@@ -4,12 +4,19 @@ import {CookieStore} from "./cookieStore";
 import {hashService} from "./hashService";
 const axiosConfig = require("./axiosConfig");
 
+/**
+ * @class OrganizerStore
+ * @classdesc Store class for functions related to accessing and modifying organizer objects and the logged in user.
+ */
 export class OrganizerStore {
-
-    // organizerID, name, phone, email, username, pictureLink
 
     static currentOrganizer;
 
+    /**
+     * Sets the variable currentOrganizer to a Organizer object matching the data from database.
+     * @param {int} organizerID - The database ID of the organizer.
+     * @param {function} callback
+     */
     static getOrganizer(organizerID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -25,6 +32,9 @@ export class OrganizerStore {
             ).catch(err => callback(500));
     }
 
+    /**
+     * TODO Not used delete?
+     */
     static updateProfilePicture(pictureID, pictureLink){
         let header = {
             "Content-Type": "application/json",
@@ -36,6 +46,12 @@ export class OrganizerStore {
             .catch(error => console.log(error));
     }
 
+    /**
+     * Updates the database with a new username for the
+     * @param {int} organizerID - The database ID of the organizer.
+     * @param {String} newUsername - The new username username of
+     * @param {function} callback
+     */
     static changeUsername(organizerID, newUsername) {
         let header = {
             "Content-Type": "application/json",
@@ -114,19 +130,5 @@ export class OrganizerStore {
         return axios.delete(axiosConfig.root + '/api/contact/' + this.currentOrganizer.contactID, {headers: header}).then( res => {
             console.log("Deleted User: " + res);
         }).catch(e => console.log("Error deleting user - " + e));
-    }
-
-    static archiveOldEvents() {
-
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        console.log("archiving old events");
-        console.log(this.currentOrganizer.organizerID);
-        axios.put(axiosConfig.root + '/api/archive/' + this.currentOrganizer.organizerID,null,{headers: header}).then(response => {
-            console.log(response);
-        });
     }
 }
