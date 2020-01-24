@@ -87,7 +87,9 @@ export class App extends Component{
                                         this.setState({loggedIn: false});
                                     }
                                     }/></div> :
-                                    <div className="col-12"><MobileMenu/></div>}
+                                    <div className="col-12"><MobileMenu logOut={() => {
+                                        this.setState({loggedIn: false});
+                                    }}/></div>}
                                 {this.state.mobileView?
                                     <div className="margin-bottom-30"><br/> </div>:null
                                 }
@@ -101,8 +103,8 @@ export class App extends Component{
                                 <Route exact path="/dokumenter/:eventID" render={(props) => <Content page ={<FolderCategory{...props} />}/>}/>
                                 <Route exact path="/dokumenter/:eventID/:documentCategoryID" render={(props) => <Content page = {<Documents{...props} />}/>}/>
                                 <Route exact path="/brukerprofil"  component={() => <Content page={<UserPage changeProfilePicture = {this.changeProfilePicture}/>}/>} />
-                                <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm/>} />} />
-                                <Route exact path="/arrangementEdit/:id"  component={() => <Content page={<EventForm/>} />} />
+                                <Route exact path="/arrangementEdit"  component={() => <Content page={<EventForm edit={true}/>} />} />
+                                <Route exact path="/arrangementEdit/:id"  component={() => <Content page={<EventForm edit={false}/>} />} />
                                 <Route exact path="/bug" component={() => <Content page={<BugReview/>}/>}/>
                             </div>
                         </div>
