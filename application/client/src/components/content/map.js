@@ -41,10 +41,7 @@ export class Map extends Component{
     };
 
     componentDidMount(){
-        console.log("Location: " + this.props.location);
         this.getLatLng((results) => {
-            console.log("Results from OpenStreetMap:");
-            console.log(results);
 
             if (results.length === 0){
                 this.setState({latLng: {lat: 0, lng: 0}});

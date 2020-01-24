@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/components/menu/navigation.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/components/menu/navigation.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component} from 'react';
+import {Row, Col} from 'react-bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { NavLink } from 'react-router-dom';
+import {FaCalendarAlt} from "react-icons/all";
+import {FaCalendarPlus} from "react-icons/all";
+import {FaMusic} from "react-icons/all";
+import {FaUsers} from "react-icons/all";
+import {FaFileSignature} from "react-icons/all";
+import harmoniLogo from './Logo_large.png'
+import mobileLogo2 from './Logo_mobile.png'
+import {OrganizerStore} from "../../store/organizerStore";
+import {CookieStore} from "../../store/cookieStore";
+import {FaSignOutAlt} from "react-icons/all";
+import {FaBars} from "react-icons/all";
+import {FaUserCog} from "react-icons/all";
+import {FaBullhorn} from "react-icons/all";
+import { createHashHistory } from 'history';
+import {PictureService} from "../../store/pictureService";
+let history = createHashHistory();
+
+let fontSize = 100;
+
+/**
+ * @class MobileMenu
+ * @classdesc Navigation menu for mobile display
+ */
+export class MobileMenu extends Component{
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            expand : false
+        }
+    }
+
+    render() {
+        return(
+            &lt;div className="zoom-80 fixed-top card">
+                &lt;div className="row no-gutters">
+                    &lt;div className="col-4">
+                        &lt;div className="logoImg-mobile icon-hover" >
+                            &lt;NavLink to="/" onClick={this.collapse}>
+                                &lt;img width="100px" src={mobileLogo2} alt=""/>
+                            &lt;/NavLink>
+                        &lt;/div>
+                    &lt;/div>
+
+                    &lt;div className="col-5 text-right mmi-mobile">
+                        &lt;MMI/>
+                    &lt;/div>
+                    &lt;div className="col-3 padding-30  padding-right-20 text-right">
+
+                        &lt;FaUserCog size="30" onClick={this.goToUserProfile} className="pointer icon-hover"/>
+
+                        &lt;FaBars size="30" onClick={this.toggleExpand} className="pointer margin-left-30 icon-hover"/>
+
+                    &lt;/div>
+                &lt;/div>
+                {this.state.expand?
+                    &lt;div className="card drop-shadow-mobile-menu " onClick={this.toggleExpand}>
+                        &lt;Menu/>
+
+
+                        &lt;div className="log-out-mobile pointer" onClick={() => {
+                            sessionStorage.setItem('token', null);
+                            sessionStorage.setItem('currentEvent', null);
+                            sessionStorage.removeItem('loggedIn');
+                            CookieStore.setCurrentToken(null);
+                            CookieStore.setCurrentUserID(-1);
+                            history.push("/");
+                            this.props.logOut();
+                        }}>
+                            Logg av &lt;FaSignOutAlt size={20}/>
+                        &lt;/div>
+
+
+                    &lt;/div>
+
+
+
+                    :null}
+            &lt;/div>
+
+        )
+    }
+
+    collapse = () => {
+        this.setState({expand : false});
+    };
+
+    toggleExpand = () => {
+        this.setState({expand : !this.state.expand});
+    };
+
+    goToUserProfile = () => {
+        history.push("/brukerprofil");
+        this.collapse();
+    };
+
+}
+
+/**
+ * @class MobileMenu
+ * @classdesc Navigation menu for normal displays
+ */
+export class NavBar extends Component {
+    render() {
+        return (
+            &lt;div className="Nav-Menu card">
+                &lt;div className="logoImg">
+                    &lt;NavLink to={"/"}>
+                        &lt;img src={harmoniLogo} alt=""/>
+                    &lt;/NavLink>
+                &lt;/div>
+
+                &lt;div className="padding-top-20 mmi">
+                &lt;MMI/>
+                &lt;/div>
+                &lt;Menu/>
+
+
+
+                &lt;UserProfileButton profilePicture={this.props.profilePicture}/>
+
+                &lt;div className="center font-italic purple log-out" onClick={() => {
+                    sessionStorage.setItem('token', null);
+                    sessionStorage.setItem('currentEvent', null);
+                    sessionStorage.removeItem('loggedIn');
+                    CookieStore.setCurrentToken(null);
+                    CookieStore.setCurrentUserID(-1);
+                    history.push("/");
+                    this.props.logOut();
+                }}>
+                    Logg av &lt;FaSignOutAlt size={20}/>
+                &lt;/div>
+
+            &lt;/div>
+        )
+    }
+}
+
+export class MMI extends Component{
+    render() {
+        return(
+            &lt;div className="text-right">
+                &lt;span onClick={this.decreaseFont} className="pointer letter-mmi mmi-lower-a-icon">
+                    A
+                &lt;/span>
+                &lt;span onClick={this.increaseFont} className="pointer letter-mmi">
+                    A
+                &lt;/span>
+
+
+            &lt;/div>
+        )
+    }
+
+
+    decreaseFont = () => {
+        let body = document.body;
+        if(fontSize>85){
+            body.style.fontSize = `${fontSize -= 15}%`;
+        }
+
+
+    };
+
+    increaseFont = () => {
+        let body = document.body;
+        if(fontSize &lt;160){
+            body.style.fontSize = `${fontSize += 15}%`;
+            console.log(fontSize);
+        }
+    };
+}
+
+export class Menu extends Component{
+    render() {
+        return(
+            &lt;ul className="nav nav-links text-left list-group-flush w-100 ">
+
+                &lt;div className="w-100">
+                    &lt;NavLink className="text-decoration-none  nav-link" to="/" exact={true}>
+                    &lt;li className="">
+                        &lt;span className="menu-item"> &lt;FaCalendarAlt/>&lt;span className="padding-left-20"> Mine arrangement&lt;/span>&lt;/span>
+                    &lt;/li>
+                    &lt;/NavLink>
+
+                    &lt;NavLink className="text-decoration-none nav-link" to="/opprett">
+                    &lt;li className="">
+                        &lt;span className="menu-item"> &lt;FaCalendarPlus/>&lt;span className="padding-left-20"> Opprett arrangement&lt;/span>&lt;/span>
+                    &lt;/li>
+                    &lt;/NavLink>
+
+                    &lt;NavLink className="text-decoration-none nav-link" to="/artister">
+                    &lt;li className="">
+                        &lt;span className="menu-item"> &lt;FaMusic/>&lt;span className="padding-left-20"> Mine artister&lt;/span>&lt;/span>
+                    &lt;/li>
+                    &lt;/NavLink>
+
+                    &lt;NavLink className="text-decoration-none nav-link" to="/personell">
+                    &lt;li className="">
+                        &lt;span className="menu-item"> &lt;FaUsers/>&lt;span className="padding-left-20"> Mitt personell&lt;/span>&lt;/span>
+                    &lt;/li>
+                    &lt;/NavLink>
+
+                    &lt;NavLink className="text-decoration-none nav-link" to="/dokumenter">
+                    &lt;li className="">
+                        &lt;span className="menu-item">&lt;FaFileSignature/>&lt;span className="padding-left-20"> Mine dokumenter&lt;/span>&lt;/span>
+                    &lt;/li>
+                    &lt;/NavLink>
+                    &lt;NavLink className="text-decoration-none nav-link" to="/bug">
+                        &lt;li className="">
+                            &lt;span className="menu-item">&lt;FaBullhorn/>&lt;span className="padding-left-20"> Rapporter feil&lt;/span>&lt;/span>
+                        &lt;/li>
+                    &lt;/NavLink>
+
+                &lt;/div>
+
+            &lt;/ul>
+        )
+    }
+}
+
+
+export class UserProfileButton extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: '',
+            link: '',
+            profilePicture: ''
+        };
+    }
+
+    componentDidMount() {
+        this.updateInfo((profilePicture) => {
+            if (profilePicture !== null &amp;&amp; profilePicture !== '') {
+                PictureService.previewPicture(profilePicture, (url) => {
+                    this.setState({link: url});
+                });
+            }
+        })
+    }
+
+    upload = (path) => {
+        PictureService.previewPicture(path, (url) => {
+            this.setState({link: url});
+        });
+
+    };
+
+    checkForUpdate(){
+        if(this.state.profilePicture !== this.props.profilePicture){
+            this.upload(this.props.profilePicture);
+            this.setState({profilePicture: this.props.profilePicture})
+        }else{
+            if(this.state.link !== ''){
+                return(&lt;img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
+            } else {
+                return(&lt;img width={50} src={require('../user/profile.png')} alt={"standard profilbilde"}/>);
+            }
+
+        }
+    }
+
+    render() {
+        return(
+            &lt;NavLink to="/brukerprofil" className={""}>
+                &lt;div className="user-nav">
+                    &lt;Row className = {" no-gutters"}>
+                        &lt;Col size = {2} className={"text-center text-indent-20"}>
+                            {this.checkForUpdate()}
+                        &lt;/Col>
+                        &lt;Col size = {10} className={"padding-top-5 main-color"}>
+                            &lt;b>{this.state.username}&lt;/b>
+                            &lt;br/>
+                            Arrangør
+                        &lt;/Col>
+                    &lt;/Row>
+                &lt;/div>
+            &lt;/NavLink>
+        )
+    }
+
+    updateInfo(callback){
+        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
+            if (statusCode === 200){
+                let databaseUsername = OrganizerStore.currentOrganizer.username;
+                let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
+
+                this.setState(this.setState({
+                    username: databaseUsername,
+                }));
+                callback(databaseImage);
+            }
+        });
+    }
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="artistDao.html">artistDao</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="ArtistRegisterRiders.html">ArtistRegisterRiders</a></li><li><a href="ArtistService.html">ArtistService</a></li><li><a href="Bug.html">Bug</a></li><li><a href="bugDao.html">bugDao</a></li><li><a href="BugReview.html">BugReview</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="CheckList.html">CheckList</a></li><li><a href="Contact.html">Contact</a></li><li><a href="contactDao.html">contactDao</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="Content.html">Content</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CreateEventSplash.html">CreateEventSplash</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewContacts.html">CrewContacts</a></li><li><a href="crewDao.html">crewDao</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Dao.html">Dao</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentationTab.html">DocumentationTab</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="Documents.html">Documents</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventCard.html">EventCard</a></li><li><a href="eventDao.html">eventDao</a></li><li><a href="EventForm.html">EventForm</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="EventView.html">EventView</a></li><li><a href="FolderItem.html">FolderItem</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="Info.html">Info</a></li><li><a href="InfoForm.html">InfoForm</a></li><li><a href="LoginDao.html">LoginDao</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="MailService.html">MailService</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="MobileMenu.html">MobileMenu</a></li><li><a href="MyDocuments.html">MyDocuments</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="organizerDao.html">organizerDao</a></li><li><a href="OrganizerStore.html">OrganizerStore</a></li><li><a href="PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerContacts_PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerPanel.html">PerformerPanel</a></li><li><a href="pictureDao.html">pictureDao</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="PictureService.html">PictureService</a></li><li><a href="RegisterForm.html">RegisterForm</a></li><li><a href="RegisterOrganizerService.html">RegisterOrganizerService</a></li><li><a href="riderDao.html">riderDao</a></li><li><a href="RiderElement.html">RiderElement</a></li><li><a href="RiderStore.html">RiderStore</a></li><li><a href="Search.html">Search</a></li><li><a href="SimpleContent.html">SimpleContent</a></li><li><a href="TabContent.html">TabContent</a></li><li><a href="Ticket.html">Ticket</a></li><li><a href="TicketAll.html">TicketAll</a></li><li><a href="ticketDao.html">ticketDao</a></li><li><a href="TicketStore.html">TicketStore</a></li><li><a href="TicketType.html">TicketType</a></li><li><a href="UserPage.html">UserPage</a></li><li>{documentationDao}</li></ul><h3>Global</h3><ul><li><a href="global.html#deleteFile">deleteFile</a></li><li><a href="global.html#ensureFolderExists">ensureFolderExists</a></li><li><a href="global.html#eventPictureStorage">eventPictureStorage</a></li><li><a href="global.html#fileStorage">fileStorage</a></li><li><a href="global.html#fileUpload">fileUpload</a></li><li><a href="global.html#profilePictureStorage">profilePictureStorage</a></li><li><a href="global.html#uploadEventPicture">uploadEventPicture</a></li><li><a href="global.html#uploadUserPicture">uploadUserPicture</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 21:40:15 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

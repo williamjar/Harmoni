@@ -26,3 +26,11 @@ run_tests:
     - npm test
     - cd ../server
     - npm test
+
+pages:
+  stage: deploy
+  script:
+    ls .
+  artifacts:
+    paths:
+      - public

@@ -32,19 +32,6 @@ export class OrganizerStore {
             ).catch(err => callback(500));
     }
 
-    /**
-     * TODO Not used delete?
-     */
-    static updateProfilePicture(pictureID, pictureLink){
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        return axios.put(axiosConfig.root + '/api/organizer/picture/' + pictureID + '/' + pictureLink, {
-        }, {headers: header})
-            .catch(error => console.log(error));
-    }
 
     /**
      * Updates the database with a new username for the
@@ -106,24 +93,6 @@ export class OrganizerStore {
         }, {headers: header}).catch(error => console.log(error));
     }
 
-    /**
-     * TODO
-     */
-    static changeUserImage(pictureLink) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        axios.put(axiosConfig.root + '/api/picture/insert/', {
-            pictureLink: pictureLink
-        }, {headers: header}).then(res => {
-            let pictureID = res.data[0].insertId;
-            return axios.put(axiosConfig.root + '/api/organizer/' + this.currentOrganizer.organizerID + '/change/picture', {
-                "pictureID": pictureID
-            }, {headers: header});
-        }).catch(error => console.log(error));
-    }
 
     /**
      * Deletes the current organizer from the database.
@@ -135,7 +104,7 @@ export class OrganizerStore {
             "x-access-token": CookieStore.currentToken
         };
         return axios.delete(axiosConfig.root + '/api/contact/' + this.currentOrganizer.contactID, {headers: header}).then( res => {
-            console.log("Deleted User: " + res);
+            console.log("Deleted User");
         }).catch(e => console.log("Error deleting user - " + e));
     }
 }

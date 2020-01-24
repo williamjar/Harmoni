@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/components/content/crew.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/components/content/crew.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Button from "react-bootstrap/Button";
+import {Search} from "./search";
+import Form from "react-bootstrap/Form";
+import {Col} from "react-bootstrap";
+import {CrewStore} from "../../store/crewStore";
+import {CookieStore} from "../../store/cookieStore";
+import {EventStore} from "../../store/eventStore";
+import Row from "react-bootstrap/Row";
+import {Alert} from "../alerts";
+import {MegaValidator} from "../../megaValidator";
+import {MailService} from "../../store/mailService";
+
+/**
+ * @class CreateEventSplash
+ * @classdesc Component for creating a new event.
+ */
+export class CrewPanel extends Component{
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            crewList : [],
+            crewCategoryList : [],
+            crewCategoryListEvent : [],
+            showCrewCard: false,
+            crewSelected : {},
+            crewCategorySelected : null,
+            results : [],
+            showRegisterNew : false,
+        }
+    }
+
+    render() {
+        return(
+            &lt;div>
+
+                &lt;div className="row">
+                    &lt;div className="col-lg-6 col-md-12  border-right">
+                        &lt;div className="row">
+                            &lt;div className="col-8">
+                                &lt;Search searchHandler={this.searchHandler} results={this.state.results} />
+                            &lt;/div>
+                            &lt;div className="col-4">
+                                &lt;button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny&lt;/button>
+                            &lt;/div>
+                        &lt;/div>
+
+                        &lt;div className="padding-top-20">
+                            {this.state.showRegisterNew?&lt;AddCrewMember submit={this.submitFunction} submitCategory={this.submitCategory} toggleRegisterCrewMember={this.toggleRegisterNew} crewCategoryList={this.state.crewCategoryList} />:null}
+                            {this.state.showCrewCard?&lt;CrewCard submitFunction={this.updateCrew} crewSelected={this.state.crewSelected} crewCategoryList={this.state.crewCategoryList} crewCategoryID={this.state.crewCategorySelected} categoryHandler={this.categoryHandler}/>:null}
+
+                        &lt;/div>
+                    &lt;/div>
+
+                    &lt;div className="col-lg-6 col-md-12">
+                       &lt;RegisteredCrew showRegisterCategory={this.props.showRegisterCategory} crewList={this.state.crewList} categoryList={this.state.crewCategoryListEvent} changeCard={this.changeCurrentCrew} refreshCategoryList={this.refreshCrewCategoriesForEvent} unassignCrew={this.unassignCrew}/>
+                    &lt;/div>
+                &lt;/div>
+
+            &lt;/div>
+        )
+    }
+
+    unassignCrew = (crew) => {
+        //Unassign crew from event
+        CrewStore.unassignCrewMemberFromEvent(EventStore.currentEvent.eventID, crew.crewCategoryID, crew.crewID, () => {}).then(res => {
+            CrewStore.storeAllCrewMembersForEvent(() => {
+                // updates the arrays that shows the current crew members added to event
+                let currentState = this.state;
+                currentState.crewList = CrewStore.allCrewForCurrentEvent; //Receive a new array from database with assigned crew member to event
+                currentState.crewSelected = {};
+                this.setState(currentState);
+                this.toggleShowCard();
+                this.refreshCrewCategoriesForEvent();
+            }, EventStore.currentEvent.eventID);
+        });
+    };
+
+    searchHandler = (selected) => {
+        let currentState = this.state;
+        currentState.crewSelected = selected;
+        currentState.crewSelected.isResponsible = false;
+        currentState.crewSelected.hasBeenPaid = false;
+        currentState.crewSelected.contractSigned = false;
+        currentState.crewCategorySelected = this.state.crewCategoryList[0].crewCategoryID;
+        currentState.showCrewCard = true;
+        this.setState(currentState);
+    };
+
+    categoryHandler = (category) => {
+        this.setState({crewCategorySelected : category});
+    };
+
+    componentDidMount() {
+        this.refreshCrewList();
+        this.refreshCrewCategories();
+        this.refreshCrewCategoriesForEvent();
+        this.callBackSearchResult();
+    };
+
+    toggleRegisterNew = () => {
+        let currentState = this.state;
+        currentState.showRegisterNew = !currentState.showRegisterNew;
+        this.setState(currentState);
+        this.hideCard();
+    };
+
+    toggleShowCard = () => {
+        let currentState = this.state;
+        currentState.showCrewCard = !currentState.showCrewCard;
+        this.setState(currentState);
+        this.hideRegisterNew();
+    };
+
+    hideCard = () => {
+        let currentState = this.state;
+        currentState.showCrewCard = false;
+        this.setState(currentState);
+    };
+
+    hideRegisterNew = () => {
+        let currentState = this.state;
+        currentState.showRegisterNew = false;
+        this.setState(currentState);
+    };
+
+    setCategoryCurrentCrew = () => {
+        this.setState({
+            crewCategorySelected : this.state.crewSelected.crewCategoryID
+        })
+    };
+
+    refreshCrewList = () => {
+        CrewStore.storeAllCrewMembersForEvent(() => {
+            this.setState(
+                { crewList : CrewStore.allCrewForCurrentEvent })
+        }, EventStore.currentEvent.eventID);
+    };
+
+    refreshCrewCategories = () => {
+        CrewStore.storeAllCrewCategoriesForOrganizer(() => {
+            this.setState(
+                {
+                    crewCategoryList : CrewStore.allCrewCategoriesForOrganizer
+                });
+        }, CookieStore.currentUserID);
+    };
+
+    refreshCrewCategoriesForEvent = () => {
+        CrewStore.storeAllCrewCategoriesForEvent(() => {
+            this.setState(
+                {
+                    crewCategoryListEvent : CrewStore.allCrewCategoriesForCurrentEvent
+                });
+        }, EventStore.currentEvent.eventID);
+    };
+
+    submitFunction = (selected) => {
+        let currentState = this.state;
+        currentState.crewSelected = selected;
+        this.setState(currentState);
+        this.refreshCrewList();
+        this.refreshCrewCategoriesForEvent();
+    };
+
+    updateCrew = (selected) => {
+        let currentState = this.state;
+        currentState.crewSelected = selected;
+        this.setState(currentState);
+        this.refreshCrewList();
+        this.refreshCrewCategoriesForEvent();
+        this.hideCard();
+    };
+
+    submitCategory = () => {
+        this.refreshCrewList();
+        this.refreshCrewCategories();
+    };
+
+    callBackSearchResult = () => {
+        /* Updates the array with all registered crew members added by organizer, not event specific.
+        *This is is to be used with search to search against */
+        CrewStore.storeAllCrewMembersForOrganizer(() => {
+            let currentState = this.state;
+            currentState.results = CrewStore.allCrewMembersForOrganizer;
+            this.setState(currentState);
+        },CookieStore.currentUserID);
+    };
+
+    changeCurrentCrew = (crew) => {
+        let currentState = this.state;
+        currentState.crewSelected = crew;
+        currentState.showCrewCard = true;
+        this.setState(currentState);
+        this.setCategoryCurrentCrew();
+    };
+}
+
+export class AddCrewType extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            crewType : "",
+        };
+    }
+
+    render(){
+        return(
+            &lt;div className="card card-body">
+                &lt;Form.Row>
+                    &lt;Form.Group as={Col} controlId="formGridEmail">
+                        &lt;Form.Label>Personell-type&lt;/Form.Label>
+                        &lt;Form.Control type="name" placeholder="" onChange={this.handleInputChange}/>
+                    &lt;/Form.Group>
+                &lt;/Form.Row>
+
+                &lt;Row className="no-gutter">
+                    &lt;Col className="col-2">
+                        &lt;Button variant="success" type="submit" onClick={this.submitForm}>
+                            Lagre
+                        &lt;/Button>
+                    &lt;/Col>
+                    &lt;Col className="col-2">
+                        &lt;Button variant="secondary" type="cancel" className="padding-left-20" onClick={this.cancelButton}>
+                            Avbryt
+                        &lt;/Button>
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/div>
+        )
+    }
+
+    handleInputChange = (event) => {
+        let currentState = this.state;
+        currentState.crewType = event.target.value;
+        this.setState(currentState);
+    };
+
+    cancelButton = () => {
+        this.setState({crewType : ""});
+        this.props.cancelButton();
+    };
+
+    submitForm = () => {
+        if(this.state.crewType.trim() === ""){
+            //Error message
+            Alert.warning("Du kan ikke ha en blank kategori");
+        } else{
+            CrewStore.addCategory(this.state.crewType, CookieStore.currentUserID);
+            Alert.success("Kategorien " + this.state.crewType + " har blitt lagt til");
+            this.props.submit();
+        }
+    };
+}
+
+export class CrewCard extends Component{
+    /* Crew card that shows information about crew members */
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            crew : this.props.crewSelected,
+            crewCategoryList : this.props.crewCategoryList,
+            crewCategoryID : this.props.crewCategoryID,
+            crewCategoryName : this.props.crewSelected.crewCategoryName,
+            description : this.props.crewSelected.description,
+            isResponsible : this.props.crewSelected.isResponsible,
+            contractSigned : this.props.crewSelected.contractSigned,
+            hasBeenPaid : this.props.crewSelected.contractSigned
+        };
+    }
+
+    render(){
+        return(
+            &lt;div className="card card-body">
+                &lt;div className="row align-items-center">
+                    &lt;div className="col-2">
+                        &lt;img src="https://s3.us-east-2.amazonaws.com/upload-icon/uploads/icons/png/19339625881548233621-512.png" width={50} alt=""/>
+                    &lt;/div>
+
+                    &lt;div className="col-7">
+                        {this.state.crew.contactName}&lt;br/>
+                        {this.state.crew.email}
+                    &lt;/div>
+
+                    &lt;div className="col-4">
+                        &lt;label htmlFor="categorySelect">Kategori&lt;/label>
+                        &lt;select className="form-control" id="categorySelect" value={this.state.crewCategoryID} onChange={this.categoryHandler}>
+                            {this.state.crewCategoryList.map(e =>
+                                &lt;option key={e.crewCategoryID} value={e.crewCategoryID}>{e.crewCategoryName}&lt;/option>
+                            )}
+                        &lt;/select>
+                    &lt;/div>
+
+                &lt;/div>
+                &lt;hr>&lt;/hr>
+                &lt;div className="row">
+                    &lt;div className="col-12">
+                        Beskrivelse&lt;br/>
+                    &lt;/div>
+
+                        &lt;div className="col-12">
+                            &lt;input type="text" className="form-control" value={this.state.description} id="description" onChange={this.handleInputDescription}/>
+                        &lt;/div>
+
+
+                &lt;/div>
+
+                &lt;div className="row padding-top-20">
+                    &lt;div className="col-4">
+                        &lt;div className="form-check">
+                            &lt;input className="form-check-input" name="contractSigned" type="checkbox" checked={this.state.contractSigned} id="contractSigned" onChange={this.handleCheckboxes}/>
+                            &lt;label className="form-check-label" htmlFor="contractSigned">
+                                Mottatt bekreftelse
+                            &lt;/label>
+                        &lt;/div>
+                    &lt;/div>
+
+                    &lt;div className="col-4">
+                        &lt;div className="form-check">
+                            &lt;input className="form-check-input" name="hasBeenPaid" type="checkbox" checked={this.state.hasBeenPaid} id="crewPaid" onChange={this.handleCheckboxes}/>
+                            &lt;label className="form-check-label" htmlFor="crewPaid">
+                                Betalt
+                            &lt;/label>
+                        &lt;/div>
+                    &lt;/div>
+
+                    &lt;div className="col-4">
+                        &lt;div className="form-check">
+                            &lt;input className="form-check-input" name="isResponsible" type="checkbox" checked={this.state.isResponsible} id="crewIsResponsible" onChange={this.handleCheckboxes}/>
+                            &lt;label className="form-check-label" htmlFor="crewIsResponsible">
+                                Hovedansvarlig
+                            &lt;/label>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+
+                &lt;div className="row padding-top-20">
+                    &lt;div className="col-5">
+                        &lt;button className = "btn btn-primary" onClick={() => this.sendEmail()}>Send email med forespørsel&lt;/button>
+                    &lt;/div>
+
+                    &lt;div className="col-5">
+                        &lt;button className="btn btn-success" onClick={() => this.updateCrewMember()} id="saveCrew">Lagre informasjon&lt;/button>
+                    &lt;/div>
+                &lt;/div>
+
+            &lt;/div>
+        )
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        /* Updates the props based on parent state change
+        * sets the current crew to be displayed in card */
+        if(props.crewSelected !== state.crew) {
+            return {
+                crew: props.crewSelected,
+                crewCategoryID : props.crewCategoryID,
+                crewCategoryName : props.crewSelected.crewCategoryName,
+                description : props.crewSelected.description,
+                isResponsible : props.crewSelected.isResponsible,
+                contractSigned : props.crewSelected.contractSigned,
+                hasBeenPaid: props.crewSelected.hasBeenPaid
+            };
+        }
+        if(state.crewCategoryID &lt; 1){
+            return{
+                crewCategoryID : props.crewCategoryList[0].crewCategoryID
+            }
+        }
+        return null;
+    }
+
+    categoryHandler = (event) => {
+        this.setState({
+            crewCategoryID : event.target.value
+        });
+        this.props.categoryHandler(event.target.value);
+    };
+
+    handleCheckboxes = (event) => {
+        this.setState({[event.target.name] : event.target.checked});
+    };
+
+    handleInputDescription = (event) =>{
+        /* Handles the description input for crew members */
+        this.setState({description : event.target.value}, () => {
+            this.props.crewSelected.description = this.state.description;
+        });
+    };
+
+    updateCrewMember = () =>{
+        this.setState({
+            description : this.props.crewSelected.description
+        }, () => {
+            CrewStore.updateCrewMember(this.props.crewSelected.description, this.props.crewSelected.crewID);
+        });
+
+        this.setState({
+            isResponsible : (this.state.isResponsible ? 1 : 0),
+            contractSigned : (this.state.contractSigned ? 1 : 0),
+            hasBeenPaid : (this.state.hasBeenPaid ? 1 : 0)
+        }, () => {
+            CrewStore.unassignCrewMemberFromEvent(EventStore.currentEvent.eventID, this.props.crewSelected.crewCategoryID, this.props.crewSelected.crewID, () => {
+                CrewStore.assignCrewMemberToEvent(EventStore.currentEvent.eventID, this.state.crewCategoryID, this.props.crewSelected.crewID, this.state.isResponsible, this.state.contractSigned, this.state.hasBeenPaid , (crew) => {
+                    this.props.submitFunction(crew);
+                });
+            });
+        });
+    };
+
+    sendEmail(){
+        MailService.sendGeneralEmailToOne(this.props.crewSelected.email, "Event plan", "You have been invited to work on " + EventStore.currentEvent.eventName + ". Welcome!", null, (status, data) => {
+            if(status === 200){
+                Alert.info("Email was sent");
+            } else{
+                Alert.danger("Email was not sent. Ensure the mail is correct.");
+            }
+        });
+    }
+
+    save = () => {
+        /* Save function to gather all information in the Performer Card that needs to be stored */
+
+        //TODO: Send invitation
+    }
+}
+
+export class AddCrewMember extends Component{
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            name : "",
+            phone : "",
+            email : "",
+            description: "",
+            isResponsible: false,
+            crewCategoryID : 1,
+            showRegisterCrewType : false,
+            selectedCategoryID: null,
+            crewCategoryList: []
+        };
+    }
+
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.name)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.name)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epost-adresse';
+        }
+        if(this.state.selectedCategoryID &lt; 1){
+            return 'Vennligst velg en kategori';
+        }
+        else{
+            return '';
+        }
+    }
+
+    render() {
+        return(
+            &lt;div className="card card-body">
+                    &lt;Form.Row>
+                        &lt;Form.Group as={Col} controlId="formGridEmail">
+                            &lt;Form.Label>Navn&lt;/Form.Label>
+                            &lt;Form.Control type="name" placeholder="" onChange={this.handleNameChange} />
+                        &lt;/Form.Group>
+
+                        &lt;Form.Group as={Col} controlId="formGridPassword">
+                            &lt;Form.Label>Telefon&lt;/Form.Label>
+                            &lt;Form.Control type="phone" placeholder="" onChange={this.handlePhoneChange}/>
+                        &lt;/Form.Group>
+                    &lt;/Form.Row>
+
+                    &lt;Form.Group controlId="formGridAddress1">
+                        &lt;Form.Label>Epost&lt;/Form.Label>
+                        &lt;Form.Control type="email" placeholder="" onChange={this.handleEmailChange} />
+                    &lt;/Form.Group>
+                    &lt;Form.Group controlId="formGridDescription">
+                        &lt;Form.Label>Beskrivelse&lt;/Form.Label>
+                        &lt;Form.Control type="text" placeholder="" onChange={this.handleDescriptionChange} />
+                    &lt;/Form.Group>
+                    &lt;Form.Group controlId="fromGridCategory">
+                        &lt;Row className="no-gutters">
+                            &lt;Col size={1}>
+                                &lt;Form.Label>Velg personell-type&lt;/Form.Label>
+                                {this.state.selectedCategoryID === null?
+                                    &lt;div>Ingen kategorier er lagt til&lt;/div>
+                                    :
+                                &lt;select className="form-control" value={this.state.selectedCategoryID} onChange={this.handleCategoryChange}>
+                                    {this.state.crewCategoryList.map(category => (
+                                        &lt;option key={category.crewCategoryID} value={category.crewCategoryID}>
+                                            {category.crewCategoryName}
+                                        &lt;/option>
+                                    ))}
+                                &lt;/select>}
+                            &lt;/Col>
+                        &lt;/Row>
+                        &lt;Row>
+                            &lt;Col size={1}>
+                                &lt;button className="btn btn-success margin-top-20" onClick={this.toggleRegisterCrewTypeForm}>Ny kategori&lt;/button>
+                            &lt;/Col>
+                        &lt;/Row>
+                    &lt;/Form.Group>
+
+                    {this.state.showRegisterCrewType?
+                        &lt;div className="padding-bottom-20">
+                            &lt;AddCrewType submit={this.submitCrewType} cancelButton={this.toggleRegisterCrewTypeForm}/>
+                        &lt;/div>
+                        :null}
+
+                    &lt;Form.Group>
+                        &lt;input type="checkbox" onClick={this.handleIsResponsibleChange} className="margin-right-10"/>
+                        &lt;Form.Label>Hovedansvarlig&lt;/Form.Label>
+                    &lt;/Form.Group>
+
+                    &lt;Row className="no-gutter">
+                        &lt;Col className="col-2">
+                        &lt;Button variant="primary" type="button" disabled={!(this.validateForm()==='')} onClick={this.submitForm}>
+                            Lagre
+                        &lt;/Button>
+                        &lt;/Col>
+                        &lt;Col className="col-2">
+                        &lt;Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
+                            Avbryt
+                        &lt;/Button>
+                        &lt;/Col>
+                    &lt;/Row>
+                &lt;Form.Text className={"text-danger"}>{this.validateForm()}&lt;/Form.Text>
+            &lt;/div>
+        )
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        /* Updates the props based on parent state change
+        * sets the current performer to be displayed in card */
+        if(props.crewCategoryList.length === 0) {
+            return {
+                crewCategoryList: [],
+                selectedCategoryID : null
+            };
+        }
+        else if((props.crewCategoryList.length !== 0) &amp;&amp; (props.crewCategoryList !== state.crewCategoryList) &amp;&amp; (state.selectedCategoryID === null)) {
+            return {
+                crewCategoryList: props.crewCategoryList,
+                selectedCategoryID : props.crewCategoryList[0].crewCategoryID
+            };
+        }
+        else if ((props.crewCategoryList.length !== 0) &amp;&amp; (props.crewCategoryList !== state.crewCategoryList)) {
+            return {
+                crewCategoryList: props.crewCategoryList,
+                selectedCategoryID : props.crewCategoryList[props.crewCategoryList.length - 1].crewCategoryID
+            };
+        }
+        return null;
+    }
+
+    toggleRegisterCrewTypeForm = () => {
+        this.setState({showRegisterCrewType : !this.state.showRegisterCrewType})
+    };
+
+    handleNameChange = (event) =>{
+        let currentState = this.state;
+        currentState.name = event.target.value;
+        this.setState(currentState);
+    };
+
+    handlePhoneChange = (event) => {
+        let currentState = this.state;
+        currentState.phone = event.target.value;
+        this.setState(currentState);
+    };
+
+    handleEmailChange = (event) => {
+        let currentState = this.state;
+        currentState.email = event.target.value;
+        this.setState(currentState);
+    };
+
+    handleDescriptionChange = (event) =>{
+        let currentState = this.state;
+        currentState.description = event.target.value;
+        this.setState(currentState);
+    };
+
+    handleIsResponsibleChange = (event) =>{
+        let currentState = this.state;
+        currentState.isResponsible = event.target.checked;
+        this.setState(currentState);
+    };
+
+    handleCategoryChange = (event) =>{
+        let currentState = this.state;
+        currentState.selectedCategoryID = event.target.value;
+        this.setState(currentState);
+    };
+
+    submitForm = () => {
+        if(this.state.name.trim() !== "" &amp;&amp; this.state.phone.trim() !== "" &amp;&amp; this.state.email.trim() !== ""){
+            CrewStore.createCrewMemberForEvent((crew) => {
+                this.props.toggleRegisterCrewMember();
+                this.props.submit(crew);
+            }, this.state.name, this.state.phone, this.state.email, this.state.description, this.state.selectedCategoryID, (this.state.isResponsible ? 1 : 0), EventStore.currentEvent.eventID, CookieStore.currentUserID);
+        }
+        else{
+            if(this.state.name.trim() === ""){
+                Alert.warning("Navn må være fylt ut");
+            }
+
+            if(this.state.phone.trim() === ""){
+                Alert.warning("Telefon må være fylt ut");
+            }
+
+            if(this.state.email.trim() === ""){
+                Alert.warning("Email må være fylt ut");
+            }
+        }
+    };
+
+    submitCrewType = () => {
+        this.props.submitCategory();
+        this.toggleShowCrewType();
+    };
+
+    toggleShowCrewType = () => {
+        this.setState({showRegisterCrewType : !this.state.showRegisterCrewType});
+    };
+
+    cancelRegister = () => {
+        this.setState({
+            name : "",
+            phone : "",
+            email : "",
+            description: "",
+            isResponsible: false});
+        this.props.toggleRegisterCrewMember();
+    };
+}
+
+export class RegisteredCrew extends Component{
+    /* Component that shows the registered crew members to an specific event
+    * Takes in props:
+    * -this.props.categoryList : array to map the categories.
+    * -this.props.crewList : array to map crew members.
+    * -this.props.unassignCrew - send crew object to parent, Removes crew member from event.
+    * -this.changeCard - send crew object to parent to display in crew card. */
+
+    render() {
+        if ((this.props.crewList === null) || (this.props.categoryList === undefined)) {
+            return null;
+        } else {
+            return (
+                &lt;div>
+                    {this.props.crewList.length === 0 ?
+                    &lt;div>Personell er ikke lagt til&lt;/div>
+                    : null }
+                    {this.props.categoryList.map(e => (
+                        &lt;ul key={e.crewCategoryID} className="list-group">
+                            &lt;b className="card-title">{e.crewCategoryName}&lt;/b>
+                            {this.props.crewList !== undefined ? this.props.crewList.filter(c => c.crewCategoryName === e.crewCategoryName).map(c => (
+                                &lt;li key={c.crewCategoryID} className="list-group-item pointer selection" onClick={() => {
+                                    this.showCard(c)
+                                }}>
+                                    &lt;div className="row">
+                                        &lt;div className="col-10">
+                                            {c.contactName}
+                                        &lt;/div>
+
+                                        &lt;div className="col-10">
+                                            {c.isResponsible ? "Hovedansvalig" : null}
+                                        &lt;/div>
+
+                                        &lt;div className="col-2 text-right">
+                                            &lt;button className="btn-danger rounded"
+                                                    onClick={() => this.unassignCrew(c)}>Slett
+                                            &lt;/button>
+                                        &lt;/div>
+                                    &lt;/div>
+                                &lt;/li>
+                            )) : null}
+                        &lt;/ul>
+                    ))}
+                &lt;/div>
+            )
+        }
+    }
+
+    unassignCrew = (crew) => {
+        //Call to parent with crew object to remove from event.
+        this.props.unassignCrew(crew);
+        this.props.refreshCategoryList();
+    };
+
+    showCard = (crew) => {
+        this.props.changeCard(crew);
+    };
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="artistDao.html">artistDao</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="ArtistRegisterRiders.html">ArtistRegisterRiders</a></li><li><a href="ArtistService.html">ArtistService</a></li><li><a href="Bug.html">Bug</a></li><li><a href="bugDao.html">bugDao</a></li><li><a href="BugReview.html">BugReview</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="CheckList.html">CheckList</a></li><li><a href="Contact.html">Contact</a></li><li><a href="contactDao.html">contactDao</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="Content.html">Content</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CreateEventSplash.html">CreateEventSplash</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewContacts.html">CrewContacts</a></li><li><a href="crewDao.html">crewDao</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Dao.html">Dao</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentationTab.html">DocumentationTab</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="Documents.html">Documents</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventCard.html">EventCard</a></li><li><a href="eventDao.html">eventDao</a></li><li><a href="EventForm.html">EventForm</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="EventView.html">EventView</a></li><li><a href="FolderItem.html">FolderItem</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="Info.html">Info</a></li><li><a href="InfoForm.html">InfoForm</a></li><li><a href="LoginDao.html">LoginDao</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="MailService.html">MailService</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="MobileMenu.html">MobileMenu</a></li><li><a href="MyDocuments.html">MyDocuments</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="organizerDao.html">organizerDao</a></li><li><a href="OrganizerStore.html">OrganizerStore</a></li><li><a href="PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerContacts_PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerPanel.html">PerformerPanel</a></li><li><a href="pictureDao.html">pictureDao</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="PictureService.html">PictureService</a></li><li><a href="RegisterForm.html">RegisterForm</a></li><li><a href="RegisterOrganizerService.html">RegisterOrganizerService</a></li><li><a href="riderDao.html">riderDao</a></li><li><a href="RiderElement.html">RiderElement</a></li><li><a href="RiderStore.html">RiderStore</a></li><li><a href="Search.html">Search</a></li><li><a href="SimpleContent.html">SimpleContent</a></li><li><a href="TabContent.html">TabContent</a></li><li><a href="Ticket.html">Ticket</a></li><li><a href="TicketAll.html">TicketAll</a></li><li><a href="ticketDao.html">ticketDao</a></li><li><a href="TicketStore.html">TicketStore</a></li><li><a href="TicketType.html">TicketType</a></li><li><a href="UserPage.html">UserPage</a></li><li>{documentationDao}</li></ul><h3>Global</h3><ul><li><a href="global.html#deleteFile">deleteFile</a></li><li><a href="global.html#ensureFolderExists">ensureFolderExists</a></li><li><a href="global.html#eventPictureStorage">eventPictureStorage</a></li><li><a href="global.html#fileStorage">fileStorage</a></li><li><a href="global.html#fileUpload">fileUpload</a></li><li><a href="global.html#profilePictureStorage">profilePictureStorage</a></li><li><a href="global.html#uploadEventPicture">uploadEventPicture</a></li><li><a href="global.html#uploadUserPicture">uploadUserPicture</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 21:40:15 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

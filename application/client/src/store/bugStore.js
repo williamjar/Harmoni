@@ -26,7 +26,6 @@ export class BugStore extends Component {
         axios.post(axiosConfig.root + '/api/bug/register/' + organizerID, {
             description: description
         }, {headers: header}).then(response => {
-            console.log(response);
             if (response.status === 200) {
                 callback(200);
             } else {
@@ -60,14 +59,12 @@ export class BugStore extends Component {
      * @param {function} callback
      */
     static deleteBug(bugID, callback) {
-        console.log('Running delete bug');
 
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
         return axios.delete(axiosConfig.root + '/api/bug/delete/' + bugID, {headers: header}).then(response => {
-            console.log(response);
             if (response.status === 200){
                 callback(200);
             }

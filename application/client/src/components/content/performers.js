@@ -73,10 +73,18 @@ export class PerformerPanel extends Component{
         );
     }
 
+    /**
+     * Changes genre for current performer
+     * @param {genre}genre
+     * An object with information about genre
+     */
     genreHandler = (genre) => {
         this.setState({genrePerformerSelected : genre});
     };
 
+    /**
+     * Refreshes the array's of performers
+     */
     refreshPerformers = () => {
         ArtistService.getArtistsForEvent((list) => {
             EventStore.currentEvent.artists = list;
@@ -86,6 +94,12 @@ export class PerformerPanel extends Component{
         }, EventStore.currentEvent.eventID);
     };
 
+    /**
+     * Sets the genreName for the current performer showing in performer card.
+     * @param {performer}performer
+     * An object of the type performer
+     * @see Artist
+     */
     setGenreCurrentPerformer = (performer) => {
         ArtistService.getAllGenres((res) => {
             res.map(e => {
@@ -97,6 +111,12 @@ export class PerformerPanel extends Component{
         });
     };
 
+    /**
+     * Removes the performer's association with the current event
+     * @param {artist}artist
+     * An object of the type performer
+     * @see Artist
+     */
     unAssignArtist = (artist) => {
         // Unassign performer from event
         ArtistService.unAssignArtist(EventStore.currentEvent.eventID, artist.artistID).then(res => {
@@ -112,6 +132,12 @@ export class PerformerPanel extends Component{
         });
     };
 
+    /**
+     * Attaches an performer to the current event
+     * @param {performer}selected
+     * An object with information on performer
+     * @see Artist
+     */
     assignArtist = (selected) => {
         //Assign performer to event
         let currentState = this.state;
@@ -122,6 +148,11 @@ export class PerformerPanel extends Component{
         this.setState(currentState);
     };
 
+    /**
+     * Changes the current performer showing in PerformerCard
+     * @param {performer}performer
+     * An object with the information on performer
+     */
     changeCurrentPerformer = (performer) => {
         //Changes the current performer to be showed in performer card
         let currentState = this.state;
@@ -151,6 +182,9 @@ export class PerformerPanel extends Component{
 
     };
 
+    /**
+     * Toggles the visibility of the Register form for Performer
+     */
     toggleRegisterNew = () => {
         let currentState = this.state;
         currentState.showRegisterNew = !currentState.showRegisterNew;
@@ -159,18 +193,29 @@ export class PerformerPanel extends Component{
     };
 
 
+    /**
+     * Hides the performer card
+     */
     hideCard = () => {
         let currentState = this.state;
         currentState.showArtistCard = false;
         this.setState(currentState);
     };
 
+    /**
+     * Toggles the showing of performer card
+     */
     toggleShowCard = () => {
         let currentState = this.state;
         currentState.showArtistCard = !currentState.showArtistCard;
         this.setState(currentState);
     };
 
+    /**
+     * Submit function to store information about artist, the call is submitted to database in parent component
+     * @param {performer}artist
+     * @see Artist, PerformerPanel
+     */
     submitFunction = (artist) => {
         this.assignArtist(artist);
         this.callBackSearchResult();
@@ -178,9 +223,11 @@ export class PerformerPanel extends Component{
 
     };
 
+    /**
+     * Updates the array with all registered performers added by organizer, not event specific.
+     *This is is to be used with search to search against
+     */
     callBackSearchResult = () => {
-        /* Updates the array with all registered performers added by organizer, not event specific.
-        *This is is to be used with search to search against */
         artistService.getArtistForOrganizer((allArtistByOrganizer) => {
             let currentState = this.state;
             currentState.results = allArtistByOrganizer;
@@ -188,9 +235,13 @@ export class PerformerPanel extends Component{
         },CookieStore.currentUserID);
     };
 
+    /**
+     * This searchhandler is called when search result is selected
+     * It then shows the performer card for that performer.
+     * @param {performer}selected
+     * An object with information about performer
+     */
     searchHandler = (selected) => {
-        /* This searchhandler is called when search result is selected
-        * It then shows the performer card for that performer. */
         let currentState = this.state;
         currentState.performerSelected = selected;
         currentState.showArtistCard = true;
@@ -203,8 +254,12 @@ export class PerformerPanel extends Component{
 
 }
 
+/**
+ * @class PerformerCard
+ * @classdesc PerformerCard is the card showing the current performer selected when on the EventPage, user is able to make changes to
+ * performer and add riders
+ */
 export class PerformerCard extends Component{
-    /* Performer card that shows information about artist and riders connected to it */
 
     constructor(props){
         super(props);
@@ -269,7 +324,7 @@ export class PerformerCard extends Component{
 
                         {this.state.riders.map(e =>
                         {if(e.artistID === this.state.performer.artistID){
-                            return <Rider description={e.description} isDone={e.isDone} status={e.status} riderObject={e} deleteRider={this.deleteRider}/>
+                            return <Rider key={e.riderElementID} description={e.description} isDone={e.isDone} status={e.status} riderObject={e} deleteRider={this.deleteRider}/>
 
                         } else {
                             return null
@@ -348,6 +403,11 @@ export class PerformerCard extends Component{
         return null;
     }
 
+    /**
+     * Sets the genre for the current performer
+     * @param {string}event
+     * A string with the genreName to the current performer
+     */
     genreHandler = (event) => {
       this.props.genreHandler(event.target.value);
     };
@@ -367,7 +427,9 @@ export class PerformerCard extends Component{
 
     }
 
-    //TODO: Change states that show if files are added to server
+    /**
+     * Adds documents to performer, contracts, riders i.e.
+     */
     addFile = () =>{
         /* For adding attachments to performer */
         let fileInput = document.querySelector("#uploadAttachmentPerformer");
@@ -405,6 +467,11 @@ export class PerformerCard extends Component{
         }
     };
 
+    /**
+     * Removes rider from artist which is tied to event
+     * @param {rider}rider
+     * An object with information about rider
+     */
     deleteRider = (rider) => {
 
 
@@ -422,6 +489,9 @@ export class PerformerCard extends Component{
         }, EventStore.currentEvent.eventID, rider.artistID, rider.riderID);
     };
 
+    /**
+     * Adds rider to artist, which is tied to event
+     */
     addRider = () =>{
         /* Adds rider to performer on current event */
         if(this.state.riderInput.trim() !== ""){
@@ -440,10 +510,20 @@ export class PerformerCard extends Component{
 
     };
 
+    /**
+     * Handles the checkboxes 'Signed contract', 'Has been payed'
+     * @param {event}event
+     * An event with information whether checkbox is checked or not
+     */
     handleOtherCheckboxes = (event) => {
         this.setState({[event.target.name] : event.target.checked});
     };
 
+    /**
+     * Handles the input on input form for rider and stores it in component state
+     * @param {event}event
+     * Event object with target value
+     */
     handleInputRider = (event) =>{
         /* Handles the rider input for new riders to be added to state variable */
         let currentState = this.state;
@@ -451,6 +531,9 @@ export class PerformerCard extends Component{
         this.setState(currentState);
     };
 
+    /**
+     * Sends email to the performer's email adress with a predefined message
+     */
     sendEmail(){
         ArtistService.getArtistToken(this.state.performer.artistID, EventStore.currentEvent.eventID, (statusCode, token) => {
             if (statusCode === 200 && token){
@@ -482,6 +565,9 @@ export class PerformerCard extends Component{
 
     }
 
+    /**
+     * Gathers all information on performer card and saves it by submitting it to database
+     */
     save = () => {
         /* Save function to gather all information in the Performer Card that needs to be stored */
         Alert.success("Artist lagret");
@@ -515,9 +601,13 @@ export class PerformerCard extends Component{
     }
 }
 
+/**
+ * @class Rider
+ * @classdesc Rider is the component that shows information pertaining to one rider, it receives information through props from
+ * parent and displays it in this component
+ */
 export class Rider extends Component{
-    /* This component shows information pertaining to one rider, it receives information thorugh props from
-    * parent and displays it in this component  */
+
 
     constructor(props){
         super(props);
@@ -564,7 +654,11 @@ export class Rider extends Component{
         this.setState({taskDone : this.props.riderObject.isDone, status : this.props.riderObject.status});
     }
 
-
+    /**
+     * Handles the statusinput on rider card
+     * @param {event}event
+     * Has the string value of the input field
+     */
     handleStatusInput = (event) => {
         this.setState({status : event.target.value}, () => {
             this.props.riderObject.status = this.state.status;
@@ -572,6 +666,11 @@ export class Rider extends Component{
         });
     };
 
+    /**
+     * Handles the checkbox if rider is complete
+     * @param {event}event
+     * Information on whether rider checkbox is checked or not
+     */
     handleCheckBoxInput = (event) => {
         this.props.riderObject.isDone = event.target.checked;
         this.props.riderObject.isModified = true;
@@ -581,13 +680,19 @@ export class Rider extends Component{
 
     };
 
-
+    /**
+     * Removes rider from artist
+     */
     deleteRider = () => {
         this.props.deleteRider(this.props.riderObject);
     }
 
 }
 
+/**
+ * @class RegisterPerformer
+ * @classdesc RegisterPerformer is the form card to register new performers
+ */
 export class RegisterPerformer extends Component{
     /* Component that has the form to register a new performer.
     * Takes in props:
@@ -605,6 +710,11 @@ export class RegisterPerformer extends Component{
         };
     }
 
+    /**
+     * Validates forms
+     * @returns {string}
+     * String with error message
+     */
     validateForm(){
 
         if(!MegaValidator.validateUsernameLength(this.state.name)){
@@ -688,6 +798,11 @@ export class RegisterPerformer extends Component{
     });
     }
 
+    /**
+     * Handles the name change and store it in state
+     * @param {event}event
+     * Holds information on value from input field
+     */
     handleNameChange = (event) => {
         //Updates state with name input field value
             let currentState = this.state;
@@ -695,6 +810,12 @@ export class RegisterPerformer extends Component{
             this.setState(currentState);
     };
 
+
+    /**
+     * Handles the phone number change and store it in state
+     * @param {event}event
+     * Holds information on value from input field
+     */
     handlePhoneChange = (event) => {
         //Updates state with phone input field value
         let currentState = this.state;
@@ -702,6 +823,11 @@ export class RegisterPerformer extends Component{
         this.setState(currentState);
     };
 
+    /**
+     * Handles the email adress change and store it in state
+     * @param {event}event
+     * Holds information on value from input field
+     */
     handleEmailChange = (event) => {
         //Updates state with email input field value
         let currentState = this.state;
@@ -709,6 +835,11 @@ export class RegisterPerformer extends Component{
         this.setState(currentState);
     };
 
+    /**
+     * Handles the performer's genre change and store it in state
+     * @param {event}event
+     * Holds information on value from input field
+     */
     handleGenreChange = (event) => {
         //Updates state with genre input field value
         let currentState = this.state;
@@ -716,6 +847,9 @@ export class RegisterPerformer extends Component{
         this.setState(currentState);
     };
 
+    /**
+     * Clears all field on register new performer card
+     */
     cancelRegisterNew = () =>{
         /* Clears all fields in the register form and toggles display of component */
         let currentState = this.state;
@@ -727,6 +861,9 @@ export class RegisterPerformer extends Component{
         this.props.toggleRegister();
     };
 
+    /**
+     * Collects information from input fields and submits and stores them in database.
+     */
     submitForm = () => {
         if(this.state.name.trim() !== "" && this.state.phone.trim() !== "" && this.state.email.trim() !== ""){
             /* Should check if valid as email address, not able to put type to email because it fucked eveything up */
@@ -753,6 +890,10 @@ export class RegisterPerformer extends Component{
     };
 }
 
+/**
+ * @class RegisteredPerformers
+ * @classdesc RegisteredPerformers is a panel showing all artist assosicated with event
+ */
 export class RegisteredPerformers extends Component{
     /* Component that shows the registered performers to an specific event
     * Takes in props:
@@ -787,13 +928,20 @@ export class RegisteredPerformers extends Component{
         )
     }
 
+    /**
+     * Call to parent to unassign artist from event
+     * @param {performer}artist
+     * Object with information about performer
+     */
     unAssignArtist = (artist) => {
-        //Call to parent with performer object to remove from event.
         this.props.unAssignArtist(artist);
     };
 
+    /**
+     * Call to parent with performer object to show on performer card
+     * @param performer
+     */
     showCard = (performer) => {
-        //Call to parent with selected performer to show performer card
         this.props.changeCard(performer);
     };
 }

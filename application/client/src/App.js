@@ -20,8 +20,15 @@ import {CrewContacts} from "./components/content/contacts/crewContacts";
 import {OrganizerStore} from "./store/organizerStore";
 let history = createHashHistory();
 
+/**
+ * @classdesc The main landing page with routes and log in- / cookie-functionality.
+ */
 export class App extends Component{
 
+    /**
+     *
+     * @param props
+     */
     constructor(props) {
         super(props);
 
@@ -33,18 +40,27 @@ export class App extends Component{
         };
     }
 
+    /**
+     * Used for responsive design. Sets state mobileView to false when transitioning to large screens.
+     */
     turnOffMobileView = () => {
         let currentState = this.state;
         currentState.mobileView = false;
         this.setState(currentState);
     };
 
+    /**
+     *  Used for responsive design. Sets state mobileView to true when transitioning to small screens.
+     */
     turnOnMobileView = () =>{
         let currentState = this.state;
         currentState.mobileView = true;
         this.setState(currentState);
     };
 
+    /**
+     * Calls handleLogin() and adds an eventlistener with a trigger for resizing of the screen.
+     */
     componentDidMount = () => {
         this.handleLogin();
 
@@ -63,12 +79,20 @@ export class App extends Component{
         }
     };
 
+    /**
+     * Removes the screen size EventListener
+     */
     componentWillUnmount() {
         window.removeEventListener('resize', () => {
 
         });
     }
 
+    /**
+     * Updates the user's profile picture
+     * @param {String}profilePicture
+     * Link to the profile picture
+     */
     changeProfilePicture = (profilePicture) => {
         this.setState({profilePicture: profilePicture});
     };
@@ -127,6 +151,10 @@ export class App extends Component{
         this.setState({loggedIn: false});
     };
 
+    /**
+     * Checks if the user's stored token is verified, if not the user is thrown back to the login page.
+     * This gets called for every URL change.
+     */
     handleLogin = () => {
         let currentState = this.state;
 

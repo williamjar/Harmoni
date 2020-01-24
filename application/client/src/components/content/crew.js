@@ -14,8 +14,10 @@ import {MegaValidator} from "../../megaValidator";
 import {MailService} from "../../store/mailService";
 
 /**
- * @class CreateEventSplash
- * @classdesc Component for creating a new event.
+ * @class CrewPanel
+ * @classdesc Crewpanel is the edit page for crew members in an event, this.state keeps track of which components
+ * it should display at a given time and also holds the crew member who is selected for display on crew card, show the
+ * different crew categories added to the event and as well as an array (results) that is used to be searched against
  */
 export class CrewPanel extends Component{
 
@@ -196,12 +198,17 @@ export class CrewPanel extends Component{
         let currentState = this.state;
         currentState.crewSelected = crew;
         currentState.showCrewCard = true;
+        currentState.showRegisterNew = false;
         this.setState(currentState);
         this.setCategoryCurrentCrew();
-        this.hideRegisterNew();
     };
 }
 
+
+/**
+ * @class AddCrewType
+ * @classdesc AddCrewType is an edit card for crew members where a new crew category can be added
+ */
 export class AddCrewType extends Component{
     constructor(props){
         super(props);
@@ -259,6 +266,12 @@ export class AddCrewType extends Component{
     };
 }
 
+/**
+ * @class CrewCard
+ * @classdesc CrewCard is a card for crew members in an event, where the organizer can assign members from the crew catalogue
+ * and see assigned category and contact on already added members. General contact info and status is also available in
+ * the CrewCard
+ */
 export class CrewCard extends Component{
     /* Crew card that shows information about crew members */
 
@@ -428,6 +441,12 @@ export class CrewCard extends Component{
     }
 }
 
+/**
+ * @class AddCrewMember
+ * @classdesc AddCrew member is a component that registers new crew members. Category must be selected, and the
+ * crew member will automatically be assigned to the current event. Crew members created in this component will be
+ * added to the organizer's catalogue and they can be assigned to other events in other categories.
+ */
 export class AddCrewMember extends Component{
 
     constructor(props){
@@ -648,13 +667,18 @@ export class AddCrewMember extends Component{
     };
 }
 
+/**
+ * @class RegisteredCrew
+ * @classdesc Registered crew is a component that shows the registered crew members to a specific event
+ * Takes in props:
+ * -this.props.categoryList : array to map the categories.
+ * -this.props.crewList : array to map crew members.
+ * -this.props.unassignCrew - send crew object to parent, Removes crew member from event.
+ * -this.props.refreshCategoryList - refreshes the category list
+ * -this.propschangeCard - send crew object to parent to display in crew card.
+ */
 export class RegisteredCrew extends Component{
-    /* Component that shows the registered crew members to an specific event
-    * Takes in props:
-    * -this.props.categoryList : array to map the categories.
-    * -this.props.crewList : array to map crew members.
-    * -this.props.unassignCrew - send crew object to parent, Removes crew member from event.
-    * -this.changeCard - send crew object to parent to display in crew card. */
+
 
     render() {
         if ((this.props.crewList === null) || (this.props.categoryList === undefined)) {

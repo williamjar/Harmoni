@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/components/bugReview.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/components/bugReview.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {Component} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Card from "react-bootstrap/Card";
+import FormGroup from "react-bootstrap/FormGroup";
+import FormControl from "react-bootstrap/FormControl";
+import FormLabel from "react-bootstrap/FormLabel";
+import Button from "react-bootstrap/Button";
+import {BugStore} from "../store/bugStore";
+import {MailService} from "../store/mailService";
+import {OrganizerStore} from "../store/organizerStore";
+import ListGroup from "react-bootstrap/ListGroup";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import {Alert} from "../components/alerts";
+import {CookieStore} from "../store/cookieStore";
+
+let reportBugs = "Hjelp oss med å finne feil i systemet";
+let listBugs = "Feil du alt har rapportert inn";
+
+/**
+ * @class BugReview
+ * @classdesc Component for submitting and displaying bugs.
+ */
+export class BugReview extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            description: '',
+            bugList: []
+        };
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+
+    render() {
+        return (
+            &lt;Card.Body>
+                &lt;FormGroup controlId="ControlTextarea" className="bugWindow">
+                    &lt;FormLabel>
+                        {reportBugs}
+                    &lt;/FormLabel>
+                    &lt;Row>
+                        &lt;Col>
+                        &lt;FormControl
+                            as="textarea" rows="5"
+                            name="description"
+                            placeholder="Skriv din tilbakemelding her"
+                            value={this.state.description}
+                            onChange={this.handleInputChange}
+                        />
+                        &lt;/Col>
+                    &lt;/Row>
+                    &lt;Row>
+                        &lt;Col size={12} className="text-right">
+                        &lt;Button className="bugButton btn-lg" variant="success" onClick={this.handleSubmit}>Publiser&lt;/Button>
+                        &lt;/Col>
+                    &lt;/Row>
+                &lt;/FormGroup>
+
+                &lt;FormGroup className="bugWindow">
+                    &lt;FormLabel className="bugLabel w-100 padding-top-10 padding-bottom-10">{listBugs}&lt;/FormLabel>
+                    &lt;ListGroup>
+                        {this.state.bugList.map(bug => (
+                            &lt;ListGroup.Item key={bug.bugID}>
+                                &lt;Row>
+                                    &lt;Col sm={8}>
+                                        {bug.description}
+                                    &lt;/Col>
+                                    &lt;Col sm={2} >
+                                        {this.formatDate(bug.date)}
+                                    &lt;/Col>
+                                    &lt;Col sm={2} align={"right"}>
+                                        &lt;button id={bug.bugID} onClick={this.deleteBug} className="btn btn-danger">Slett&lt;/button>
+                                    &lt;/Col>
+                                &lt;/Row>
+
+                            &lt;/ListGroup.Item>
+                        ))}
+                    &lt;/ListGroup>
+                &lt;/FormGroup>
+
+            &lt;/Card.Body>
+        )
+    }
+
+    componentDidMount() {
+        this.listBugs();
+    }
+
+    /*
+       Changes the this.state.description when text is put inn.
+     */
+
+    handleInputChange(event) {
+        let target = event.target;
+        let value = target.type === 'checkbox' ? target.checked : target.value;
+        let name = target.name;
+        this.setState({[name]: value,});
+
+    }
+
+    /*
+        Saves the input to the database when pushed.
+        Also updates the list with registrated bugs.
+     */
+    handleSubmit(event) {
+        event.preventDefault();
+        if (this.state.description === '') {
+            Alert.info("Tilbakemeldingen kan ikke være tom")
+        } else {
+            BugStore.registerBug(OrganizerStore.currentOrganizer.organizerID, this.state.description, statusCode => {
+                if (statusCode === 200) {
+                    MailService.sendGeneralEmailToOne("bedriftharmoni@gmail.com", "Bug Report",
+                        "Følgende bug har blitt registrert.\n\nBruker: " + OrganizerStore.currentOrganizer.username +
+                        "\nUserID: " + OrganizerStore.currentOrganizer.organizerID + "\nBeskrivelse: \"" + this.state.description + "\"",
+                        null,
+                        (mailStatus) => {
+                            if (mailStatus === 200){
+                                Alert.info("Din tilbakemelding ble registrert")
+                                this.setState({description : ""});
+                            }
+                            else{
+                                Alert.info("Din tilbakemelding ble registrert, men det skjedde en glipp med vårt mailsystem, og vi vil ikke bli informert om bug'en. Vennligst prøv igjen om du ønsker det, eller send en epost til bedriftharmoni@gmail.com");
+                            }
+                        });
+                    BugStore.getAllBugsFromOrganizer(OrganizerStore.currentOrganizer.organizerID, () => {
+                        this.setState({bugList: BugStore.allBugsReportedByOrganizer})
+                    });
+                } else {
+                    Alert.warning("Det oppsto et problem. Prøv igjen, eller ta kontakt med oss!")
+                }
+            });
+        }
+    };
+
+    /*
+        List all all bugs from the database to from one organizer.
+    */
+    listBugs = () => {
+        OrganizerStore.getOrganizer(CookieStore.currentUserID, (statusCode) => {
+            if (statusCode === 200){
+                BugStore.getAllBugsFromOrganizer(OrganizerStore.currentOrganizer.organizerID, () => {
+                    this.setState(
+                        {bugList: BugStore.allBugsReportedByOrganizer})
+                });
+            }
+        });
+    };
+
+    /*
+        Deletes a selected bug from the database. 
+     */
+    deleteBug = (event) => {
+        BugStore.deleteBug(event.target.id, statusCode => {
+            if (statusCode === 200) {
+                Alert.success("Din tilbakemelding ble slettet!");
+                this.listBugs();
+            } else {
+                Alert.warning("Det oppsto et problem. Prøv igjen, eller ta kontakt med oss!");
+            }
+        }).then(r => console.log('Deleting done'));
+
+    };
+
+    // Converts the date of an event to a more readable format
+    formatDate = (d) => {
+        let options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+        let date = new Date(d);
+        return date.toLocaleDateString("nb-NO", options).toLocaleUpperCase();
+    }
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="artistDao.html">artistDao</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="ArtistRegisterRiders.html">ArtistRegisterRiders</a></li><li><a href="ArtistService.html">ArtistService</a></li><li><a href="Bug.html">Bug</a></li><li><a href="bugDao.html">bugDao</a></li><li><a href="BugReview.html">BugReview</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="CheckList.html">CheckList</a></li><li><a href="Contact.html">Contact</a></li><li><a href="contactDao.html">contactDao</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="Content.html">Content</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CreateEventSplash.html">CreateEventSplash</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewContacts.html">CrewContacts</a></li><li><a href="crewDao.html">crewDao</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Dao.html">Dao</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentationTab.html">DocumentationTab</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="Documents.html">Documents</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventCard.html">EventCard</a></li><li><a href="eventDao.html">eventDao</a></li><li><a href="EventForm.html">EventForm</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="EventView.html">EventView</a></li><li><a href="FolderItem.html">FolderItem</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="Info.html">Info</a></li><li><a href="InfoForm.html">InfoForm</a></li><li><a href="LoginDao.html">LoginDao</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="MailService.html">MailService</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="MobileMenu.html">MobileMenu</a></li><li><a href="MyDocuments.html">MyDocuments</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="organizerDao.html">organizerDao</a></li><li><a href="OrganizerStore.html">OrganizerStore</a></li><li><a href="PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerContacts_PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerPanel.html">PerformerPanel</a></li><li><a href="pictureDao.html">pictureDao</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="PictureService.html">PictureService</a></li><li><a href="RegisterForm.html">RegisterForm</a></li><li><a href="RegisterOrganizerService.html">RegisterOrganizerService</a></li><li><a href="riderDao.html">riderDao</a></li><li><a href="RiderElement.html">RiderElement</a></li><li><a href="RiderStore.html">RiderStore</a></li><li><a href="Search.html">Search</a></li><li><a href="SimpleContent.html">SimpleContent</a></li><li><a href="TabContent.html">TabContent</a></li><li><a href="Ticket.html">Ticket</a></li><li><a href="TicketAll.html">TicketAll</a></li><li><a href="ticketDao.html">ticketDao</a></li><li><a href="TicketStore.html">TicketStore</a></li><li><a href="TicketType.html">TicketType</a></li><li><a href="UserPage.html">UserPage</a></li><li>{documentationDao}</li></ul><h3>Global</h3><ul><li><a href="global.html#deleteFile">deleteFile</a></li><li><a href="global.html#ensureFolderExists">ensureFolderExists</a></li><li><a href="global.html#eventPictureStorage">eventPictureStorage</a></li><li><a href="global.html#fileStorage">fileStorage</a></li><li><a href="global.html#fileUpload">fileUpload</a></li><li><a href="global.html#profilePictureStorage">profilePictureStorage</a></li><li><a href="global.html#uploadEventPicture">uploadEventPicture</a></li><li><a href="global.html#uploadUserPicture">uploadUserPicture</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 21:40:15 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -15,22 +15,6 @@ export class RiderStore {
         this.allRidersForCurrentEvent.push(rider);
     }
 
-    // TODO DELETE?
-    static getRider(riderID) {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        return axios.get(axiosConfig.root + '/api/rider/' + riderID, {headers: header})
-            .then(response => {
-                    return new RiderElement(response.data[0].riderID, response.data[0].artistID,
-                        response.data[0].eventID, response.data[0].status, response.data[0].isDone,
-                        response.data[0].description);
-                }
-            )
-            .catch(error => console.log(error));
-    }
 
     /**
      * Fills the allRidersForCurrentEvent variable with rider objects belonging to a specific event via data from the database.
@@ -46,15 +30,10 @@ export class RiderStore {
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/rider', {headers: header})
             .then(response => {
 
-                console.log(response);
-
                 this.allRidersForCurrentEvent = response.data.map(data => (
                     new RiderElement(data.riderElementID, data.artistID,
                         data.status, (data.isDone === 1), data.description)
                 ));
-
-                console.log(this.allRidersForCurrentEvent);
-
                 callback();
             })
             .catch(error => console.log(error));
@@ -119,7 +98,6 @@ export class RiderStore {
      * @param {string} description - A description of the rider element.
      */
     static updateRider(callback, riderElementID, artistID, eventID, status, isDone, description) {
-        console.log("From rider store: " + riderElementID + artistID + eventID + status + isDone + description);
 
         let header = {
             "Content-Type": "application/json",

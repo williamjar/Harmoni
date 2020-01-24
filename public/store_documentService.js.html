@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: store/documentService.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: store/documentService.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from "axios";
+import {Document} from "../classes/document.js"
+import {DocumentCategory} from "../classes/documentCategory";
+import {CookieStore} from "./cookieStore";
+import {Contact} from "../classes/contact";
+
+const axiosConfig = require("./axiosConfig");
+
+/**
+ * @class DocumentService
+ * @classdesc Store Class for functions related to accessing and modifying documents.
+ */
+export class DocumentService {
+
+    /**
+     * Returns all documents for a document category for a specific event in a list of document objects created with data from the database
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} documentCategoryID - The databaseID of the document category
+     * @param {function} callback
+     */
+    static getAllDocumentsByCategoryForEvent(eventID, documentCategoryID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let documentsByCategoryForEvent = [];
+
+        axios.get(axiosConfig.root + '/api/' + eventID + '/documents/category/' + documentCategoryID, {headers: header}).then(response => {
+            for (let i = 0; i &lt; response.data.length; i++) {
+                documentsByCategoryForEvent.push(new Document(response.data[i].documentID, response.data[i].eventID,
+                    response.data[i].documentName, response.data[i].documentLink, response.data[i].artistID,
+                    response.data[i].crewID, response.data[i].documentCategoryID));
+            }
+            callback(documentsByCategoryForEvent);
+        });
+    }
+
+    /**
+     * Returns all documents for a specific artist in a list of document objects created with data from the database
+     * @param {int} artistID - The databaseID of the artist
+     * @param {int} eventID - The database ID of the event.
+     * @param {String} token - Generated token for artist to get access
+     * @param {function} callback
+     */
+    static getAllDocumentsForArtist(artistID, eventID, token, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": token
+        };
+
+        axios.get(axiosConfig.root + "/artistapi/artist/documents/" + eventID + "/" + artistID, {headers: header})
+            .then(response => {
+                if (response.data) {
+                    const documents = response.data.map(document => {
+                        return {
+                            documentID: document.documentID,
+                            documentLink: document.documentLink,
+                            documentName: document.documentLink.split("_").splice(-1)[0]
+                        };
+                    });
+                    callback(200, documents);
+                } else {
+                    callback(500);
+                }
+            });
+    }
+
+
+    /**
+     * Adds a new document to the database. Document can be attached to either a crew member or an artist.
+     * TODO is category here needed?
+     * @param {int} eventID - The database ID of the event.
+     * @param {String} category - The category to add the event to
+     * @param {int} artistID - The database ID of the artist to attach the document to. This and crewID can be left as null.
+     * @param {int} crewID - The database ID of the crew to attach the document to. This and artistID can be left as null.
+     * @param {int} documentCategoryID - The database ID of the document category to add the document to.
+     * @param {FormData} file - TODO
+     * @param {function} callback
+     */
+    static addDocument(eventID, category, artistID, crewID, documentCategoryID, file, callback) {
+        console.log(eventID + "," + documentCategoryID);
+        console.log(file.get("selectedFile"));
+
+        let header = {
+            "x-access-token": CookieStore.currentToken
+        };
+
+        axios.post('http://localhost:8080/api/file/document/' + eventID + '/' + documentCategoryID, file, {headers: header})
+            .then(response => {
+                let databaseHeader = {
+                    "Content-Type": "application/json",
+                    "x-access-token": CookieStore.currentToken
+                };
+
+                if (!response.data.error) {
+                    console.log(response.data);
+
+                    const path = response.data.path;
+                    const name = response.data.name.split("_")[1];
+
+                    //eventID, documentName, link, artistID, crewID, categoryID
+                    let body = {
+                        eventID: eventID,
+                        documentName: name,
+                        documentLink: path,
+                        artistID: artistID,
+                        crewID: crewID,
+                        documentCategoryID: documentCategoryID
+                    };
+
+                    console.log(body);
+
+                    axios.post('http://localhost:8080/api/document', JSON.stringify(body), {headers: databaseHeader}).then(() => {
+                        console.log(response.status);
+                        console.log(response.data);
+                        if (response.status === 200 &amp;&amp; response.data.name) {
+                            let returnData = {
+                                "documentLink": path,
+                                "documentID": response.data.insertId
+                            };
+                            callback(200, returnData);
+                        } else {
+                            callback(501, {"error": "An error occurred regarding saving file information to DB."});
+                        }
+                    });
+                }
+
+            });
+    }
+
+    /**
+     * Allows the artist to upload a document and store it in the database.
+     * @param {String} artistToken - Generated token for artist to get access
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} artistID - The database ID of the artist to attach the document to. Either this or crewID is left as null.
+     * @param {FormData} file - The database ID of the crew to attach the document to. Either this or artistID is left as null.
+     * @param {function} callback
+     */
+    static addDocumentFromArtistPage(artistToken, eventID, artistID, file, callback) {
+
+        let header = {
+            "x-access-token": artistToken
+        };
+
+        axios.post('http://localhost:8080/artistapi/file/document/' + eventID + '/2', file, {headers: header})
+            .then(response => {
+                let databaseHeader = {
+                    "Content-Type": "application/json",
+                    "x-access-token": artistToken
+                };
+
+                if (!response.data.error) {
+
+                    const path = response.data.path;
+                    const name = response.data.name.split("_")[1];
+
+                    //eventID, documentName, link, artistID, crewID, categoryID
+                    let body = {
+                        eventID: eventID,
+                        documentName: name,
+                        documentLink: path,
+                        artistID: artistID,
+                        crewID: null,
+                        documentCategoryID: 2
+                    };
+
+                    axios.post('http://localhost:8080/artistapi/document', JSON.stringify(body), {headers: databaseHeader}).then(dataResponse => {
+
+                        if (response.status === 200 &amp;&amp; response.data.name) {
+                            console.log(dataResponse.data);
+                            let returnData = {
+                                "documentLink": path,
+                                "documentID": dataResponse.data.insertId
+                            };
+                            callback(200, returnData);
+                        } else {
+                            callback(501, {"error": "An error occurred regarding saving file information to DB."});
+                        }
+                    });
+                }
+
+            });
+    }
+
+    static deleteDocument(documentID, documentLink) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        console.log("ID " + documentID + " Link ");
+        axios.delete(axiosConfig.root + '/api/document/' + documentID + '/' + documentLink, {headers: header})
+            .catch(error => console.log(error));
+    }
+
+    static getAllDocumentCategories(callback){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        axios.get(axiosConfig.root + "/api/document/categories", {headers: header})
+            .then(response => {
+                console.log(response.data);
+                let categories = response.data.map(dataPiece => new DocumentCategory(dataPiece.documentCategoryID, dataPiece.documentCategoryName));
+                console.log(categories);
+                callback(categories);
+            }).catch(callback(null)).catch(err => console.log(err));
+    }
+
+    /**
+     * Returns a list of Document Category objects associated to an event created with data from the database in the callback.
+     * @param {int} eventID - The database ID of the event.
+     * @param {function} callback
+     */
+    static getAllDocumentCategoriesForEvent(eventID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let currentCategories = [];
+
+        axios.get(axiosConfig.root + '/api/event/' + eventID + '/documents/categories', {headers: header}).then(response => {
+            for (let i = 0; i &lt; response.data.length; i++) {
+                currentCategories.push(new DocumentCategory(response.data[i].documentCategoryID,
+                    response.data[i].documentCategoryName));
+            }
+
+            callback(currentCategories);
+        }).catch(res => console.log(res));
+    }
+
+    /**
+     * Returns a contact object for an artist created with data from the database in the callback.
+     * @param {int} documentID - Generated token for artist to get access
+     * @param {function} callback
+     */
+    static getArtistInfoConnectedToDocument(documentID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let artist;
+        axios.get(axiosConfig.root + '/api/document/info/artist/' + documentID, {headers: header}).then(response => {
+           if(response.data[0] !== undefined){
+               console.log("Lengde artist: " + response.data.length);
+               console.log("Data: " + response.data[0].contactName);
+               artist = new Contact(response.data[0].contactID, response.data[0].contactName,response.data[0].phone,response.data[0].email);
+               callback(artist);
+           }
+            return undefined;
+        }).catch(res => console.log(res));
+    }
+
+    /**
+     * Returns a contact object for a crew member created with data from the database in the callback.
+     * @param {int} documentID - Generated token for artist to get access
+     * @param {function} callback
+     */
+    static getCrewInfoConnectedToDocument(documentID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        let crew;
+        axios.get(axiosConfig.root + '/api/document/info/crew/' + documentID, {headers: header}).then(response => {
+            if(response.data[0] !== undefined){
+                crew = new Contact(response.data[0].contactID, response.data[0].contactName,response.data[0].phone,response.data[0].email);
+                callback(crew);
+            }
+            return undefined;
+        }).catch(res => console.log(res));
+    }
+
+    static downloadDocument(documentLink, documentName){
+        axios.get(axiosConfig.root + '/document/download/' + documentLink,
+            {responseType: 'arraybuffer'}).then(res => {
+            let url;
+
+            //Checks which content-type is correct to file extension name
+            //jpg/jpeg image
+            if((/\.(jpeg)$/i).test(documentLink)){
+               url = window.URL.createObjectURL(new Blob([res.data]
+                    ,{type: "image/jpeg"}));
+            }
+
+            else if((/\.(jpg)$/i).test(documentLink)){
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    ,{type: "image/jpeg"}));
+            }
+
+            //Png image
+            else if ((/\.(png)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "image/png"}));
+            }
+
+            //Postscript
+            else if ((/\.(ai)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/postscript"}));
+            }
+
+            //PDF
+            else if ((/\.(pdf)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/pdf"}));
+            }
+            //Microsoft Powerpoint
+            else if ((/\.(pptx)$/i).test(documentLink) || (/\.(ppt)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/vnd.openxmlformats-officedocument.presentationml.presentation"}));
+            } else if ((/\.(ppt)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/vnd.ms-powerpoint"}));
+            }
+            //Microsoft Excel
+            else if ((/\.(xlsx)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+            } else if ((/\.(xls)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/vnd.ms-excel"}));
+            }
+
+            //Microsoft Word
+            else if ((/\.(docx)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}));
+            } else if ((/\.(doc)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/msword"}));
+            }
+            //Compressed File
+            else if ((/\.(rar)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/x-rar-compressed"}));
+            } else if ((/\.(7z)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/x-7z-compressed"}));
+            } else if ((/\.(zip)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/zip"}));
+            }
+            //Rich text format
+
+            else if ((/\.(rtf)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "application/rtf"}));
+            } else if ((/\.(rtx)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "text/richtext"}));
+            } else {
+                console.log("There are no MIME support to " + documentLink);
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: ""}));
+            }
+            let link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', documentName);
+            document.body.appendChild(link);
+            link.click();
+        });
+        console.log("Downloading document...");
+    }
+
+    /**
+     * Previews a document via a link from the server.
+     * @param {String} documentLink - The link to access the document.
+     */
+    static previewDocument(documentLink) {
+        if ((/\.(pdf)$/i).test(documentLink)) {
+            axios.get(axiosConfig.root + '/file/preview/' + documentLink, {
+                method: "GET",
+                responseType: "blob"
+                //Force to receive data in a Blob Format
+            }).then(response => {
+                //Create a Blob from the PDF Stream
+                console.log(response.data);
+                const file = new Blob([response.data], {
+                    type: "application/pdf"
+                });
+                //Build a URL from the file
+                const fileURL = URL.createObjectURL(file);
+                //Open the URL on new Window
+                window.open(fileURL);
+            })
+                .catch(error => {
+                    console.log(error);
+                });
+        } else {
+            console.log("Can only preview pdf documents");
+        }
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="Bug.html">Bug</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="Contact.html">Contact</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewCategoryEvent.html">CrewCategoryEvent</a></li><li><a href="CrewLeader.html">CrewLeader</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginForm__mounted.html">_mounted</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="RiderElement.html">RiderElement</a></li></ul><h3>Global</h3><ul><li><a href="global.html#This">This</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 15:07:29 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
