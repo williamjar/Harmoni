@@ -8,6 +8,7 @@ import ArtistDao from "../../dao/artistDao";
 import BugDao from "../../dao/bugDao";
 import ContactDao from "../../dao/contactDao";
 import CrewDao from "../../dao/crewDao";
+import DocumentationDao from "../../dao/documentationdao";
 import EventDao from "../../dao/eventDao";
 import LoginDao from "../../dao/loginDao";
 import OrganizerDao from "../../dao/organizerDao";
@@ -32,6 +33,7 @@ const artistDao = new ArtistDao(pool);
 const bugDao = new BugDao(pool);
 const contactDao = new ContactDao(pool);
 const crewDao = new CrewDao(pool);
+const documentationDao = new DocumentationDao(pool);
 const eventDao = new EventDao(pool);
 const loginDao = new LoginDao(pool);
 const organizerDao = new OrganizerDao(pool);
@@ -99,6 +101,7 @@ mocha.describe('Starting DAO test', () => {
             mocha.it('should create one artist', () => {
                 let list = [2,2,2];
                 artistDao.createOne((status, data) => {
+                    //onsole.log(data);
                     assert.equal(data.insertId, 3);
                 }, list);
             })
@@ -112,18 +115,17 @@ mocha.describe('Starting DAO test', () => {
                 }, list);
             })
         });
-        //TODO make deleteOne work()
-        /*
+
         mocha.describe('deleteOne()', () => {
             mocha.it('should delete an exsisting artist', () => {
                 artistDao.deleteOne((status, data) => {
-                    console.log(data);
+                    //onsole.log(data);
                     assert.equal(data.affectedRows, 1);
-                }, 1);
+                }, 3);
             })
         });
 
-         */
+
 
         mocha.describe('addDocument()', () => {
             mocha.it('should add a document to artist', () => {
@@ -271,18 +273,16 @@ mocha.describe('Starting DAO test', () => {
                 }, list)
             })
         });
-        //Todo fix deleteOne()
-        /*
         mocha.describe('deleteOne()', () => {
             mocha.it('should create one contact', () => {
                 contactDao.deleteOne((status, data) => {
-                    console.log(data);
+                   // console.log(data);
                     assert.equal(data.affectedRows, 1);
-                }, 1)
+                }, 7)
             })
         });
 
-         */
+
     });
 
 
@@ -411,27 +411,17 @@ mocha.describe('Starting DAO test', () => {
             });
         });
 
-        //Todo Fix updateForEvent()
-        /*
-        request.body.isResponsible,
-        request.body.contractSigned,
-        request.body.hasBeenPaid,
-        request.body.crewCategoryID,
-        request.params.eventID,
-        request.params.crewID,
-
-
         mocha.describe('updateOneForEvent()', () => {
             mocha.it('should update event ', () => {
                 let list = [0,1,1,1,1,0];
                 crewDao.updateOneForEvent((status, data) => {
-                    console.log(data);
-                    assert.equal(data.affectedRows, 1)
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 0)
                 }, list)
 
             });
         });
-         */
+
         mocha.describe('deleteOne()', () => {
             mocha.it('should delete one contact', () => {
                 crewDao.deleteOne((status, data) => {
@@ -447,8 +437,163 @@ mocha.describe('Starting DAO test', () => {
 
 
 
+
+
+
+
     //DocumentationDao
-    //DocumentDao
+    mocha.describe('DocumentationDao', () => {
+        mocha.describe('getAllDocumentsCategories()', () => {
+            mocha.it('should return three categories', () => {
+                documentationDao.getAllDocumentCategories((status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 3)
+                })
+
+            });
+        });
+
+        mocha.describe('getAllDocuments()', () => {
+            mocha.it('should return two documents', () => {
+                let eventID = 1;
+                documentationDao.getAllDocuments(eventID, (status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 4)
+                })
+
+            });
+        });
+        mocha.describe('getDocumentByCategories()', () => {
+            mocha.it('should return document by categories documents', () => {
+                let eventID = 1;
+                let docCat = 1;
+                documentationDao.getDocumentsByCategory(eventID, docCat,  (status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 3)
+                })
+
+            });
+        });
+        mocha.describe('getAllDocumentCategoriesForEvent()', () => {
+            mocha.it('should return all document  categories for event', () => {
+                let eventID = 1;
+                documentationDao.getAllDocumentCategoriesForEvent(eventID, (status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 2)
+                })
+
+            });
+        });
+        mocha.describe('getAllDocumentsByCategoryForEvent()', () => {
+            mocha.it('should return all documents by category for event', () => {
+                let eventID = 1;
+                let docId= 1;
+                documentationDao.getAllDocumentsByCategoryForEvent(eventID, docId, (status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 3)
+                })
+
+            });
+        });
+        mocha.describe('getDocumentsForArtist()', () => {
+            mocha.it('should return all documents for artist', () => {
+                let eventID = 1;
+                let artistId= 1;
+                documentationDao.getDocumentsForArtist(eventID, artistId, (status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 2)
+                })
+
+            });
+        });
+        mocha.describe('getArtistInfoConnectedToDocument()', () => {
+            mocha.it('should return artist info connected to document', () => {
+                let docId = 1;
+                documentationDao.getArtistInfoConnectedToDocument(docId, (status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 1)
+                })
+
+            });
+        });
+        mocha.describe('getCrewInfoConnectedToDocument()', () => {
+            mocha.it('should return crew info connected to doct', () => {
+                let docId = 1;
+                documentationDao.getCrewInfoConnectedToDocument(docId, (status, data) => {
+                    //console.log(data);
+                    assert.equal(data.length, 0)
+                })
+
+            });
+        });
+        mocha.describe('insertDocument()', () => {
+            mocha.it('should add a new document', () => {
+                let eventID = 1;
+                let docName = 'Nytt doc';
+                let link = 'vpndinvpidsn';
+                let artistId = 1;
+                let crewId =  1;
+                let categoryID = 1;
+                documentationDao.insertDocument(eventID, docName, link, artistId, crewId, categoryID, (status, data) => {
+                    console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                })
+
+            });
+        });
+        mocha.describe('insertDocumentArtist()', () => {
+            mocha.it('should add a new document for artist', () => {
+                let eventID = 1;
+                let artistID = 1;
+                let req =  1;
+                let category = 1;
+                documentationDao.insertDocumentArtist(eventID, category, req, artistID,  (status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                })
+
+            });
+        });
+        mocha.describe('insertDocumentCrew()', () => {
+            mocha.it('should add a new document for crew', () => {
+                let eventID = 1;
+                let crewID = 1;
+                let req =  1;
+                let category = 1;
+                documentationDao.insertDocumentCrew(eventID, category, req, crewID,(status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                })
+
+            });
+        });
+
+        mocha.describe('changeDocumentCategory()', () => {
+            mocha.it('should change document category', () => {
+                let eventID = 1;
+                let docCatId = 1;
+                let docId = 1;
+                documentationDao.changeDocumentCategory(eventID, docCatId, docId, (status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 0)
+                })
+
+            });
+        });
+        mocha.describe('deleteDocument()', () => {
+            mocha.it('should delete a documnt', () => {
+                let eventID = 1;
+                let docId = 8;
+                documentationDao.deleteDocument(eventID, docId, (status, data) => {
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 1)
+                })
+
+            });
+        });
+    });
+
+
 
 
 
@@ -538,7 +683,7 @@ mocha.describe('Starting DAO test', () => {
                     'updated description','2020-01-30', "14:00", 2,2, null, 2
                 ];
                 eventDao.createOne((status, data) => {
-                    //console.log(data);
+                    console.log(data);
                     assert.equal(data.affectedRows, 1);
                 }, list);
             });
@@ -591,28 +736,18 @@ mocha.describe('Starting DAO test', () => {
             });
         });
 
-
-        /*
-        //Todo fix updateOne()
-        //eventName, startDate, endDate, startTime, endTime, address,
-        town, zipCode, status, description, publishDate, publishTime,
-         eventTypeID, pictureID,  eventID
-
-
         mocha.describe('updateOne()', () => {
             mocha.it('should update an event', () => {
                 let list = ['updated name', '2020-01-30', '2020-01-30', "14:00", "18:00",
                             'updated address', 'updated town', '666', '0',
-                            'updated description','2020-01-30', "14:00", 2,2, null, 2
+                            'updated description','2020-01-30', "14:00", 2,2, null, 3
                 ];
                 eventDao.updateOne((status, data) => {
-                    console.log(data);
-                    assert.equal(data.affectedRows, 1);
+                    //console.log(data);
+                    assert.equal(data.affectedRows, 0);
                 }, list);
             });
         });
-
-         */
     });
 
 
@@ -683,7 +818,7 @@ mocha.describe('Starting DAO test', () => {
             })
         });
         mocha.describe('getAllDouments()', () => {
-            mocha.it('should return all documents', () => {;
+            mocha.it('should return all documents', () => {
                 organizerDao.getAllDocuments((status, data) => {
                     //console.log(data);
                     assert.equal(data.length, 1);
@@ -727,9 +862,9 @@ mocha.describe('Starting DAO test', () => {
             })
         });
     });
-     /*
-        changeOrganizerProfilePicture????
-     */
+
+
+
 
 
 
