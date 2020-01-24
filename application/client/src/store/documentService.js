@@ -233,8 +233,8 @@ export class DocumentService {
     }
 
     static downloadDocument(documentLink, doucmentName){
-        axios.get(axiosConfig.root + '/api/document/download/' + documentLink,
-            {responseType: 'arraybuffer',"x-access-token": CookieStore.currentToken}).then(res => {
+        axios.get(axiosConfig.root + '/document/download/' + documentLink,
+            {responseType: 'arraybuffer'}).then(res => {
             let url;
 
             //Checks which content-type is correct to file extension name

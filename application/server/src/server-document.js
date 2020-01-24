@@ -367,7 +367,7 @@ app.get("/file/preview/:path*", (req, res) => {
     }
 });
 
-app.get("/api/document/download/:path*", (req, res) => {
+app.get("/document/download/:path*", (req, res) => {
     var file = req.params.path + req.params['0'];
     fs.readFile(file, function(err, data){
         //jpg image
