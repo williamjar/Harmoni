@@ -2,7 +2,7 @@ import {Organizer} from "./organizer";
 
 /**
  * @class {Bug}
- * Class used to store all the information needed to report a bug
+ * @classdesc Class used to store all the information needed to report a bug
  */
 export class Bug{
 
