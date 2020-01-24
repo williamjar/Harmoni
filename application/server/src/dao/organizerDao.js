@@ -34,9 +34,7 @@ module.exports = class documentDao extends Dao {
         super.query("UPDATE organizer SET pictureID = ? where organizerID = ?", [pictureID, organizerID], callback);
     }
 
-
-//TODO: må lages picture dao og endepunker - flytt denne til pictureDao
-    changeOrganizerProfilePicture(callback, pictureID, pictureLink){
+    changeOrganizerProfilePicture(pictureID, pictureLink, callback){
         super.query('update picture set pictureLink = ? where pictureID = ?', [pictureLink, pictureID], callback)
     }
 

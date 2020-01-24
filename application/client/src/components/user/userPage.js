@@ -9,11 +9,13 @@ import {DocumentService as documentService} from "../../store/documentService";
 import * as hash from "../../store/hashService";
 import {createHashHistory} from "history";
 
+
 let history = createHashHistory();
 
 export class UserPage extends React.Component {
     constructor(props) {
         super(props);
+        console.log(props);
         this.state = {
             username: '',
             newUsername: '',
@@ -76,6 +78,7 @@ export class UserPage extends React.Component {
                                     </tbody>
                                 </Table>
                             </Card>
+                            <ProfilePictureForm changeProfilePicture={this.props.changeProfilePicture}/>
                         </Col>
                         <Col>
                             <Card className={"p-2 card border-0"}>
@@ -388,33 +391,41 @@ export class ProfilePictureForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            newProfilePicture: '',
             profilePictureUploaded: true,
-            savingInformation: false
+            savingInformation: false,
+            link: ''
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
 
     }
 
 
     componentDidMount() {
-        /*
-        this.updateInfo((profilePicture) => {
+        this.updateInfoPicture((profilePicture) => {
             if(profilePicture !== null && profilePicture !== ''){
                 PictureService.previewPicture(profilePicture, (url) => {
-                    this.setState({link: url})
+                    this.setState({link: url});
                 });
             }
+        })
+    }
+
+    updateInfoPicture(callback) {
+        OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
+            if (statusCode === 200) {
+                let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
+
+                callback(databaseImage);
+            } else {
+            }
         });
-        \
-         */
     }
 
 
     checkIfUserHasPicture(){
         if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
+            console.log("Kjører check");
             return(<img width={"200px"} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
         }else {
             return(<img width={"200px"} src={require('./profile.png')} alt={"Bildet kunne ikke lastes inn"}/>);
@@ -424,41 +435,59 @@ export class ProfilePictureForm extends React.Component {
 
     render() {
         return (
-            <Form onSubmit={this.handleSubmit}>
                 <Card className={"border-0"}>
-                    <Form onSubmit={this.handleSubmit}>
+                    <Form>
+                        {this.checkIfUserHasPicture()}
                         <Form.Group>
-                            <FormControl name="newProfilePicture" type="file"
-                                         onChange={this.handleInputChange}/>
+
+                            <div className="padding-top-30">
+                                <span className="btn btn-secondary btn-file"> Legg til bilde
+                                <input type="file" name="newProfilePicture" onChange={this.handleInputChange} className="btn btn-secondary btn-file" />
+                                </span>
+                                <Button onClick = {this.upload} hidden={this.state.savingInformation} variant="success" type="submit" className="margin-left-10">Last opp profilbilde</Button>
+                            </div>
                         </Form.Group>
+
                         <Form.Group>
-                            <Button hidden={this.state.savingInformation} disabled={!this.state.profilePictureUploaded} variant="secondary" type="submit">Last opp profilbilde</Button>
-                            <Button hidden={!this.state.savingInformation} disabled variant="secondary" type="submit"><Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>Laster opp profilbilde</Button>
                         </Form.Group>
                     </Form>
                 </Card>
-            </Form>
         )
     }
 
-    handleSubmit(event) {
+    upload = (event) => {
         event.preventDefault();
-        this.submitForm();
-    }
+        this.submitForm(() => {
+            this.updateInfoPicture((profilePicture) => {
+                if(profilePicture !== null && profilePicture !== ''){
+                    PictureService.previewPicture(profilePicture, (url) => {
+                        this.setState({link: url});
+                        this.props.changeProfilePicture(profilePicture);
+                    });
+                }
+            })
+        });
+    };
+
 
     handleInputChange(event) {
-        this.setState({savingInformation: false});
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-        console.log(this.state.confirmDeleteUser);
-        this.setState({[name]: value,});
 
+        this.setState({savingInformation: false});
+
+        if(event.target.name === "newProfilePicture"){
+            this.setState({newProfilePicture: event.target.files[0]});
+        } else {
+            const target = event.target;
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+            console.log(this.state.confirmDeleteUser);
+            this.setState({[name]: value,});
+        }
     }
 
-    submitForm() {
+    submitForm(callback) {
         if (MegaValidator.validateFile(this.state.newProfilePicture) && this.state.profilePictureUploaded) {
-            console.log("Image validated");
+    console.log("Image validated");
             let formData = new FormData();
             formData.append('description', this.state.newProfilePicture.name);
             formData.append('selectedFile', this.state.newProfilePicture);
@@ -470,13 +499,21 @@ export class ProfilePictureForm extends React.Component {
                     this.state.profilePicture = totalPath;
                     this.setState({profilePictureUploaded: false});
                 }
+                callback()
             });
         } else {
             console.log("Image not validated");
             this.setState({savingInformation: false});
         }
     }
+}
 
+export class Link {
+    static currentLink;
+
+    static setCurrentLink(newLink){
+        this.currentLink = newLink;
+    }
 }
 
 

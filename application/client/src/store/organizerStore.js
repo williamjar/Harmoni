@@ -28,6 +28,17 @@ export class OrganizerStore {
             ).catch(err => callback(500));
     }
 
+    static updateProfilePicture(pictureID, pictureLink){
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+
+        return axios.put(axiosConfig.root + '/api/organizer/picture/' + pictureID + '/' + pictureLink, {
+        }, {headers: header})
+            .catch(error => console.log(error));
+    }
+
     static changeUsername(organizerID, newUsername) {
         let header = {
             "Content-Type": "application/json",
