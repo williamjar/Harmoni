@@ -72,7 +72,7 @@ export class EventStore {
     }
 
     /**
-     * TODO Delete or change?
+     * TODO Delete?
      */
     static storeCurrentEvent(eventID, callback) {
 
@@ -208,7 +208,7 @@ export class EventStore {
     }
 
     /**
-     * Changes the database data of the current event to set it to under planning. Current event is defined by the currentEvent variable.
+     * Archives all events belonging to the current organizer where the enddate is older than current time. Current event is defined by the currentOrganizer variable.
      * @return {Promise} The promise received from the database.
      */
     static archiveOldEvents() {
@@ -219,6 +219,12 @@ export class EventStore {
         return axios.put(axiosConfig.root + '/api/archive/' + OrganizerStore.currentOrganizer.organizerID,null,{headers: header});
     }
 
+    /**
+     * Fills the variable allEventsForOrganizer with events objects with data from the database belonging to the organizer
+     * @param {function} callback
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     * @return {Promise} The promise received from the database.
+     */
     static storeAllEventsForOrganizer(callback, organizerID) {
 
         let header = {
@@ -243,6 +249,10 @@ export class EventStore {
         });
     }
 
+    /**
+     * Fills the variable eventCategories with Strings containing the event types defined in the database.
+     * @param {function} callback
+     */
     static getEventCategories(callback) {
         let header = {
             "Content-Type": "application/json",
@@ -258,6 +268,11 @@ export class EventStore {
         });
     }
 
+    /**
+     * Format a javascript date into a format meant for the database.
+     * @param {date} date - The date to be formatted
+     * @return {String} - The formatted date
+     */
     static formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -270,6 +285,11 @@ export class EventStore {
         return [year, month, day].join('-');
     }
 
+    /**
+     * Format a javascript time to a format meant for the database.
+     * @param {date} date - The date to be formatted
+     * @return {String} - The formatted date
+     */
     static formatTime(date) {
         let d = new Date(date),
             hours = '' + (d.getHours()),
