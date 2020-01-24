@@ -27,7 +27,7 @@ export class DocumentationTab extends Component{
 
     onChange = (e) => {
         if(e.target.value === ''){
-            this.setState({filename: 'Velg her'});
+            this.setState({selectedFile: '', description: '', filename: 'Velg her'});
         } else {
             if (e.target.name === 'selectedFile') {
                 this.setState({selectedFile: e.target.files[0]});
@@ -64,7 +64,6 @@ export class DocumentationTab extends Component{
                 if (statusCode === 200){
                     document.getElementById("error").innerHTML = "";
                     Alert.success("Vedlegget ble opplastet til " + selectedCategoryName);
-                    this.setState({selectedFile: '', description: '', filename: 'Velg her'})
                 }
                 else{
                     Alert.danger("Det skjedde en feil under opplastning, vennligst prøv igjen eller kontakt oss.");
@@ -73,6 +72,7 @@ export class DocumentationTab extends Component{
             Alert.danger("Du har lastet opp en tom eller ugyldig filtype");
             document.getElementById("error").innerHTML = "Godkjente filtyper: .jpg .jpeg .png .ai .pdf .pptx .ppt .xlsx .xls .docx .doc .rar .7z .zip .rft . rtx";
         }
+        this.setState({selectedFile: '', description: '', filename: 'Velg her'})
     };
 
     componentDidMount() {
