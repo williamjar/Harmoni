@@ -5,7 +5,6 @@ import {OrganizerStore} from "./organizerStore";
 
 let axiosConfig = require("./axiosConfig");
 
-
 /**
  * @class EventStore
  * @classdesc Store Class for functions related to accessing and modifying event objects.
@@ -176,7 +175,7 @@ export class EventStore {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/1", null,{headers: header}).then(response => {
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/1", null, {headers: header}).then(response => {
             console.log(response);
         });
     }
@@ -190,7 +189,7 @@ export class EventStore {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/3", null,{headers: header}).then(response => {
+        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/3", null, {headers: header}).then(response => {
         });
     }
 
@@ -216,7 +215,7 @@ export class EventStore {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.put(axiosConfig.root + '/api/archive/' + OrganizerStore.currentOrganizer.organizerID,null,{headers: header});
+        return axios.put(axiosConfig.root + '/api/archive/' + OrganizerStore.currentOrganizer.organizerID, null, {headers: header});
     }
 
     /**
