@@ -21,22 +21,6 @@ module.exports = class documentationDao extends Dao {
         );
     }
 
-    insertDocumentArtist(eventID, category, req, artistID, callback){
-        var val = [eventID, req.originalname, req.path, category, artistID];
-        super.query(
-            "INSERT INTO document (eventID,documentName,documentLink,documentCategoryID, artistID) VALUES (?,?,?,?,?)",
-            val, callback
-        );
-    }
-
-    insertDocumentCrew(eventID, category, req, crewID, callback){
-        var val = [eventID, req.originalname, req.path, category, crewID];
-        super.query(
-            "INSERT INTO document (eventID,documentName,documentLink,documentCategoryID, crewID) VALUES (?,?,?,?,?)",
-            val, callback
-        );
-    }
-
 
     getAllDocuments(eventID, callback){
         super.query(
@@ -46,15 +30,6 @@ module.exports = class documentationDao extends Dao {
         );
     }
 
-
-    getOneDocument(eventID, documentID, callback){
-        var val = [eventID, documentID];
-        super.query(
-            "select * from document where eventID = ? and documentID = ?",
-            val,
-            callback
-        );
-    }
 
     getDocumentsByCategory(eventID, documentCategoryID, callback){
         var val = [eventID, documentCategoryID];

@@ -45,6 +45,7 @@ export class GeneralInfo extends Component{
     }
 }
 
+
 // Component for editing or submitting general info about an event
 export class InfoForm extends Component {
 
@@ -63,6 +64,7 @@ export class InfoForm extends Component {
             town: EventStore.currentEvent.town,
             description: EventStore.currentEvent.description,
             eventType: EventStore.currentEvent.eventType,
+            status: EventStore.currentEvent.status,
             eventTypes: [],
             dateError: false,
             issueList: [],
@@ -125,7 +127,7 @@ export class InfoForm extends Component {
         if(this.state.edit){
             return(
                     <Row>
-                    <Col>
+                    <Col xs={12} md={6}>
                     <Card className="mb-2 border-0">
                         <Form onSubmit={this.handleSubmit}>
                             <Card.Body>
@@ -245,8 +247,9 @@ export class InfoForm extends Component {
             return (
                 <div>
                     <Row>
-                        <Col>
+                        <Col xs={12} md={6}>
                         <Card className="mb-2 border-0">
+                            <Card className="m4 text-white" bg="danger" hidden={!(this.state.status===3)}><Card.Body>Dette arrangementet er kansellert, du kan gjennoppta arrangementet i menyen nedenfor</Card.Body></Card>
                             <Card.Body>
                                 <Row>
                                     <Col>
@@ -274,6 +277,7 @@ export class InfoForm extends Component {
                                                 </Col>
                                             </Row>
                                             {EventStore.currentEvent.startTime}
+
                                         </Col>
                                         <Col>
                                             <Row>
@@ -345,7 +349,7 @@ export class InfoForm extends Component {
                                     </Row>
                                 </Form.Group>
                                 <Form.Group>
-                                    <Button variant="info" onClick={() => this.editMode()}>Rediger informasjon</Button>
+                                    <Button variant="info" disabled={this.state.status===2 || this.state.status === 3} onClick={() => this.editMode()}>Rediger informasjon</Button>
                                 </Form.Group>
                             </Card.Body>
 

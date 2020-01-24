@@ -2,6 +2,7 @@ import axios from "axios";
 import {Event} from "../classes/event.js";
 import {CookieStore} from "./cookieStore";
 import {Artist} from "../classes/artist";
+import {OrganizerStore} from "./organizerStore";
 
 let axiosConfig = require("./axiosConfig");
 
@@ -216,6 +217,14 @@ export class EventStore {
             }
             callback();
         });
+    }
+
+    static archiveOldEvents() {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.put(axiosConfig.root + '/api/archive/' + OrganizerStore.currentOrganizer.organizerID,null,{headers: header});
     }
 
     static formatDate(date) {

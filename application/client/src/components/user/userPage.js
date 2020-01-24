@@ -8,6 +8,7 @@ import {LoginService} from "../../store/loginService";
 import {DocumentService as documentService} from "../../store/documentService";
 import * as hash from "../../store/hashService";
 import {createHashHistory} from "history";
+import {Alert} from "../alerts";
 
 
 let history = createHashHistory();
@@ -425,10 +426,9 @@ export class ProfilePictureForm extends React.Component {
 
     checkIfUserHasPicture(){
         if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
-            console.log("Kjører check");
             return(<img width={"200px"} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
         }else {
-            return(<img width={"200px"} src={require('./profile.png')} alt={"Bildet kunne ikke lastes inn"}/>);
+            return(<img width={"200px"} src={require('./profile.png')} alt={"Standard bildet kunne ikke lastes inn"}/>);
         }
     }
 
@@ -447,10 +447,10 @@ export class ProfilePictureForm extends React.Component {
                                 <Button onClick = {this.upload} hidden={this.state.savingInformation} variant="success" type="submit" className="margin-left-10">Last opp profilbilde</Button>
                             </div>
                         </Form.Group>
-
                         <Form.Group>
                         </Form.Group>
                     </Form>
+                    <section id = {"error"} className={"text-info col padding-top-10"}/>
                 </Card>
         )
     }
@@ -499,11 +499,14 @@ export class ProfilePictureForm extends React.Component {
                     this.state.profilePicture = totalPath;
                     this.setState({profilePictureUploaded: false});
                 }
+                document.getElementById("error").innerHTML = "";
                 callback()
             });
         } else {
             console.log("Image not validated");
             this.setState({savingInformation: false});
+            Alert.danger("Du har lastet opp en tom eller ugyldig filtype");
+            document.getElementById("error").innerHTML = "Godkjente filtyper .png .jpg .jpeg";
         }
     }
 }

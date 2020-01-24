@@ -70,7 +70,7 @@ export class DocumentationTab extends Component{
                 }
         })   } else {
             Alert.danger("Du har lastet opp en tom eller ugyldig filtype");
-            document.getElementById("error").innerHTML = "Godkjente filtyper: .jpg .jpeg .png .ai .pdf .pptx .ppt .xlsx .xls .docx .doc .rar .7z .zip .rft . rtx";
+            document.getElementById("error").innerHTML = "Godkjente filtyper .jpg .jpeg .png .ai .pdf .pptx .ppt .xlsx .xls .docx .doc .rar .7z .zip .rft . rtx";
         }
         this.setState({selectedFile: '', description: '', filename: 'Velg her'})
     };
