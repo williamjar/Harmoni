@@ -526,6 +526,10 @@ body{
     color: #003E51;
 }
 
+.showMore {
+    font-size: 18px;
+}
+
 /* Event registration */
 .tabContent {
     position: relative;
