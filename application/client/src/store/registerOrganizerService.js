@@ -1,10 +1,22 @@
 import axios from 'axios';
 import {hashService} from "./hashService";
-const root = require('./axiosConfig').root;
+const axiosConfig = require('./axiosConfig');
 
+/**
+ * @class RegisterOrganizerService
+ * @classdesc Service class for functions related to registering a new user.
+ */
 export class RegisterOrganizerService {
 
-    static registerOrganizer(username,phone, email, password, callback) {
+    /**
+     * Checks if desired username and email is available if so registers the new user into the database.
+     * @param {string} username - The database ID of the organizer.
+     * @param {string} phone - Desired phone number.
+     * @param {string} email - Desired email
+     * @param {string} password - Desired password.
+     * @param {function} callback - Returns status on how the registration went.
+     */
+    static registerOrganizer(username, phone, email, password, callback) {
         let header = {
             "Content-Type": "application/json",
         };
@@ -15,17 +27,16 @@ export class RegisterOrganizerService {
             "email": email
         };
 
-        let hashedPassword = hashService.sha512(password,hashService.generateSalt(16));
+        let hashedPassword = hashService.sha512(password, hashService.generateSalt(16));
 
-        axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), {headers: header})
+        axios.post(axiosConfig.root + '/contact', JSON.stringify(contactBody), {headers: header})
             .then(res => {
                 return res.data.insertId;
             })
             .then(contactID => {
-                console.log("Contact registered: " + contactID);
-                axios.get("http://localhost:8080/organizer/username/" + username, {headers: header}).then(res => {
+                axios.get(axiosConfig.root + "/organizer/username/" + username, {headers: header}).then(res => {
                     if (res.data.length === 0) {
-                        axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header}).then(res => {
+                        axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header}).then(res => {
                             console.log("Registering an organizer with hash " + hashedPassword);
                             if (res.data.length === 0) {
                                 let organizerBody = {
@@ -33,7 +44,7 @@ export class RegisterOrganizerService {
                                     "password": hashedPassword,
                                     "contactID": contactID
                                 };
-                                return axios.post('http://localhost:8080/organizer', JSON.stringify(organizerBody), {headers: header}).then(res => {
+                                return axios.post(axiosConfig.root + '/organizer', JSON.stringify(organizerBody), {headers: header}).then(res => {
                                     console.log("Organizer posted");
                                     callback(200);
                                 }).catch(err => callback(500, err));

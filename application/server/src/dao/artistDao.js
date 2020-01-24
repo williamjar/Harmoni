@@ -40,6 +40,7 @@ module.exports = class artistDao extends Dao {
      * list of parameters [genreID, organizerID, contactID]
      */
     createOne(callback, list) {
+        console.log(list);
         super.query('INSERT INTO artist (genreID, organizerID, contactID) values(?, ?, ?)', list, callback);
     }
 

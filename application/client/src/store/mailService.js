@@ -1,6 +1,8 @@
 import axios from 'axios';
 import {CookieStore} from "./cookieStore";
 
+const axiosConfig = require('./axiosConfig');
+
 /**
  * @class MailService
  * @classdesc Mail class for functions related to sending out emails.
@@ -21,10 +23,8 @@ export class MailService {
             "x-access-token": CookieStore.currentToken
         };
 
-        if (attachmentLinks !== null) {
-            attachmentLinks = attachmentLinks.map(e => {
-                if (e === undefined) return null
-            });
+        if (attachmentLinks !== null){
+            attachmentLinks = attachmentLinks.map(e => {if (e === undefined) return null; else return e});
         }
 
         let body = {
@@ -36,8 +36,8 @@ export class MailService {
             attachmentLinks: attachmentLinks
         };
 
-        axios.post("http://localhost:8080/api/email", JSON.stringify(body), {headers: header}).then(response => {
-            if (response.status === 200) {
+        axios.post(axiosConfig.root + "/api/email", JSON.stringify(body), {headers: header}).then(response => {
+            if (response.status === 200){
                 callback(200, response.data);
             } else {
                 callback(500);

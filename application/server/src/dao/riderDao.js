@@ -93,3 +93,4 @@ module.exports = class riderDao extends Dao {
         super.query('DELETE FROM riderElement WHERE riderElementID = ? AND artistID = ? AND eventID = ?', [riderElementID, artistID, eventID], callback);
     }
 };
+

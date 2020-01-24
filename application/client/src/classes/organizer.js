@@ -50,7 +50,7 @@ export class Organizer extends Contact {
     }
 
     static getTestOrganizer() {
-        let organizer = new Organizer(0,
+        let organizer = new Organizer(0, super.getTestContacts()[0].contactID,
             super.getTestContacts()[0].contactName, super.getTestContacts()[0].phone, super.getTestContacts()[0].email,
             'OrganisatorFirmaet AS', null);
         organizer.addContact(super.getTestContacts()[1]);

@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from "react-bootstrap/Form";
-import {InputGroup, FormControl, Spinner, FormLabel} from "react-bootstrap";
+import {InputGroup, FormControl, Spinner} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import { NavLink } from 'react-router-dom';
 import { createHashHistory } from 'history';
 import {CookieStore} from "../../store/cookieStore";
 import {EventStore} from "../../store/eventStore";
@@ -68,7 +67,6 @@ export class CreateEventSplash extends Component{
 
     create(){
         this.setState({isLoading: true});
-        let eventName = this.state.inputName;
         if(this.state.inputName.trim() === ""){
             let state = this.state;
             state.emptyMessage = true;

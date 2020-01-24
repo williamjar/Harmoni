@@ -1,11 +1,7 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Card from "react-bootstrap/Card";
-import Dropzone from 'react-dropzone';
-import { FaArrowAltCircleDown } from 'react-icons/fa';
 import {DocumentService} from "../store/documentService";
 import {EventStore} from "../store/eventStore";
-import {Col} from "react-bootstrap";
 import {DocumentCategory} from "../classes/documentCategory";
 import Button from "react-bootstrap/Button";
 import {Alert} from "./alerts";
@@ -79,7 +75,6 @@ export class DocumentationTab extends Component{
 
         DocumentService.getAllDocumentCategories(list => {
             if (list !== null){
-                console.log("not null");
                 this.setState({documentCategories: list});
             }
             else{
@@ -94,7 +89,6 @@ export class DocumentationTab extends Component{
 
 
     render(){
-        const {description, selectedFile} = this.state;
         return (
             <div className="document-event center-v padding-top-30 text-center">
 

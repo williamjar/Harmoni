@@ -1,21 +1,22 @@
 import axios from "axios";
-
 import {RiderElement} from "../classes/riderElement"
 import {CookieStore} from "./cookieStore";
 
-
 const axiosConfig = require("./axiosConfig");
 
+/**
+ * @class RiderStore
+ * @classdesc Store class for functions related to accessing and modifying riders.
+ */
 export class RiderStore {
     static allRidersForCurrentEvent = [];
 
-    static addToAllRidersForCurrentArtistAndEvent(rider){
+    static addToAllRidersForCurrentArtistAndEvent(rider) {
         this.allRidersForCurrentEvent.push(rider);
     }
 
-    //get a rider element
+    // TODO DELETE?
     static getRider(riderID) {
-
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -31,7 +32,11 @@ export class RiderStore {
             .catch(error => console.log(error));
     }
 
-    //get all riders for an event
+    /**
+     * Fills the allRidersForCurrentEvent variable with rider objects belonging to a specific event via data from the database.
+     * @param {function} callback
+     * @param {int} eventID - The database ID of the event.
+     */
     static storeAllRidersForEvent(callback, eventID) {
         this.allRidersForCurrentEvent = [];
         let header = {
@@ -40,22 +45,25 @@ export class RiderStore {
         };
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/rider', {headers: header})
             .then(response => {
-
-
-                response.data.map( data => {
-
+                response.data.map(data => {
                     this.allRidersForCurrentEvent.push(new RiderElement(data.riderElementID, data.artistID,
-                        data.status, data.isDone === 1, data.description))
+                        data.status, data.isDone === 1, data.description));
+                    return 0;
                 });
-
                 callback();
-
             })
             .catch(error => console.log(error));
     }
 
 
-    //create a new rider element.
+    /**
+     * Creates a new rider element and inserts it into the database.
+     * The created rider element is returned in the callback as a rider element object.
+     * @param {function} callback
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} eventID - The database ID of the event.
+     * @param {string} description - A description of the rider element.
+     */
     static createNewRiderElement(callback, artistID, eventID, description) {
         let header = {
             "Content-Type": "application/json",
@@ -71,8 +79,16 @@ export class RiderStore {
         }).catch(error => console.log(error));
     }
 
-    //Only for the artists own use
-    static createNewRiderElementFromArtistLogin(artistToken, artistID, eventID, description, callback){
+    /**
+     * Creates a new rider element and inserts it into the database.
+     * The created rider element is returned in the callback as a rider element object.
+     * @param {string} artistToken - The access token to be modify database.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} eventID - The database ID of the event.
+     * @param {string} description - A description of the rider element.
+     * @param {function} callback
+     */
+    static createNewRiderElementFromArtistLogin(artistToken, artistID, eventID, description, callback) {
         const header = {
             "Content-Type": "application/json",
             "x-access-token": artistToken
@@ -82,12 +98,21 @@ export class RiderStore {
             eventID: eventID,
             description: description
         };
-        axios.post(axiosConfig.root + "/artistapi/rider", JSON.stringify(data), {headers: header}).then( response => {
+        axios.post(axiosConfig.root + "/artistapi/rider", JSON.stringify(data), {headers: header}).then(response => {
             callback(200, new RiderElement(response.data.insertId, artistID, "", false, description));
         }).catch(() => callback(500));
     }
 
-    //update a rider element
+    /**
+     * Changes the data of a specific rider in the database.
+     * @param {function} callback
+     * @param {string} riderElementID - The access token to be modify database.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} eventID - The database ID of the event.
+     * @param {string} status - A note on how the rider is going.
+     * @param {int} isDone - (True/False) Is the rider element complete or not.
+     * @param {string} description - A description of the rider element.
+     */
     static updateRider(callback, riderElementID, artistID, eventID, status, isDone, description) {
         console.log("From rider store: " + riderElementID + artistID + eventID + status + isDone + description);
 
@@ -107,7 +132,13 @@ export class RiderStore {
         }).catch(error => console.log(error));
     }
 
-    //delete a rider element
+    /**
+     * Deletes a specific rider in the database.
+     * @param {function} callback
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {string} riderID - The database ID of the rider.
+     */
     static deleteRider(callback, eventID, artistID, riderID) {
         let header = {
             "Content-Type": "application/json",
@@ -116,28 +147,41 @@ export class RiderStore {
         axios.delete(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/rider/' + riderID, {headers: header}).then(callback()).catch(error => console.log(error));
     }
 
-    //Delete a rider element for the artist
-    static deleteRiderFromArtistPage(artistToken, eventID, artistID, riderID, callback){
+    /**
+     * Deletes a rider from the database via the specific artist API.
+     * @param {int} artistToken -
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {string} riderID - The database ID of the rider.
+     * @param {function} callback
+     */
+    static deleteRiderFromArtistPage(artistToken, eventID, artistID, riderID, callback) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": artistToken
         };
-        axios.delete(axiosConfig.root +  "/artistapi/rider/" + eventID + "/" + artistID + "/" + riderID, {headers: header})
+        axios.delete(axiosConfig.root + "/artistapi/rider/" + eventID + "/" + artistID + "/" + riderID, {headers: header})
             .then(response => {
                 callback(response.status, response.data);
             })
     }
 
-    static getAllRidersForArtistByEvent(artistID, eventID, token, callback){
+    /**
+     * Changes the data of a specific rider in the database.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} eventID - The database ID of the event.
+     * @param {string} token - The access token to be modify database.
+     * @param {function} callback
+     */
+    static getAllRidersForArtistByEvent(artistID, eventID, token, callback) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": token
         };
         axios.get(axiosConfig.root + "/artistapi/event/" + eventID + "/artist/" + artistID + "/rider", {headers: header}).then(response => {
-            if(response.data && response.data.length > 0){
+            if (response.data && response.data.length > 0) {
                 callback(200, response.data.map(riderElement => new RiderElement(riderElement.riderElementID, artistID, riderElement.status, riderElement.isDone, riderElement.description)));
-            }
-            else{
+            } else {
                 callback(500);
             }
         })

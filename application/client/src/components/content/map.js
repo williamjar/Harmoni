@@ -6,10 +6,6 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch'
 
 const provider = new OpenStreetMapProvider();
 
-/**
- * @const {GoogleMap}
- * This constant is the actual map component that gets returned by the map.js Component
- */
 const MapsComponent =
 
     compose(  withProps({
@@ -50,7 +46,7 @@ export class Map extends Component{
             console.log("Results from OpenStreetMap:");
             console.log(results);
 
-            if (results.length == 0){
+            if (results.length === 0){
                 this.setState({latLng: {lat: 0, lng: 0}});
             }else {
                 let lat = parseFloat(results[0].y);

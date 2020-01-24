@@ -279,10 +279,6 @@ class Rider extends Component{
     /* This component shows information pertaining to one rider, it receives information thorugh props from
     * parent and displays it in this component  */
 
-    constructor(props){
-        super(props);
-    }
-
     render(){
         console.log(this.props);
         return(

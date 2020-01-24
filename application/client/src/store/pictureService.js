@@ -60,7 +60,7 @@ export class PictureService {
             "x-access-token": CookieStore.currentToken
         };
 
-        axios.post('http://localhost:8080/api/file/profilePicture', fileForm, {headers: serverHeader})
+        axios.post(axiosConfig.root + '/api/file/profilePicture', fileForm, {headers: serverHeader})
             .then(response => {
                 console.log(response.data);
                 let databaseHeader = {
@@ -73,7 +73,7 @@ export class PictureService {
                 let body = {
                     path: path
                 };
-                axios.post('http://localhost:8080/api/organizer/picture', JSON.stringify(body), {headers: databaseHeader})
+                axios.post(axiosConfig.root + '/api/organizer/picture', JSON.stringify(body), {headers: databaseHeader})
                     .then(response => {
                         console.log("Response.data: ");
                         console.log(response.data);
@@ -81,7 +81,7 @@ export class PictureService {
                             pictureID: response.data.insertId
                         };
 
-                        axios.put('http://localhost:8080/api/organizer/picture/' + OrganizerStore.currentOrganizer.organizerID, JSON.stringify(organizerPictureBody), {headers: databaseHeader})
+                        axios.put(axiosConfig.root + '/api/organizer/picture/' + OrganizerStore.currentOrganizer.organizerID, JSON.stringify(organizerPictureBody), {headers: databaseHeader})
                             .then(response => {
                                 if (response.status === 200) {
                                     callback(200, path);
@@ -102,7 +102,7 @@ export class PictureService {
         let serverHeader = {
             "x-access-token": CookieStore.currentToken
         };
-        axios.post('http://localhost:8080/api/file/eventPicture', fileForm, {headers: serverHeader}).then(response => {
+        axios.post(axiosConfig.root + '/api/file/eventPicture', fileForm, {headers: serverHeader}).then(response => {
             let databaseHeader = {
                 "Content-Type": "application/json",
                 "x-access-token": CookieStore.currentToken
@@ -110,13 +110,13 @@ export class PictureService {
             let body = {
                 path: response.data.path
             };
-            axios.post('http://localhost:8080/api/event/picture/', JSON.stringify(body), {headers: databaseHeader})
+            axios.post(axiosConfig.root + '/api/event/picture/', JSON.stringify(body), {headers: databaseHeader})
                 .then(insertImageResponse => {
                     let databaseHeader = {
                         "Content-Type": "application/json",
                         "x-access-token": CookieStore.currentToken
                     };
-                    axios.put('http://localhost:8080/api/event/picture/' + eventID, JSON.stringify({pictureID: insertImageResponse.data.insertId}), {headers: databaseHeader})
+                    axios.put(axiosConfig.root + '/api/event/picture/' + eventID, JSON.stringify({pictureID: insertImageResponse.data.insertId}), {headers: databaseHeader})
                         .then(updateImageResponse => {
                             if (updateImageResponse.status === 200 && updateImageResponse.data.affectedRows > 0) {
                                 callback(200, response.data.path, insertImageResponse.data.insertId);
@@ -134,39 +134,36 @@ export class PictureService {
      * @param {string} pictureLink - The database ID of the event.
      * @param {function} callback
      */
-    static previewPicture(pictureLink, callback) {
-        console.log("Link " + pictureLink);
-        console.log("Kjører service");
-        axios.get(axiosConfig.root + '/file/preview/' + pictureLink, {
-            method: "GET",
-            responseType: "blob"
-            //Force to receive data in a Blob Format
-        }).then(response => {
-            //Create a Blob from the image Stream
-            console.log(response.data);
-            let blob;
-            if ((/\.(jpg)$/i).test(pictureLink)) {
-                blob = new Blob([response.data], {
-                    type: "image/jpg"
-                });
-            } else if ((/\.(jpeg)$/i).test(pictureLink)) {
-                blob = new Blob([response.data], {
-                    type: "image/jpeg"
-                });
-            } else if ((/\.(png)$/i).test(pictureLink)) {
-                blob = new Blob([response.data], {
-                    type: "image/png"
-                });
-            } else {
-                blob = null
-            }
-            //Build a URL from the file
-            console.log(blob);
-            const fileURL = URL.createObjectURL(blob);
-            console.log("HER KOMMER FIL URL " + fileURL);
-            //Open the URL on new Window
-            callback(fileURL);
-        })
+    static previewPicture(pictureLink, callback){
+            axios.get(axiosConfig.root + '/file/preview/' + pictureLink, {
+                method: "GET",
+                responseType: "blob"
+                //Force to receive data in a Blob Format
+            }).then(response => {
+                //Create a Blob from the image Stream
+                let blob;
+                if((/\.(jpg)$/i).test(pictureLink)){
+                    blob = new Blob([response.data], {
+                        type: "image/jpg"
+                    });
+                }
+                else if((/\.(jpeg)$/i).test(pictureLink)){
+                    blob = new Blob([response.data], {
+                        type: "image/jpeg"
+                    });
+                }
+                else if((/\.(png)$/i).test(pictureLink)){
+                    blob = new Blob([response.data], {
+                        type: "image/png"
+                    });
+                } else {
+                    blob = null
+                }
+                //Build a URL from the file
+                const fileURL = URL.createObjectURL(blob);
+                //Open the URL on new Window
+                callback(fileURL);
+            })
     }
 
 
