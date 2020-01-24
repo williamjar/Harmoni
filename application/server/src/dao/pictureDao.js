@@ -1,5 +1,11 @@
 const Dao = require('./dao.js');
 
+/**
+ * @class pictureDao
+ * @classdesc A Database Access Object for pictures
+ * @type {pictureDao}
+ * @see Dao
+ */
 module.exports = class pictureDao extends Dao {
 
     /**

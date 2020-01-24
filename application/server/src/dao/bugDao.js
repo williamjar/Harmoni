@@ -1,5 +1,11 @@
 const Dao = require('./dao.js');
 
+/**
+ * @class bugDao
+ * @classdesc A Database Access Object for bugs
+ * @type {bugDao}
+ * @see Dao
+ */
 module.exports = class bugDao extends Dao {
 
 

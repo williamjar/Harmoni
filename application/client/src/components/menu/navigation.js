@@ -105,7 +105,9 @@ export class NavBar extends Component {
         return (
             <div className="Nav-Menu card">
                 <div className="logoImg">
-                    <img src={harmoniLogo} alt=""/>
+                    <NavLink to={"/"}>
+                        <img src={harmoniLogo} alt=""/>
+                    </NavLink>
                 </div>
 
                 <div className="padding-top-20 mmi">
