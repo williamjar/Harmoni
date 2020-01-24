@@ -28,8 +28,8 @@ run_tests:
     - npm test
   artifacts:
     paths:
-      - application/server/coverage
-      - application/client/coverage
+      - application/server/coverage/test.txt
+      - application/client/coverage/test.txt
 
 # Publish coverage report on gitlab-pages
 pages:
