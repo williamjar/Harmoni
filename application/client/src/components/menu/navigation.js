@@ -9,8 +9,8 @@ import {FaMusic} from "react-icons/all";
 import {FaUsers} from "react-icons/all";
 import {FaFileSignature} from "react-icons/all";
 
-import harmoniLogo from './harmonilogo.png'
-import mobileLogo2 from './harmonilogo.png'
+import harmoniLogo from './Logo_large.png'
+import mobileLogo2 from './Logo_mobile.png'
 import fullLogo from './harmonilogofull.png'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";

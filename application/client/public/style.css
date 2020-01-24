@@ -24,6 +24,8 @@
 
 
 
+
+
 .btn-success {
     background: #007d07 !important;
 }
@@ -319,27 +321,21 @@ body{
     width: 100%;
     text-align: left;
     color:black;
-    padding:20px;
-    bottom: 40px;
-    background: lightgrey;
+
+    font-size: 15px;
+    bottom: 70px;
+
+}
+
+.user-nav:hover{
+    color:#00aaee !important;
 }
 
 .Nav-Menu .user-nav img{
-    border:1px solid black;
     border-radius: 25px;
     background: white;
 }
 
-.Nav-Menu .user-nav:hover{
-    background: #567d99;
-    color: white;
-}
-
-.user-nav img {
-    border: 1px solid black;
-    border-radius: 25px;
-    background: white;
-}
 
 .user-nav-mobile{
     position: relative;
@@ -395,6 +391,18 @@ body{
     -webkit-box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
     -moz-box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
     box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
+}
+
+.shadow-card{
+    -webkit-box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
+    -moz-box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
+    box-shadow: 4px 10px 25px -3px rgba(0,0,0,0.75);
+}
+
+.shadow-card:hover{
+    -webkit-box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
+    -moz-box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
+    box-shadow: 3px 32px 33px -12px rgba(0,0,0,0.55);
 }
 
 .content-container{
