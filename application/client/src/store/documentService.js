@@ -3,6 +3,7 @@ import {Document} from "../classes/document.js"
 import {DocumentCategory} from "../classes/documentCategory";
 import {CookieStore} from "./cookieStore";
 import {Contact} from "../classes/contact";
+
 const axiosConfig = require("./axiosConfig");
 
 /**
@@ -11,6 +12,12 @@ const axiosConfig = require("./axiosConfig");
  */
 export class DocumentService {
 
+    /**
+     * Returns all documents for a document category for a specific event in a list of document objects created with data from the database
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} documentCategoryID - The databaseID of the document category
+     * @param {function} callback
+     */
     static getAllDocumentsByCategoryForEvent(eventID, documentCategoryID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -29,16 +36,22 @@ export class DocumentService {
         });
     }
 
-    //Used only for the artists own page
-    static getAllDocumentsForArtist(artistID, eventID, token, callback){
+    /**
+     * Returns all documents for a specific artist in a list of document objects created with data from the database
+     * @param {int} artistID - The databaseID of the artist
+     * @param {int} eventID - The database ID of the event.
+     * @param {String} token - Generated token for artist to get access
+     * @param {function} callback
+     */
+    static getAllDocumentsForArtist(artistID, eventID, token, callback) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": token
         };
 
-        axios.get(axiosConfig.root + "/artistapi/artist/documents/" + eventID + "/" + artistID,{headers: header})
+        axios.get(axiosConfig.root + "/artistapi/artist/documents/" + eventID + "/" + artistID, {headers: header})
             .then(response => {
-                if (response.data){
+                if (response.data) {
                     const documents = response.data.map(document => {
                         return {
                             documentID: document.documentID,
@@ -47,13 +60,10 @@ export class DocumentService {
                         };
                     });
                     callback(200, documents);
-                }
-                else{
+                } else {
                     callback(500);
                 }
             });
-
-
     }
 
 //TODO: Delete? change Document params if not
@@ -73,13 +83,13 @@ export class DocumentService {
     }
 
 //TODO: Delete? change Document params if not
-    getAllDocumentsForEvent(eventID){
+    getAllDocumentsForEvent(eventID) {
         let allDocumentsByEvent = [];
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        axios.get(axiosConfig.root + '/api/events/' + eventID + '/documents', {headers: header}).then(response =>  {
+        axios.get(axiosConfig.root + '/api/events/' + eventID + '/documents', {headers: header}).then(response => {
             for (let i = 0; i < response.data.length; i++) {
                 allDocumentsByEvent.push(new Document(response.data[i].documentID, response.data[i].documentLink,
                     response.data[i].documentCategory));
@@ -88,7 +98,18 @@ export class DocumentService {
         return allDocumentsByEvent;
     }
 
-    static addDocument(eventID, category, artistID, crewID, documentCategoryID, file, callback){
+    /**
+     * Adds a new document to the database. Document can be attached to either a crew member or an artist.
+     * TODO is category here needed?
+     * @param {int} eventID - The database ID of the event.
+     * @param {String} category - The category to add the event to
+     * @param {int} artistID - The database ID of the artist to attach the document to. This and crewID can be left as null.
+     * @param {int} crewID - The database ID of the crew to attach the document to. This and artistID can be left as null.
+     * @param {int} documentCategoryID - The database ID of the document category to add the document to.
+     * @param {FormData} file - TODO
+     * @param {function} callback
+     */
+    static addDocument(eventID, category, artistID, crewID, documentCategoryID, file, callback) {
         console.log(eventID + "," + documentCategoryID);
         console.log(file.get("selectedFile"));
 
@@ -96,14 +117,14 @@ export class DocumentService {
             "x-access-token": CookieStore.currentToken
         };
 
-          axios.post('http://localhost:8080/api/file/document/' + eventID + '/' + documentCategoryID, file, {headers: header})
+        axios.post('http://localhost:8080/api/file/document/' + eventID + '/' + documentCategoryID, file, {headers: header})
             .then(response => {
                 let databaseHeader = {
                     "Content-Type": "application/json",
                     "x-access-token": CookieStore.currentToken
                 };
 
-                if (!response.data.error){
+                if (!response.data.error) {
                     console.log(response.data);
 
                     const path = response.data.path;
@@ -124,23 +145,30 @@ export class DocumentService {
                     axios.post('http://localhost:8080/api/document', JSON.stringify(body), {headers: databaseHeader}).then(() => {
                         console.log(response.status);
                         console.log(response.data);
-                        if (response.status === 200 && response.data.name){
+                        if (response.status === 200 && response.data.name) {
                             let returnData = {
                                 "documentLink": path,
                                 "documentID": response.data.insertId
                             };
                             callback(200, returnData);
-                        }
-                        else{
+                        } else {
                             callback(501, {"error": "An error occurred regarding saving file information to DB."});
                         }
                     });
                 }
 
-        });
+            });
     }
 
-    static addDocumentFromArtistPage(artistToken, eventID, artistID, file, callback){
+    /**
+     * Allows the artist to upload a document and store it in the database.
+     * @param {String} artistToken - Generated token for artist to get access
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} artistID - The database ID of the artist to attach the document to. Either this or crewID is left as null.
+     * @param {FormData} file - The database ID of the crew to attach the document to. Either this or artistID is left as null.
+     * @param {function} callback
+     */
+    static addDocumentFromArtistPage(artistToken, eventID, artistID, file, callback) {
 
         let header = {
             "x-access-token": artistToken
@@ -153,7 +181,7 @@ export class DocumentService {
                     "x-access-token": artistToken
                 };
 
-                if (!response.data.error){
+                if (!response.data.error) {
 
                     const path = response.data.path;
                     const name = response.data.name.split("_")[1];
@@ -170,15 +198,14 @@ export class DocumentService {
 
                     axios.post('http://localhost:8080/artistapi/document', JSON.stringify(body), {headers: databaseHeader}).then(dataResponse => {
 
-                        if (response.status === 200 && response.data.name){
+                        if (response.status === 200 && response.data.name) {
                             console.log(dataResponse.data);
                             let returnData = {
                                 "documentLink": path,
                                 "documentID": dataResponse.data.insertId
                             };
                             callback(200, returnData);
-                        }
-                        else{
+                        } else {
                             callback(501, {"error": "An error occurred regarding saving file information to DB."});
                         }
                     });
@@ -194,7 +221,7 @@ export class DocumentService {
             "x-access-token": CookieStore.currentToken
         };
         return axios.put(axiosConfig.root + '/api/document/' + documentID, {
-            "eventID":eventID,
+            "eventID": eventID,
             "documentName": name,
             "documentLink": link,
             "artistID": artistID,
@@ -212,21 +239,25 @@ export class DocumentService {
         return axios.delete(axiosConfig.root + '/api/document/' + id, {headers: header}).then(response => response.data);
     }
 
-//TODO: Delete? change Document params if not
-    insertDocumentArtist(eventID, folderName, documentCategoryID, artistID){
+    //TODO: Delete? change Document params if not
+    insertDocumentArtist(eventID, folderName, documentCategoryID, artistID) {
         axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/artist/' + artistID)
             .then(res => console.log(res.data))
             .catch(err => console.error(err));
     }
 
     //TODO: Delete? change Document params if not
-    insertDocumentCrew(eventID, folderName, documentCategoryID, crewID){
+    insertDocumentCrew(eventID, folderName, documentCategoryID, crewID) {
         axios.post(axiosConfig.root + '/api/documents/upload/' + eventID + '/' + folderName + '/' + documentCategoryID + '/crew/' + crewID)
             .then(res => console.log(res.data))
             .catch(err => console.error(err));
     }
 
-    static getAllDocumentCategories(callback){
+    /**
+     * Returns a list of Document Category objects for the categories created with data from the database in the callback.
+     * @param {function} callback
+     */
+    static getAllDocumentCategories(callback) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -241,6 +272,11 @@ export class DocumentService {
             }).catch(callback(null)).catch(err => console.log(err));
     }
 
+    /**
+     * Returns a list of Document Category objects associated to an event created with data from the database in the callback.
+     * @param {int} eventID - The database ID of the event.
+     * @param {function} callback
+     */
     static getAllDocumentCategoriesForEvent(eventID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -281,6 +317,11 @@ export class DocumentService {
         }).catch(res => console.log(res));
     }
 
+    /**
+     * Returns a contact object for an artist created with data from the database in the callback.
+     * @param {int} documentID - Generated token for artist to get access
+     * @param {function} callback
+     */
     static getArtistInfoConnectedToDocument(documentID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -289,16 +330,21 @@ export class DocumentService {
 
         let artist;
         axios.get(axiosConfig.root + '/api/document/info/artist/' + documentID, {headers: header}).then(response => {
-           if(response.data[0] !== undefined){
-               console.log("Lengde artist: " + response.data.length);
-               console.log("Data: " + response.data[0].contactName);
-               artist = new Contact(response.data[0].contactName,response.data[0].phone,response.data[0].email);
-               callback(artist);
-           }
+            if (response.data[0] !== undefined) {
+                console.log("Lengde artist: " + response.data.length);
+                console.log("Data: " + response.data[0].contactName);
+                artist = new Contact(response.data[0].contactName, response.data[0].phone, response.data[0].email);
+                callback(artist);
+            }
             return undefined;
         }).catch(res => console.log(res));
     }
 
+    /**
+     * Returns a contact object for a crew member created with data from the database in the callback.
+     * @param {int} documentID - Generated token for artist to get access
+     * @param {function} callback
+     */
     static getCrewInfoConnectedToDocument(documentID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -307,112 +353,111 @@ export class DocumentService {
 
         let crew;
         axios.get(axiosConfig.root + '/api/document/info/crew/' + documentID, {headers: header}).then(response => {
-            if(response.data[0] !== undefined){
-                crew = new Contact(response.data[0].contactName,response.data[0].phone,response.data[0].email);
+            if (response.data[0] !== undefined) {
+                crew = new Contact(response.data[0].contactName, response.data[0].phone, response.data[0].email);
                 callback(crew);
             }
             return undefined;
         }).catch(res => console.log(res));
     }
 
-    static downloadDocument(documentLink, doucmentName){
+    /**
+     * Downloads a document via a link from the server.
+     * @param {String} documentLink - The link to access the document.
+     * @param {String} documentName - The name of the document.
+     */
+    static downloadDocument(documentLink, documentName) {
         axios.get(axiosConfig.root + '/api/document/download/' + documentLink,
             {responseType: 'arraybuffer'}).then(res => {
             let url;
 
             //Checks which content-type is correct to file extension name
             //jpg/jpeg image
-            if((/\.(jpeg)$/i).test(documentLink) || (/\.(jpg)$/i).test(documentLink)){
-               url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "image/jpeg"}));
+            if ((/\.(jpeg)$/i).test(documentLink) || (/\.(jpg)$/i).test(documentLink)) {
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    , {type: "image/jpeg"}));
             }
             //Png image
-            else if((/\.(png)$/i).test(documentLink)){
+            else if ((/\.(png)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "image/png"}));
+                    , {type: "image/png"}));
             }
 
             //Postscript
-            else if((/\.(ai)$/i).test(documentLink)){
+            else if ((/\.(ai)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/postscript"}));
+                    , {type: "application/postscript"}));
             }
 
             //PDF
-            else if((/\.(pdf)$/i).test(documentLink)){
+            else if ((/\.(pdf)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/pdf"}));
+                    , {type: "application/pdf"}));
             }
             //Microsoft Powerpoint
-            else if((/\.(pptx)$/i).test(documentLink) || (/\.(ppt)$/i).test(documentLink)){
+            else if ((/\.(pptx)$/i).test(documentLink) || (/\.(ppt)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/vnd.openxmlformats-officedocument.presentationml.presentation"}));
-            }
-            else if((/\.(ppt)$/i).test(documentLink)){
+                    , {type: "application/vnd.openxmlformats-officedocument.presentationml.presentation"}));
+            } else if ((/\.(ppt)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/vnd.ms-powerpoint"}));
+                    , {type: "application/vnd.ms-powerpoint"}));
             }
             //Microsoft Excel
-            else if((/\.(xlsx)$/i).test(documentLink)){
+            else if ((/\.(xlsx)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
-            }
-
-            else if((/\.(xls)$/i).test(documentLink)){
+                    , {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+            } else if ((/\.(xls)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/vnd.ms-excel"}));
+                    , {type: "application/vnd.ms-excel"}));
             }
 
             //Microsoft Word
-            else if((/\.(docx)$/i).test(documentLink)){
+            else if ((/\.(docx)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}));
-            }
-
-            else if((/\.(doc)$/i).test(documentLink)){
+                    , {type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}));
+            } else if ((/\.(doc)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/msword"}));
+                    , {type: "application/msword"}));
             }
             //Compressed File
-            else if((/\.(rar)$/i).test(documentLink)){
+            else if ((/\.(rar)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/x-rar-compressed"}));
-            }
-
-            else if((/\.(7z)$/i).test(documentLink)){
+                    , {type: "application/x-rar-compressed"}));
+            } else if ((/\.(7z)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/x-7z-compressed"}));
-            }
-            else if((/\.(zip)$/i).test(documentLink)){
+                    , {type: "application/x-7z-compressed"}));
+            } else if ((/\.(zip)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/zip"}));
+                    , {type: "application/zip"}));
             }
             //Rich text format
 
-            else if((/\.(rtf)$/i).test(documentLink)){
+            else if ((/\.(rtf)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "application/rtf"}));
-            }
-            else if((/\.(rtx)$/i).test(documentLink)){
+                    , {type: "application/rtf"}));
+            } else if ((/\.(rtx)$/i).test(documentLink)) {
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: "text/richtext"}));
-            }
-            else {
+                    , {type: "text/richtext"}));
+            } else {
                 console.log("There are no MIME support to " + documentLink);
                 url = window.URL.createObjectURL(new Blob([res.data]
-                    ,{type: ""}));
+                    , {type: ""}));
             }
-            var link = document.createElement('a');
+            let link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', doucmentName);
+            link.setAttribute('download', documentName);
             document.body.appendChild(link);
             link.click();
         });
         console.log("Downloading document...");
     }
 
+    /**
+     * Previews a document via a link from the server.
+     * @param {String} documentLink - The link to access the document.
+     */
     static previewDocument(documentLink) {
-        if((/\.(pdf)$/i).test(documentLink)){
+        if ((/\.(pdf)$/i).test(documentLink)) {
             axios.get(axiosConfig.root + '/file/preview/' + documentLink, {
                 method: "GET",
                 responseType: "blob"
@@ -434,7 +479,5 @@ export class DocumentService {
         } else {
             console.log("Can only preview pdf documents");
         }
-
     }
-
 }
