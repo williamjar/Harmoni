@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: store/hashService.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: store/hashService.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from "axios";
+const crypto = require('crypto');
+let axiosConfig = require("./axiosConfig");
+
+
+/**
+ * @class hashService
+ * @classdesc Service Class for functions related to encryption.
+ */
+export class hashService {
+
+    /**
+     * Encryption method used for hashing.
+     * @param {String} password - The password in plaintext.
+     * @param {String} salt - Random data used in the encryption process.
+     * @return {String} A combination of the salt and the encrypted password.
+     */
+    static sha512(password, salt) {
+        let hash = crypto.createHmac('sha512', salt);
+        /** Hashing algorithm sha512 */
+        hash.update(password);
+        let value = hash.digest('hex');
+        return salt + '/' + value;
+    }
+
+    /**
+     * Generates the salt using random bytes.
+     * @param {int} length - How long the salt generated should be.
+     * @return {String} Finished salt.
+     */
+    static generateSalt(length) {
+        return crypto.randomBytes(Math.ceil(length / 2))
+            .toString('hex').slice(0, length);
+    }
+
+    /**
+     * Uses input email to return the hashed password stored in the database in the callback.
+     * @param {String} enteredPassword - Password in plaintext.
+     * @param {String} email - The email address to search the database with.
+     * @param {function} callback.
+     */
+    static getHashedFromEmail(enteredPassword, email, callback) {
+        this.getSaltFromEmail(email, salt => {
+            if (salt) {
+                let hashed = this.sha512(enteredPassword, salt);
+                callback(hashed);
+            } else {
+                callback();
+            }
+        });
+    }
+
+    /**
+     * Checks if the input password matches with the logged in organizers password stores in the database. Returns true or false in the callback.
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     * @param {String} enteredPassword - Password in plaintext.
+     * @param {function} callback.
+     */
+    static verifyPassword(organizerID, enteredPassword, callback) {
+        this.getPassword(organizerID, passwordInDB => {
+            this.getSaltFromID(organizerID, salt => {
+                let enteredPasswordHashed = this.sha512(enteredPassword, salt);
+                callback(enteredPasswordHashed === passwordInDB);
+            });
+        });
+    }
+
+    /**
+     * Uses input email to return the salt stored in the database in the callback.
+     * @param {String} email - The email address to search the database with.
+     * @param {function} callback.
+     */
+    static getSaltFromEmail(email, callback) {
+        this.getOrganizerID(email, organizerID => {
+            if (organizerID) {
+                this.getPassword(organizerID, passwordInDB => {
+                    let saltHash = passwordInDB.split("/");
+                    console.log('salt ' + saltHash);
+                    callback(saltHash[0]);
+                })
+            } else {
+                callback();
+            }
+        });
+    }
+
+    /**
+     * Uses input email to return the salt stored in the database in the callback.
+     * @param {int} organizerID - The database ID of the in organizer.
+     * @param {function} callback.
+     */
+    static getSaltFromID(organizerID, callback) {
+        this.getPassword(organizerID, passwordInDB => {
+            let saltHash = passwordInDB.split("/");
+            callback(saltHash[0]);
+        });
+    }
+
+    /**
+     * Uses input email to return the the organizerID stored in the database in the callback.
+     * @param {String} email - The email address to search the database with.
+     * @param {function} callback.
+     */
+    static getOrganizerID(email, callback) {
+        let header = {
+            "Content-Type": "application/json",
+        };
+        axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header})
+            .then(res => {
+                if (res.data.length > 0) {
+                    let organizerID = res.data[0].organizerID;
+                    callback(organizerID);
+                } else {
+                    console.log("No email");
+                    callback();
+                }
+            });
+    }
+
+    /**
+     * Uses input organizerID to return the the password stored in the database in the callback.
+     * @param {int} organizerID - The email address to search the database with.
+     * @param {function} callback.
+     */
+    static getPassword(organizerID, callback) {
+        let header = {
+            "Content-Type": "application/json",
+        };
+        axios.get(axiosConfig.root + "/organizer/" + organizerID, {headers: header})
+            .then(res => {
+                let password = res.data[0].password;
+                callback(password);
+            });
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="Bug.html">Bug</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="Contact.html">Contact</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewCategoryEvent.html">CrewCategoryEvent</a></li><li><a href="CrewLeader.html">CrewLeader</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginForm__mounted.html">_mounted</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="RiderElement.html">RiderElement</a></li></ul><h3>Global</h3><ul><li><a href="global.html#This">This</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 15:07:29 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

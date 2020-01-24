@@ -37,7 +37,6 @@ export class RegisterOrganizerService {
                 axios.get(axiosConfig.root + "/organizer/username/" + username, {headers: header}).then(res => {
                     if (res.data.length === 0) {
                         axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header}).then(res => {
-                            console.log("Registering an organizer with hash " + hashedPassword);
                             if (res.data.length === 0) {
                                 let organizerBody = {
                                     "username": username,
@@ -45,7 +44,6 @@ export class RegisterOrganizerService {
                                     "contactID": contactID
                                 };
                                 return axios.post(axiosConfig.root + '/organizer', JSON.stringify(organizerBody), {headers: header}).then(res => {
-                                    console.log("Organizer posted");
                                     callback(200);
                                 }).catch(err => callback(500, err));
                             }

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: client/src/components/login/registerForm.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: client/src/components/login/registerForm.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import {Form, Button, Card, Row, Col, Spinner, Modal} from 'react-bootstrap'
+import {RegisterOrganizerService} from "../../store/registerOrganizerService";
+import { createHashHistory } from 'history';
+import {NavLink} from "react-router-dom";
+import {MegaValidator} from "../../megaValidator";
+
+let history = createHashHistory();
+
+/**
+ * @class RegisterForm
+ * @classdesc Component for registering a new user.
+ */
+export class RegisterForm extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: '',
+            firstEmail: '',
+            secondEmail: '',
+            firstPassword : '',
+            secondPassword: '',
+            phonenumber: '',
+            usernameAlreadyExist: false,
+            emailAlreadyExist: false,
+            databaseConnectionError: false,
+            loggingIn: false,
+            confirmTermsOfService: false,
+            showGDPR: false,
+        };
+
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleInputChange(event){
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({[name]: value,});
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.submitForm();
+    }
+
+    validateForm() {
+        return MegaValidator.validateEmail(this.state.firstEmail,this.state.secondEmail) &amp;&amp;
+            MegaValidator.validatePassword("nothing", this.state.firstPassword, this.state.secondPassword) &amp;&amp;
+            MegaValidator.validateUsername("nothing",this.state.username) &amp;&amp;
+            MegaValidator.validateUsernameLength(this.state.username) &amp;&amp;
+            MegaValidator.validatePhoneNumber(11111111, this.state.phonenumber)
+            &amp;&amp; this.state.confirmTermsOfService;
+    }
+
+    render() {
+
+        return (
+            &lt;Card style={{width : '35rem'}} className="text-center mx-auto mt-5 drop-shadow">
+                &lt;Modal show={this.state.showGDPR} >
+                    &lt;Modal.Header closeButton>
+                        &lt;Modal.Title>Harmoni: personsvernserklæring&lt;/Modal.Title>
+                    &lt;/Modal.Header>
+                    &lt;Modal.Body>Ved å godta vår personverserklæring, samtykker du med at vi lagrer informasjon som epost og telefonnummer, samt oppgitt brukernavn. Denne informasjonen blir brukt for å kunne identfisere arrangørene. Epost og telefon kan bli brukt for å komme i kontakt med arrangøren&lt;/Modal.Body>
+                    &lt;Modal.Body>Ved å samtykke, bekrefter du at du har tillatelse til å lagre personlig informasjon om artister, ansatte eller evt. andre du vil lagre informasjon om i systemet "Harmoni"&lt;/Modal.Body>
+                    &lt;Modal.Body>Dine data kan aksesseres, endres og slettes helt i henhold til GDPR, ved å logge inn og gå til brukerprofilen din. Har du andre ønsker, kan du kontakte oss.&lt;/Modal.Body>
+                    &lt;Modal.Footer>
+                        &lt;Button variant="secondary" onClick={()=>this.setState({showGDPR:false})}>
+                            Lukk
+                        &lt;/Button>
+                    &lt;/Modal.Footer>
+                &lt;/Modal>
+
+                &lt;Form onSubmit={this.handleSubmit} className={"align-items-center"}>
+                    &lt;Card.Body>
+                        &lt;Card.Title className="mb-4">Registrer ny bruker&lt;/Card.Title>
+                        &lt;div className="justify-content-md-center">
+                            &lt;Form.Text className="text-danger" hidden={!this.state.usernameAlreadyExist}>Brukernavnet finnes allerede&lt;/Form.Text>
+                            &lt;Form.Group>
+                                &lt;Form.Control maxLength="25" type="text" name="username" placeholder="Brukernavn" value={this.state.username} onChange={this.handleInputChange}/>
+                            &lt;/Form.Group>
+                            &lt;Form.Group>
+                                &lt;Form.Control maxLength="8" type="tel" name="phonenumber" placeholder="Telefonnummer" value={this.state.phonenumber} onChange={this.handleInputChange}/>
+                            &lt;/Form.Group>
+                            &lt;Form.Text className="text-danger" hidden={!this.state.emailAlreadyExist}>Det er allerede registrert en bruker med denne e-postadressen&lt;/Form.Text>
+                            &lt;Row>
+                                &lt;Col>
+                                    &lt;Form.Group>
+                                        &lt;Form.Control type="email" maxLength="320" name="firstEmail" placeholder="E-postadresse" value={this.state.firstEmail} onChange={this.handleInputChange}/>
+                                    &lt;/Form.Group>
+                                &lt;/Col>
+
+                                &lt;Col>
+                                    &lt;Form.Group>
+                                        &lt;Form.Control type="email" maxLength="320" name="secondEmail" placeholder="Gjenta e-postadresse" value={this.state.secondEmail} onChange={this.handleInputChange}/>
+                                    &lt;/Form.Group>
+                                &lt;/Col>
+                            &lt;/Row>
+
+
+                            &lt;Row>
+                                &lt;Col>
+                                    &lt;Form.Group>
+                                        &lt;Form.Control type="password" maxLength="40" name="firstPassword" placeholder="Passord" value={this.state.password} onChange={this.handleInputChange}/>
+                                    &lt;/Form.Group>
+                                &lt;/Col>
+
+                                &lt;Col>
+                                    &lt;Form.Group>
+                                        &lt;Form.Control type="password" maxLength="30" name="secondPassword" placeholder="Gjenta passord" value={this.state.password} onChange={this.handleInputChange}/>
+                                    &lt;/Form.Group>
+                                &lt;/Col>
+                            &lt;/Row>
+                            &lt;Form.Group>
+                                &lt;Button variant="outline-secondary" className="text-link" onClick={()=>this.functionToShowGDPR()}> Les vår personvernserklæring &lt;/Button>
+                                &lt;Form.Check name="confirmTermsOfService" value={this.state.confirmTermsOfService}  onChange={this.handleInputChange} type="checkbox" label="Godkjenn personvernserklæring"/>
+                            &lt;/Form.Group>
+                                &lt;Form.Text className="text-danger">{this.errorHandler()}&lt;/Form.Text>
+
+                                &lt;Form.Text className="text-danger" hidden={!this.state.databaseConnectionError}>Det oppstod en feil med oppkoblingen til databasen.&lt;/Form.Text>
+
+                            &lt;Form.Text> Har du allerede en bruker? &lt;NavLink to="/"> Klikk her for å logge inn. &lt;span className="NavLink"/>&lt;/NavLink>&lt;/Form.Text>
+                        &lt;/div>
+                    &lt;/Card.Body>
+                    &lt;Card>
+                        &lt;Button variant="btn btn-primary" type="submit" hidden={this.state.loggingIn} disabled={!this.validateForm()}> Registrer bruker &lt;/Button>
+                        &lt;Button variant="btn btn-primary" disabled hidden={!this.state.loggingIn}>&lt;Spinner as="span" animation="border" size="sm" aria-hidden="true"/> Registrerer bruker&lt;/Button>
+                    &lt;/Card>
+                &lt;/Form>
+            &lt;/Card>
+        )
+    }
+
+
+    errorHandler(){
+        if(!MegaValidator.validateUsernameLength(this.state.username)){
+            return "Brukernavn kreves";
+        }
+        if(!MegaValidator.validateEmailLength(this.state.firstEmail, this.state.secondEmail)){
+            return "E-postadresse kreves";
+        }
+        if(!MegaValidator.validateUsername("nothing", this.state.username)){
+            return "Brukernavnet kan kun inneholde tall og bokstaver";
+        }
+        if(!MegaValidator.validateEmail(this.state.firstEmail, this.state.secondEmail)){
+            return "E-postadressene må være like";
+        }
+        if(!MegaValidator.validatePasswordLength(this.state.firstPassword,this.state.secondPassword)){
+            return "Passordet ditt må være på minst 8 tegn";
+        }
+        if(!MegaValidator.validatePassword(null,this.state.firstPassword,this.state.secondPassword)){
+            return "Passordene må være like";
+        }
+        if(MegaValidator.checkForEInNumber(this.state.phonenumber)){
+            return"Telefonnummeret ditt inneholder ugyldige symboler";
+        } else {
+            return ""
+        }
+
+    }
+
+    functionToShowGDPR(){
+        this.setState({showGDPR: true});
+    }
+
+    submitForm(){
+        this.setState({loggingIn: true});
+        this.setState({emailAlreadyExist: false});
+        this.setState({usernameAlreadyExist: false});
+
+        RegisterOrganizerService.registerOrganizer(this.state.username, this.state.phonenumber,this.state.firstEmail, this.state.firstPassword, statusCode => {
+            if (statusCode === 200){
+                history.push('/');
+            }
+            else if (statusCode === 501){
+                this.setState({emailAlreadyExist: true});
+                this.setState({loggingIn: false});
+            }
+            else if (statusCode === 502){
+                this.setState({usernameAlreadyExist: true});
+                this.setState({loggingIn: false});
+            }
+            else if (statusCode === 500){
+                this.setState({loggingIn: false});
+            }
+        });
+    }
+
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Alert.html">Alert</a></li><li><a href="Artist.html">Artist</a></li><li><a href="artistDao.html">artistDao</a></li><li><a href="ArtistEventInfo.html">ArtistEventInfo</a></li><li><a href="ArtistRegisterRiders.html">ArtistRegisterRiders</a></li><li><a href="ArtistService.html">ArtistService</a></li><li><a href="Bug.html">Bug</a></li><li><a href="bugDao.html">bugDao</a></li><li><a href="BugReview.html">BugReview</a></li><li><a href="BugStore.html">BugStore</a></li><li><a href="CheckList.html">CheckList</a></li><li><a href="Contact.html">Contact</a></li><li><a href="contactDao.html">contactDao</a></li><li><a href="ContactService.html">ContactService</a></li><li><a href="Content.html">Content</a></li><li><a href="CookieStore.html">CookieStore</a></li><li><a href="CreateEventSplash.html">CreateEventSplash</a></li><li><a href="CrewCategory.html">CrewCategory</a></li><li><a href="CrewContacts.html">CrewContacts</a></li><li><a href="crewDao.html">crewDao</a></li><li><a href="CrewMember.html">CrewMember</a></li><li><a href="CrewStore.html">CrewStore</a></li><li><a href="Dao.html">Dao</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="Document.html">Document</a></li><li><a href="DocumentationTab.html">DocumentationTab</a></li><li><a href="DocumentCategory.html">DocumentCategory</a></li><li><a href="Documents.html">Documents</a></li><li><a href="DocumentService.html">DocumentService</a></li><li><a href="Event.html">Event</a></li><li><a href="EventCard.html">EventCard</a></li><li><a href="eventDao.html">eventDao</a></li><li><a href="EventForm.html">EventForm</a></li><li><a href="EventStore.html">EventStore</a></li><li><a href="EventView.html">EventView</a></li><li><a href="FolderItem.html">FolderItem</a></li><li><a href="Genre.html">Genre</a></li><li><a href="hashService.html">hashService</a></li><li><a href="Info.html">Info</a></li><li><a href="InfoForm.html">InfoForm</a></li><li><a href="LoginDao.html">LoginDao</a></li><li><a href="LoginForm.html">LoginForm</a></li><li><a href="LoginService.html">LoginService</a></li><li><a href="MailService.html">MailService</a></li><li><a href="Map%2520Class.html">Map Class</a></li><li><a href="MegaValidator.html">MegaValidator</a></li><li><a href="MobileMenu.html">MobileMenu</a></li><li><a href="MyDocuments.html">MyDocuments</a></li><li><a href="Organizer.html">Organizer</a></li><li><a href="organizerDao.html">organizerDao</a></li><li><a href="OrganizerStore.html">OrganizerStore</a></li><li><a href="PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerContacts_PerformerContacts.html">PerformerContacts</a></li><li><a href="PerformerPanel.html">PerformerPanel</a></li><li><a href="pictureDao.html">pictureDao</a></li><li><a href="PictureElement.html">PictureElement</a></li><li><a href="PictureService.html">PictureService</a></li><li><a href="RegisterForm.html">RegisterForm</a></li><li><a href="RegisterOrganizerService.html">RegisterOrganizerService</a></li><li><a href="riderDao.html">riderDao</a></li><li><a href="RiderElement.html">RiderElement</a></li><li><a href="RiderStore.html">RiderStore</a></li><li><a href="Search.html">Search</a></li><li><a href="SimpleContent.html">SimpleContent</a></li><li><a href="TabContent.html">TabContent</a></li><li><a href="Ticket.html">Ticket</a></li><li><a href="TicketAll.html">TicketAll</a></li><li><a href="ticketDao.html">ticketDao</a></li><li><a href="TicketStore.html">TicketStore</a></li><li><a href="TicketType.html">TicketType</a></li><li><a href="UserPage.html">UserPage</a></li><li>{documentationDao}</li></ul><h3>Global</h3><ul><li><a href="global.html#deleteFile">deleteFile</a></li><li><a href="global.html#ensureFolderExists">ensureFolderExists</a></li><li><a href="global.html#eventPictureStorage">eventPictureStorage</a></li><li><a href="global.html#fileStorage">fileStorage</a></li><li><a href="global.html#fileUpload">fileUpload</a></li><li><a href="global.html#profilePictureStorage">profilePictureStorage</a></li><li><a href="global.html#uploadEventPicture">uploadEventPicture</a></li><li><a href="global.html#uploadUserPicture">uploadUserPicture</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Jan 24 2020 21:40:15 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

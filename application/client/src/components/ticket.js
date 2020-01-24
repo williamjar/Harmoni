@@ -330,9 +330,6 @@ export class TicketAll extends Component {
         Updates all the states when changed.
     */
     handleInputChange(event) {
-        console.log("validateform:" + this.validateForm());
-        console.log("validatedate:" + this.validateDate());
-        console.log(this.state.noEndSellingDate);
         let target = event.target;
         let value = target.type === 'checkbox' ? target.checked : target.value;
         let name = target.name;

@@ -269,7 +269,7 @@ export class PerformerCard extends Component{
 
                         {this.state.riders.map(e =>
                         {if(e.artistID === this.state.performer.artistID){
-                            return <Rider description={e.description} isDone={e.isDone} status={e.status} riderObject={e} deleteRider={this.deleteRider}/>
+                            return <Rider key={e.riderElementID} description={e.description} isDone={e.isDone} status={e.status} riderObject={e} deleteRider={this.deleteRider}/>
 
                         } else {
                             return null

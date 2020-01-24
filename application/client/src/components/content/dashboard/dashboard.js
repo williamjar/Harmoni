@@ -57,6 +57,8 @@ export class Dashboard extends React.Component {
         this.sortEvents(this.state.cancelled,e.target.value, (sorted) => this.setState({cancelled: sorted}));
     };
 
+
+
     // Sends the user to create event screen when clicking the "plus"-button
     addEventClicked = () => {
         history.push("/opprett")
@@ -66,7 +68,6 @@ export class Dashboard extends React.Component {
     componentDidMount() {
         OrganizerStore.getOrganizer(CookieStore.currentUserID, () => {
             EventStore.archiveOldEvents().then(res => {
-                console.log(res);
                 if (res.data.changedRows > 0) {
                     Alert.info(res.data.changedRows + " ferdige arrangementer vil bli flyttet til arkivert");
                 }
@@ -198,7 +199,6 @@ export class Dashboard extends React.Component {
     }
 
     searchHandler(event) {
-        console.log(event);
 
         //TODO: may need to sett current event in event store perhaps and maybe some other variables?
         EventStore.currentEvent = event;

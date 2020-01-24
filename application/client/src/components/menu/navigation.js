@@ -132,6 +132,7 @@ export class NavBar extends Component {
                     CookieStore.setCurrentUserID(-1);
                     history.push("/");
                     this.props.logOut();
+                    window.location.reload();
                 }}>
                     Logg av <FaSignOutAlt size={20}/>
                 </div>
@@ -171,7 +172,6 @@ export class MMI extends Component{
         let body = document.body;
         if(fontSize <160){
             body.style.fontSize = `${fontSize += 15}%`;
-            console.log(fontSize);
         }
     };
 }

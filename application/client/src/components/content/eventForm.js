@@ -9,6 +9,7 @@ import {DocumentationTab} from "../documentationTab";
 import {EventStore} from "../../store/eventStore";
 import {OrganizerStore} from "../../store/organizerStore";
 import {Event} from "../../classes/event";
+import {Alert} from "../alerts";
 
 /**
  * @class EventForm
@@ -48,9 +49,9 @@ export class EventForm extends Component {
     saveClicked = () => {
         if (this.validateForm()) {
             this.setState({edit: false});
-            EventStore.editCurrentEvent().then(console.log("Lagret"));
+            EventStore.editCurrentEvent().then(() => Alert.info("Lagret!"));
         } else {
-            console.log("start date can not be after end date");
+            Alert.danger("Startdato må være før sluttdato.");
         }
     };
 

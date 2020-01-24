@@ -107,8 +107,6 @@ export class DocumentService {
 
 
                     axios.post(axiosConfig.root + '/api/document', JSON.stringify(body), {headers: databaseHeader}).then(() => {
-                        console.log(response.status);
-                        console.log(response.data);
                         if (response.status === 200 && response.data.name) {
                             let returnData = {
                                 "documentLink": path,
@@ -163,7 +161,6 @@ export class DocumentService {
                     axios.post(axiosConfig.root + '/artistapi/document', JSON.stringify(body), {headers: databaseHeader}).then(dataResponse => {
 
                         if (response.status === 200 && response.data.name) {
-                            console.log(dataResponse.data);
                             let returnData = {
                                 "documentLink": path,
                                 "documentID": dataResponse.data.insertId
@@ -183,7 +180,6 @@ export class DocumentService {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        console.log("ID " + documentID + " Link ");
         axios.delete(axiosConfig.root + '/api/document/' + documentID + '/' + documentLink, {headers: header})
             .catch(error => console.log(error));
     }
@@ -235,8 +231,6 @@ export class DocumentService {
         let artist;
         axios.get(axiosConfig.root + '/api/document/info/artist/' + documentID, {headers: header}).then(response => {
            if(response.data[0] !== undefined){
-               console.log("Lengde artist: " + response.data.length);
-               console.log("Data: " + response.data[0].contactName);
                artist = new Contact(response.data[0].contactID, response.data[0].contactName,response.data[0].phone,response.data[0].email);
                callback(artist);
            }
@@ -344,7 +338,6 @@ export class DocumentService {
                 url = window.URL.createObjectURL(new Blob([res.data]
                     , {type: "text/richtext"}));
             } else {
-                console.log("There are no MIME support to " + documentLink);
                 url = window.URL.createObjectURL(new Blob([res.data]
                     , {type: ""}));
             }
@@ -354,7 +347,6 @@ export class DocumentService {
             document.body.appendChild(link);
             link.click();
         });
-        console.log("Downloading document...");
     }
 
     /**
@@ -369,7 +361,6 @@ export class DocumentService {
                 //Force to receive data in a Blob Format
             }).then(response => {
                 //Create a Blob from the PDF Stream
-                console.log(response.data);
                 const file = new Blob([response.data], {
                     type: "application/pdf"
                 });
