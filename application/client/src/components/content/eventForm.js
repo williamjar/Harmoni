@@ -33,8 +33,8 @@ export class EventForm extends Component {
         this.handleButtonClick = this.handleButtonClick.bind(this);
 
         /**
-         *
-         * @type {{editMode: boolean, activeTab: number}}
+         * @type {boolean} editMode
+         * @type {int} activeTab
          */
         this.state = {
             activeTab: 0,
