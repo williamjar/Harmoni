@@ -7,7 +7,7 @@ let axiosConfig = require("./axiosConfig");
 
 /**
  * @class CrewStore
- * @classdesc Store Class for functions related to accessing and modifying crew objects.
+ * @classdesc Store class for functions related to accessing and modifying crew objects.
  */
 export class CrewStore {
 
@@ -130,10 +130,10 @@ export class CrewStore {
     /**
      * Creates a new crew member and assigns it to the current event. The crew member is then stores in the database
      * @param {function} callback
-     * @param {String} name - The name of the new crew member.
-     * @param {String} phone - The phone of the new crew member.
-     * @param {String} email - The email of the new crew member.
-     * @param {String} description - A description the new crew member.
+     * @param {string} name - The name of the new crew member.
+     * @param {string} phone - The phone of the new crew member.
+     * @param {string} email - The email of the new crew member.
+     * @param {string} description - A description the new crew member.
      * @param {int} crewCategoryID - The database ID of the Crew category the new crew member will be added to.
      * @param {int} isResponsible - A boolean
      * @param {int} eventID - The database ID of the event.
@@ -183,10 +183,10 @@ export class CrewStore {
     //This crew member will not be assigned to an event
     /**
      * Creates a new crew member without assigning them to an event. The crew member is then stored in the database.
-     * @param {String} name - The name of the new crew member.
-     * @param {String} phone - The phone of the new crew member.
-     * @param {String} email - The email of the new crew member.
-     * @param {String} description - A description the new crew member.
+     * @param {string} name - The name of the new crew member.
+     * @param {string} phone - The phone of the new crew member.
+     * @param {string} email - The email of the new crew member.
+     * @param {string} description - A description the new crew member.
      * @param {int} crewCategoryID - The database ID of the Crew category the new crew member will be added to.
      * @param {int} organizerID - The database ID of the logged in organizer.
      */
@@ -221,7 +221,7 @@ export class CrewStore {
 
     /**
      * Creates a new crew category for that organizer and saves it to the database.
-     * @param {String} categoryName - The name of the new crew category.
+     * @param {string} categoryName - The name of the new crew category.
      * @param {int} organizerID - The database ID of the logged in organizer.
      */
     static addCategory(categoryName, organizerID){
@@ -285,8 +285,9 @@ export class CrewStore {
 
     /**
      * Updates the the description for an existing crew member and saves it to the database.
-     * @param {String} description - The database ID of the event.
+     * @param {string} description - The database ID of the event.
      * @param {crewID} crewID - The database ID of the crew member.
+     * @return {Promise} The promise received from the database.
      */
     static updateCrewMember(description, crewID) {
 
@@ -309,6 +310,7 @@ export class CrewStore {
      * @param {int} eventID - The database ID of the event.
      * @param {int} crewCategoryID - The database ID of crew category the crew member will be assigned to.
      * @param {int} crewID - The database ID of the crew member.
+     * @return {Promise} The promise received from the database.
      */
     static updateCrewMemberEvent(isResponsible, contractSigned, hasBeenPaid, eventID, crewCategoryID, crewID) {
 
@@ -341,7 +343,11 @@ export class CrewStore {
             .then(response => console.log(response));
     }
 
-    //delete a crew member
+    /**
+     * Removes a crew member and his personal info from the database.
+     * @param {int} contactID - The database ID of the contact.
+     * @return {Promise} The promise received from the database.
+     */
     static deleteCrewMember(contactID) {
 
         let header = {
@@ -368,11 +374,12 @@ export class CrewStore {
     }
 
     /**
-     * Unassigns a crewmember from an event and updates the database.
+     * Unassigns a crew member from an event and updates the database.
      * @param {int} eventID - The database ID of the event.
      * @param {int} crewCategoryID - The database ID of crew category the crew member will be assigned to.
      * @param {int} crewID - The database ID of the crew member.
      * @param {function} callback
+     * @return {Promise} The promise received from the database.
      */
     static unassignCrewMemberFromEvent(eventID, crewCategoryID, crewID, callback){
 

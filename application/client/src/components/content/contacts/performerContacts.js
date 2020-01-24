@@ -18,8 +18,16 @@ import {ContactService} from "../../../store/contactService";
 import {Alert} from "../../alerts";
 import {MegaValidator} from "../../../megaValidator";
 
+/**
+ * @class PerformerContacts
+ * @classdesc Component for displaying all artists related to an organizer in a contact list
+ */
 export class PerformerContacts extends React.Component {
 
+    /**
+     *
+     * @param props,
+     */
     constructor(props) {
         super(props);
 
@@ -41,6 +49,11 @@ export class PerformerContacts extends React.Component {
         }), CookieStore.currentUserID);
     }
 
+    /**
+     *
+     * @param performers - An array of performer-objects
+     * @description Sorts an array of performers alphabetically by name
+     */
     sortPerformers = (performers) => {
         let sorted = [].concat(performers).sort((a,b) => {
             return a.contactName>b.contactName ? 1 : a.contactName<b.contactName ? -1 : 0;
@@ -48,24 +61,45 @@ export class PerformerContacts extends React.Component {
         this.setState({performers: sorted});
     };
 
+    /**
+     *
+     * @param e - Event triggering the function
+     * @description Updates the state and tells the component what genre to filter by
+     */
     filterPerformers = (e) => {
         this.setState({active: e.target.name});
     };
 
+    /**
+     *
+     * @param selected - The selected element from the artist search
+     * @description Handles when the user selects an element in search and updates current performer in state
+     */
     searchHandler = (selected) => {
         this.setState({currentPerformer: selected, show: true});
     };
 
+    /**
+     * @description Handles when the user closes the contact info pop up
+     */
     hidePerformer = () => {
         this.update( () => this.setState({show: false, addNew: false}));
     };
 
+    /**
+     *
+     * @param callback - Function called when the query to the database has completed
+     * @description Updates the array of performers with a new fetch from the database
+     */
     update = (callback) => {
         ArtistService.getArtistForOrganizer((res) => {
             this.setState({performers: res}, () => callback());
         }, CookieStore.currentUserID);
     };
 
+    /**
+     * @description Handles when the user clicks "add new" and shows a dialog
+     */
     addClicked = () => {
         this.setState({addNew: true});
     };

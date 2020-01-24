@@ -4,10 +4,20 @@ import {hashService} from "./hashService";
 
 const axiosConfig = require('./axiosConfig');
 
+/**
+ * @class LoginService
+ * @classdesc Service class for logging in a user.
+ */
 export class LoginService {
 
+    /**
+     * Checks if the entered password matches the password stored in the database for the entered email.
+     * If the password matches the user is logged in to the system.
+     * @param {string} email - Email to check against database.
+     * @param {string} enteredPassword - Password to check against database.
+     * @param {function} callback
+     */
     static loginOrganizer(email, enteredPassword, callback) {
-
         hashService.getHashedFromEmail(enteredPassword, email, hashedPassword => {
             if (!hashedPassword) {
                 console.log("Email does not exist");
