@@ -161,7 +161,7 @@ export class CrewStore {
 
     //create new crew member (for use in "Personell"-overview and not in edit event).
     //This crew member will not be assigned to an event
-    static createCrewMember(name, phone, email, description, crewCategoryID, organizerID) {
+    static createCrewMember(name, phone, email, description, organizerID, callback) {
         //TODO: Needs a Callback
 
         let header = {
@@ -185,7 +185,7 @@ export class CrewStore {
 
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response => {
                 console.log(response);
-                //callback
+                callback();
             });
         });
     }

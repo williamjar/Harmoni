@@ -35,8 +35,17 @@ export class PerformerContacts extends React.Component {
     }
 
     componentDidMount() {
-        ArtistService.getArtistForOrganizer((res) => this.setState({performers: res}), CookieStore.currentUserID);
+        ArtistService.getArtistForOrganizer((res) => this.setState({performers: res}, () => {
+            this.sortPerformers(this.state.performers);
+        }), CookieStore.currentUserID);
     }
+
+    sortPerformers = (performers) => {
+        let sorted = [].concat(performers).sort((a,b) => {
+            return a.contactName>b.contactName ? 1 : a.contactName<b.contactName ? -1 : 0;
+        });
+        this.setState({performers: sorted});
+    };
 
     filterPerformers = (e) => {
         this.setState({active: e.target.name});
@@ -47,7 +56,7 @@ export class PerformerContacts extends React.Component {
     };
 
     hidePerformer = () => {
-        this.update( () => this.setState({show: false}));
+        this.update( () => this.setState({show: false, addNew: false}, () => console.log(this.state.performers)));
     };
 
     update = (callback) => {
@@ -140,7 +149,7 @@ export class PerformerContacts extends React.Component {
                 </Row>
                 {console.log(this.state.currentPerformer)}
                 {this.state.currentPerformer !== null ? <ContactInfo show={this.state.show} contact={this.state.currentPerformer} onHide={this.hidePerformer}/> : null}
-                <AddPerformer show={this.state.addNew}/>
+                <AddPerformer show={this.state.addNew} onHide={this.hidePerformer}/>
             </div>
         )
     }
@@ -153,7 +162,7 @@ export class ContactList extends React.Component {
 
         this.state = {
             unsorted: this.props.performers,
-            performers: [],
+            performers: this.props.performers,
             showContact: false,
             currentPerformer: null,
             genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"]
@@ -161,9 +170,9 @@ export class ContactList extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if(props.performers !== state.unsorted) {
+        if(props.performers !== state.performers) {
             return {
-                unsorted: props.performers
+                performers: props.performers
             }
         }
         return null;
@@ -180,15 +189,7 @@ export class ContactList extends React.Component {
         this.props.updateHandler(() => this.setState({showContact: false}))
     };
 
-    sortPerformers = (performers) => {
-        let sorted = [].concat(performers).sort((a,b) => {
-            return a.contactName>b.contactName ? 1 : a.contactName<b.contactName ? -1 : 0;
-        });
-        this.setState({performers: sorted});
-    };
-
     componentDidMount() {
-        this.sortPerformers(this.props.performers);
     }
 
     render() {
@@ -341,7 +342,7 @@ class AddPerformer extends React.Component {
             contactName: "",
             email: "",
             phone: "",
-            genre: null,
+            genre: 1,
             genres: ["Pop","Rock", "Metal", "Blues", "Hip Hop", "Electronic Dance Music", "Jazz", "Country", "Klassisk", "ANNET"],
         }
     }
@@ -351,11 +352,20 @@ class AddPerformer extends React.Component {
     }
 
     componentDidUpdate(props) {
-        this.setState({show: true});
+        this.setState({show: props.show});
     }
 
-    hide = () => {
-        this.update( () => this.setState({show: false}));
+    handleChange = (e) => {
+        this.setState({[e.target.name]: e.target.value, show: false}, () => {
+            this.setState({show: true});
+        });
+    };
+
+    saveClicked = () => {
+        console.log(this.state);
+        ArtistService.createArtist(() => {
+            this.props.onHide();
+        }, this.state.contactName, this.state.phone, this.state.email, this.state.genre, CookieStore.currentUserID)
     };
 
     render() {
@@ -394,7 +404,7 @@ class AddPerformer extends React.Component {
                             <FaMusic/>
                         </Col>
                         <Col>
-                            <Form.Control name="genre" as="select" defaultValue={this.state.genre} onChange={this.handleChange}>{
+                            <Form.Control name="genre" as="select" defaultValue={1} onChange={this.handleChange}>{
                                 this.state.genres.map((genre,i) => {return <option value={i + 1}>{genre}</option>})
                             }</Form.Control>
                         </Col>
