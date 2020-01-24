@@ -672,6 +672,10 @@ search-result-item{
         padding-top: 30px;
     }
 
+    .padding-top-25-mobile{
+        padding-top: 25px;
+    }
+
     .content{
         overflow-y: scroll;
         height: 100vh;
