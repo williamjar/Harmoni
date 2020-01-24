@@ -31,12 +31,11 @@ export class EventCard extends React.Component {
     render() {
         return(
 
-            <Card className={"m-2 p-2 shadow-sm "}>
+            <Card className={"m-2 p-2 shadow-sm pointer main-color-hover"} onClick={this.viewEvent}>
                 <Card.Body>
                     <Row>
                      <Col>{this.formatDate(this.props.event.startDate)}</Col>
-                     <Col>{this.props.event.eventName} {this.props.event.town !== "" && this.props.event.town !== null ? " - " + this.props.event.town : null}</Col>
-                    <Col align="right"><Button className="align-right" variant="outline-primary" onClick={this.viewEvent}>Vis </Button></Col>
+                     <Col align="right">{this.props.event.eventName} {this.props.event.town !== "" && this.props.event.town !== null ? " - " + this.props.event.town : null}</Col>
                 </Row>
                 </Card.Body>
             </Card>

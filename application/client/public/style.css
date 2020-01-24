@@ -68,6 +68,11 @@ body{
     color:#00525c !important;
 }
 
+.main-color-hover:hover{
+    background:#00525c !important;
+    color: white;
+}
+
 .main-color.active{
     color:#00525c !important;
 }
