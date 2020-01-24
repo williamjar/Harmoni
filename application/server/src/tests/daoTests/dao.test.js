@@ -41,23 +41,23 @@ const pictureDao = new PicturDao(pool);
 const riderDao = new RiderDao(pool);
 const ticketDao = new TicketDao(pool);
 
-mocha.before(done => {
-    try{
-        runSQLFile('../create.sql', pool, () => {
-            runSQLFile('../testData.sql', pool, () => {
-                done();
-            });
-        });
-    }
-    catch (e) {
-        done();
-    }
 
-});
 
 mocha.describe('Starting DAO test', () => {
 
+    mocha.before(done => {
+        try{
+            runSQLFile('../create.sql', pool, () => {
+                runSQLFile('../testData.sql', pool, () => {
+                    done();
+                });
+            });
+        }
+        catch (e) {
+            done();
+        }
 
+    });
 
 
     //ArtistDao
@@ -69,10 +69,10 @@ mocha.describe('Starting DAO test', () => {
                 })
             })
         });
-
+/*
         mocha.describe('getAllForOrganizer()', () => {
             mocha.it('should return all for organizer', () => {
-                artistDao.getAllForOrganizer((status,data) => {
+                artistDao.getAllForOrganizer((status, data) => {
                     assert.equal(data.length, 1)
                 }, 1)
             });
@@ -83,7 +83,7 @@ mocha.describe('Starting DAO test', () => {
             mocha.it('should return all for event', () => {
                 artistDao.getAllForEvent((status, data) => {
                     assert.equal(data.length, 1);
-                } , 1)
+                }, 1)
             })
         });
 
@@ -91,15 +91,14 @@ mocha.describe('Starting DAO test', () => {
             mocha.it('should return one artist', () => {
                 artistDao.getOne((status, data) => {
                     assert.equal(data.length, 1);
-                } , 1)
+                }, 1)
             })
         });
 
 
-
         mocha.describe('createOne()', () => {
             mocha.it('should create one artist', () => {
-                let list = [2,2,2];
+                let list = [2, 2, 2];
                 artistDao.createOne((status, data) => {
                     //onsole.log(data);
                     assert.equal(data.insertId, 3);
@@ -109,14 +108,15 @@ mocha.describe('Starting DAO test', () => {
 
         mocha.describe('updateOne()', () => {
             mocha.it('should update an exsisting artist', () => {
-                let list = [2,2,2];
+                let list = [2, 2, 2];
                 artistDao.updateOne((status, data) => {
                     assert.equal(data.affectedRows, 1);
                 }, list);
             })
         });
 
-        mocha.describe('deleteOne()', () => {
+        /*
+           mocha.describe('deleteOne()', () => {
             mocha.it('should delete an exsisting artist', () => {
                 artistDao.deleteOne((status, data) => {
                     //onsole.log(data);
@@ -124,9 +124,10 @@ mocha.describe('Starting DAO test', () => {
                 }, 3);
             })
         });
+         */
 
 
-
+        /*
         mocha.describe('addDocument()', () => {
             mocha.it('should add a document to artist', () => {
                 let list = [1, 'Dokument', 'link', 1, 1];
@@ -138,7 +139,7 @@ mocha.describe('Starting DAO test', () => {
 
         mocha.describe('assignOne()', () => {
             mocha.it('should assign artist to event.', () => {
-                let list = [1,2];
+                let list = [1, 2];
                 artistDao.assignOne((status, data) => {
                     assert.equal(data.affectedRows, 1);
                 }, list);
@@ -146,7 +147,7 @@ mocha.describe('Starting DAO test', () => {
         });
         mocha.describe('unAssignOne()', () => {
             mocha.it('should unassign an artist from event.', () => {
-                let list = [1,1];
+                let list = [1, 1];
                 artistDao.unAssignOne((status, data) => {
                     assert.equal(data.affectedRows, 1);
                 }, list);
@@ -162,7 +163,7 @@ mocha.describe('Starting DAO test', () => {
         });
         mocha.describe('getArtistEventInfo()', () => {
             mocha.it('should return artist event info for one event.', () => {
-                let list = [1,2];
+                let list = [1, 2];
                 artistDao.getArtistEventInfo((status, data) => {
                     assert.equal(data.length, 1);
                 }, list);
@@ -171,17 +172,20 @@ mocha.describe('Starting DAO test', () => {
 
         mocha.describe('updateArtistEventInfo()', () => {
             mocha.it('should unassign an artist from event.', () => {
-                let list = [2,2,1,2];
+                let list = [2, 2, 1, 2];
                 artistDao.updateArtistEventInfo((status, data) => {
                     //console.log(data);
                     assert.equal(data.affectedRows, 1);
                 }, list);
             })
         });
+         */
+
     });
+});
 
 
-
+/*
 
     //BugDao
     mocha.describe('BugDao', () => {
@@ -1060,8 +1064,9 @@ mocha.describe('Starting DAO test', () => {
         });
 
     });
+/*
 });
-
+ */
 
 
 
