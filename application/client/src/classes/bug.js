@@ -1,6 +1,22 @@
 import {Organizer} from "./organizer";
 
+/**
+ * @class {Bug}
+ * Class used to store all the information needed to report a bug
+ */
 export class Bug{
+
+    /**
+     *
+     * @param {int} bugID
+     * The ID of the bug
+     * @param {String} date
+     * The date when the bug was registered
+     * @param {String} description
+     * The description describing the bug
+     * @param {Organizer} organizer
+     * The organizer (User) who reported the bug
+     */
     constructor(bugID, date, description, organizer){
         this.bugID = bugID;
         this.date = date;
