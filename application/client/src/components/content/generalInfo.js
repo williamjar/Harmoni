@@ -126,7 +126,7 @@ export class InfoForm extends Component {
     render() {
         if(this.state.edit){
             return(
-                    <Row>
+                    <Row className="margin-bottom-20">
                     <Col xs={12} md={6}>
                     <Card className="mb-2 border-0">
                         <Form onSubmit={this.handleSubmit}>
@@ -206,13 +206,17 @@ export class InfoForm extends Component {
                         </Form>
                     </Card>
                     </Col>
-                        <Col>
+                        <Col align={"center"}>
                             <CheckList issueList={this.state.issueList}/>
-
+                            <div className="padding-top-30">
+                            <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="" width={"500px"}/>
+                            </div>
                             <h5 className={"mt-2"}>Last opp et bilde til arrangementet</h5>
-                            <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2 w-25"/>
-                            <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/>
-                            <Button hidden={this.state.uploadingPicture} type={"file"} variant={"secondary"} onClick={() => {
+
+                            <span className="btn btn-secondary btn-file margin-right-20">Legg til bilde
+                                <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/></span>
+
+                            <Button hidden={this.state.uploadingPicture} type={"file"} variant={"success"} onClick={() => {
                                 this.setState({uploadingPicture: true});
                                 if(MegaValidator.validateFile(this.state.selectedFile)){
                                     let fileForm = new FormData();
@@ -359,8 +363,8 @@ export class InfoForm extends Component {
 
                         <Col>
                             <Card className={"border-0"}>
-                                <Card.Body>
-                                    <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className="mb-2 w-75"/>
+                                <Card.Body align={"center"}>
+                                    <Image src={this.state.serverFile != null ? this.state.serverFile : placeholder} alt="event image" fluid className=""/>
                                 </Card.Body>
                             </Card>
                         </Col>
