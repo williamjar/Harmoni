@@ -12,6 +12,7 @@ import {DocumentService} from "../../store/documentService";
 import {Alert} from "../alerts";
 import {Document} from "../../classes/document";
 import {MailService} from "../../store/mailService";
+import {MegaValidator} from "../../megaValidator";
 
 
 export class CrewPanel extends Component{
@@ -172,7 +173,6 @@ export class CrewPanel extends Component{
     submitCategory = () => {
         this.refreshCrewList();
         this.refreshCrewCategories();
-        this.hideRegisterCategory();
     };
 
     callBackSearchResult = () => {
@@ -213,13 +213,13 @@ export class AddCrewType extends Component{
                 </Form.Row>
 
                 <Row className="no-gutter">
-                    <Col className="col-1">
+                    <Col className="col-2">
                         <Button variant="success" type="submit" onClick={this.submitForm}>
                             Lagre
                         </Button>
                     </Col>
-                    <Col className="col-1">
-                        <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelButton}>
+                    <Col className="col-2">
+                        <Button variant="secondary" type="cancel" className="padding-left-20" onClick={this.cancelButton}>
                             Avbryt
                         </Button>
                     </Col>
@@ -530,11 +530,28 @@ export class AddCrewMember extends Component{
         };
     }
 
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.name)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.name)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epostaddresse';
+        }
+        else{
+            return '';
+        }
+    }
 
     render() {
         return(
             <div className="card card-body">
-                <Form.Group>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
@@ -588,13 +605,20 @@ export class AddCrewMember extends Component{
                         <Form.Label>Hovedansvarlig</Form.Label>
                         <input type="checkbox" onClick={this.handleIsResponsibleChange}/>
                     </Form.Group>
-                    <Button variant="primary" type="button" onClick={this.submitForm}>
-                        Lagre
-                    </Button>
-                    <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
-                        Avbryt
-                    </Button>
-                </Form.Group>
+
+                    <Row className="no-gutter">
+                        <Col className="col-2">
+                        <Button variant="primary" type="button" disabled={!(this.validateForm()==='')} onClick={this.submitForm}>
+                            Lagre
+                        </Button>
+                        </Col>
+                        <Col className="col-2">
+                        <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
+                            Avbryt
+                        </Button>
+                        </Col>
+                    </Row>
+                <Form.Text className={"text-danger"}>{this.validateForm()}</Form.Text>
             </div>
         )
     }

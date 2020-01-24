@@ -9,6 +9,7 @@ import {DocumentService as documentService} from "../../store/documentService";
 import * as hash from "../../store/hashService";
 import {createHashHistory} from "history";
 
+
 let history = createHashHistory();
 
 export class UserPage extends React.Component {
@@ -438,11 +439,16 @@ export class ProfilePictureForm extends React.Component {
                     <Form>
                         {this.checkIfUserHasPicture()}
                         <Form.Group>
-                            <FormControl name="newProfilePicture" type="file"
-                                         onChange={this.handleInputChange}/>
+
+                            <div className="padding-top-30">
+                                <span className="btn btn-secondary btn-file"> Legg til bilde
+                                <input type="file" name="newProfilePicture" onChange={this.handleInputChange} className="btn btn-secondary btn-file" />
+                                </span>
+                                <Button onClick = {this.upload} hidden={this.state.savingInformation} variant="success" type="submit" className="margin-left-10">Last opp profilbilde</Button>
+                            </div>
                         </Form.Group>
+
                         <Form.Group>
-                            <Button onClick = {this.upload} hidden={this.state.savingInformation} variant="secondary" type="submit">Last opp profilbilde</Button>
                         </Form.Group>
                     </Form>
                 </Card>

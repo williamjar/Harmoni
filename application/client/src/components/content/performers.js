@@ -50,7 +50,7 @@ export class PerformerPanel extends Component{
                                     <Search searchHandler={this.searchHandler} results={this.state.results} />
                                 </div>
                                 <div className="col-4">
-                                    <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny</button>
+                                    <button className="btn btn-success" onClick={this.toggleRegisterNew}>Registrer ny artist</button>
                                 </div>
                             </div>
 
@@ -61,7 +61,9 @@ export class PerformerPanel extends Component{
                         </div>
 
                         <div className="col-lg-6 col-md-12">
+                            <div className="padding-top-30-mobile">
                             <RegisteredPerformers key={this.state.performerSelected} performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
+                            </div>
                         </div>
                     </div>
 
@@ -304,7 +306,7 @@ export class PerformerCard extends Component{
                    </Col>
 
                    <Col>
-                       <Button variant="success" onClick={() => this.save()} id="savePerformer">Lagre artist og legg til </Button>
+                       <Button variant="success" onClick={() => this.save()} id="savePerformer">Lagre artist</Button>
                    </Col>
 
                    </Row>
@@ -627,6 +629,13 @@ export class RegisterPerformer extends Component{
         return(
             <div className="card card-body">
                     <Form.Row>
+
+                        <Form.Group as={Col}>
+                            <Form.Text><h4>Registrer kontaktinformasjon til artist</h4></Form.Text>
+                        </Form.Group>
+                    </Form.Row>
+                
+                    <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
                             <Form.Control type="text" maxLength={"30"} placeholder="" onChange={this.handleNameChange}/>
@@ -660,12 +669,12 @@ export class RegisterPerformer extends Component{
                     <Row className="no-gutter">
                         <Col className="col-2">
                     <Button variant="primary" type="submit" disabled={!(this.validateForm()==='')} onClick={this.submitForm}>
-                        Submit
+                        Lagre
                     </Button>
                         </Col>
                         <Col className="col-2">
                     <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegisterNew}>
-                        Cancel
+                        Avbryt
                     </Button>
                         </Col>
                     </Row>
@@ -762,8 +771,8 @@ export class RegisteredPerformers extends Component{
         return(
             <div>
                 {this.props.performersAdded.length === 0?
-                <div>Ingen artister er lagt</div>
-                :<b className="card-title">Artister som er lagt til</b>}
+                <div>Ingen artister er lagt til</div>
+                :<b>Artister som er lagt til</b>}
 
                 <ul className="list-group">
                     {this.props.performersAdded.map(p =>
