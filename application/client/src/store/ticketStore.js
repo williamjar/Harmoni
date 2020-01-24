@@ -1,18 +1,32 @@
-import {Genre} from "../classes/genre";
 import axios from "axios";
 import {TicketType} from "../classes/ticketType";
-import {CrewMember} from "../classes/crewMember";
 import {CookieStore} from "./cookieStore";
-
 
 const axiosConfig = require("./axiosConfig");
 
+/**
+ * @class TicketStore
+ * @classdesc Store class for functions related to accessing and modifying tickets. Tickets refer to the type of ticket
+ * available in an event. Tickets are specific for each event.
+ */
 export class TicketStore {
 
     static allTicketsCurrentEvent = [];
     static allTickets = [];
 
-    //Adds ticket
+    /**
+     * Add a new ticket to the database.
+     * @param {int} eventID - The database ID of the event.
+     * @param {string} name - The name of the ticket.
+     * @param {int} price - The price of the ticket
+     * @param {int} amount - The amount of tickets.
+     * @param {string} releaseDate - The date of release.
+     * @param {string} releaseTime - The time of release.
+     * @param {string} endDate - The end date of ticket sales.
+     * @param {string} endTime - The end time of ticket sales.
+     * @param {string} description - Description of the ticket type.
+     * @param {function} callback
+     */
     static addTicket(eventID, name, price, amount, releaseDate, releaseTime,  endDate, endTime, description, callback) {
 
         let header = {
@@ -45,7 +59,9 @@ export class TicketStore {
         });
     }
 
-    //returns one ticket
+    /**
+     * TODO delete?
+     */
     static getOneTicket(ticketTypeID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -61,7 +77,11 @@ export class TicketStore {
         );
     }
 
-    //return all tickets to an event in a list.
+    /**
+     * Inserts all tickets for a specific events into the allTicketsCurrentEvent variable with data from the database.
+     * @param {int} eventID - The database ID of the event.
+     * @param {function} callback
+     */
     static getAllTicketsForEvent(eventID, callback) {
 
         this.allTicketsCurrentEvent = [];
@@ -79,9 +99,11 @@ export class TicketStore {
             }
             callback();
         });
-
     }
 
+    /**
+     * TODO delete?
+     */
     static getAllTickets(callback) {
 
         this.allTickets = [];
@@ -102,7 +124,9 @@ export class TicketStore {
 
     }
 
-    //update ticket
+    /**
+     * TODO delete?
+     */
     static updateTicket(name, price, amount, releaseDate, releaseTime,  endDate, endTime, description, ticketTypeID) {
         let header = {
             "Content-Type": "application/json",
@@ -123,8 +147,13 @@ export class TicketStore {
             .catch(error => console.log(error));
     }
 
-
-    //delete a ticket from an event
+    /**
+     * Removes a specific ticket from the database.
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} ticketTypeID - The database ID of the ticket.
+     * @param {function} callback - Returns a status for how the event went.
+     * @return {Promise} The returned promise from the database call.
+     */
     static deleteTicket(eventID ,ticketTypeID, callback) {
         console.log('Running deleteTicket');
         let header = {

@@ -14,14 +14,17 @@ const axiosConfig = require("./axiosConfig");
  */
 export class ArtistService {
 
-    // artistID, name, phone, email, genre, organizer
+    /**
+     * Returns a specific artist as an artist object in the callback with data from the database.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {function} callback
+     */
     static getArtist(artistID, callback) {
 
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-
         axios.get(axiosConfig.root + '/api/artist/' + artistID, {headers: header}).then(response => {
                 if (response.data.length > 0){
                     let artist = new Artist(response.data[0].artistID,response.data[0].contactID, response.data[0].contactName, response.data[0].phone, response.data[0].email, response.data[0].genre, response.data[0].organizerID);
@@ -34,6 +37,12 @@ export class ArtistService {
         ).catch(err => console.log(err));
     }
 
+    /**
+     * Returns info about a an artist assignment with data from the database in the callback as an artistEventInfo object.
+     * @param {function} callback
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} eventID - The database ID of the event.
+     */
     static getArtistEventInfo(callback, artistID, eventID) {
 
         let header = {
@@ -50,9 +59,16 @@ export class ArtistService {
                 callback(artistEventInfo);
             }
         ).catch(fail => console.log("Error get artist event info " + fail));
-
     }
 
+    /**
+     * Returns info about a an artist assignment with data from the database in the callback as an artistEventInfo object.
+     * @param {function} callback
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} contractSigned - (True/false) Whether the artist has signed the contract or not.
+     * @param {int} hasBeenPaid - (True/false) Whether the artist has been paid or not.
+     */
     static updateArtistEventInfo(callback, artistID, eventID, contractSigned, hasBeenPaid) {
 
         console.log("updateArtistEventInfo has been paid: " + hasBeenPaid);
@@ -71,31 +87,40 @@ export class ArtistService {
                 callback();
             }
         );
-
     }
 
+    /**
+     * Updates a specific artist's genre in the database.
+     * @param {function} callback
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} genreID - The database ID of the genre.
+     * @param {int} organizerID - The database ID of the organizer.
+     * @param {int} contactID - The database ID of the contact.
+     */
     static updateArtistGenre(callback, artistID, genreID, organizerID, contactID){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-
         let artistGenreBody = {
             "genreID" : genreID,
             "organizerID" : organizerID,
             "contactID" : contactID,
         };
-
-        console.log("update artist genre");
-        console.log(artistGenreBody);
-
-
         axios.put(axiosConfig.root +"/api/artist/" +artistID, artistGenreBody, {headers: header}).then(response => {
             callback();
         })
     }
 
-    // OrganizerID == innlogget bruker.
+    /**
+     * Creates a new artist in the database and returns it as an artist object in the callback.
+     * @param {function} callback
+     * @param {string} name - Name of artist.
+     * @param {string} phone - Phone number of artist.
+     * @param {string} email - Email of artist.
+     * @param {int} genreID - The database ID of the contact.
+     * @param {int} organizerID - The database ID of the organizer.
+     */
     static createArtist(callback, name, phone, email, genreID, organizerID) {
         let header = {
             "Content-Type": "application/json",
@@ -136,6 +161,10 @@ export class ArtistService {
         }).catch(err => console.log(err));
     }
 
+    /**
+     * Deletes an artist from the database.
+     * @param {int} contactID - The database ID of the artist in the contact table.
+     */
     static deleteArtist(contactID) {
         let header = {
             "Content-Type": "application/json",
@@ -144,6 +173,11 @@ export class ArtistService {
         return axios.delete(axiosConfig.root + '/api/artist/' + contactID, {headers: header}).then(response => response.data);
     }
 
+    /**
+     * Returns all artists for a specific organizer in an array of artist objects created with data from the database.
+     * @param {function} callback -
+     * @param {int} organizerID - The database ID of the organizer.
+     */
     static getArtistForOrganizer(callback, organizerID) {
         let allArtistByOrganizer = [];
         let header = {
@@ -162,6 +196,11 @@ export class ArtistService {
         );
     }
 
+    /**
+     * Returns all artists for a specific organizer and event in an array of artist objects created with data from the database.
+     * @param {function} callback -
+     * @param {int} eventID - The database ID of the event.
+     */
     static getArtistsForEvent(callback, eventID) {
         let allArtistByEvent = [];
         let header = {
@@ -185,6 +224,11 @@ export class ArtistService {
         });
     }
 
+    /**
+     * Assigns an artist to an event.
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} artistID - The database ID of the artist.
+     */
     static assignArtist(eventID, artistID) {
 
         let header = {
@@ -198,6 +242,11 @@ export class ArtistService {
         }, {headers: header}).then(response => response.data);
     }
 
+    /**
+     * Unassigns an artist to an event.
+     * @param {int} eventID - The database ID of the event.
+     * @param {int} artistID - The database ID of the artist.
+     */
     static unAssignArtist(eventID, artistID) {
 
         let header = {
@@ -208,6 +257,11 @@ export class ArtistService {
         return axios.delete(axiosConfig.root + '/api/artist/assign/' + eventID + '/' + artistID, {headers: header}).then(response => response.data);
     }
 
+    /**
+     * Return all genres in a list of genre objects created with data from the database.
+     * @param {function} callback -
+     * @return {Promise} The promise from the database call.
+     */
     static getAllGenres(callback) {
         let header = {
             "Content-Type": "application/json",
@@ -221,6 +275,12 @@ export class ArtistService {
             .then(genreList => callback(genreList));
     }
 
+    /**
+     * Returns the token for the artist login in the callback.
+     * @param {int} artistID - The database ID of the artist.
+     * @param {int} eventID - The database ID of the event.
+     * @param {function} callback - Returns status code and token if successful.
+     */
     static getArtistToken(artistID, eventID, callback){
         let header = {
             "Content-Type": "application/json",
@@ -245,12 +305,16 @@ export class ArtistService {
         }).catch(callback(500));
     }
 
+    /**
+     * Decodes a token via the database.
+     * @param {int} token - The database ID of the artist.
+     * @param {function} callback - Returns status code and decoded data if successful.
+     */
     static decodeToken(token, callback){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": token
         };
-
         axios.get(axiosConfig.root + "/decodeArtistToken", {headers: header}).then(response => {
             if (response.data.error){
                 callback(500, response.error);

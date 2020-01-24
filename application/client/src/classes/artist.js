@@ -32,7 +32,7 @@ export class Artist extends Contact {
      * @deprecated
      * Whether the artist's contract has been signed (not in use, see artistEventInfo)
      */
-    constructor(artistID, contactID, name, phone, email, genre, organizer, hasBeenPaid, contractSigned) {
+    constructor(artistID, contactID, name, phone, email, genre, organizer) {
         super(contactID, name, phone, email);
         this.artistID = artistID;
         this.genre = genre;

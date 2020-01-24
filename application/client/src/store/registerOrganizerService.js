@@ -1,10 +1,23 @@
 import axios from 'axios';
 import {hashService} from "./hashService";
+
 const root = require('./axiosConfig').root;
 
+/**
+ * @class RegisterOrganizerService
+ * @classdesc Service class for functions related to registering a new user.
+ */
 export class RegisterOrganizerService {
 
-    static registerOrganizer(username,phone, email, password, callback) {
+    /**
+     * Checks if desired username and email is available if so registers the new user into the database.
+     * @param {string} username - The database ID of the organizer.
+     * @param {string} phone - Desired phone number.
+     * @param {string} email - Desired email
+     * @param {string} password - Desired password.
+     * @param {function} callback - Returns status on how the registration went.
+     */
+    static registerOrganizer(username, phone, email, password, callback) {
         let header = {
             "Content-Type": "application/json",
         };
@@ -15,7 +28,7 @@ export class RegisterOrganizerService {
             "email": email
         };
 
-        let hashedPassword = hashService.sha512(password,hashService.generateSalt(16));
+        let hashedPassword = hashService.sha512(password, hashService.generateSalt(16));
 
         axios.post('http://localhost:8080/contact', JSON.stringify(contactBody), {headers: header})
             .then(res => {
