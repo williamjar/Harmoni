@@ -322,10 +322,16 @@ export class DocumentService {
 
             //Checks which content-type is correct to file extension name
             //jpg/jpeg image
-            if((/\.(jpeg)$/i).test(documentLink) || (/\.(jpg)$/i).test(documentLink)){
+            if((/\.(jpeg)$/i).test(documentLink)){
                url = window.URL.createObjectURL(new Blob([res.data]
                     ,{type: "image/jpeg"}));
             }
+
+            else if((/\.(jpg)$/i).test(documentLink)){
+                url = window.URL.createObjectURL(new Blob([res.data]
+                    ,{type: "image/jpeg"}));
+            }
+
             //Png image
             else if((/\.(png)$/i).test(documentLink)){
                 url = window.URL.createObjectURL(new Blob([res.data]

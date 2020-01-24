@@ -410,8 +410,12 @@ app.get("/file/preview/:path*", (req, res) => {
 app.get("/api/document/download/:path*", (req, res) => {
     var file = req.params.path + req.params['0'];
     fs.readFile(file, function(err, data){
-        //jpg/jpeg image
-    if((/\.(jpeg)$/i).test(req.params.path + req.params['0']) || (/\.(jpg)$/i).test(req.params.path + req.params['0'])){
+        //jpg image
+    if((/\.(jpeg)$/i).test(req.params.path + req.params['0'])){
+        res.contentType("image/jpeg");
+    }
+    //jpeg image
+    else if((/\.(jpg)$/i).test(req.params.path + req.params['0'])){
         res.contentType("image/jpeg");
     }
     //Png image
