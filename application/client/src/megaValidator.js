@@ -11,7 +11,7 @@ export class MegaValidator {
     }
 
     static validateUsername(oldUsername, newUsername) {
-        let illegalCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+        let illegalCharacters = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/;
         if (illegalCharacters.test(newUsername)) {
             return false;
         } else {

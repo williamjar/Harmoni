@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Search} from "../search";
 import {Button, ButtonGroup, Card, Col, Form, Modal, Row} from "react-bootstrap";
 import {
@@ -324,7 +324,6 @@ export class ContactInfo extends React.Component {
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
             return 'Vennligst skriv in en epost-adresse';
         }
-        if(!MegaValidator.validateEmail())
         if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
             return 'Telefonnummer er ikke gyldig';
         }

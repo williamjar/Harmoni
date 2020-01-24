@@ -18,8 +18,8 @@ mocha.describe('Event', () => {
          assert.equal(Event.getTestEvents()[0].riderElements.length, 2);
       });
       mocha.it('Should be defined per artist', () => {
-         assert.equal(Event.getTestEvents()[0].getRiderFromArtist(Event.getTestEvents()[0].artists[0]).length, 1);
-         assert.equal(Event.getTestEvents()[0].getRiderFromArtist(Event.getTestEvents()[0].artists[1]).length, 1);
+         assert.equal(Event.getTestEvents()[0].getRiderFromArtist(Event.getTestEvents()[0].artists[0]).length, 2);
+         assert.equal(Event.getTestEvents()[0].getRiderFromArtist(Event.getTestEvents()[0].artists[1]).length, 2);
       });
    });
 });

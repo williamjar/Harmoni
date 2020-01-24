@@ -2,6 +2,8 @@ import axios from "axios";
 import {CookieStore} from "./cookieStore";
 import {hashService} from "./hashService";
 
+const axiosConfig = require('./axiosConfig');
+
 /**
  * @class LoginService
  * @classdesc Service class for logging in a user.
@@ -30,7 +32,7 @@ export class LoginService {
                     "password": hashedPassword
                 };
 
-                return axios.post("http://localhost:8080/login", JSON.stringify(body), {headers: header})
+                return axios.post(axiosConfig.root + "/login", JSON.stringify(body), {headers: header})
                     .then(res => {
                         return res.data;
                     })
@@ -41,7 +43,7 @@ export class LoginService {
                             console.log("Current token set to null");
                             callback(501);
                         } else {
-                            axios.get("http://localhost:8080/organizer/by-email/" + email, {headers: header})
+                            axios.get(axiosConfig.root + "/organizer/by-email/" + email, {headers: header})
                                 .then(res => {
                                     return res.data;
                                 })

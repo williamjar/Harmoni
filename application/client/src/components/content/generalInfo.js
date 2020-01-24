@@ -3,19 +3,15 @@ import React, {Component} from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Button, Card, Col, Form, Image, Row, Spinner} from "react-bootstrap";
-import {FaCalendarAlt, FaClock, FaPencilAlt, FaHouseDamage} from "react-icons/fa";
-import lorde from './lorde.jpg';
+import {FaCalendarAlt, FaClock, FaHouseDamage} from "react-icons/fa";
 import placeholder from './placeholder.jpg'
-import {Ticket, TicketView} from "../ticket";
+import {Ticket} from "../ticket";
 import {EventStore} from "../../store/eventStore";
-import {createHashHistory} from "history";
 import {PictureService} from "../../store/pictureService";
 import {CheckList} from "./checklist";
 import {MegaValidator} from "../../megaValidator";
 import {Alert} from "../alerts";
 import {Map} from "./map";
-
-const history = createHashHistory();
 
 // Component for viewing or editing the general info about an event
 // The component changes if the event is in "edit mode" or not
@@ -103,8 +99,6 @@ export class InfoForm extends Component {
     componentDidMount() {
         this.updateIssueList();
 
-        console.log(EventStore.currentEvent);
-
         if (EventStore.currentEvent.picture !== null && EventStore.currentEvent.picture > 0){
             this.setState({pictureID: EventStore.currentEvent.picture});
             PictureService.getPicture(EventStore.currentEvent.picture, picture => {
@@ -116,7 +110,6 @@ export class InfoForm extends Component {
             })
         }
         if (!(EventStore.eventCategories[0])) {
-            console.log("loaded categories over again");
             EventStore.getEventCategories(() => {
                 this.setState({eventTypes: EventStore.eventCategories});
             });
@@ -216,20 +209,17 @@ export class InfoForm extends Component {
                             <span className="btn btn-secondary btn-file margin-right-20">Legg til bilde
                                 <input type={"file"} name={"selectedFile"} onChange={event => {this.setState({selectedFile: event.target.files[0]})}}/></span>
 
-                            <Button hidden={this.state.uploadingPicture} type={"file"} variant={"success"} onClick={() => {
+                            <Button type={"file"} variant={"success"} onClick={() => {
                                 this.setState({uploadingPicture: true});
                                 if(MegaValidator.validateFile(this.state.selectedFile)){
                                     let fileForm = new FormData();
                                     fileForm.append("description", this.state.selectedFile.name);
                                     fileForm.append("selectedFile", this.state.selectedFile);
-                                    console.log(fileForm.get("selectedFile"));
                                     PictureService.insertEventPicture(EventStore.currentEvent.eventID, fileForm, (statusCode, path, newPictureID) => {
                                         if (statusCode === 200 && path) {
-                                            console.log(newPictureID);
                                             PictureService.previewPicture(path, link => {
                                                 EventStore.currentEvent.picture = newPictureID;
                                                 this.setState({pictureID: newPictureID});
-                                                console.log(this.state.pictureID);
                                                 this.setState({serverFile: link});
                                                 Alert.success("Bildet ditt ble lastet opp")
                                             });
@@ -449,9 +439,6 @@ export class InfoForm extends Component {
     }
 
     save(){
-        console.log(this.state.description);
-        console.log(this.formatDate(this.state.startDate));
-        console.log(this.formatDate(this.state.endDate));
         EventStore.currentEvent.eventName = this.state.eventName;
         EventStore.currentEvent.startDate = this.formatDate(this.state.startDate);
         EventStore.currentEvent.endDate = this.formatDate(this.state.endDate);
@@ -463,7 +450,6 @@ export class InfoForm extends Component {
         EventStore.currentEvent.town = this.state.town;
         EventStore.currentEvent.description = this.state.description;
         EventStore.currentEvent.picture = this.state.pictureID;
-        console.log("SAVED EVENT: " + EventStore.currentEvent.toString());
     }
     // Converts a javascript date to a format compatible with both datepicker and mysql
     formatDate(date) {
@@ -485,8 +471,7 @@ export class InfoForm extends Component {
     formatDateFromSql(date){
         //2019-12-31T23:00:00.000Z
         let newDate = date.split('T');
-        let convertedDate = newDate[0];
-        return convertedDate;
+        return newDate[0];
     }
 }
 

@@ -3,7 +3,6 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Table from "react-bootstrap/Table";
 import {EventCard} from "./eventCard";
-import {Card, CardGroup, CardStock, ListGroup} from "react-bootstrap";
 import {FaAngleDown} from "react-icons/all";
 
 // Component for displaying a group of events(EventCard's) as a table

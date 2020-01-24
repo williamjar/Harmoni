@@ -50,7 +50,7 @@ export class Map extends Component{
             console.log("Results from OpenStreetMap:");
             console.log(results);
 
-            if (results.length == 0){
+            if (results.length === 0){
                 this.setState({latLng: {lat: 0, lng: 0}});
             }else {
                 let lat = parseFloat(results[0].y);

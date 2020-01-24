@@ -55,6 +55,4 @@ module.exports = class bugDao extends Dao {
     deleteBug(callback, bugID) {
         super.query('DELETE FROM bug WHERE bugID = ?', [bugID], callback);
     }
-
-
 };

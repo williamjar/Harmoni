@@ -1,15 +1,12 @@
 import React from 'react';
-import {Button, Card, Col, Form, Row, Table, Image, Accordion, FormControl, Spinner, Modal} from 'react-bootstrap'
+import {Button, Card, Col, Form, Row, Table, Accordion, Spinner, Modal} from 'react-bootstrap'
 import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {PictureService} from "../../store/pictureService";
 import {MegaValidator} from "../../megaValidator";
-import {LoginService} from "../../store/loginService";
-import {DocumentService as documentService} from "../../store/documentService";
-import {hashService} from "../../store/hashService";
 import {createHashHistory} from "history";
 import {Alert} from "../alerts";
-
+import {hashService} from "../../store/hashService";
 
 let history = createHashHistory();
 
@@ -369,7 +366,6 @@ export class DeleteUserForm extends React.Component {
     checkPasswordAndDeleteCurrentUser() {
 
         hashService.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
-            console.log("Password ? " + res);
             if (res) {
                 OrganizerStore.deleteCurrentOrganizer();
                 sessionStorage.setItem('token', null);
@@ -480,30 +476,26 @@ export class ProfilePictureForm extends React.Component {
             const target = event.target;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
-            console.log(this.state.confirmDeleteUser);
             this.setState({[name]: value,});
         }
     }
 
     submitForm(callback) {
         if (MegaValidator.validateFile(this.state.newProfilePicture) && this.state.profilePictureUploaded) {
-    console.log("Image validated");
             let formData = new FormData();
             formData.append('description', this.state.newProfilePicture.name);
             formData.append('selectedFile', this.state.newProfilePicture);
             PictureService.insertProfilePicture(OrganizerStore.currentOrganizer.organizerID, formData, (statusCode, link) => {
-                console.log("Image uploaded with status " + statusCode);
                 this.setState({savingInformation: false});
                 if (statusCode === 200 && link) {
                     const totalPath = __dirname + '../../../../server/' + link;
-                    this.state.profilePicture = totalPath;
+                    this.setState({profilePicture: totalPath});
                     this.setState({profilePictureUploaded: false});
                 }
                 document.getElementById("error").innerHTML = "";
                 callback()
             });
         } else {
-            console.log("Image not validated");
             this.setState({savingInformation: false});
             Alert.danger("Du har lastet opp en tom eller ugyldig filtype");
             document.getElementById("error").innerHTML = "Godkjente filtyper .png .jpg .jpeg";

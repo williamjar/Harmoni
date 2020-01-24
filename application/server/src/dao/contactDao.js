@@ -23,7 +23,7 @@ module.exports = class contactDao extends Dao {
      * List of parameters [contactName,phone,email]
      */
     createOne(callback, list) {
-        super.query('INSERT INTO contact (contactName,phone,email) values(?, ?, ?)', list, callback);
+        super.query('INSERT INTO contact (contactName, phone, email) values(?, ?, ?)', list, callback);
     }
 
     /**
