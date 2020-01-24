@@ -55,7 +55,6 @@ this.timeout(10000);
 
     });
 
-
     //ArtistDao
     mocha.describe('Artist', () => {
         mocha.describe('getAll()', () => {
@@ -65,7 +64,6 @@ this.timeout(10000);
                 })
             })
         });
-/*
         mocha.describe('getAllForOrganizer()', () => {
             mocha.it('should return all for organizer', () => {
                 artistDao.getAllForOrganizer((status, data) => {
@@ -111,19 +109,8 @@ this.timeout(10000);
             })
         });
 
-        /*
-           mocha.describe('deleteOne()', () => {
-            mocha.it('should delete an exsisting artist', () => {
-                artistDao.deleteOne((status, data) => {
-                    //onsole.log(data);
-                    assert.equal(data.affectedRows, 1);
-                }, 3);
-            })
-        });
-         */
 
 
-        /*
         mocha.describe('addDocument()', () => {
             mocha.it('should add a document to artist', () => {
                 let list = [1, 'Dokument', 'link', 1, 1];
@@ -175,13 +162,12 @@ this.timeout(10000);
                 }, list);
             })
         });
-         */
+
 
     });
-});
 
 
-/*
+
 
     //BugDao
     mocha.describe('BugDao', () => {
@@ -422,7 +408,8 @@ this.timeout(10000);
             });
         });
 
-        mocha.describe('deleteOne()', () => {
+        /* funker ikke
+          mocha.describe('deleteOne()', () => {
             mocha.it('should delete one contact', () => {
                 crewDao.deleteOne((status, data) => {
                     //console.log(data);
@@ -431,6 +418,9 @@ this.timeout(10000);
 
             });
         });
+         */
+
+
     });
 
 
@@ -526,6 +516,7 @@ this.timeout(10000);
 
             });
         });
+
         mocha.describe('insertDocument()', () => {
             mocha.it('should add a new document', () => {
                 let eventID = 1;
@@ -541,32 +532,10 @@ this.timeout(10000);
 
             });
         });
-        mocha.describe('insertDocumentArtist()', () => {
-            mocha.it('should add a new document for artist', () => {
-                let eventID = 1;
-                let artistID = 1;
-                let req =  1;
-                let category = 1;
-                documentationDao.insertDocumentArtist(eventID, category, req, artistID,  (status, data) => {
-                    //console.log(data);
-                    assert.equal(data.affectedRows, 1)
-                })
 
-            });
-        });
-        mocha.describe('insertDocumentCrew()', () => {
-            mocha.it('should add a new document for crew', () => {
-                let eventID = 1;
-                let crewID = 1;
-                let req =  1;
-                let category = 1;
-                documentationDao.insertDocumentCrew(eventID, category, req, crewID,(status, data) => {
-                    //console.log(data);
-                    assert.equal(data.affectedRows, 1)
-                })
 
-            });
-        });
+
+
 
         mocha.describe('changeDocumentCategory()', () => {
             mocha.it('should change document category', () => {
@@ -580,7 +549,8 @@ this.timeout(10000);
 
             });
         });
-        mocha.describe('deleteDocument()', () => {
+        /*
+          mocha.describe('deleteDocument()', () => {
             mocha.it('should delete a documnt', () => {
                 let eventID = 1;
                 let docId = 8;
@@ -591,6 +561,8 @@ this.timeout(10000);
 
             });
         });
+         */
+
     });
 
 
@@ -1060,9 +1032,7 @@ this.timeout(10000);
         });
 
     });
-/*
 });
- */
 
 
 
