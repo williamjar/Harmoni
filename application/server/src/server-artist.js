@@ -89,12 +89,12 @@ app.put("/api/artist/:artistID", (request, response) => {
     }, val);
 });
 
-app.delete("/api/artist/:artistID", (request, response) => {
+app.delete("/api/artist/:contactID", (request, response) => {
     console.log("request to delete artist");
     artistDao.deleteOne((status, data) => {
         response.status(status);
         response.json(data);
-    }, request.params.artistID)
+    }, request.params.contactID)
 });
 
 app.delete("/api/artist/assign/:eventID/:artistID", (request, response) => {
