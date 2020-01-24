@@ -7,8 +7,7 @@ import {
     multer,
     path,
     fs,
-    uuidv4,
-    artistDao
+    uuidv4
 } from "./server";
 
 

@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 
 /**
  * @class CookieStore
- * @classdesc Store Class for functions related to accessing and modifying tokens.
+ * @classdesc Store class for functions related to accessing and modifying tokens.
  */
 export class CookieStore{
 
@@ -15,7 +15,7 @@ export class CookieStore{
 
     /**
      * Set method for changing currentToken
-     * @param {String} newToken
+     * @param {string} newToken
      */
     static setCurrentToken(newToken){
         try{
@@ -74,7 +74,7 @@ export class CookieStore{
     }
     /**
      * TODO
-     * @param {String} email
+     * @param {string} email
      * @param {function} callback
      */
     static checkToken(email, callback){
