@@ -27,11 +27,9 @@ export class DocumentService {
         let documentsByCategoryForEvent = [];
 
         axios.get(axiosConfig.root + '/api/' + eventID + '/documents/category/' + documentCategoryID, {headers: header}).then(response => {
-            for (let i = 0; i < response.data.length; i++) {
-                documentsByCategoryForEvent.push(new Document(response.data[i].documentID, response.data[i].eventID,
-                    response.data[i].documentName, response.data[i].documentLink, response.data[i].artistID,
-                    response.data[i].crewID, response.data[i].documentCategoryID));
-            }
+            response.map(document => documentsByCategoryForEvent.push(new Document(response.data[i].documentID, response.data[i].eventID,
+                response.data[i].documentName, response.data[i].documentLink, response.data[i].artistID,
+                response.data[i].crewID, response.data[i].documentCategoryID)));
             callback(documentsByCategoryForEvent);
         });
     }
@@ -222,10 +220,7 @@ export class DocumentService {
         let currentCategories = [];
 
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/documents/categories', {headers: header}).then(response => {
-            for (let i = 0; i < response.data.length; i++) {
-                currentCategories.push(new DocumentCategory(response.data[i].documentCategoryID,
-                    response.data[i].documentCategoryName));
-            }
+            currentCategories = response.data.map(category => new DocumentCategory(category.documentCategoryID, category.documentCategoryName));
 
             callback(currentCategories);
         }).catch(res => console.log(res));
