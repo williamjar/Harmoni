@@ -25,7 +25,7 @@ export class Content extends Component{
 
 /**
  * @class SimpleContent
- * Container to serve content in a strict page layout
+ * @classdesc Container to serve content in a strict page layout
  * Similar to Content class, but used for few and small components, like "opprett arrangement"
  */
 export class SimpleContent extends Component{

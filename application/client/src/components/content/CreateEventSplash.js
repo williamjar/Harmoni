@@ -12,7 +12,7 @@ let history = createHashHistory(); // Use history.push(...) to programmatically 
 
 /**
  * @class CreateEventSplash
- * Component for creating a new event.
+ * @classdesc Component for creating a new event.
  */
 export class CreateEventSplash extends Component{
     emptyMessage = "Navn kan ikke være tomt";

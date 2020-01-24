@@ -12,7 +12,7 @@ import {Event} from "../../classes/event";
 
 /**
  * @class EventForm
- * Parent component for editing and viewing all info about an event, divides information into tabs.
+ * @classdesc Parent component for editing and viewing all info about an event, divides information into tabs.
  */
 export class EventForm extends Component {
 

@@ -14,7 +14,7 @@ import {Map} from "./map";
 
 /**
  * @class EventForm
- * Component for viewing or editing the general info about an event.
+ * @classdesc Component for viewing or editing the general info about an event.
  * The component changes if the event is in "edit mode" or not
  */
 export class GeneralInfo extends Component{

@@ -14,7 +14,7 @@ import {MailService} from "../../store/mailService";
 
 /**
  * @class CreateEventSplash
- * Component for creating a new event.
+ * @classdesc Component for creating a new event.
  */
 export class CrewPanel extends Component{
 

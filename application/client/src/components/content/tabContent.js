@@ -8,8 +8,12 @@ import {MailService} from "../../store/mailService";
 
 const history = createHashHistory();
 
-// Container-component for the different tabs in EventForm
-// Renders differently when editing events
+/**
+ * @class TabContent
+ * @classdesc Container-component for the different tabs in EventForm
+ * Renders differently when editing events
+ */
+
 export class TabContent extends Component {
 
     state = {
