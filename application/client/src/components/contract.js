@@ -7,6 +7,7 @@ import {DocumentService as documentService} from "../store/documentService";
 import {EventStore as eventStore} from "../store/eventStore";
 import Accordion from "react-bootstrap/Accordion";
 import {CookieStore} from "../store/cookieStore";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 
 const history = createHashHistory();
@@ -148,14 +149,19 @@ export class Documents extends Component{
         super(props);
         this.state= {
             document: [],
+            active: "nylige"
         }
     }
 
     componentDidMount() {
         documentService.getAllDocumentsByCategoryForEvent(this.props.match.params.eventID, this.props.match.params.documentCategoryID,(list) => {
-            this.setState({document: list}, () => {
-                this.order();
-            });
+            this.setState(
+                {document: list.sort(function(a, b){
+                    if(a.documentID > b.documentID) { return -1; }
+                    if(a.documentID < b.documentID) { return 1; }
+                    return 0;
+                })
+                });
 
         });
     }
@@ -207,10 +213,26 @@ export class Documents extends Component{
 
     };
 
-    order = () => {
-        console.log();
-        if(this.state.document !== null){
-            this.state.document.sort(function(a, b){
+    orderByNewest = (e) => {
+        let listSorted = this.state.document;
+
+        if(listSorted !== null){
+            listSorted.sort(function(a, b){
+                let fileA = a.documentID;
+                let fileB = b.documentID;
+                if(fileA > fileB) { return -1; }
+                if(fileA < fileB) { return 1; }
+                return 0;
+            })
+        }
+        this.setState({documents: listSorted, active: e.target.name});
+    };
+
+    orderByFileExt = (e) => {
+        let listSorted = this.state.document;
+
+        if(listSorted !== null){
+            listSorted.sort(function(a, b){
                 let fileA = a.documentName.substr(a.documentName.lastIndexOf('.') + 1);
                 let fileB = b.documentName.substr(b.documentName.lastIndexOf('.') + 1);
                 if(fileA < fileB) { return -1; }
@@ -218,16 +240,39 @@ export class Documents extends Component{
                 return 0;
             })
         }
+        this.setState({documents: listSorted, active: e.target.name});
     };
+
+    orderByFileName = (e) => {
+        let listSorted = this.state.document;
+
+        if(listSorted !== null){
+            listSorted.sort(function(a, b){
+                let fileA = a.documentName.toLowerCase();
+                let fileB = b.documentName.toLowerCase();
+                if(fileA < fileB) { return -1; }
+                if(fileA > fileB) { return 1; }
+                return 0;
+            })
+        }
+        this.setState({documents: listSorted, active: e.target.name});
+    };
+
 
 
     render(){
         return(
             <div className="padding-top-30-mobile">
             <section>
-
-                {console.log("TEST" + ("tester.txt").substr(("tester.txt").lastIndexOf('.') + 1))}
-                <Button onClick = {this.order()}> test meg</Button>
+                <Row className = {"padding-bottom-10"}>
+                    <Col>
+                          <ButtonGroup>
+                            <Button name="nylige" onClick = {this.orderByNewest} variant="secondary" active={this.state.active === "nylige"}>Nylige</Button>
+                            <Button name = "filnavn" onClick = {this.orderByFileName} variant="secondary" active={this.state.active === "filnavn"}>Filnavn</Button>
+                            <Button name = "filtype" onClick = {this.orderByFileExt} variant="secondary" active={this.state.active === "filtype"}>Filtype</Button>
+                        </ButtonGroup>
+                    </Col>
+                </Row>
                 {this.state.document.map((item) => {
                     {console.log()}
                     return (
