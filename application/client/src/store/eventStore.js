@@ -16,7 +16,7 @@ export class EventStore {
     static eventCategories = [];
 
     /**
-     * Setter for currenEvent variable
+     * Setter for currentEvent variable
      * @param {Event} newEvent - The event currentEvent will be set to.
      */
     static setCurrentEvent(newEvent) {
@@ -25,9 +25,10 @@ export class EventStore {
     }
 
     /**
-     * Setter for currenEvent variable
-     * @param {Event} newEvent - The event currentEvent will be set to.
+     * Creates a new event in the database and sets it to be currentEvent.
      * @param {function} callback
+     * @param {String} eventName - The name of the event.
+     * @param {int} organizerID - The database ID of the logged in organizer.
      */
     static createEvent(callback, eventName, organizerID) {
 
@@ -68,6 +69,9 @@ export class EventStore {
         }).catch(console.log("Error in eventStore"));
     }
 
+    /**
+     * TODO Delete or change?
+     */
     static storeCurrentEvent(eventID, callback) {
 
         //Populates currentEvent
@@ -87,6 +91,10 @@ export class EventStore {
         }).then(() => callback());
     }
 
+    /**
+     * Sends the data of the current event to update that event in the database. Current event is defined by the currentEvent variable.
+     * @return {Promise} The promise received from the database.
+     */
     static editCurrentEvent() {
 
         console.log("Edit Current event: " + this.currentEvent.toString());
@@ -116,6 +124,9 @@ export class EventStore {
         return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, body, {headers: header});
     }
 
+    /**
+     * TODO - Delete?
+     */
     static storeAllEvents() {
 
         let header = {
@@ -142,6 +153,10 @@ export class EventStore {
         });
     }
 
+    /**
+     * Removes the current event from the database. Current event is defined by the currentEvent variable.
+     * @return {Promise} The promise received from the database.
+     */
     static deleteCurrentEvent() {
         let header = {
             "Content-Type": "application/json",
@@ -150,12 +165,10 @@ export class EventStore {
         return axios.delete(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, {headers: header});
     }
 
-    static archiveCurrentEvent() {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/2", null,{headers: header}).then(response => {
+    static archiveOldEvents() {
+        axios.put(axiosConfig.root + '/api/archive/' + this.currentOrganizer.organizerID).then(response => {
+            if (response) {
+            }
         });
     }
 

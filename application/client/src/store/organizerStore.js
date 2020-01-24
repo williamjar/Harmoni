@@ -118,13 +118,4 @@ export class OrganizerStore {
             console.log("Deleted User: " + res);
         }).catch(e => console.log("Error deleting user - " + e));
     }
-
-    static archiveOldEvents() {
-        axios.put(axiosConfig.root + '/api/archive/' + this.currentOrganizer.organizerID).then(response => {
-            if (response) {
-            }
-        });
-    }
-
-
 }
