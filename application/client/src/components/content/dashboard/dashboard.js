@@ -66,7 +66,7 @@ export class Dashboard extends React.Component {
             EventStore.archiveOldEvents().then(res => {
                 console.log(res);
                 if (res.data.changedRows > 0) {
-                    Alert.info(res.data.changedRows + " ferdige arrangementer flyttet til arkivert");
+                    Alert.info(res.data.changedRows + " ferdige arrangementer vil bli flyttet til arkivert");
                 }
             }).then( () => this.setState({loading:false}));
         });
