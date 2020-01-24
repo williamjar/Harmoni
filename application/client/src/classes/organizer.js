@@ -1,6 +1,8 @@
 import {Contact} from "./contact";
 
-
+/**
+ *
+ */
 export class Organizer extends Contact {
 
     constructor(organizerID, contactID, name, phone, email, username, pictureLink) {

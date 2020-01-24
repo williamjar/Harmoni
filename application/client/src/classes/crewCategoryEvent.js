@@ -1,5 +1,6 @@
 /**
- * @classdesc Utility class for
+ * @deprecated This class is no longer in use, as it's utility has been consolidated in crewMember
+ * @see CrewMember
  */
 export class CrewCategoryEvent {
 
