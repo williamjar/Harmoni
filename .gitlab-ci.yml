@@ -28,8 +28,9 @@ run_tests:
     - npm test
 
 pages:
+  stage: deploy
   script:
-    ls public
+    ls .
   artifacts:
     paths:
       - public

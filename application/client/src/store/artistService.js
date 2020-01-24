@@ -50,11 +50,7 @@ export class ArtistService {
         };
 
         axios.get(axiosConfig.root + '/api/event/' + eventID + '/artist/' + artistID + '/artistEventInfo', {headers: header}).then(response => {
-                console.log("response data");
-                console.log(response.data);
                 let artistEventInfo = new ArtistEventInfo(response.data[0].artistID, response.data[0].eventID, response.data[0].contractSigned === 1, response.data[0].hasBeenPaid === 1);
-                console.log("getArtistEventInfo");
-                console.log(artistEventInfo);
                 callback(artistEventInfo);
             }
         ).catch(fail => console.log("Error get artist event info " + fail));
@@ -69,8 +65,6 @@ export class ArtistService {
      * @param {int} hasBeenPaid - (True/false) Whether the artist has been paid or not.
      */
     static updateArtistEventInfo(callback, artistID, eventID, contractSigned, hasBeenPaid) {
-
-        console.log("updateArtistEventInfo has been paid: " + hasBeenPaid);
 
         let header = {
             "Content-Type": "application/json",
@@ -133,23 +127,16 @@ export class ArtistService {
         };
 
         axios.post(axiosConfig.root + '/api/contact', contactBody, {headers: header}).then(contactRes => {
-            console.log(contactBody);
-
             let artistBody = {
                 "genreID": genreID,
                 "organizerID": organizerID,
                 "contactID": contactRes.data.insertId
             };
-            console.log("post contact");
-            console.log(contactRes);
 
             axios.post(axiosConfig.root + '/api/artist', artistBody, {headers: header}).then(artistRes => {
-                console.log(artistRes);
                 if (artistRes.data.insertId > -1){
-                    console.log("artist");
                     //artistID, contactID, name, phone, email, genre, organizer, hasBeenPaid, contractSigned
                     let artist = (new Artist(artistRes.data.insertId, contactRes.data.insertId, name, phone, email, genreID, organizerID, false, false));
-                    console.log(artist);
                     callback(artist);
                     return artist;
                 }
@@ -289,10 +276,7 @@ export class ArtistService {
             eventID: eventID
         };
 
-        console.log("Getting artist token");
-
         axios.post(axiosConfig.root + "/api/artist/personalLink", JSON.stringify(body), {headers: header}).then(response => {
-            console.log(response);
             if (response.err){
                 callback(500);
             }

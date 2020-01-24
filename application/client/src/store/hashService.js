@@ -75,7 +75,6 @@ export class hashService {
             if (organizerID) {
                 this.getPassword(organizerID, passwordInDB => {
                     let saltHash = passwordInDB.split("/");
-                    console.log('salt ' + saltHash);
                     callback(saltHash[0]);
                 })
             } else {
@@ -111,7 +110,6 @@ export class hashService {
                     let organizerID = res.data[0].organizerID;
                     callback(organizerID);
                 } else {
-                    console.log("No email");
                     callback();
                 }
             });

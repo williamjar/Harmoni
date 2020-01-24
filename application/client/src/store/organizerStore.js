@@ -104,7 +104,7 @@ export class OrganizerStore {
             "x-access-token": CookieStore.currentToken
         };
         return axios.delete(axiosConfig.root + '/api/contact/' + this.currentOrganizer.contactID, {headers: header}).then( res => {
-            console.log("Deleted User: " + res);
+            console.log("Deleted User");
         }).catch(e => console.log("Error deleting user - " + e));
     }
 }

@@ -77,7 +77,6 @@ export class EventStore {
      */
     static editCurrentEvent() {
 
-        console.log("Edit Current event: " + this.currentEvent.toString());
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
@@ -127,7 +126,7 @@ export class EventStore {
             "x-access-token": CookieStore.currentToken
         };
         return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/1", null, {headers: header}).then(response => {
-            console.log(response);
+            console.log("Event published");
         });
     }
 
@@ -184,8 +183,6 @@ export class EventStore {
 
         axios.get(axiosConfig.root + "/api/events/organizer/" + organizerID, {headers: header}).then(response => {
             this.allEventsForOrganizer = [];
-
-            console.log("EventStore: data length: " + response.data.length);
 
             this.allEventsForOrganizer = response.data.map(event => (
                 new Event(event.eventID, event.eventName,

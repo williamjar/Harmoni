@@ -38,9 +38,6 @@ export class PictureService {
      * @param {function} callback
      */
     static insertProfilePicture(organizerID, fileForm, callback) {
-        for (let pair of fileForm.entries()) {
-            console.log(pair);
-        }
 
         let serverHeader = {
             "x-access-token": CookieStore.currentToken
@@ -48,7 +45,6 @@ export class PictureService {
 
         axios.post(axiosConfig.root + '/api/file/profilePicture', fileForm, {headers: serverHeader})
             .then(response => {
-                console.log(response.data);
                 let databaseHeader = {
                     "Content-Type": "application/json",
                     "x-access-token": CookieStore.currentToken
@@ -61,8 +57,6 @@ export class PictureService {
                 };
                 axios.post(axiosConfig.root + '/api/organizer/picture', JSON.stringify(body), {headers: databaseHeader})
                     .then(response => {
-                        console.log("Response.data: ");
-                        console.log(response.data);
                         let organizerPictureBody = {
                             pictureID: response.data.insertId
                         };
@@ -110,7 +104,6 @@ export class PictureService {
                         });
                 })
         }).catch(err => {
-            console.log(err);
             callback(500);
         });
     }
