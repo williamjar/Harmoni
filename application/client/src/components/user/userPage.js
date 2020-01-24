@@ -6,7 +6,7 @@ import {PictureService} from "../../store/pictureService";
 import {MegaValidator} from "../../megaValidator";
 import {LoginService} from "../../store/loginService";
 import {DocumentService as documentService} from "../../store/documentService";
-import * as hash from "../../store/hashService";
+import {hashService} from "../../store/hashService";
 import {createHashHistory} from "history";
 
 
@@ -367,7 +367,7 @@ export class DeleteUserForm extends React.Component {
 
     checkPasswordAndDeleteCurrentUser() {
 
-        hash.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
+        hashService.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
             console.log("Password ? " + res);
             if (res) {
                 OrganizerStore.deleteCurrentOrganizer();
