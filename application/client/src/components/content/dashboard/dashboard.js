@@ -49,14 +49,20 @@ export class Dashboard extends React.Component {
         this.setState({active: e.target.name});
     };
 
-    // Sets what the user wants to sort by and calls sort method to sort all categories
-    sortSelected = (e) => {
-        this.sortEvents(this.state.published,e.target.value, (sorted) => this.setState({published: sorted}));
-        this.sortEvents(this.state.planning,e.target.value,(sorted) => {this.setState({planning: sorted});});
-        this.sortEvents(this.state.archived,e.target.value, (sorted) => this.setState({archived: sorted}));
-        this.sortEvents(this.state.cancelled,e.target.value, (sorted) => this.setState({cancelled: sorted}));
-    };
 
+    orderByNewestEvent = (eventList, callback) => {
+        let listSorted = eventList;
+        if(listSorted !== null){
+            listSorted.sort(function(a, b){
+                let fileA = a.eventID;
+                let fileB = b.eventID;
+                if(fileA > fileB) { return -1; }
+                if(fileA < fileB) { return 1; }
+                return 0;
+            })
+        }
+        callback(listSorted);
+    };
 
 
     // Sends the user to create event screen when clicking the "plus"-button
@@ -83,11 +89,11 @@ export class Dashboard extends React.Component {
                 archived: EventStore.allEventsForOrganizer.filter(event => event.status === 2),
                 cancelled: EventStore.allEventsForOrganizer.filter(event => event.status === 3)
             }, () => {
-                this.sortEvents(this.state.published,0, (sorted) => this.setState({published: sorted}));
-                this.sortEvents(this.state.planning,0,(sorted) => {this.setState({planning: sorted});});
-                this.sortEvents(this.state.archived,0, (sorted) => this.setState({archived: sorted}));
-                this.sortEvents(this.state.cancelled,0, (sorted) => this.setState({cancelled: sorted}));
-            });
+                this.orderByNewestEvent(this.state.planning, (sortedList) => { this.setState({planning: sortedList});
+                this.orderByNewestEvent(this.state.published, (sortedList) => {this.setState({published: sortedList})});
+                this.orderByNewestEvent(this.state.archived, (sortedList) => {this.setState({archived: sortedList})});
+                this.orderByNewestEvent(this.state.cancelled, (sortedList) => {this.setState({cancelled: sortedList})});
+                })});
         }, CookieStore.currentUserID);
     }
 
@@ -96,6 +102,7 @@ export class Dashboard extends React.Component {
         if (CookieStore.currentUserID > -1){
             return (
                 <div>
+                    <Button onClick = {this.orderByNewestEvent}>Klikk meg</Button>
                 <Card className={"border-0 justify-content-md-center m-4"}>
                     <h3 className={"mt-4 mb-4"}>Mine arrangement</h3>
                     <Search searchHandler={this.searchHandler} results={this.state.events}/>
