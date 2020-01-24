@@ -9,7 +9,6 @@ import {CookieStore} from "../../store/cookieStore";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
 import {Alert} from "../alerts";
-import {MailService} from "../../store/mailService";
 import {MegaValidator} from "../../megaValidator";
 
 
@@ -671,7 +670,7 @@ export class RegisteredCrew extends Component{
                     {this.props.categoryList.map(e => (
                         <ul className="list-group">
                             <b className="card-title">{e.crewCategoryName}</b>
-                            {this.props.crewList != undefined ? this.props.crewList.filter(c => c.crewCategoryName === e.crewCategoryName).map(c => (
+                            {this.props.crewList !== undefined ? this.props.crewList.filter(c => c.crewCategoryName === e.crewCategoryName).map(c => (
                                 <li className="list-group-item pointer selection" onClick={() => {
                                     this.showCard(c)
                                 }}>
