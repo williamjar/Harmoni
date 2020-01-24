@@ -668,6 +668,10 @@ search-result-item{
         background-size: 500% auto;
     }
 
+    .padding-top-30-mobile{
+        padding-top: 30px;
+    }
+
     .content{
         overflow-y: scroll;
         height: 100vh;
