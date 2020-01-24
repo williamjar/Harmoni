@@ -205,7 +205,7 @@ ADD FOREIGN KEY (crewID) REFERENCES crew(crewID),
 ADD FOREIGN KEY (documentCategoryID) REFERENCES documentCategory(documentCategoryID);
 
 ALTER TABLE riderElement
-ADD FOREIGN KEY (artistID) REFERENCES artist(artistID),
+ADD FOREIGN KEY (artistID) REFERENCES artist(artistID) ON DELETE CASCADE,
 ADD FOREIGN KEY (eventID) REFERENCES event(eventID) ON DELETE CASCADE;
 
 ALTER TABLE bug ADD FOREIGN KEY (organizerID) REFERENCES organizer(organizerID);

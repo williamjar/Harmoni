@@ -1,5 +1,11 @@
+/**
+ * @classdesc Class for storing data about a rider element for an artist for an event.
+ */
 export class RiderElement{
-
+    /**
+     *
+     * @type {boolean}
+     */
     isModified = false;
 
     constructor(riderID, artistID, status, isDone, description){

@@ -11,7 +11,6 @@ const axiosConfig = require("./axiosConfig");
 export class ArtistService {
 
     // artistID, name, phone, email, genre, organizer
-
     static getArtist(artistID, callback) {
 
         let header = {
@@ -133,12 +132,12 @@ export class ArtistService {
         }).catch(err => console.log(err));
     }
 
-    static deleteArtist(artistID) {
+    static deleteArtist(contactID) {
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-        return axios.delete('/api/artist/organizer/' + artistID, {headers: header}).then(response => response.data);
+        return axios.delete(axiosConfig.root + '/api/artist/' + contactID, {headers: header}).then(response => response.data);
     }
 
     static getArtistForOrganizer(callback, organizerID) {
