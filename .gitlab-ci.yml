@@ -29,7 +29,7 @@ run_tests:
 
 pages:
   script:
-    jsdoc -c jsdocConf.json -r ./application -d ./public
+    ls public
   artifacts:
     paths:
       - public
