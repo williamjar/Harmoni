@@ -291,7 +291,6 @@ export class ContactInfo extends React.Component {
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
             return 'Vennligst skriv in en epost-adresse';
         }
-        if(!MegaValidator.validateEmail())
         if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
             return 'Telefonnummer er ikke gyldig';
         }
