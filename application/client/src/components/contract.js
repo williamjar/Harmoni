@@ -73,15 +73,19 @@ export class FolderEvent extends Component{
     render() {
 
         return (
-            <Row>
-                {this.state.events.map((item) => {
-                    return (
-                        <Col className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.eventID)}>
-                            <FolderItem name = {item.eventName}/>
-                        </Col>
-                    );
-                })}
-            </Row>
+            <div className="padding-top-30-mobile">
+                <Row>
+
+                    {this.state.events.map((item) => {
+                        return (
+                            <Col className = {"col-4 padding-bottom-10"} onClick={() => this.handleClick(item.eventID)}>
+                                <FolderItem name = {item.eventName}/>
+                            </Col>
+                        );
+                    })}
+
+                </Row>
+            </div>
         );
     }
 
@@ -120,7 +124,7 @@ export class FolderCategory extends Component {
 
     render() {
         return (
-            <div>
+            <div className="padding-top-30-mobile">
                 {this.check()}
                 <Row>
 
@@ -219,6 +223,7 @@ export class Documents extends Component{
 
     render(){
         return(
+            <div className="padding-top-30-mobile">
             <section>
 
                 {console.log("TEST" + ("tester.txt").substr(("tester.txt").lastIndexOf('.') + 1))}
@@ -241,6 +246,7 @@ export class Documents extends Component{
                     );
                 })}
             </section>
+            </div>
         )
     }
 }
