@@ -309,7 +309,7 @@ export class PerformerCard extends Component{
                    </Col>
 
                    <Col>
-                       <Button variant="success" onClick={() => this.save()} id="savePerformer">Lagre artist</Button>
+                       <Button variant="success" onClick={() => this.save()} id="savePerformer">Lagre informasjon</Button>
                    </Col>
 
                    </Row>
