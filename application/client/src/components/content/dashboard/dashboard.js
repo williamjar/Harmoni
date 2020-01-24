@@ -116,7 +116,6 @@ export class Dashboard extends React.Component {
                             <option disabled>Sorter etter..</option>
                             <option value={0}>Dato</option>
                             <option value={1}>Navn</option>
-                            {/*<option value={1}>Pris</option>*/}
                         <option value={2}>Sted</option>
                         </Form.Control>
                     </Col>
