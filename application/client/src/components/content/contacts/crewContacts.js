@@ -15,6 +15,7 @@ import Table from "react-bootstrap/Table";
 import {CookieStore} from "../../../store/cookieStore";
 import {ContactService} from "../../../store/contactService";
 import {CrewStore} from "../../../store/crewStore";
+import {Alert} from "../../alerts";
 import {MegaValidator} from "../../../megaValidator";
 
 export class CrewContacts extends React.Component {
@@ -209,6 +210,7 @@ export class CrewContactInfo extends React.Component {
     saveClicked = () => {
         ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
             CrewStore.updateCrewMember(this.state.description, this.state.contact.crewID).then(r => {
+                Alert.success("Kontaktinformasjon har blitt oppdatert");
                 this.setState({show: false, editable: false}, () => this.setState({show: true}));
             });
         })
@@ -222,6 +224,7 @@ export class CrewContactInfo extends React.Component {
 
     deleteCrew = (e) => {
         CrewStore.deleteCrewMember(this.state.contact.contactID);
+        Alert.success("Personell har blitt slettet");
         this.props.onHide();
     };
 
@@ -233,16 +236,16 @@ export class CrewContactInfo extends React.Component {
         if(!MegaValidator.validateUsername("none", this.state.contactName)){
             return 'Navnet kan bare inneholde bokstaver';
         }
-        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
-            return 'Telefonnummer er ikke gyldig';
-        }
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
             return 'Vennligst skriv in en epost-adresse';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
         }
         else{
             return '';
         }
-    };
+    }
 
     render() {
         return(
@@ -319,6 +322,7 @@ class AddCrew extends React.Component {
     saveClicked = () => {
         CrewStore.createCrewMember(this.state.contactName, this.state.phone, this.state.email, this.state.description, CookieStore.currentUserID, () => {
             this.setState({contactName: "", email: "", phone: "", description: ""});
+            Alert.success("Personell har blitt opprettet");
             this.props.onHide();
         });
     };
@@ -331,16 +335,16 @@ class AddCrew extends React.Component {
         if(!MegaValidator.validateUsername("none", this.state.contactName)){
             return 'Navnet kan bare inneholde bokstaver';
         }
-        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
-            return 'Telefonnummer er ikke gyldig';
-        }
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
             return 'Vennligst skriv in en epost-adresse';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
         }
         else{
             return '';
         }
-    };
+    }
 
     render() {
         return(

@@ -16,7 +16,7 @@ import {ArtistService} from "../../../store/artistService";
 import {CookieStore} from "../../../store/cookieStore";
 import Accordion from "react-bootstrap/Accordion";
 import {ContactService} from "../../../store/contactService";
-import {CrewStore} from "../../../store/crewStore";
+import {Alert} from "../../alerts";
 import {MegaValidator} from "../../../megaValidator";
 
 export class PerformerContacts extends React.Component {
@@ -257,6 +257,7 @@ export class ContactInfo extends React.Component {
     saveClicked = () => {
         ContactService.updateContactInfo(this.state.contact.contactID, this.state.contactName, this.state.phone, this.state.email, () => {
             ArtistService.updateArtistGenre(() => {
+                Alert.success("Kontaktinformasjon har blitt oppdatert");
                 this.setState({
                     show: false,
                     editable: false,
@@ -267,6 +268,7 @@ export class ContactInfo extends React.Component {
 
     deletePerformer = (e) => {
         ArtistService.deleteArtist(this.state.contact.contactID).then(r => {
+            Alert.success("Artist er slettet");
             this.props.onHide();
         });
 
@@ -286,11 +288,11 @@ export class ContactInfo extends React.Component {
         if(!MegaValidator.validateUsername("none", this.state.contactName)){
             return 'Navnet kan bare inneholde bokstaver';
         }
-        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
-            return 'Telefonnummer er ikke gyldig';
-        }
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
             return 'Vennligst skriv in en epost-adresse';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
         }
         else{
             return '';
@@ -387,6 +389,7 @@ class AddPerformer extends React.Component {
     saveClicked = () => {
         ArtistService.createArtist(() => {
             this.props.onHide();
+            //Alert.success("Ny artist er registert");
         }, this.state.contactName, this.state.phone, this.state.email, this.state.genre, CookieStore.currentUserID)
     };
 
@@ -398,16 +401,16 @@ class AddPerformer extends React.Component {
         if(!MegaValidator.validateUsername("none", this.state.contactName)){
             return 'Navnet kan bare inneholde bokstaver';
         }
-        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
-            return 'Telefonnummer er ikke gyldig';
-        }
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
             return 'Vennligst skriv in en epost-adresse';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
         }
         else{
             return '';
         }
-    };
+    }
 
     render() {
         return(
