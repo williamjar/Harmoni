@@ -2,8 +2,6 @@ import axios from "axios";
 import {Event} from "../classes/event.js";
 import {CookieStore} from "./cookieStore";
 import {OrganizerStore} from "./organizerStore";
-import {Artist} from "../classes/artist";
-import {OrganizerStore} from "./organizerStore";
 
 let axiosConfig = require("./axiosConfig");
 
@@ -169,15 +167,6 @@ export class EventStore {
         return axios.delete(axiosConfig.root + "/api/events/" + this.currentEvent.eventID, {headers: header});
     }
 
-    static archiveCurrentEvent() {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        return axios.put(axiosConfig.root + "/api/events/" + this.currentEvent.eventID + "/status/2", null,{headers: header}).then(response => {
-        });
-    }
-
     /**
      * Changes the database data of the current event to set it to published. Current event is defined by the currentEvent variable.
      * @return {Promise} The promise received from the database.
@@ -218,6 +207,18 @@ export class EventStore {
         });
     }
 
+    /**
+     * Changes the database data of the current event to set it to under planning. Current event is defined by the currentEvent variable.
+     * @return {Promise} The promise received from the database.
+     */
+    static archiveOldEvents() {
+        let header = {
+            "Content-Type": "application/json",
+            "x-access-token": CookieStore.currentToken
+        };
+        return axios.put(axiosConfig.root + '/api/archive/' + OrganizerStore.currentOrganizer.organizerID,null,{headers: header});
+    }
+
     static storeAllEventsForOrganizer(callback, organizerID) {
 
         let header = {
@@ -255,14 +256,6 @@ export class EventStore {
             }
             callback();
         });
-    }
-
-    static archiveOldEvents() {
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-        return axios.put(axiosConfig.root + '/api/archive/' + OrganizerStore.currentOrganizer.organizerID,null,{headers: header});
     }
 
     static formatDate(date) {
