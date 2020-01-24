@@ -86,7 +86,7 @@ export class DocumentService {
             "x-access-token": CookieStore.currentToken
         };
 
-        axios.post('http://localhost:8080/api/file/document/' + eventID + '/' + documentCategoryID, file, {headers: header})
+          axios.post(axiosConfig.root + '/api/file/document/' + eventID + '/' + documentCategoryID, file, {headers: header})
             .then(response => {
                 let databaseHeader = {
                     "Content-Type": "application/json",
@@ -111,7 +111,7 @@ export class DocumentService {
 
                     console.log(body);
 
-                    axios.post('http://localhost:8080/api/document', JSON.stringify(body), {headers: databaseHeader}).then(() => {
+                    axios.post(axiosConfig.root + '/api/document', JSON.stringify(body), {headers: databaseHeader}).then(() => {
                         console.log(response.status);
                         console.log(response.data);
                         if (response.status === 200 && response.data.name) {
@@ -143,7 +143,7 @@ export class DocumentService {
             "x-access-token": artistToken
         };
 
-        axios.post('http://localhost:8080/artistapi/file/document/' + eventID + '/2', file, {headers: header})
+        axios.post(axiosConfig.root + '/artistapi/file/document/' + eventID + '/2', file, {headers: header})
             .then(response => {
                 let databaseHeader = {
                     "Content-Type": "application/json",
@@ -165,7 +165,7 @@ export class DocumentService {
                         documentCategoryID: 2
                     };
 
-                    axios.post('http://localhost:8080/artistapi/document', JSON.stringify(body), {headers: databaseHeader}).then(dataResponse => {
+                    axios.post(axiosConfig.root + '/artistapi/document', JSON.stringify(body), {headers: databaseHeader}).then(dataResponse => {
 
                         if (response.status === 200 && response.data.name) {
                             console.log(dataResponse.data);

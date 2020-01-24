@@ -16,7 +16,6 @@ import {Search} from "../search";
 import {EventStore} from "../../../store/eventStore";
 import {CookieStore} from "../../../store/cookieStore";
 import {createHashHistory} from "history";
-import {TicketStore} from "../../../store/ticketStore";
 import {RiderStore} from "../../../store/riderStore";
 import {OrganizerStore} from "../../../store/organizerStore";
 import {Alert} from "../../alerts";
@@ -78,6 +77,11 @@ export class Dashboard extends React.Component {
                 planning: EventStore.allEventsForOrganizer.filter(event => event.status === 0),
                 archived: EventStore.allEventsForOrganizer.filter(event => event.status === 2),
                 cancelled: EventStore.allEventsForOrganizer.filter(event => event.status === 3)
+            }, () => {
+                this.sortEvents(this.state.published,0, (sorted) => this.setState({published: sorted}));
+                this.sortEvents(this.state.planning,0,(sorted) => {this.setState({planning: sorted});});
+                this.sortEvents(this.state.archived,0, (sorted) => this.setState({archived: sorted}));
+                this.sortEvents(this.state.cancelled,0, (sorted) => this.setState({cancelled: sorted}));
             });
         }, CookieStore.currentUserID);
     }
@@ -204,37 +208,19 @@ export class Dashboard extends React.Component {
 
     // Sorts the events by either date, price or location
     sortEvents = (events, sortBy, callback) => {
-        if(sortBy == 0) {
+        if(sortBy === 0) {
             let sorted = [].concat(events).sort((a,b) => {
                 a = new Date(a.startDate);
                 b = new Date(b.startDate);
                 return a>b ? 1 : a<b ? -1 : 0;
             });
             callback(sorted);
-        } else if(sortBy == 1) {
+        } else if(sortBy === 1) {
             let sorted = [].concat(events).sort((a,b) => {
                 return (a.eventName > b.eventName ? 1 : a.eventName < b.eventName ? -1 : 0);
             });
             callback(sorted);
-        }
-            //TODO: If time, fix this so events can be sorted by price.
-        /*else if(sortBy == 1) {
-            let sorted = [];
-            TicketStore.getAllTickets(() => {
-                console.log(TicketStore.allTickets);
-                sorted = [].concat(events).sort((a,b) => {
-                    let price1 = Math.min.apply(Math, TicketStore.allTickets.filter(e => e.eventID = a.eventID).map(e => {
-                        return e.price;
-                    }));
-                    let price2 = Math.min.apply(Math, TicketStore.allTickets.filter(e => e.eventID = b.eventID).map(e => {
-                        return e.price;
-                    }));
-                    return price1>price2 ? 1 : price1<price2 ? -1 : 0;
-                });
-                console.log(sorted);
-            });
-            callback(sorted);
-        }*/ else if(sortBy == 2) {
+        } else if(sortBy == 2) {
             let sorted = [].concat(events).sort((a,b) => {
                 return (a.town > b.town ? 1 : a.town < b.town ? -1 : 0);
             });

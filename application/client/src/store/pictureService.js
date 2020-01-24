@@ -1,6 +1,5 @@
 import axios from "axios";
 import {PictureElement} from "../classes/pictureElement";
-import {EventStore} from "./eventStore";
 import {OrganizerStore} from "./organizerStore";
 import {CookieStore} from "./cookieStore";
 
@@ -49,7 +48,7 @@ export class PictureService {
             "x-access-token": CookieStore.currentToken
         };
 
-        axios.post('http://localhost:8080/api/file/profilePicture', fileForm, {headers: serverHeader})
+        axios.post(axiosConfig.root + '/api/file/profilePicture', fileForm, {headers: serverHeader})
             .then(response => {
                 console.log(response.data);
                 let databaseHeader = {
@@ -62,7 +61,7 @@ export class PictureService {
                 let body = {
                     path: path
                 };
-                axios.post('http://localhost:8080/api/organizer/picture', JSON.stringify(body), {headers: databaseHeader})
+                axios.post(axiosConfig.root + '/api/organizer/picture', JSON.stringify(body), {headers: databaseHeader})
                     .then(response => {
                         console.log("Response.data: ");
                         console.log(response.data);
@@ -70,7 +69,7 @@ export class PictureService {
                             pictureID: response.data.insertId
                         };
 
-                        axios.put('http://localhost:8080/api/organizer/picture/' + OrganizerStore.currentOrganizer.organizerID, JSON.stringify(organizerPictureBody), {headers: databaseHeader})
+                        axios.put(axiosConfig.root + '/api/organizer/picture/' + OrganizerStore.currentOrganizer.organizerID, JSON.stringify(organizerPictureBody), {headers: databaseHeader})
                             .then(response => {
                                 if (response.status === 200){
                                     callback(200, path);
@@ -85,7 +84,7 @@ export class PictureService {
         let serverHeader = {
             "x-access-token": CookieStore.currentToken
         };
-        axios.post('http://localhost:8080/api/file/eventPicture', fileForm, {headers: serverHeader}).then(response => {
+        axios.post(axiosConfig.root + '/api/file/eventPicture', fileForm, {headers: serverHeader}).then(response => {
             let databaseHeader = {
                 "Content-Type": "application/json",
                 "x-access-token": CookieStore.currentToken
@@ -93,13 +92,13 @@ export class PictureService {
             let body = {
                 path: response.data.path
             };
-            axios.post('http://localhost:8080/api/event/picture/', JSON.stringify(body), {headers: databaseHeader})
+            axios.post(axiosConfig.root + '/api/event/picture/', JSON.stringify(body), {headers: databaseHeader})
                 .then(insertImageResponse => {
                     let databaseHeader = {
                         "Content-Type": "application/json",
                         "x-access-token": CookieStore.currentToken
                     };
-                    axios.put('http://localhost:8080/api/event/picture/' + eventID, JSON.stringify({pictureID: insertImageResponse.data.insertId}), {headers: databaseHeader})
+                    axios.put(axiosConfig.root + '/api/event/picture/' + eventID, JSON.stringify({pictureID: insertImageResponse.data.insertId}), {headers: databaseHeader})
                         .then(updateImageResponse => {
                             if (updateImageResponse.status === 200 && updateImageResponse.data.affectedRows > 0){
                                 callback(200, response.data.path, insertImageResponse.data.insertId);

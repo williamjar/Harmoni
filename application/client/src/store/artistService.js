@@ -3,7 +3,6 @@ import {Artist} from "../classes/artist.js"
 import {CookieStore} from "./cookieStore";
 import {Genre} from "../classes/genre";
 import {Document} from "../classes/document";
-import {Artist as artist} from "../classes/artist";
 import {ArtistEventInfo} from "../classes/artistEventInfo";
 
 const axiosConfig = require("./axiosConfig");
@@ -175,6 +174,7 @@ export class ArtistService {
                 axios.get(axiosConfig.root + '/api/artist/documents/' + eventID + '/' + artist.artistID, {headers: header}).then(response => {
                     response.data.map(document => artist.addDocument(new Document(document.documentID, document.documentLink, document.documentCategory)))
                 }).then(() => artist);
+                return 0;
             });
         }).then(() => {
             callback(allArtistByEvent)

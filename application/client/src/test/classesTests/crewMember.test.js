@@ -7,7 +7,7 @@ mocha.describe('Crewmember', () => {
         mocha.it('should create the description', () => {
             assert.equal(CrewMember.getTestCrewMember()[0].description, 'This lazy dude can only work every third sunday when theres a full moon');
         });
-    })
+    });
     mocha.describe('Categories', () => {
         mocha.it('Should have a length of several elements', () => {
             let crewMember = CrewMember.getTestCrewMember()[0];

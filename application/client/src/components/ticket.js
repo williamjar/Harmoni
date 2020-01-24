@@ -6,10 +6,6 @@ import {Row, Spinner} from 'react-bootstrap';
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Accordion from "react-bootstrap/Accordion";
-import { FaCalendar } from 'react-icons/fa';
-import ListGroup from "react-bootstrap/ListGroup";
-import {Table} from "react-bootstrap";
-import {FaAngleDown} from "react-icons/all";
 import {TicketStore} from "../store/ticketStore";
 import {EventStore} from "../store/eventStore";
 
@@ -327,7 +323,7 @@ export class TicketAll extends Component {
         let options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
         let date = new Date(d);
         return date.toLocaleDateString("nb-NO", options).toLocaleLowerCase();
-    }
+    };
 
     /*
         Updates all the states when changed.
@@ -401,7 +397,7 @@ export class TicketAll extends Component {
             }
         }).then();
 
-    }
+    };
 
 
     formatDateToSql(date) {

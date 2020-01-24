@@ -368,7 +368,7 @@ app.get("/file/preview/:path*", (req, res) => {
 });
 
 app.get("/document/download/:path*", (req, res) => {
-    var file = req.params.path + req.params['0'];
+    const file = req.params.path + req.params['0'];
     fs.readFile(file, function(err, data){
         //jpg image
     if((/\.(jpeg)$/i).test(req.params.path + req.params['0'])){

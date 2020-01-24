@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Search} from "../search";
 import {Button, ButtonGroup, Card, Col, Form, Modal, Row} from "react-bootstrap";
 import {
-    FaAddressCard,
     FaAngleDown,
     FaCalendar,
     FaEnvelopeSquare,

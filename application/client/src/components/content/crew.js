@@ -464,7 +464,7 @@ export class AddCrewMember extends Component{
             return 'Telefonnummer er ikke gyldig';
         }
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
-            return 'Vennligst skriv in en epostadresse';
+            return 'Vennligst skriv in en epost-adresse';
         }
         else{
             return '';
