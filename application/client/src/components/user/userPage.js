@@ -6,7 +6,7 @@ import {PictureService} from "../../store/pictureService";
 import {MegaValidator} from "../../megaValidator";
 import {createHashHistory} from "history";
 import {Alert} from "../alerts";
-
+import {hashService} from "../../store/hashService";
 
 let history = createHashHistory();
 
