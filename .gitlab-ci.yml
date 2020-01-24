@@ -37,12 +37,11 @@ pages:
   dependencies:
     - run_tests
   script:
-    - cd ..
+    - cd ../..
     - mkdir .public
-    - cp -r client/coverage/* .public
-    - mv .public client/public
+    - cp -r application/client/coverage/* .public
+    - cp -r application/server/coverage/* .public
+    - mv .public public
   artifacts:
     paths:
-      - client/public
-  only:
-    - master
+      - public
