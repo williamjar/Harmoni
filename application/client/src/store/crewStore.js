@@ -11,7 +11,9 @@ let axiosConfig = require("./axiosConfig");
  */
 export class CrewStore {
 
-    //TODO how to jsdoc these?? ??? ?? ? ? ? ? ?? ?? ? ? ? ?QUESTION ???
+    /*
+    Create set functions if set outside of here
+     */
     static allCrewMembersForOrganizer = [];
     static allCrewCategoriesForOrganizer = [];
     static allCrewCategoriesForCurrentEvent = [];
@@ -191,7 +193,6 @@ export class CrewStore {
 
     //create new crew member (for use in "Personell"-overview and not in edit event).
     //This crew member will not be assigned to an event
-
     /**
      * Creates a new crew member without assigning them to an event. The crew member is then stored in the database.
      * @param {String} name - The name of the new crew member.
@@ -201,7 +202,7 @@ export class CrewStore {
      * @param {int} crewCategoryID - The database ID of the Crew category the new crew member will be added to.
      * @param {int} organizerID - The database ID of the logged in organizer.
      */
-    static createCrewMember(name, phone, email, description, crewCategoryID, organizerID) {
+    static createCrewMember(name, phone, email, description, organizerID, callback) {
         //TODO: Needs a Callback
 
         let header = {
@@ -225,7 +226,7 @@ export class CrewStore {
 
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response => {
                 console.log(response);
-                //callback
+                callback();
             });
         });
     }
@@ -352,17 +353,15 @@ export class CrewStore {
             .then(response => console.log(response));
     }
 
-    /**
-     * TODO - Currently unused - Update or delete?
-     */
-    static deleteCrewMember(crewID) {
+    //delete a crew member
+    static deleteCrewMember(contactID) {
 
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
 
-        return axios.delete(axiosConfig.root + '/api/crew/' + crewID,  {headers: header})
+        return axios.delete(axiosConfig.root + '/api/crew/' + contactID,  {headers: header})
             .then(response => console.log(response));
     }
 

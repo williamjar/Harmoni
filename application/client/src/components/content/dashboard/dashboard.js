@@ -19,6 +19,7 @@ import {createHashHistory} from "history";
 import {TicketStore} from "../../../store/ticketStore";
 import {RiderStore} from "../../../store/riderStore";
 import {OrganizerStore} from "../../../store/organizerStore";
+import {Alert} from "../../alerts";
 
 const history = createHashHistory();
 
@@ -36,7 +37,8 @@ export class Dashboard extends React.Component {
             published: [],
             planning: [],
             archived: [],
-            cancelled: []
+            cancelled: [],
+            loading : true
         };
     }
 
@@ -60,6 +62,15 @@ export class Dashboard extends React.Component {
 
     // Stores all the organizer's events before rendering the page
     componentDidMount() {
+        OrganizerStore.getOrganizer(CookieStore.currentUserID, () => {
+            EventStore.archiveOldEvents().then(res => {
+                console.log(res);
+                if (res.data.changedRows > 0) {
+                    Alert.info(res.data.changedRows + " ferdige arrangementer vil bli flyttet til arkivert");
+                }
+            }).then( () => this.setState({loading:false}));
+        });
+
         EventStore.storeAllEventsForOrganizer(() => {
             this.setState({
                 events: EventStore.allEventsForOrganizer,
@@ -72,13 +83,8 @@ export class Dashboard extends React.Component {
     }
 
     render() {
+        if (this.state.loading) return (<div>Loading</div>);
         if (CookieStore.currentUserID > -1){
-            OrganizerStore.getOrganizer(CookieStore.currentUserID, statusCode => {
-                if (statusCode === 200){
-                    //OrganizerStore.archiveOldEvents();
-                    EventStore.archiveOldEvents();
-                }
-            });
             return (
                 <div>
                 <Card className={"border-0 justify-content-md-center m-4"}>
@@ -198,14 +204,14 @@ export class Dashboard extends React.Component {
 
     // Sorts the events by either date, price or location
     sortEvents = (events, sortBy, callback) => {
-        if(sortBy === 0) {
+        if(sortBy == 0) {
             let sorted = [].concat(events).sort((a,b) => {
                 a = new Date(a.startDate);
                 b = new Date(b.startDate);
                 return a>b ? 1 : a<b ? -1 : 0;
             });
             callback(sorted);
-        } else if(sortBy === 1) {
+        } else if(sortBy == 1) {
             let sorted = [].concat(events).sort((a,b) => {
                 return (a.eventName > b.eventName ? 1 : a.eventName < b.eventName ? -1 : 0);
             });
@@ -228,7 +234,7 @@ export class Dashboard extends React.Component {
                 console.log(sorted);
             });
             callback(sorted);
-        }*/ else if(sortBy === 2) {
+        }*/ else if(sortBy == 2) {
             let sorted = [].concat(events).sort((a,b) => {
                 return (a.town > b.town ? 1 : a.town < b.town ? -1 : 0);
             });

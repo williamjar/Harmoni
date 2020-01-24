@@ -61,7 +61,9 @@ export class PerformerPanel extends Component{
                         </div>
 
                         <div className="col-lg-6 col-md-12">
+                            <div className="padding-top-30-mobile">
                             <RegisteredPerformers key={this.state.performerSelected} performersAdded={this.state.performerList} changeCard={this.changeCurrentPerformer} unAssignArtist={this.unAssignArtist}/>
+                            </div>
                         </div>
                     </div>
 
@@ -770,7 +772,7 @@ export class RegisteredPerformers extends Component{
             <div>
                 {this.props.performersAdded.length === 0?
                 <div>Ingen artister er lagt til</div>
-                :null}
+                :<b>Artister som er lagt til</b>}
 
                 <ul className="list-group">
                     {this.props.performersAdded.map(p =>
