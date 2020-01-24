@@ -1,25 +1,34 @@
 import axios from "axios";
 import {Event} from "../classes/event.js";
 import {CookieStore} from "./cookieStore";
-import {Artist} from "../classes/artist";
-
 let axiosConfig = require("./axiosConfig");
 
+
+/**
+ * @class EventStore
+ * @classdesc Store Class for functions related to accessing and modifying event objects.
+ */
 export class EventStore {
 
     static currentEvent = null;
-
     static allEvents = [];
-
     static allEventsForOrganizer = [];
-
     static eventCategories = [];
 
+    /**
+     * Setter for currenEvent variable
+     * @param {Event} newEvent - The event currentEvent will be set to.
+     */
     static setCurrentEvent(newEvent) {
         this.currentEvent = newEvent;
         sessionStorage.setItem('currentEvent', JSON.stringify(this.currentEvent));
     }
 
+    /**
+     * Setter for currenEvent variable
+     * @param {Event} newEvent - The event currentEvent will be set to.
+     * @param {function} callback
+     */
     static createEvent(callback, eventName, organizerID) {
 
         let d = new Date();
