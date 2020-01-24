@@ -144,14 +144,6 @@ export class PerformerContacts extends React.Component {
                             </ButtonGroup>
                         </Col>
                     </Row>
-                    <Row className="mb-2">
-                        <Col xs={2}>
-                            <Form.Control as="select" size="sm" onChange={this.sortSelected}>
-                                <option selected disabled>Sorter etter..</option>
-                                <option value={0}>Navn</option>
-                            </Form.Control>
-                        </Col>
-                    </Row>
                     {this.state.performers.length !== null ? this.state.genres.map((genre, i) => {
                         if(this.state.performers.find(performer => {return performer.genre === i + 1}) && (this.state.active === genre || this.state.active === "all")) {
                             return(
