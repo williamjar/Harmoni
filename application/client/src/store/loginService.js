@@ -1,14 +1,12 @@
 import axios from "axios";
 import {CookieStore} from "./cookieStore";
-import {EventStore} from "./eventStore";
-
-const hash = require('./hashService');
+import {hashService} from "./hashService";
 
 export class LoginService {
 
     static loginOrganizer(email, enteredPassword, callback) {
 
-        hash.getHashedFromEmail(enteredPassword, email, hashedPassword => {
+        hashService.getHashedFromEmail(enteredPassword, email, hashedPassword => {
             if (!hashedPassword) {
                 console.log("Email does not exist");
                 callback(502);
