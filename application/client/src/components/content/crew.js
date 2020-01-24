@@ -198,9 +198,9 @@ export class CrewPanel extends Component{
         let currentState = this.state;
         currentState.crewSelected = crew;
         currentState.showCrewCard = true;
+        currentState.showRegisterNew = false;
         this.setState(currentState);
         this.setCategoryCurrentCrew();
-        this.hideRegisterNew();
     };
 }
 
