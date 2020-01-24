@@ -4,7 +4,6 @@ import {Document} from "./document";
 import {Genre} from "./genre";
 
 /**
- * @class {Artist}
  * @classdesc This is an object for storing all the data required to define an artist
  * @extends {Contact}
  */
