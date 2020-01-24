@@ -64,6 +64,42 @@ export class Dashboard extends React.Component {
         callback(listSorted);
     };
 
+    /*
+    this.orderByTime(this.state.planning, (sortedList) => { this.setState({planning: sortedList});
+    this.orderByNewestEvent(this.state.published, (sortedList) => {this.setState({published: sortedList})});
+    this.orderByNewestEvent(this.state.archived, (sortedList) => {this.setState({archived: sortedList})});
+    this.orderByNewestEvent(this.state.cancelled, (sortedList) => {this.setState({cancelled: sortedList})});
+
+     */
+
+    changeAllByTime = () => {
+        this.orderByTime(this.state.planning, (sortedList) => {this.setState({planning: sortedList})});
+        this.orderByTime(this.state.published, (sortedList) => {this.setState({published: sortedList})});
+        this.orderByTime(this.state.archived, (sortedList) => {this.setState({archived: sortedList})});
+        this.orderByTime(this.state.cancelled, (sortedList) => {this.setState({cancelled: sortedList})});
+    };
+
+    changeAllByNewest = () => {
+        this.orderByNewestEvent(this.state.planning, (sortedList) => {this.setState({planning: sortedList})});
+        this.orderByNewestEvent(this.state.published, (sortedList) => {this.setState({published: sortedList})});
+        this.orderByNewestEvent(this.state.archived, (sortedList) => {this.setState({archived: sortedList})});
+        this.orderByNewestEvent(this.state.cancelled, (sortedList) => {this.setState({cancelled: sortedList})});
+    };
+
+
+    orderByTime = (eventList, callback) => {
+        let listSorted = eventList;
+        if(listSorted !== null){
+            listSorted.sort(function(a, b){
+                let fileA = a.endDate;
+                let fileB = b.endDate;
+                fileA = fileA.split('/').reverse().join('');
+                fileB = fileB.split('/').reverse().join('');
+                return fileA < fileB ? 1 : fileA > fileB ? -1 : 0;
+            })
+        }
+        callback(listSorted);
+    };
 
     // Sends the user to create event screen when clicking the "plus"-button
     addEventClicked = () => {
@@ -102,7 +138,6 @@ export class Dashboard extends React.Component {
         if (CookieStore.currentUserID > -1){
             return (
                 <div>
-                    <Button onClick = {this.orderByNewestEvent}>Klikk meg</Button>
                 <Card className={"border-0 justify-content-md-center m-4"}>
                     <h3 className={"mt-4 mb-4"}>Mine arrangement</h3>
                     <Search searchHandler={this.searchHandler} results={this.state.events}/>
@@ -124,12 +159,11 @@ export class Dashboard extends React.Component {
                 </Row>
                 <Row className="mb-2">
                     <Col xs={2}>
-                        <Form.Control as="select" size="sm" onChange={this.sortSelected}>
-                            <option disabled>Sorter etter..</option>
-                            <option value={0}>Dato</option>
-                            <option value={1}>Navn</option>
-                        <option value={2}>Sted</option>
-                        </Form.Control>
+                        <label htmlFor={"sorting"}>Sorter etter:</label>
+                        <ButtonGroup id={"sorting"}>
+                            <Button name="nylige" onClick = {this.changeAllByNewest} variant="primary">Nylige</Button>
+                            <Button name = "sluttdato" onClick = {this.changeAllByTime} variant="primary">Slutt Dato</Button>
+                        </ButtonGroup>
                     </Col>
                 </Row>
 
