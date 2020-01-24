@@ -10,6 +10,7 @@ app.get("/organizer/:organizerID", (require, response) => {
     console.log(require.params.organizerID);
 });
 
+
 //get one organizer with api
 app.get("/api/organizer/:organizerID", (require, response) => {
     console.log("Request to get a organizer");
@@ -87,15 +88,11 @@ app.put("/api/organizer/:organizerID/change/username", (request, response) => {
     });
 });
 
-app.put("/organizer/:organizerID/change/picture", (request, response) => {
+app.put("/api/organizer/picture/:pictureID/:path*", (req, res) => {
     console.log("Request to change profile picture for organizer");
-    let val = [
-        request.body.pictureID,
-        request.params.organizerID
-    ];
-    organizerDao.changeOrganizerProfilePicture((status, data) => {
-        response.status(status);
-        response.json(data);
-    }, val);
+    organizerDao.changeOrganizerProfilePicture(req.params.pictureID, req.params.path + req.params['0'],  (status, data) => {
+        res.status(status);
+        res.json(data);
+    });
 });
 

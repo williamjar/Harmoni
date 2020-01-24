@@ -23,6 +23,7 @@ import { createHashHistory } from 'history';
 import {PictureService} from "../../store/pictureService";
 let history = createHashHistory();
 
+
 export class MobileMenu extends Component{
 
     constructor(props){
@@ -103,7 +104,7 @@ export class NavBar extends Component{
 
                 <Menu/>
 
-                <UserProfileButton/>
+                <UserProfileButton profilePicture={this.props.profilePicture}/>
 
                 <div className="center font-italic purple log-out" onClick={() => {
                     sessionStorage.setItem('token', null);
@@ -127,38 +128,38 @@ export class Menu extends Component{
             <ul className="nav nav-links text-left list-group-flush w-100 ">
 
                 <div className="w-100">
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/" exact={true}>
+                    <NavLink className="text-decoration-none  nav-link" to="/" exact={true}>
                     <li className="">
-                        <FaCalendarAlt/> Mine arrangement
+                        <span className="menu-item"> <FaCalendarAlt/><span className="padding-left-20"> Mine arrangement</span></span>
                     </li>
                     </NavLink>
 
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/opprett">
+                    <NavLink className="text-decoration-none nav-link" to="/opprett">
                     <li className="">
-                        <FaCalendarPlus/> Opprett arrangement
+                        <span className="menu-item"> <FaCalendarPlus/><span className="padding-left-20"> Opprett arrangement</span></span>
                     </li>
                     </NavLink>
 
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/artister">
+                    <NavLink className="text-decoration-none nav-link" to="/artister">
                     <li className="">
-                        <FaMusic/> Mine artister
+                        <span className="menu-item"> <FaMusic/><span className="padding-left-20"> Mine artister</span></span>
                     </li>
                     </NavLink>
 
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/personell">
+                    <NavLink className="text-decoration-none nav-link" to="/personell">
                     <li className="">
-                        <FaUsers/> Mitt personell
+                        <span className="menu-item"> <FaUsers/><span className="padding-left-20"> Mitt personell</span></span>
                     </li>
                     </NavLink>
 
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/dokumenter">
+                    <NavLink className="text-decoration-none nav-link" to="/dokumenter">
                     <li className="">
-                        <FaFileSignature/> Mine dokumenter
+                        <span className="menu-item"><FaFileSignature/><span className="padding-left-20"> Mine dokumenter</span></span>
                     </li>
                     </NavLink>
-                    <NavLink className="text-decoration-none list-group-item nav-link" to="/bug">
+                    <NavLink className="text-decoration-none nav-link" to="/bug">
                         <li className="">
-                            <FaBullhorn/> Rapporter feil
+                            <span className="menu-item"><FaBullhorn/><span className="padding-left-20"> Rapporter feil</span></span>
                         </li>
                     </NavLink>
 
@@ -171,49 +172,60 @@ export class Menu extends Component{
 
 
 export class UserProfileButton extends Component{
-
     constructor(props) {
         super(props);
         this.state = {
             username: '',
-            profilePicture: '',
-            link: ''
+            link: '',
+            profilePicture: ''
         };
     }
 
     componentDidMount() {
         this.updateInfo((profilePicture) => {
-            if(profilePicture !== null && profilePicture !== ''){
+            if (profilePicture !== null && profilePicture !== '') {
                 PictureService.previewPicture(profilePicture, (url) => {
-                    this.setState({link: url})
+                    this.setState({link: url});
                 });
             }
         })
     }
 
-    checkIfUserHasPicture(){
-        if(this.state.profilePicture !== null && this.state.profilePicture !== ''){
-            return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
-        }else {
-            return(<img width={50} src={require('../user/profile.png')} alt={"test"}/>);
+    upload = (path) => {
+        PictureService.previewPicture(path, (url) => {
+            this.setState({link: url});
+        });
+
+    };
+
+    checkForUpdate(){
+        if(this.state.profilePicture !== this.props.profilePicture){
+            this.upload(this.props.profilePicture);
+            this.setState({profilePicture: this.props.profilePicture})
+        }else{
+            if(this.state.link !== ''){
+                return(<img width={50} src = {this.state.link} alt={"Bildet kunne ikke lastes inn"}/>);
+            } else {
+                return(<img width={50} src={require('../user/profile.png')} alt={"standard profilbilde"}/>);
+            }
+
         }
     }
 
-
     render() {
         return(
-            <NavLink to="/brukerprofil">
+            <NavLink to="/brukerprofil" className={""}>
                 <div className="user-nav">
-                    <div className="row no-gutters">
-                        {this.checkIfUserHasPicture()}
-                        <div className="col-lg-9">
-                            <div className="padding-left-15">
-                                <b>{this.state.username}</b><br/>
-                                Arrangør
-                            </div>
-                        </div>
-
-                    </div>
+                    <Row className = {" no-gutters"}>
+                        <Col size = {2} className={"text-center text-indent-20"}>
+                            {this.checkForUpdate()}
+                        </Col>
+                        <Col size = {10} className={"padding-top-5 main-color"}>
+                            <b>{this.state.username}</b>
+                            <br/>
+                            Arrangør
+                        </Col>
+                    </Row>
                 </div>
             </NavLink>
         )
@@ -225,10 +237,8 @@ export class UserProfileButton extends Component{
                 let databaseUsername = OrganizerStore.currentOrganizer.username;
                 let databaseImage = OrganizerStore.currentOrganizer.pictureLink;
 
-
                 this.setState(this.setState({
                     username: databaseUsername,
-                    profilePicture: databaseImage
                 }));
                 callback(databaseImage);
             }

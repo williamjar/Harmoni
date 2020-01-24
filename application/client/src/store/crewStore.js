@@ -65,8 +65,6 @@ export class CrewStore {
         };
 
         axios.get(axiosConfig.root + '/api/crew/event/' + eventID, {headers: header}).then(response => {
-            console.log("response");
-            console.log(response);
 
             response.data.map(data => {
 
@@ -144,7 +142,6 @@ export class CrewStore {
             };
 
             axios.post(axiosConfig.root + '/api/crew', crewBody, {headers: header}).then(response =>{
-                console.log(response);
 
                     let assignBody = {
                         "eventID": eventID,
@@ -156,7 +153,6 @@ export class CrewStore {
                     };
 
                 axios.post(axiosConfig.root + '/api/crew/assign', assignBody,{headers: header}).then(response =>{
-                    console.log(response);
                     callback();
                     });
             });
@@ -210,13 +206,6 @@ export class CrewStore {
 
     //assign a crew member to an event
     static assignCrewMemberToEvent(eventID, categoryID, crewID, isResponsible, contractSigned, hasBeenPaid, callback){
-        console.log("CREWSTORE");
-        console.log("hasBeenPaid");
-        console.log(hasBeenPaid);
-        console.log("contractSigned");
-        console.log(contractSigned);
-        console.log("isResponsible");
-        console.log(isResponsible);
 
         let header = {
             "Content-Type": "application/json",
@@ -267,13 +256,7 @@ export class CrewStore {
     //update crew member as leader in a category for an event.
     //it is possible for a crew member to be a leader for more than one category
     static updateCrewMemberEvent(isResponsible, contractSigned, hasBeenPaid, eventID, crewCategoryID, crewID) {
-        console.log("SE HER");
-        console.log("hasBeenPaid");
-        console.log(hasBeenPaid);
-        console.log("contractSigned");
-        console.log(contractSigned);
-        console.log("isResponsible");
-        console.log(isResponsible);
+
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken

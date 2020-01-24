@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {Search} from "./search";
 import Form from "react-bootstrap/Form";
@@ -14,8 +12,7 @@ import {DocumentService} from "../../store/documentService";
 import {Alert} from "../alerts";
 import {Document} from "../../classes/document";
 import {MailService} from "../../store/mailService";
-import {ArtistService} from "../../store/artistService";
-import {RegisteredPerformers} from "./performers";
+import {MegaValidator} from "../../megaValidator";
 
 
 export class CrewPanel extends Component{
@@ -32,7 +29,6 @@ export class CrewPanel extends Component{
             crewCategorySelected : null,
             results : [],
             showRegisterNew : false,
-            showRegisterCategory : false
         }
     }
 
@@ -53,13 +49,13 @@ export class CrewPanel extends Component{
 
                         <div className="padding-top-20">
                             {this.state.showRegisterNew?<AddCrewMember submit={this.submitFunction} submitCategory={this.submitCategory} toggleRegisterCrewMember={this.toggleRegisterNew} crewCategoryList={this.state.crewCategoryList} />:null}
-                            {this.state.showCrewCard?<CrewCard submitFunction={this.submitFunction} crewSelected={this.state.crewSelected} crewCategoryList={this.state.crewCategoryList} crewCategoryID={this.state.crewCategorySelected} categoryHandler={this.categoryHandler}/>:null}
+                            {this.state.showCrewCard?<CrewCard submitFunction={this.updateCrew} crewSelected={this.state.crewSelected} crewCategoryList={this.state.crewCategoryList} crewCategoryID={this.state.crewCategorySelected} categoryHandler={this.categoryHandler}/>:null}
 
                         </div>
                     </div>
 
                     <div className="col-lg-6 col-md-12">
-                       <RegisteredCrew showRegisterCategory={this.props.showRegisterCategory} hideRegisterCategory={this.hideRegisterCategor} crewList={this.state.crewList} categoryList={this.state.crewCategoryListEvent} changeCard={this.changeCurrentCrew} unassignCrew={this.unassignCrew}/>
+                       <RegisteredCrew showRegisterCategory={this.props.showRegisterCategory} crewList={this.state.crewList} categoryList={this.state.crewCategoryListEvent} changeCard={this.changeCurrentCrew} refreshCategoryList={this.refreshCrewCategoriesForEvent} unassignCrew={this.unassignCrew}/>
                     </div>
                 </div>
 
@@ -137,8 +133,6 @@ export class CrewPanel extends Component{
             this.setState(
                 { crewList : CrewStore.allCrewForCurrentEvent })
         }, EventStore.currentEvent.eventID);
-        console.log("crewList");
-        console.log(this.state.crewList);
     };
 
     refreshCrewCategories = () => {
@@ -167,16 +161,18 @@ export class CrewPanel extends Component{
         this.refreshCrewCategoriesForEvent();
     };
 
+    updateCrew = (selected) => {
+        let currentState = this.state;
+        currentState.crewSelected = selected;
+        this.setState(currentState);
+        this.refreshCrewList();
+        this.refreshCrewCategoriesForEvent();
+        this.hideCard();
+    };
+
     submitCategory = () => {
         this.refreshCrewList();
         this.refreshCrewCategories();
-        this.hideRegisterCategory();
-    };
-
-    hideRegisterCategory = () => {
-        let currentState = this.state;
-        currentState.showRegisterCategory = false;
-        this.setState(currentState);
     };
 
     callBackSearchResult = () => {
@@ -217,13 +213,13 @@ export class AddCrewType extends Component{
                 </Form.Row>
 
                 <Row className="no-gutter">
-                    <Col className="col-1">
+                    <Col className="col-2">
                         <Button variant="success" type="submit" onClick={this.submitForm}>
                             Lagre
                         </Button>
                     </Col>
-                    <Col className="col-1">
-                        <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelButton}>
+                    <Col className="col-2">
+                        <Button variant="secondary" type="cancel" className="padding-left-20" onClick={this.cancelButton}>
                             Avbryt
                         </Button>
                     </Col>
@@ -269,9 +265,9 @@ export class CrewCard extends Component{
             description : this.props.crewSelected.description,
             numberOfFilesChosenForUpload : 0,
             numberOfFilesAlreadyUploaded : 0,
-            isResponsible : false,
-            contractSigned : false,
-            hasBeenPaid : false
+            isResponsible : this.props.crewSelected.isResponsible,
+            contractSigned : this.props.crewSelected.contractSigned,
+            hasBeenPaid : this.props.crewSelected.contractSigned
         };
     }
 
@@ -301,9 +297,9 @@ export class CrewCard extends Component{
                 <hr></hr>
                 <div className="row">
                     <div className="col-12">
-
                         Beskrivelse<br/>
-                        <div className="col-10">
+
+                        <div className="col-12">
                             <input type="text" className="form-control" value={this.state.description} id="description" onChange={this.handleInputDescription}/>
                         </div>
 
@@ -341,7 +337,7 @@ export class CrewCard extends Component{
 
                 <div className="row padding-top-20">
 
-                    <div className="col-4">
+                    <div className="col-3">
                         <span className="btn btn-primary btn-file">
                             Legg til vedlegg <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/>
                         </span>
@@ -350,15 +346,15 @@ export class CrewCard extends Component{
 
                     </div>
 
-                    <div className="col-4">
+                    <div className="col-3">
                         Filer lagt til fra før: {this.state.numberOfFilesAlreadyUploaded}
                     </div>
 
-                    <div className="col-4 offset-4 text-right">
-                        <button className = "butn-success-rounded" onClick={() => this.sendEmail()}>Send mail med jobbtilbud til personell</button>
+                    <div className="col-5 offset-4 text-right">
+                        <button className = "btn-success-rounded" onClick={() => this.sendEmail()}>Send mail med jobbtilbud til personell</button>
                     </div>
 
-                    <div className="col-4 offset-4 text-right">
+                    <div className="col-5 offset-4 text-right">
                         <button className="btn-success rounded" onClick={() => this.updateCrewMember()} id="saveCrew">Lagre</button>
                     </div>
                 </div>
@@ -377,7 +373,7 @@ export class CrewCard extends Component{
                 crewCategoryName : props.crewSelected.crewCategoryName,
                 description : props.crewSelected.description,
                 isResponsible : props.crewSelected.isResponsible,
-                signedContract : props.crewSelected.signedContract,
+                contractSigned : props.crewSelected.contractSigned,
                 hasBeenPaid: props.crewSelected.hasBeenPaid
             };
         }
@@ -448,7 +444,7 @@ export class CrewCard extends Component{
     }
 
     save = () => {
-        /* Save function to gather all information in the Performer Card that needs to be stored */
+        /* Save function to gather all information in the Crew Card that needs to be stored */
 
         //TODO: Send signed contract and if artist has been payed
     }
@@ -534,11 +530,28 @@ export class AddCrewMember extends Component{
         };
     }
 
+    validateForm(){
+
+        if(!MegaValidator.validateUsernameLength(this.state.name)){
+            return 'Vennligst skriv inn et navn';
+        }
+        if(!MegaValidator.validateUsername("none", this.state.name)){
+            return 'Navnet kan bare inneholde bokstaver';
+        }
+        if(!MegaValidator.validatePhoneNumberLength(this.state.phone)){
+            return 'Telefonnummer er ikke gyldig';
+        }
+        if(!MegaValidator.validateEmailLength("none", this.state.email)){
+            return 'Vennligst skriv in en epostaddresse';
+        }
+        else{
+            return '';
+        }
+    }
 
     render() {
         return(
             <div className="card card-body">
-                <Form.Group>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Navn</Form.Label>
@@ -561,7 +574,7 @@ export class AddCrewMember extends Component{
                     </Form.Group>
                     <Form.Group controlId="fromGridCategory">
                         <Row className="no-gutters">
-                            <Col size={6}>
+                            <Col size={1}>
                                 <Form.Label>Velg personell-type</Form.Label>
                                 {this.state.selectedCategoryID === null?
                                     <div>Ingen kategorier er lagt til</div>
@@ -574,7 +587,9 @@ export class AddCrewMember extends Component{
                                     ))}
                                 </select>}
                             </Col>
-                            <Col size={6}>
+                        </Row>
+                        <Row>
+                            <Col size={1}>
                                 <button className="btn btn-success" onClick={this.toggleRegisterCrewTypeForm}>Ny kategori</button>
                             </Col>
                         </Row>
@@ -590,13 +605,20 @@ export class AddCrewMember extends Component{
                         <Form.Label>Hovedansvarlig</Form.Label>
                         <input type="checkbox" onClick={this.handleIsResponsibleChange}/>
                     </Form.Group>
-                    <Button variant="primary" type="button" onClick={this.submitForm}>
-                        Lagre
-                    </Button>
-                    <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
-                        Avbryt
-                    </Button>
-                </Form.Group>
+
+                    <Row className="no-gutter">
+                        <Col className="col-2">
+                        <Button variant="primary" type="button" disabled={!(this.validateForm()==='')} onClick={this.submitForm}>
+                            Lagre
+                        </Button>
+                        </Col>
+                        <Col className="col-2">
+                        <Button variant="secondary" type="cancel" className="margin-left-5" onClick={this.cancelRegister}>
+                            Avbryt
+                        </Button>
+                        </Col>
+                    </Row>
+                <Form.Text className={"text-danger"}>{this.validateForm()}</Form.Text>
             </div>
         )
     }
@@ -757,15 +779,12 @@ export class RegisteredCrew extends Component{
     }
 
     componentDidMount() {
-        console.log("crewlist");
-        console.log(this.props.crewList);
-        console.log("categoryList");
-        console.log(this.props.categoryList);
     }
 
     unassignCrew = (crew) => {
         //Call to parent with crew object to remove from event.
         this.props.unassignCrew(crew);
+        this.props.refreshCategoryList();
     };
 
     showCard = (crew) => {
