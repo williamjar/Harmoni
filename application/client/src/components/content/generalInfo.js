@@ -63,6 +63,7 @@ export class InfoForm extends Component {
             town: EventStore.currentEvent.town,
             description: EventStore.currentEvent.description,
             eventType: EventStore.currentEvent.eventType,
+            status: EventStore.currentEvent.status,
             eventTypes: [],
             dateError: false,
             issueList: [],
@@ -247,6 +248,7 @@ export class InfoForm extends Component {
                     <Row>
                         <Col>
                         <Card className="mb-2 border-0">
+                            <Card className="m4 text-white" bg="danger" hidden={!(this.state.status===3)}><Card.Body>Dette arrangementet er kansellert, du kan gjennoppta arrangementet i menyen nedenfor</Card.Body></Card>
                             <Card.Body>
                                 <Row>
                                     <Col>
@@ -274,6 +276,7 @@ export class InfoForm extends Component {
                                                 </Col>
                                             </Row>
                                             {EventStore.currentEvent.startTime}
+
                                         </Col>
                                         <Col>
                                             <Row>
@@ -345,7 +348,7 @@ export class InfoForm extends Component {
                                     </Row>
                                 </Form.Group>
                                 <Form.Group>
-                                    <Button variant="info" onClick={() => this.editMode()}>Rediger informasjon</Button>
+                                    <Button variant="info" disabled={this.state.status===2 || this.state.status === 3} onClick={() => this.editMode()}>Rediger informasjon</Button>
                                 </Form.Group>
                             </Card.Body>
 
