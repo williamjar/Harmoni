@@ -59,9 +59,6 @@ export class TicketStore {
         });
     }
 
-    /**
-     * TODO delete?
-     */
     static getOneTicket(ticketTypeID, callback) {
         let header = {
             "Content-Type": "application/json",
@@ -99,28 +96,7 @@ export class TicketStore {
         });
     }
 
-    /**
-     * TODO delete?
-     */
-    static getAllTickets(callback) {
 
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        axios.get(axiosConfig.root + '/api/ticket', {headers: header}).then(response =>  {
-            this.allTickets = [];
-            this.allTickets = response.data.map(data => new TicketType(data.ticketTypeID, data.ticketTypeName, data.price, data.amount,
-                    data.releaseDate, data.releaseTime, data.hasEndDate, data.endDate, data.endTime, data.description));
-            callback();
-        });
-
-    }
-
-    /**
-     * TODO delete?
-     */
     static updateTicket(name, price, amount, releaseDate, releaseTime,  endDate, endTime, description, ticketTypeID) {
         let header = {
             "Content-Type": "application/json",

@@ -264,24 +264,6 @@ export class CrewStore {
         },  {headers: header}).then(response => callback(response.data));
     }
 
-    /**
-     * TODO - Currently unused - Update or delete?
-     */
-    static addDocumentToCrewMember(eventID, name, link, crewID, categoryID){
-
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        return axios.post(axiosConfig.root + '/api/document/crew', {
-            "eventID": eventID,
-            "documentName": name,
-            "documentLink": link,
-            "crewID": crewID,
-            "documentCategoryID": categoryID
-        },  {headers: header}).then(response => console.log(response));
-    }
 
     /**
      * Updates the the description for an existing crew member and saves it to the database.
@@ -329,19 +311,6 @@ export class CrewStore {
         },  {headers: header}).then(response => console.log(response));
     }
 
-    /**
-     * TODO - Currently unused - Update or delete?
-     */
-    static deleteCategory(crewCategoryID) {
-
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        return axios.delete(axiosConfig.root + '/api/crew-category/' + crewCategoryID,  {headers: header})
-            .then(response => console.log(response));
-    }
 
     /**
      * Removes a crew member and his personal info from the database.
@@ -359,19 +328,6 @@ export class CrewStore {
             .then(response => console.log(response));
     }
 
-    /**
-     * TODO - Currently unused - Update or delete?
-     */
-    static deleteCrewCategory(crewCategoryID) {
-
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        return axios.delete(axiosConfig.root + '/api/crew-category/' + crewCategoryID,  {headers: header})
-            .then(response => console.log(response));
-    }
 
     /**
      * Unassigns a crew member from an event and updates the database.
@@ -390,19 +346,6 @@ export class CrewStore {
 
         return axios.delete(axiosConfig.root + '/api/crew/assign/' + eventID + '/' + crewCategoryID + '/' + crewID,  {headers: header})
             .then(response => callback(response.data));
-    }
-
-    /**
-     * TODO - Currently unused - Update or delete?
-     */
-    static unassignCrewMember(crewCategoryID, crewID) {
-
-        let header = {
-            "Content-Type": "application/json",
-            "x-access-token": CookieStore.currentToken
-        };
-
-        return axios.delete(axiosConfig.root + '/api/crew/assign/' + crewID + '/' + crewCategoryID + '/' + crewID, {headers: header}).then(response => console.log(response));
     }
 
 }
