@@ -82,7 +82,7 @@ export class RegisterForm extends React.Component {
                             <Form.Group>
                                 <Form.Control maxLength="8" type="tel" name="phonenumber" placeholder="Telefonnummer" value={this.state.phonenumber} onChange={this.handleInputChange}/>
                             </Form.Group>
-                            <Form.Text className="text-danger" hidden={!this.state.emailAlreadyExist}>Det er allerede registrert en bruker med denne e-postaddressen</Form.Text>
+                            <Form.Text className="text-danger" hidden={!this.state.emailAlreadyExist}>Det er allerede registrert en bruker med denne e-postadressen</Form.Text>
                             <Row>
                                 <Col>
                                     <Form.Group>
@@ -137,13 +137,13 @@ export class RegisterForm extends React.Component {
             return "Brukernavn kreves";
         }
         if(!MegaValidator.validateEmailLength(this.state.firstEmail, this.state.secondEmail)){
-            return "E-postaddresse kreves";
+            return "E-postadresse kreves";
         }
         if(!MegaValidator.validateUsername("nothing", this.state.username)){
             return "Brukernavnet kan kun inneholde tall og bokstaver";
         }
         if(!MegaValidator.validateEmail(this.state.firstEmail, this.state.secondEmail)){
-            return "E-postaddressene må være like";
+            return "E-postadressene må være like";
         }
         if(!MegaValidator.validatePasswordLength(this.state.firstPassword,this.state.secondPassword)){
             return "Passordet ditt må være på minst 8 tegn";

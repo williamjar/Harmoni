@@ -8,9 +8,8 @@ import {CrewStore} from "../../store/crewStore";
 import {CookieStore} from "../../store/cookieStore";
 import {EventStore} from "../../store/eventStore";
 import Row from "react-bootstrap/Row";
-import {DocumentService} from "../../store/documentService";
 import {Alert} from "../alerts";
-import {Document} from "../../classes/document";
+import {MailService} from "../../store/mailService";
 import {MegaValidator} from "../../megaValidator";
 
 
@@ -72,7 +71,7 @@ export class CrewPanel extends Component{
                 currentState.crewSelected = {};
                 this.setState(currentState);
                 this.toggleShowCard();
-                //this.hideCard();
+                this.refreshCrewCategoriesForEvent();
             }, EventStore.currentEvent.eventID);
         });
     };
@@ -241,10 +240,10 @@ export class AddCrewType extends Component{
     submitForm = () => {
         if(this.state.crewType.trim() === ""){
             //Error message
-            alert("Du kan ikke ha en blank kategori");
+            Alert.warning("Du kan ikke ha en blank kategori");
         } else{
             CrewStore.addCategory(this.state.crewType, CookieStore.currentUserID);
-            alert(this.state.crewType);
+            Alert.success("Kategorien " + this.state.crewType + " har blitt lagt til");
             this.props.submit();
         }
     };
@@ -310,7 +309,7 @@ export class CrewCard extends Component{
                         <div className="form-check">
                             <input className="form-check-input" name="contractSigned" type="checkbox" checked={this.state.contractSigned} id="contractSigned" onChange={this.handleCheckboxes}/>
                             <label className="form-check-label" htmlFor="contractSigned">
-                                Signert kontrakt
+                                Mottatt bekreftelse
                             </label>
                         </div>
                     </div>
@@ -335,26 +334,12 @@ export class CrewCard extends Component{
                 </div>
 
                 <div className="row padding-top-20">
-
-                    <div className="col-3">
-                        <span className="btn btn-primary btn-file">
-                            Legg til vedlegg <input type="file" id="uploadAttachmentPerformer" accept="application/pdf" onChange={() => this.addFile()}/>
-                        </span>
-                        {this.state.numberOfFilesAdded > 0 && this.state.numberOfFilesAdded<2? <div className="padding-left-5">{this.state.numberOfFilesAdded + " file added"}</div>: null}
-                        {this.state.numberOfFilesAdded > 1 ? <div className="padding-left-5">{this.state.numberOfFilesAdded + " files added"}</div>: null}
-
+                    <div className="col-5">
+                        <button className = "btn-success" onClick={() => this.sendEmail()}>Send email med forespørsel</button>
                     </div>
 
-                    <div className="col-3">
-                        Filer lagt til fra før: {this.state.numberOfFilesAlreadyUploaded}
-                    </div>
-
-                    <div className="col-5 offset-4 text-right">
-                        <button className = "btn-success-rounded" onClick={() => this.sendEmail()}>Send mail med jobbtilbud til personell</button>
-                    </div>
-
-                    <div className="col-5 offset-4 text-right">
-                        <button className="btn-success rounded" onClick={() => this.updateCrewMember()} id="saveCrew">Lagre</button>
+                    <div className="col-5">
+                        <button className="btn-success" onClick={() => this.updateCrewMember()} id="saveCrew">Lagre</button>
                     </div>
                 </div>
 
@@ -391,7 +376,7 @@ export class CrewCard extends Component{
     categoryHandler = (event) => {
         this.setState({
             crewCategoryID : event.target.value
-        });;
+        })
         this.props.categoryHandler(event.target.value);
     };
 
@@ -443,72 +428,10 @@ export class CrewCard extends Component{
     }
 
     save = () => {
-        /* Save function to gather all information in the Crew Card that needs to be stored */
+        /* Save function to gather all information in the Performer Card that needs to be stored */
 
-        //TODO: Send signed contract and if artist has been payed
-    };
-
-    //TODO: Change states that show if files are added to server
-    addFile = () =>{
-        /* For adding attachments to crew */
-        let fileInput = document.querySelector("#uploadAttachmentPerformer");
-
-        let attachment = fileInput.files.length;
-        if(attachment !== undefined){
-            let files = fileInput.files;
-
-            let currentState = this.state;
-            currentState.numberOfFilesAdded = files.length;
-
-            this.setState(currentState); // Get the number of files selected for upload, to be used for user GUI
-
-            //TODO: VALIDATE PDF FILES
-            //TODO: Choose file category
-            let formData = new FormData();
-            for (let i = 0; i < files.length; i++){
-                formData.set('selectedFile', files[i]);
-                DocumentService.addDocument(EventStore.currentEvent.eventID, "Kontrakt", currentState.performer.artistID, null, 1, formData, (statusCode, returnData) => {
-                    if (statusCode === 200){
-                        console.log("Document was successfully uploaded");
-                        Alert.success("Dokumentet ble lastet opp");
-                        this.state.performer.addDocument(new Document(returnData.documentID, returnData.documentLink, 1));
-                        fileInput.value = '';
-                        currentState.numberOfFilesAlreadyUploaded += 1;
-                        currentState.numberOfFilesAdded = 0;
-                    }
-                    else{
-                        console.log("Error uploading document");
-                        Alert.danger("En feil skjedde under opplastning");
-                    }
-
-                });
-            }
-            this.setState(currentState);
-        }
-    };
-
-
-    /*sendEmail(){
-
-          MailService.sendArtistInvitation(this.state.performer, "Official invitation to " + EventStore.currentEvent.eventName,
-              "Welcome!\nHere is your official invitation to " + EventStore.currentEvent.eventName + ".\n" +
-              "You have been invited by " + OrganizerStore.currentOrganizer.username + "\n" +
-              "And the event will be going from " + EventStore.currentEvent.startDate + " to " + EventStore.currentEvent.endDate + ".\n" +
-              "Regards, " + OrganizerStore.currentOrganizer.username, (statusCode) => {
-                  if (statusCode === 200){
-                      console.log("Email sent successfully");
-                  }
-                  else{
-                      console.log("An error occured sending the email");
-                  }
-              });
-    }*/
-
-    /*save = () => {
-         Save function to gather all information in the Performer Card that needs to be stored
-
-        //TODO: Send signed contract and if artist has been hasBeenPaid
-    }*/
+        //TODO: Send invitation
+    }
 }
 
 export class AddCrewMember extends Component{
@@ -541,7 +464,7 @@ export class AddCrewMember extends Component{
             return 'Telefonnummer er ikke gyldig';
         }
         if(!MegaValidator.validateEmailLength("none", this.state.email)){
-            return 'Vennligst skriv in en epostaddresse';
+            return 'Vennligst skriv in en epost-adresse';
         }
         else{
             return '';
@@ -742,14 +665,13 @@ export class RegisteredCrew extends Component{
         } else {
             return (
                 <div>
+                    {this.props.crewList.length === 0 ?
+                    <div>Personell er ikke lagt til</div>
+                    : null }
                     {this.props.categoryList.map(e => (
                         <ul className="list-group">
-
-                            {this.props.crewList.length === 0 ?
-                                <div>Personell er ikke lagt til</div>
-                                : <b className="card-title">{e.crewCategoryName}</b>}
-
-                            {this.props.crewList !== undefined ? this.props.crewList.filter(c => c.crewCategoryName === e.crewCategoryName).map(c => (
+                            <b className="card-title">{e.crewCategoryName}</b>
+                            {this.props.crewList != undefined ? this.props.crewList.filter(c => c.crewCategoryName === e.crewCategoryName).map(c => (
                                 <li className="list-group-item pointer selection" onClick={() => {
                                     this.showCard(c)
                                 }}>
