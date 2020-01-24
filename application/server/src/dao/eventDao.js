@@ -55,7 +55,7 @@ module.exports = class eventDao extends Dao {
     }
 
     archiveOldEvents(callback, organizerID) {
-        super.query('UPDATE event SET status = 2 WHERE organizerID = ? AND status = 1 AND endDate <= CURRENT_DATE() AND endTime < CURRENT_TIME()', [organizerID], callback);
+        super.query('UPDATE event SET status = 2 WHERE organizerID = ? AND status = 1 AND (endDate <= CURRENT_DATE() OR endDate = CURRENT_DATE() AND endTime < CURRENT_TIME())', [organizerID], callback);
     }
 
     getAllEventTypes(callback) {

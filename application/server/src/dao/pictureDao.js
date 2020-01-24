@@ -20,9 +20,4 @@ module.exports = class pictureDao extends Dao {
     getPicture(callback, pictureID) {
         super.query('select * from picture where pictureID = ?', pictureID, callback);
     }
-
-    checkIfOrganizerPictureExists(callback, organizerID){
-        super.query('select pictureID from organizer where organizerID = ?', [organizerID], callback);
-    }
 };
-
