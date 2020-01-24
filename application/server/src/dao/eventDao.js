@@ -1,5 +1,11 @@
 const Dao = require('./dao.js');
 
+/**
+ * @class eventDao
+ * @classdesc A Database Access Object for event
+ * @type {eventDao}
+ * @see Dao
+ */
 module.exports = class eventDao extends Dao {
 
     /**

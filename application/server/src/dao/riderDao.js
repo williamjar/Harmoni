@@ -1,5 +1,11 @@
 const Dao = require('./dao.js');
 
+/**
+ * @class riderDao
+ * @classdesc A Database Access Object for rider.
+ * @type {riderDao}
+ * @see Dao
+ */
 module.exports = class riderDao extends Dao {
 
     /**
