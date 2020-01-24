@@ -104,7 +104,7 @@ export class PerformerPanel extends Component{
                 currentState.performerSelected = {};
                 EventStore.currentEvent.artists = list;
                 this.setState(currentState);
-                this.toggleShowCard();
+                this.hideCard();
             }, EventStore.currentEvent.eventID);
         });
     };
@@ -128,6 +128,7 @@ export class PerformerPanel extends Component{
             performer.hasBeenPaid = artistEventInfo.hasBeenPaid;
             performer.contractSigned = artistEventInfo.contractSigned;
             currentState.showArtistCard = true;
+            currentState.showRegisterNew = false;
             this.setState(currentState);
             this.setGenreCurrentPerformer(performer);
         }, performer.artistID, EventStore.currentEvent.eventID);
@@ -153,6 +154,7 @@ export class PerformerPanel extends Component{
         this.setState(currentState);
         this.hideCard();
     };
+
 
     hideCard = () => {
         let currentState = this.state;
@@ -189,6 +191,7 @@ export class PerformerPanel extends Component{
         let currentState = this.state;
         currentState.performerSelected = selected;
         currentState.showArtistCard = true;
+        currentState.showRegisterNew = false;
         this.assignArtist(selected);
         this.setState(currentState);
 

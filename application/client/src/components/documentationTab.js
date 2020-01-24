@@ -119,7 +119,7 @@ export class DocumentationTab extends Component{
                                 onChange={this.onChange}
                             />
                         </span>
-                        <Button type="button" className={"mr-1 margin-left-10 btn-success btn-lg"} onClick={this.onSubmit}>Last opp fil</Button>
+                        <Button type="button" variant={"success"} className={"mr-1 margin-left-10 btn-success btn-lg"} onClick={this.onSubmit}>Last opp fil</Button>
 
                 </div>
                 <section id = {"error"} className={"text-info col padding-top-10"}/>

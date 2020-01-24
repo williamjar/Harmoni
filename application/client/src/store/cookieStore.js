@@ -4,11 +4,19 @@ const axiosConfig = require("./axiosConfig");
 const publicKey = require('../cookieConfig').publicKey;
 const jwt = require('jsonwebtoken');
 
+/**
+ * @class CookieStore
+ * @classdesc Store Class for functions related to accessing and modifying tokens.
+ */
 export class CookieStore{
 
     static currentToken = null;
     static currentUserID = -1;
 
+    /**
+     * Set method for changing currentToken
+     * @param {String} newToken
+     */
     static setCurrentToken(newToken){
         try{
             this.currentToken = newToken;
@@ -18,10 +26,18 @@ export class CookieStore{
         }
     }
 
+    /**
+     * Set method for changing currentUserID
+     * @param {int} newID
+     */
     static setCurrentUserID(newID){
         this.currentUserID = newID;
     }
 
+    /**
+     * TODO
+     * @param {function} callback
+     */
     static validateToken(callback){
 
         if (sessionStorage.getItem("loggedIn")){
@@ -42,6 +58,11 @@ export class CookieStore{
         }
     }
 
+    /**
+     * TODO
+     * @param {int} token
+     * @param {function} callback
+     */
     static validateArtistToken(token, callback){
         try{
             jwt.verify(token, publicKey);
@@ -51,7 +72,11 @@ export class CookieStore{
             return false;
         }
     }
-
+    /**
+     * TODO
+     * @param {String} email
+     * @param {function} callback
+     */
     static checkToken(email, callback){
         let header = {
             'x-access-token': this.currentToken,

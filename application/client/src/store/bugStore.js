@@ -4,19 +4,26 @@ import {Component} from "react";
 import {Bug} from "../classes/bug";
 const axiosConfig = require("./axiosConfig");
 
+/**
+ * @class BugStore
+ * @classdesc Store Class for functions related to accessing and modifying bugs objects.
+ */
 export class BugStore extends Component {
 
     static allBugsReportedByOrganizer = [];
 
-    //Register bug
+    /**
+     * Register new bug into the database.
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     * @param {String} description - Description of what went wrong.
+     * @param {function} callback
+     */
     static registerBug(organizerID, description, callback){
         let header = {
             "Content-Type": "application/json",
             "x-access-token": CookieStore.currentToken
         };
-
         axios.post(axiosConfig.root + '/api/bug/register/' + organizerID, {
-
             description: description
         }, {headers: header}).then(response => {
             console.log(response);
@@ -28,7 +35,11 @@ export class BugStore extends Component {
         })
     }
 
-   // return all bugs registraded by one organizer.
+    /**
+     * Register all bugs reported by the logged in user.
+     * @param {int} organizerID - The database ID of the logged in organizer.
+     * @param {function} callback
+     */
    static getAllBugsFromOrganizer(organizerID, callback){
 
        this.allBugsReportedByOrganizer = [];
@@ -43,7 +54,11 @@ export class BugStore extends Component {
        });
    }
 
-    //delete bugs
+    /**
+     * Deletes a bug from a database.
+     * @param {int} bugID - The database ID of the bug.
+     * @param {function} callback
+     */
     static deleteBug(bugID, callback) {
         console.log('Running delete bug');
 

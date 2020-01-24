@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {hashService} from "./hashService";
 const hash = require('./hashService');
 const axiosConfig = require('./axiosConfig');
 
@@ -15,7 +16,7 @@ export class RegisterOrganizerService {
             "email": email
         };
 
-        let hashedPassword = hash.sha512(password,hash.generateSalt(16));
+        let hashedPassword = hashService.sha512(password,hashService.generateSalt(16));
 
         axios.post(axiosConfig.root + '/contact', JSON.stringify(contactBody), {headers: header})
             .then(res => {

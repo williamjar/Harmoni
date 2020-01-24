@@ -11,15 +11,29 @@ import {OrganizerStore} from "../../store/organizerStore";
 import {Event} from "../../classes/event";
 
 // Parent component for editing and viewing all info about an event, divides information into tabs.
+
+/**
+ * This is the EventForm class
+ */
 export class EventForm extends Component {
+
+    /**
+     *
+     * @param props
+     * it has cool props
+     */
     constructor(props) {
         super(props);
 
         this.handleButtonClick = this.handleButtonClick.bind(this);
 
+        /**
+         * @type {boolean} editMode
+         * @type {int} activeTab
+         */
         this.state = {
             activeTab: 0,
-            editMode: false,
+            editMode: this.props.edit,
         };
     }
 

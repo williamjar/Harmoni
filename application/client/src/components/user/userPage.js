@@ -4,7 +4,6 @@ import {OrganizerStore} from "../../store/organizerStore";
 import {CookieStore} from "../../store/cookieStore";
 import {PictureService} from "../../store/pictureService";
 import {MegaValidator} from "../../megaValidator";
-import * as hash from "../../store/hashService";
 import {createHashHistory} from "history";
 import {Alert} from "../alerts";
 
@@ -366,7 +365,7 @@ export class DeleteUserForm extends React.Component {
 
     checkPasswordAndDeleteCurrentUser() {
 
-        hash.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
+        hashService.verifyPassword(OrganizerStore.currentOrganizer.organizerID, this.state.password, res => {
             console.log("Password ? " + res);
             if (res) {
                 OrganizerStore.deleteCurrentOrganizer();

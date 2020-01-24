@@ -1,8 +1,7 @@
 import axios from "axios";
 import {Organizer} from "../classes/organizer.js";
 import {CookieStore} from "./cookieStore";
-
-const hash = require('./hashService');
+import {hashService} from "./hashService";
 const axiosConfig = require("./axiosConfig");
 
 export class OrganizerStore {
@@ -49,9 +48,9 @@ export class OrganizerStore {
     }
 
     static changePassword(organizerID, oldPassword, newPassword, callback) {
-        return hash.verifyPassword(organizerID, oldPassword, rightPassword => {
+        return hashService.verifyPassword(organizerID, oldPassword, rightPassword => {
             if (rightPassword) {
-                let newHashed = hash.sha512(newPassword, hash.generateSalt(16));
+                let newHashed = hashService.sha512(newPassword, hashService.generateSalt(16));
 
                 let header = {
                     "Content-Type": "application/json",
