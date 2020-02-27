@@ -7,7 +7,7 @@
 "Harmoni" is a web application for creating and organizing events. You can keep track of events, and performers, crew and documents that are tied to that event. 
 Harmoni is designed with both accessibility and universal design in mind. The web design is focused on simplicity at the same time as having the features you wish for as an event organizer. The website is currently only available in Norwegian. 
 
-<h2>[Go to our wiki](https://gitlab.stud.idi.ntnu.no/williaj/harmoni-team-7/-/wikis/home)</h2>
+<h2>Wiki access can be requested.</h2>
 
 ___
 <h2>Quick start installation guide</h2>
